@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Clock, Plus } from "lucide-react";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -7,31 +7,33 @@ export function NoteEditor() {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
-    if (activeNote && titleRef.current) {
-      titleRef.current.value = activeNote.title;
-    }
-    if (activeNote && contentRef.current) {
-      contentRef.current.value = activeNote.content;
-    }
+    if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
+    if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
   }, [activeNote?.id]);
+
+  const debouncedUpdate = useCallback(
+    (field: "title" | "content", value: string) => {
+      if (!activeNotebookId || !activeNote) return;
+      clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        updateNote(activeNotebookId, activeNote.id, { [field]: value });
+      }, 500);
+    },
+    [activeNotebookId, activeNote?.id, updateNote]
+  );
 
   if (!activeNotebook) {
     return (
       <div className="flex-1 flex items-center justify-center editor-surface">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md px-6"
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
           <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
             <FileText className="h-8 w-8 text-muted-foreground" />
           </div>
           <h2 className="font-serif text-xl text-foreground mb-2">No notebook selected</h2>
-          <p className="text-sm text-muted-foreground">
-            Select a notebook from the sidebar or create a new one to get started.
-          </p>
+          <p className="text-sm text-muted-foreground">Select a notebook from the sidebar or create a new one to get started.</p>
         </motion.div>
       </div>
     );
@@ -40,11 +42,7 @@ export function NoteEditor() {
   if (!activeNote) {
     return (
       <div className="flex-1 flex items-center justify-center editor-surface">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md px-6"
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
           <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">{activeNotebook.emoji}</span>
           </div>
@@ -66,13 +64,8 @@ export function NoteEditor() {
     );
   }
 
-  const formatDate = (d: Date) =>
-    new Intl.DateTimeFormat("en", {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    }).format(d);
+  const formatDate = (d: string) =>
+    new Intl.DateTimeFormat("en", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(d));
 
   return (
     <AnimatePresence mode="wait">
@@ -84,35 +77,26 @@ export function NoteEditor() {
         transition={{ duration: 0.25 }}
         className="flex-1 flex flex-col editor-surface overflow-hidden"
       >
-        {/* Note Header */}
         <div className="px-8 pt-8 pb-4 border-b editor-line">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
-            onChange={(e) =>
-              activeNotebookId &&
-              updateNote(activeNotebookId, activeNote.id, { title: e.target.value })
-            }
+            onChange={(e) => debouncedUpdate("title", e.target.value)}
             className="w-full text-2xl font-serif font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground"
             placeholder="Note title..."
           />
           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              Updated {formatDate(activeNote.updatedAt)}
+              Updated {formatDate(activeNote.updated_at)}
             </span>
           </div>
         </div>
-
-        {/* Note Content */}
         <div className="flex-1 overflow-y-auto">
           <textarea
             ref={contentRef}
             defaultValue={activeNote.content}
-            onChange={(e) =>
-              activeNotebookId &&
-              updateNote(activeNotebookId, activeNote.id, { content: e.target.value })
-            }
+            onChange={(e) => debouncedUpdate("content", e.target.value)}
             className="w-full h-full px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground text-[15px]"
             placeholder="Start writing..."
           />

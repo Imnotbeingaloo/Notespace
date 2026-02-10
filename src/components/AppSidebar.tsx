@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut } from "lucide-react";
 import { useNotebooks } from "@/context/NotebookContext";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -11,6 +12,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
+  const { signOut, user } = useAuth();
   const {
     notebooks,
     activeNotebookId,
@@ -221,6 +223,18 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           ))}
         </div>
       )}
+
+      {/* Sign out */}
+      <div className="p-2 border-t border-sidebar-border mt-auto">
+        <button
+          onClick={signOut}
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-lg"
+          title="Sign out"
+        >
+          <LogOut className="h-4 w-4" />
+          {!collapsed && <span>Sign out</span>}
+        </button>
+      </div>
     </motion.aside>
   );
 }
