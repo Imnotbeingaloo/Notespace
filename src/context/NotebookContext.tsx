@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 
 export interface Note {
   id: string;
   title: string;
   content: string;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Notebook {
@@ -13,7 +15,7 @@ export interface Notebook {
   name: string;
   emoji: string;
   notes: Note[];
-  createdAt: Date;
+  created_at: string;
 }
 
 interface NotebookContextType {
@@ -22,106 +24,114 @@ interface NotebookContextType {
   activeNoteId: string | null;
   setActiveNotebookId: (id: string | null) => void;
   setActiveNoteId: (id: string | null) => void;
-  createNotebook: (name: string, emoji?: string) => void;
-  deleteNotebook: (id: string) => void;
-  createNote: (notebookId: string) => void;
-  deleteNote: (notebookId: string, noteId: string) => void;
-  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content">>) => void;
+  createNotebook: (name: string, emoji?: string) => Promise<void>;
+  deleteNotebook: (id: string) => Promise<void>;
+  createNote: (notebookId: string) => Promise<void>;
+  deleteNote: (notebookId: string, noteId: string) => Promise<void>;
+  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content">>) => Promise<void>;
   activeNotebook: Notebook | null;
   activeNote: Note | null;
+  loading: boolean;
 }
 
 const NotebookContext = createContext<NotebookContextType | null>(null);
 
 const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
 
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
-}
-
-const defaultNotebooks: Notebook[] = [
-  {
-    id: "default-1",
-    name: "Getting Started",
-    emoji: "📓",
-    createdAt: new Date(),
-    notes: [
-      {
-        id: "note-1",
-        title: "Welcome to Notebook",
-        content: "Welcome to your new notebook app! Here you can create notebooks, organize your thoughts, and write notes.\n\nTry creating a new notebook from the sidebar, then add notes to it.\n\nFeatures:\n• Create multiple notebooks\n• Write and edit notes\n• Organize your thoughts\n• Simple, distraction-free interface",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ],
-  },
-];
-
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
-  const [notebooks, setNotebooks] = useState<Notebook[]>(defaultNotebooks);
-  const [activeNotebookId, setActiveNotebookId] = useState<string | null>("default-1");
-  const [activeNoteId, setActiveNoteId] = useState<string | null>("note-1");
+  const { user } = useAuth();
+  const [notebooks, setNotebooks] = useState<Notebook[]>([]);
+  const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
+  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const activeNotebook = notebooks.find((n) => n.id === activeNotebookId) ?? null;
   const activeNote = activeNotebook?.notes.find((n) => n.id === activeNoteId) ?? null;
 
-  const createNotebook = useCallback((name: string, emoji?: string) => {
-    const nb: Notebook = {
-      id: generateId(),
-      name,
-      emoji: emoji || EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
-      notes: [],
-      createdAt: new Date(),
-    };
-    setNotebooks((prev) => [...prev, nb]);
-    setActiveNotebookId(nb.id);
-    setActiveNoteId(null);
-  }, []);
+  // Fetch notebooks and notes
+  const fetchData = useCallback(async () => {
+    if (!user) { setNotebooks([]); setLoading(false); return; }
+    setLoading(true);
 
-  const deleteNotebook = useCallback((id: string) => {
+    const { data: nbs } = await supabase
+      .from("notebooks")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    const { data: nts } = await supabase
+      .from("notes")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    const merged: Notebook[] = (nbs ?? []).map((nb: any) => ({
+      ...nb,
+      notes: (nts ?? []).filter((n: any) => n.notebook_id === nb.id),
+    }));
+
+    setNotebooks(merged);
+    if (!activeNotebookId && merged.length > 0) {
+      setActiveNotebookId(merged[0].id);
+      if (merged[0].notes.length > 0) setActiveNoteId(merged[0].notes[0].id);
+    }
+    setLoading(false);
+  }, [user]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const createNotebook = useCallback(async (name: string, emoji?: string) => {
+    if (!user) return;
+    const e = emoji || EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    const { data } = await supabase
+      .from("notebooks")
+      .insert({ name, emoji: e, user_id: user.id })
+      .select()
+      .single();
+    if (data) {
+      const nb: Notebook = { ...data, notes: [] };
+      setNotebooks((prev) => [...prev, nb]);
+      setActiveNotebookId(data.id);
+      setActiveNoteId(null);
+    }
+  }, [user]);
+
+  const deleteNotebook = useCallback(async (id: string) => {
+    await supabase.from("notebooks").delete().eq("id", id);
     setNotebooks((prev) => prev.filter((n) => n.id !== id));
-    setActiveNotebookId((prev) => (prev === id ? null : prev));
-    setActiveNoteId(null);
-  }, []);
+    if (activeNotebookId === id) { setActiveNotebookId(null); setActiveNoteId(null); }
+  }, [activeNotebookId]);
 
-  const createNote = useCallback((notebookId: string) => {
-    const note: Note = {
-      id: generateId(),
-      title: "Untitled Note",
-      content: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  const createNote = useCallback(async (notebookId: string) => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("notes")
+      .insert({ notebook_id: notebookId, user_id: user.id, title: "Untitled Note", content: "" })
+      .select()
+      .single();
+    if (data) {
+      setNotebooks((prev) =>
+        prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, data] } : nb)
+      );
+      setActiveNoteId(data.id);
+    }
+  }, [user]);
+
+  const deleteNote = useCallback(async (notebookId: string, noteId: string) => {
+    await supabase.from("notes").delete().eq("id", noteId);
     setNotebooks((prev) =>
       prev.map((nb) =>
-        nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb
+        nb.id === notebookId ? { ...nb, notes: nb.notes.filter((n) => n.id !== noteId) } : nb
       )
     );
-    setActiveNoteId(note.id);
-  }, []);
-
-  const deleteNote = useCallback((notebookId: string, noteId: string) => {
-    setNotebooks((prev) =>
-      prev.map((nb) =>
-        nb.id === notebookId
-          ? { ...nb, notes: nb.notes.filter((n) => n.id !== noteId) }
-          : nb
-      )
-    );
-    setActiveNoteId((prev) => (prev === noteId ? null : prev));
-  }, []);
+    if (activeNoteId === noteId) setActiveNoteId(null);
+  }, [activeNoteId]);
 
   const updateNote = useCallback(
-    (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content">>) => {
+    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content">>) => {
+      await supabase.from("notes").update(updates).eq("id", noteId);
       setNotebooks((prev) =>
         prev.map((nb) =>
           nb.id === notebookId
-            ? {
-                ...nb,
-                notes: nb.notes.map((n) =>
-                  n.id === noteId ? { ...n, ...updates, updatedAt: new Date() } : n
-                ),
-              }
+            ? { ...nb, notes: nb.notes.map((n) => n.id === noteId ? { ...n, ...updates, updated_at: new Date().toISOString() } : n) }
             : nb
         )
       );
@@ -132,18 +142,10 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   return (
     <NotebookContext.Provider
       value={{
-        notebooks,
-        activeNotebookId,
-        activeNoteId,
-        setActiveNotebookId,
-        setActiveNoteId,
-        createNotebook,
-        deleteNotebook,
-        createNote,
-        deleteNote,
-        updateNote,
-        activeNotebook,
-        activeNote,
+        notebooks, activeNotebookId, activeNoteId,
+        setActiveNotebookId, setActiveNoteId,
+        createNotebook, deleteNotebook, createNote, deleteNote, updateNote,
+        activeNotebook, activeNote, loading,
       }}
     >
       {children}
