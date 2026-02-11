@@ -63,7 +63,7 @@ const AuthPage = () => {
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
           <BookOpen className="h-7 w-7 text-primary" />
-          <span className="font-serif text-2xl font-bold text-foreground">Notebook</span>
+          <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
         </div>
 
         {/* Card */}
