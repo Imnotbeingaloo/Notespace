@@ -1,17 +1,23 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Plus } from "lucide-react";
+import { FileText, Clock, Plus, Eye, Edit3 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
+import { AIExplainPanel } from "@/components/AIExplainPanel";
+import { FileUpload } from "@/components/FileUpload";
 
 export function NoteEditor() {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const [preview, setPreview] = useState(false);
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
+    setPreview(false);
   }, [activeNote?.id]);
 
   const debouncedUpdate = useCallback(
@@ -90,17 +96,42 @@ export function NoteEditor() {
               <Clock className="h-3 w-3" />
               Updated {formatDate(activeNote.updated_at)}
             </span>
+            <div className="ml-auto flex items-center gap-2">
+              <AIExplainPanel />
+              <button
+                onClick={() => setPreview((p) => !p)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  preview
+                    ? "bg-primary/10 text-primary"
+                    : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                {preview ? "Edit" : "Preview"}
+              </button>
+            </div>
           </div>
         </div>
+
         <div className="flex-1 overflow-y-auto">
-          <textarea
-            ref={contentRef}
-            defaultValue={activeNote.content}
-            onChange={(e) => debouncedUpdate("content", e.target.value)}
-            className="w-full h-full px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground text-[15px]"
-            placeholder="Start writing..."
-          />
+          {preview ? (
+            <div className="px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {activeNote.content || "*No content yet…*"}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <textarea
+              ref={contentRef}
+              defaultValue={activeNote.content}
+              onChange={(e) => debouncedUpdate("content", e.target.value)}
+              className="w-full h-full px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground text-[15px]"
+              placeholder="Start writing in markdown..."
+            />
+          )}
         </div>
+
+        <FileUpload />
       </motion.div>
     </AnimatePresence>
   );

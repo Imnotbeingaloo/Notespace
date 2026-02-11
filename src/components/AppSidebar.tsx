@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut } from "lucide-react";
+import { SearchDialog } from "@/components/SearchDialog";
 import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
               className="flex items-center gap-2"
             >
               <BookOpen className="h-5 w-5 text-primary" />
-              <span className="font-serif font-bold text-foreground text-lg">Notebook</span>
+              <span className="font-serif font-bold text-foreground text-lg">Notebook Archive</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -74,6 +75,11 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
 
       {!collapsed && (
         <div className="flex-1 overflow-y-auto p-2">
+          {/* Search */}
+          <div className="mb-2">
+            <SearchDialog />
+          </div>
+
           {/* New Notebook Button */}
           <button
             onClick={() => setShowNewNotebook(true)}

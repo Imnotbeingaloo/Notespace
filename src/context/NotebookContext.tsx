@@ -2,10 +2,18 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 
+export interface Attachment {
+  name: string;
+  url: string;
+  type: string;
+  size: number;
+}
+
 export interface Note {
   id: string;
   title: string;
   content: string;
+  attachments: Attachment[];
   created_at: string;
   updated_at: string;
 }
@@ -28,7 +36,7 @@ interface NotebookContextType {
   deleteNotebook: (id: string) => Promise<void>;
   createNote: (notebookId: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
-  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content">>) => Promise<void>;
+  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => Promise<void>;
   activeNotebook: Notebook | null;
   activeNote: Note | null;
   loading: boolean;
@@ -65,7 +73,10 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
     const merged: Notebook[] = (nbs ?? []).map((nb: any) => ({
       ...nb,
-      notes: (nts ?? []).filter((n: any) => n.notebook_id === nb.id),
+      notes: (nts ?? []).filter((n: any) => n.notebook_id === nb.id).map((n: any) => ({
+        ...n,
+        attachments: (n.attachments as Attachment[]) || [],
+      })),
     }));
 
     setNotebooks(merged);
@@ -108,8 +119,9 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       .select()
       .single();
     if (data) {
+      const note: Note = { ...data, attachments: (data.attachments as unknown as Attachment[]) || [] };
       setNotebooks((prev) =>
-        prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, data] } : nb)
+        prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb)
       );
       setActiveNoteId(data.id);
     }
@@ -126,8 +138,8 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [activeNoteId]);
 
   const updateNote = useCallback(
-    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content">>) => {
-      await supabase.from("notes").update(updates).eq("id", noteId);
+    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => {
+      await supabase.from("notes").update(updates as any).eq("id", noteId);
       setNotebooks((prev) =>
         prev.map((nb) =>
           nb.id === notebookId
