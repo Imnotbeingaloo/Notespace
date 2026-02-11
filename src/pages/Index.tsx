@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
-const Index = () => {
+const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -30,4 +30,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default AppPage;

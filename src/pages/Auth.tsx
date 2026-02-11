@@ -23,7 +23,7 @@ const AuthPage = () => {
     if (mode === "login") {
       const { error } = await signIn(email, password);
       if (error) setError(error.message);
-      else navigate("/");
+      else navigate("/app");
     } else {
       const { error } = await signUp(email, password, displayName);
       if (error) setError(error.message);
