@@ -1,18 +1,22 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Plus, Eye, Edit3 } from "lucide-react";
+import { FileText, Clock, Plus, Eye, Edit3, Upload } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
 import { FileUpload } from "@/components/FileUpload";
 
 export function NoteEditor() {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
+  const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [preview, setPreview] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
@@ -40,15 +44,63 @@ export function NoteEditor() {
       const current = textarea.value;
       const newContent = current.substring(0, start) + markdown + current.substring(end);
       textarea.value = newContent;
-      // Move cursor after inserted text
       const newPos = start + markdown.length;
       textarea.setSelectionRange(newPos, newPos);
       textarea.focus();
-      // Save immediately
       updateNote(activeNotebookId, activeNote.id, { content: newContent });
     },
     [activeNotebookId, activeNote?.id, updateNote]
   );
+
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      if (!user || !activeNote || !activeNotebookId) return;
+
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length === 0) return;
+
+      const currentAttachments = activeNote.attachments || [];
+      const newAttachments = [...currentAttachments];
+      let markdownInserts: string[] = [];
+
+      for (const file of files) {
+        const path = `${user.id}/${activeNote.id}/${Date.now()}-${file.name}`;
+        const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+        if (error) { console.error("Drop upload error:", error); continue; }
+        const { data: urlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
+        newAttachments.push({ name: file.name, url: urlData.publicUrl, type: file.type, size: file.size });
+        if (file.type.startsWith("image/")) {
+          markdownInserts.push(`\n![${file.name}](${urlData.publicUrl})\n`);
+        }
+      }
+
+      const contentAppend = markdownInserts.length > 0 ? markdownInserts.join("\n") : "";
+      const newContent = contentAppend ? (activeNote.content || "") + contentAppend : undefined;
+
+      await updateNote(activeNotebookId, activeNote.id, {
+        attachments: newAttachments,
+        ...(newContent ? { content: newContent } : {}),
+      });
+
+      // Sync textarea
+      if (newContent && contentRef.current) {
+        contentRef.current.value = newContent;
+      }
+    },
+    [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote]
+  );
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+  };
 
   if (!activeNotebook) {
     return (
@@ -100,8 +152,28 @@ export function NoteEditor() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.25 }}
-        className="flex-1 flex flex-col editor-surface overflow-hidden"
+        className={`flex-1 flex flex-col editor-surface overflow-hidden relative ${dragOver ? "ring-2 ring-primary ring-inset" : ""}`}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
       >
+        {/* Drag overlay */}
+        <AnimatePresence>
+          {dragOver && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 bg-primary/5 backdrop-blur-[1px] flex items-center justify-center pointer-events-none"
+            >
+              <div className="flex flex-col items-center gap-2 text-primary">
+                <Upload className="h-10 w-10" />
+                <span className="text-sm font-medium">Drop files to add to note</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="px-8 pt-8 pb-4 border-b border-border">
           <input
             ref={titleRef}
@@ -145,7 +217,7 @@ export function NoteEditor() {
               defaultValue={activeNote.content}
               onChange={(e) => debouncedUpdate("content", e.target.value)}
               className="w-full h-full px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground text-[15px]"
-              placeholder="Start writing in markdown..."
+              placeholder="Start writing in markdown... (drag & drop files here)"
             />
           )}
         </div>

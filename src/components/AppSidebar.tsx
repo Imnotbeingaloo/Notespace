@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SearchDialog } from "@/components/SearchDialog";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -294,8 +295,12 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
         </div>
       )}
 
-      {/* Sign out */}
-      <div className="p-2 border-t border-sidebar-border mt-auto">
+      {/* Footer */}
+      <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
+        <div className={`flex items-center ${collapsed ? "justify-center" : "px-1"}`}>
+          <ThemeToggle />
+          {!collapsed && <span className="text-xs text-muted-foreground ml-1">Theme</span>}
+        </div>
         <button
           onClick={signOut}
           className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-lg"
