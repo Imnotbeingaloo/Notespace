@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { SearchDialog } from "@/components/SearchDialog";
 import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
@@ -24,11 +25,63 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
     deleteNotebook,
     createNote,
     deleteNote,
+    updateNote,
   } = useNotebooks();
 
   const [showNewNotebook, setShowNewNotebook] = useState(false);
   const [newNotebookName, setNewNotebookName] = useState("");
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
+  const sidebarUploadRef = useRef<HTMLInputElement>(null);
+  const [sidebarUploading, setSidebarUploading] = useState(false);
+
+  const handleSidebarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !user) return;
+    setSidebarUploading(true);
+
+    // Ensure we have a notebook and note to upload into
+    let nbId = activeNotebookId;
+    let noteId = activeNoteId;
+
+    if (!nbId) {
+      // Create a notebook first
+      await createNotebook("My Notebook");
+      // After creating, the context sets activeNotebookId
+      setSidebarUploading(false);
+      return;
+    }
+
+    if (!noteId) {
+      await createNote(nbId);
+      setSidebarUploading(false);
+      return;
+    }
+
+    const currentNotebook = notebooks.find(n => n.id === nbId);
+    const currentNote = currentNotebook?.notes.find(n => n.id === noteId);
+    if (!currentNote) { setSidebarUploading(false); return; }
+
+    const existingAttachments = currentNote.attachments || [];
+    const newAttachments = [...existingAttachments];
+    let contentAppend = "";
+
+    for (const file of Array.from(files)) {
+      const path = `${user.id}/${noteId}/${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+      if (error) { console.error("Upload error:", error); continue; }
+      const { data: urlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
+      newAttachments.push({ name: file.name, url: urlData.publicUrl, type: file.type, size: file.size });
+      if (file.type.startsWith("image/")) {
+        contentAppend += `\n![${file.name}](${urlData.publicUrl})\n`;
+      }
+    }
+
+    const contentUpdate = contentAppend ? { content: (currentNote.content || "") + contentAppend } : {};
+    await updateNote(nbId, noteId, { attachments: newAttachments, ...contentUpdate });
+
+    setSidebarUploading(false);
+    if (sidebarUploadRef.current) sidebarUploadRef.current.value = "";
+  };
 
   const handleCreateNotebook = () => {
     if (newNotebookName.trim()) {
@@ -79,6 +132,17 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           <div className="mb-2">
             <SearchDialog />
           </div>
+
+          {/* Quick Upload Button */}
+          <button
+            onClick={() => sidebarUploadRef.current?.click()}
+            disabled={sidebarUploading}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-lg mb-1"
+          >
+            <Upload className="h-4 w-4" />
+            {sidebarUploading ? "Uploading..." : "Upload to note"}
+          </button>
+          <input ref={sidebarUploadRef} type="file" multiple className="hidden" onChange={handleSidebarUpload} />
 
           {/* New Notebook Button */}
           <button

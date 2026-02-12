@@ -31,6 +31,25 @@ export function NoteEditor() {
     [activeNotebookId, activeNote?.id, updateNote]
   );
 
+  const handleInsertMarkdown = useCallback(
+    (markdown: string) => {
+      if (!contentRef.current || !activeNotebookId || !activeNote) return;
+      const textarea = contentRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const current = textarea.value;
+      const newContent = current.substring(0, start) + markdown + current.substring(end);
+      textarea.value = newContent;
+      // Move cursor after inserted text
+      const newPos = start + markdown.length;
+      textarea.setSelectionRange(newPos, newPos);
+      textarea.focus();
+      // Save immediately
+      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+    },
+    [activeNotebookId, activeNote?.id, updateNote]
+  );
+
   if (!activeNotebook) {
     return (
       <div className="flex-1 flex items-center justify-center editor-surface">
@@ -83,7 +102,7 @@ export function NoteEditor() {
         transition={{ duration: 0.25 }}
         className="flex-1 flex flex-col editor-surface overflow-hidden"
       >
-        <div className="px-8 pt-8 pb-4 border-b editor-line">
+        <div className="px-8 pt-8 pb-4 border-b border-border">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
@@ -115,7 +134,7 @@ export function NoteEditor() {
 
         <div className="flex-1 overflow-y-auto">
           {preview ? (
-            <div className="px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary">
+            <div className="px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-img:rounded-lg prose-img:border prose-img:border-border prose-img:shadow-sm">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {activeNote.content || "*No content yet…*"}
               </ReactMarkdown>
@@ -131,7 +150,7 @@ export function NoteEditor() {
           )}
         </div>
 
-        <FileUpload />
+        <FileUpload onInsertMarkdown={handleInsertMarkdown} />
       </motion.div>
     </AnimatePresence>
   );
