@@ -174,7 +174,7 @@ export function NoteEditor() {
           )}
         </AnimatePresence>
 
-        <div className="px-8 pt-8 pb-4 border-b border-border">
+        <div className="px-4 sm:px-8 pt-4 sm:pt-8 pb-4 border-b border-border">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
@@ -206,8 +206,15 @@ export function NoteEditor() {
 
         <div className="flex-1 overflow-y-auto">
           {preview ? (
-            <div className="px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-img:rounded-lg prose-img:border prose-img:border-border prose-img:shadow-sm">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <div className="px-4 sm:px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-img:rounded-lg prose-img:max-w-full prose-img:h-auto prose-img:border prose-img:border-border prose-img:shadow-sm">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  img: ({ src, alt }) => (
+                    <img src={src} alt={alt || ""} className="rounded-lg border border-border shadow-sm max-w-full h-auto" loading="lazy" />
+                  ),
+                }}
+              >
                 {activeNote.content || "*No content yet…*"}
               </ReactMarkdown>
             </div>
@@ -216,7 +223,7 @@ export function NoteEditor() {
               ref={contentRef}
               defaultValue={activeNote.content}
               onChange={(e) => debouncedUpdate("content", e.target.value)}
-              className="w-full h-full px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground text-[15px]"
+              className="w-full h-full px-4 sm:px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground text-[15px]"
               placeholder="Start writing in markdown... (drag & drop files here)"
             />
           )}
