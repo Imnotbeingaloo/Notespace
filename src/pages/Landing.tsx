@@ -58,6 +58,15 @@ export default function LandingPage() {
             <BookOpen className="h-6 w-6 text-primary" />
             <span className="font-serif text-xl font-bold text-foreground">Notebook Archive</span>
           </Link>
+
+          {/* Nav links - hidden on mobile, shown on md+ */}
+          <nav className="hidden md:flex items-center gap-6">
+            <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</a>
+            <Link to="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+            <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">About</Link>
+            <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">How It Works</Link>
+          </nav>
+
           <div className="flex items-center gap-3">
             {user ? (
               <Link

@@ -8,6 +8,9 @@ import { AuthProvider } from "@/context/AuthContext";
 import Landing from "./pages/Landing";
 import AppPage from "./pages/Index";
 import AuthPage from "./pages/Auth";
+import PricingPage from "./pages/Pricing";
+import AboutPage from "./pages/About";
+import HowItWorksPage from "./pages/HowItWorks";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +27,9 @@ const App = () => (
               <Route path="/" element={<Landing />} />
               <Route path="/app" element={<AppPage />} />
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
