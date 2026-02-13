@@ -12,9 +12,10 @@ import { Input } from "@/components/ui/input";
 interface AppSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  onSelectNote?: () => void;
 }
 
-export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProps) {
   const { signOut, user } = useAuth();
   const {
     notebooks,
@@ -102,7 +103,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
       initial={false}
       animate={{ width: collapsed ? 56 : 280 }}
       transition={{ duration: 0.25, ease: "easeInOut" }}
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0"
+      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw]"
     >
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-sidebar-border">
@@ -241,6 +242,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
                               onClick={() => {
                                 setActiveNotebookId(nb.id);
                                 setActiveNoteId(note.id);
+                                onSelectNote?.();
                               }}
                             >
                               <FileText className="h-3 w-3 flex-shrink-0" />
