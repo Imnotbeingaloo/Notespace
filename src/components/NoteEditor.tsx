@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
 import { FileUpload } from "@/components/FileUpload";
+import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 
 export function NoteEditor() {
@@ -53,6 +54,14 @@ export function NoteEditor() {
     [activeNotebookId, activeNote?.id, updateNote]
   );
 
+  const handleToolbarChange = useCallback(
+    (content: string) => {
+      if (!activeNotebookId || !activeNote) return;
+      debouncedUpdate("content", content);
+    },
+    [activeNotebookId, activeNote?.id, debouncedUpdate]
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
@@ -87,7 +96,6 @@ export function NoteEditor() {
         ...(newContent ? { content: newContent } : {}),
       });
 
-      // Sync textarea
       if (newContent && contentRef.current) {
         contentRef.current.value = newContent;
       }
@@ -109,11 +117,11 @@ export function NoteEditor() {
     return (
       <div className="flex-1 flex items-center justify-center editor-surface">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-            <FileText className="h-8 w-8 text-muted-foreground" />
+          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-6">
+            <FileText className="h-9 w-9 text-muted-foreground" />
           </div>
-          <h2 className="font-serif text-xl text-foreground mb-2">No notebook selected</h2>
-          <p className="text-sm text-muted-foreground">Select a notebook from the sidebar or create a new one to get started.</p>
+          <h2 className="font-serif text-2xl text-foreground mb-3">No notebook selected</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">Select a notebook from the sidebar or create a new one to get started.</p>
         </motion.div>
       </div>
     );
@@ -123,18 +131,18 @@ export function NoteEditor() {
     return (
       <div className="flex-1 flex items-center justify-center editor-surface">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">{activeNotebook.emoji}</span>
+          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-6">
+            <span className="text-4xl">{activeNotebook.emoji}</span>
           </div>
-          <h2 className="font-serif text-xl text-foreground mb-2">{activeNotebook.name}</h2>
-          <p className="text-sm text-muted-foreground mb-4">
+          <h2 className="font-serif text-2xl text-foreground mb-3">{activeNotebook.name}</h2>
+          <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
             {activeNotebook.notes.length === 0
               ? "This notebook is empty. Create your first note!"
               : `${activeNotebook.notes.length} note${activeNotebook.notes.length > 1 ? "s" : ""} — select one to edit.`}
           </p>
           <button
             onClick={() => activeNotebookId && createNote(activeNotebookId)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+            className="magnetic-btn inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
           >
             <Plus className="h-4 w-4" />
             New Note
@@ -155,7 +163,7 @@ export function NoteEditor() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.25 }}
-        className={`flex-1 flex flex-col editor-surface overflow-hidden relative ${dragOver ? "ring-2 ring-primary ring-inset" : ""}`}
+        className={`flex-1 flex flex-col editor-surface overflow-hidden relative ${dragOver ? "ring-2 ring-primary/50 ring-inset" : ""}`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -167,36 +175,39 @@ export function NoteEditor() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-50 bg-primary/5 backdrop-blur-[1px] flex items-center justify-center pointer-events-none"
+              className="absolute inset-0 z-50 bg-primary/5 backdrop-blur-sm flex items-center justify-center pointer-events-none"
             >
-              <div className="flex flex-col items-center gap-2 text-primary">
-                <Upload className="h-10 w-10" />
+              <div className="flex flex-col items-center gap-3 text-primary">
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center">
+                  <Upload className="h-8 w-8" />
+                </div>
                 <span className="text-sm font-medium">Drop files to add to note</span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="px-4 sm:px-8 pt-4 sm:pt-8 pb-4 border-b border-border">
+        {/* Title bar */}
+        <div className="px-4 sm:px-8 pt-4 sm:pt-6 pb-3">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
             onChange={(e) => debouncedUpdate("title", e.target.value)}
-            className="w-full text-2xl font-serif font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground"
+            className="w-full text-2xl sm:text-3xl font-serif font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
             placeholder="Note title..."
           />
           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5 bg-muted/50 px-2.5 py-1 rounded-full">
               <Clock className="h-3 w-3" />
-              Updated {formatDate(activeNote.updated_at)}
+              {formatDate(activeNote.updated_at)}
             </span>
             <div className="ml-auto flex items-center gap-2">
               <AIExplainPanel />
               <button
                 onClick={() => setPreview((p) => !p)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                className={`magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
                   preview
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-primary/10 text-primary shadow-sm"
                     : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
@@ -207,14 +218,32 @@ export function NoteEditor() {
           </div>
         </div>
 
+        {/* Toolbar - only in edit mode */}
+        {!preview && <MarkdownToolbar textareaRef={contentRef} onContentChange={handleToolbarChange} />}
+
+        {/* Content area */}
         <div className="flex-1 overflow-y-auto">
           {preview ? (
-            <div className="px-4 sm:px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-img:rounded-lg prose-img:max-w-full prose-img:h-auto prose-img:border prose-img:border-border prose-img:shadow-sm">
+            <div className="px-4 sm:px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
                   img: ({ src, alt }) => (
-                    <img src={src} alt={alt || ""} className="rounded-lg border border-border shadow-sm max-w-full h-auto" loading="lazy" />
+                    <img
+                      src={src}
+                      alt={alt || ""}
+                      className="rounded-2xl border border-border shadow-md max-w-full h-auto my-4"
+                      loading="lazy"
+                    />
+                  ),
+                  input: ({ checked, ...props }) => (
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      readOnly
+                      className="mr-2 accent-primary rounded"
+                      {...props}
+                    />
                   ),
                 }}
               >
@@ -226,7 +255,7 @@ export function NoteEditor() {
               ref={contentRef}
               defaultValue={activeNote.content}
               onChange={(e) => debouncedUpdate("content", e.target.value)}
-              className="w-full h-full px-4 sm:px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground text-[15px]"
+              className="w-full h-full px-4 sm:px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-[15px] font-mono"
               placeholder="Start writing in markdown... (drag & drop files here)"
             />
           )}

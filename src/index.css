@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -109,6 +109,19 @@
   }
 }
 
+/* Noise texture overlay */
+.noise-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
 @layer utilities {
   .notebook-hover {
     @apply transition-all duration-200 hover:bg-[hsl(var(--notebook-hover))];
@@ -120,6 +133,41 @@
 
   .editor-line {
     border-color: hsl(var(--editor-line));
+  }
+
+  /* Magnetic button effect */
+  .magnetic-btn {
+    @apply transition-all duration-200;
+  }
+  .magnetic-btn:hover {
+    transform: scale(1.03) translateY(-1px);
+  }
+  .magnetic-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Scrollbar styling */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 999px;
   }
 
   .fade-slide-in {
@@ -166,4 +214,29 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Premium prose styling overrides */
+.prose img {
+  border-radius: 1rem !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 4px 20px -4px hsl(var(--foreground) / 0.08) !important;
+}
+
+.prose pre {
+  border-radius: 1rem !important;
+  border: 1px solid hsl(var(--border)) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.prose code {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.85em !important;
+}
+
+.prose blockquote {
+  border-left-width: 3px !important;
+  border-radius: 0 0.75rem 0.75rem 0 !important;
+  background: hsl(var(--muted) / 0.5) !important;
+  padding: 1rem 1.25rem !important;
 }
