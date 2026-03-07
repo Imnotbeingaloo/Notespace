@@ -67,8 +67,8 @@ export function NoteEditor() {
       let markdownInserts: string[] = [];
 
       for (const file of files) {
-        const path = `${user.id}/${activeNote.id}/${Date.now()}-${file.name}`;
-        const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+        if (!validateFile(file)) continue;
+        const path = buildStoragePath(user.id, activeNote.id, file.name);
         if (error) { console.error("Drop upload error:", error); continue; }
         const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
         const fileUrl = signedUrlData?.signedUrl || '';

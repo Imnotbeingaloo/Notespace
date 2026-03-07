@@ -29,8 +29,8 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     let markdownInserts: string[] = [];
 
     for (const file of Array.from(files)) {
-      const path = `${user.id}/${activeNote.id}/${Date.now()}-${file.name}`;
-      const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+      if (!validateFile(file)) continue;
+      const path = buildStoragePath(user.id, activeNote.id, file.name);
       if (error) {
         console.error("Upload error:", error);
         continue;

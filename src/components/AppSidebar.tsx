@@ -68,8 +68,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     let contentAppend = "";
 
     for (const file of Array.from(files)) {
-      const path = `${user.id}/${noteId}/${Date.now()}-${file.name}`;
-      const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+      if (!validateFile(file)) continue;
+      const path = buildStoragePath(user.id, noteId, file.name);
       if (error) { console.error("Upload error:", error); continue; }
       const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
       const fileUrl = signedUrlData?.signedUrl || '';
