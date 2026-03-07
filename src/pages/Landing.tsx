@@ -71,7 +71,7 @@ export default function LandingPage() {
             {user ? (
               <Link
                 to="/app"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+                className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
               >
                 Open App
                 <ArrowRight className="h-4 w-4" />
@@ -86,7 +86,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   to="/auth"
-                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+                  className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
                 >
                   Get Started
                   <ArrowRight className="h-4 w-4" />
@@ -121,14 +121,14 @@ export default function LandingPage() {
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to={user ? "/app" : "/auth"}
-                className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+                className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
               >
                 {user ? "Open App" : "Start for Free"}
                 <ArrowRight className="h-5 w-5" />
               </Link>
               <a
                 href="#features"
-                className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors"
+                className="magnetic-btn inline-flex items-center gap-2 rounded-2xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors"
               >
                 See Features
               </a>
@@ -144,7 +144,7 @@ export default function LandingPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="relative rounded-2xl border border-border bg-card shadow-2xl shadow-primary/5 overflow-hidden max-w-5xl mx-auto"
+          className="relative rounded-[2rem] border border-border bg-card shadow-2xl shadow-primary/5 overflow-hidden max-w-5xl mx-auto"
         >
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/50">
             <div className="flex gap-1.5">
@@ -216,9 +216,9 @@ export default function LandingPage() {
             <motion.div
               key={f.title}
               variants={fadeUp}
-              className="rounded-xl border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-shadow"
+              className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1"
             >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
                 <f.icon className="h-5 w-5 text-primary" />
               </div>
               <h3 className="font-serif text-lg font-bold text-foreground mb-2">{f.title}</h3>
@@ -234,7 +234,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="rounded-2xl bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto"
+          className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
             Ready to organize your thinking?
@@ -244,7 +244,7 @@ export default function LandingPage() {
           </p>
           <Link
             to={user ? "/app" : "/auth"}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
           >
             {user ? "Open App" : "Get Started — It's Free"}
             <ArrowRight className="h-5 w-5" />
