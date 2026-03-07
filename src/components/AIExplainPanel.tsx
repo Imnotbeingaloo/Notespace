@@ -25,11 +25,18 @@ export function AIExplainPanel() {
     setLoading(true);
 
     try {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const token = currentSession?.access_token;
+      if (!token) {
+        throw new Error("Please sign in to use AI explanations");
+      }
+
       const resp = await fetch(EXPLAIN_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
         body: JSON.stringify({ noteTitle: activeNote.title, noteContent: activeNote.content }),
       });
