@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { SearchDialog } from "@/components/SearchDialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -68,7 +69,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     let contentAppend = "";
 
     for (const file of Array.from(files)) {
-      const path = `${user.id}/${noteId}/${Date.now()}-${file.name}`;
+      if (!validateFile(file)) continue;
+      const path = buildStoragePath(user.id, noteId, file.name);
       const { error } = await supabase.storage.from("note-attachments").upload(path, file);
       if (error) { console.error("Upload error:", error); continue; }
       const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);

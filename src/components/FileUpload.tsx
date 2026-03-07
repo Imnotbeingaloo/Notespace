@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { validateFile, buildStoragePath } from "@/lib/file-validation";
 
 interface FileUploadProps {
   onInsertMarkdown?: (markdown: string) => void;
@@ -28,7 +29,8 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     let markdownInserts: string[] = [];
 
     for (const file of Array.from(files)) {
-      const path = `${user.id}/${activeNote.id}/${Date.now()}-${file.name}`;
+      if (!validateFile(file)) continue;
+      const path = buildStoragePath(user.id, activeNote.id, file.name);
       const { error } = await supabase.storage.from("note-attachments").upload(path, file);
       if (error) {
         console.error("Upload error:", error);

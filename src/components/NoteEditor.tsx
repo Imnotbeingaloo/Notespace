@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
 import { FileUpload } from "@/components/FileUpload";
+import { validateFile, buildStoragePath } from "@/lib/file-validation";
 
 export function NoteEditor() {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
@@ -66,7 +67,8 @@ export function NoteEditor() {
       let markdownInserts: string[] = [];
 
       for (const file of files) {
-        const path = `${user.id}/${activeNote.id}/${Date.now()}-${file.name}`;
+        if (!validateFile(file)) continue;
+        const path = buildStoragePath(user.id, activeNote.id, file.name);
         const { error } = await supabase.storage.from("note-attachments").upload(path, file);
         if (error) { console.error("Drop upload error:", error); continue; }
         const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
