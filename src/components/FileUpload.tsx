@@ -47,7 +47,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
 
       // For images, insert markdown inline into the note content
       if (file.type.startsWith("image/")) {
-        markdownInserts.push(`\n![${file.name}](${urlData.publicUrl})\n`);
+        markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
       }
     }
 
