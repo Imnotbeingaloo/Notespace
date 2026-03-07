@@ -152,7 +152,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
           {/* New Notebook Button */}
           <button
             onClick={() => setShowNewNotebook(true)}
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-lg mb-1"
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1 magnetic-btn"
           >
             <Plus className="h-4 w-4" />
             New Notebook
