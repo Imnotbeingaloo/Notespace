@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { SearchDialog } from "@/components/SearchDialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNotebooks } from "@/context/NotebookContext";
