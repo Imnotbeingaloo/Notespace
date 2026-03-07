@@ -132,7 +132,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
       </div>
 
       {!collapsed && (
-        <div className="flex-1 overflow-y-auto p-2">
+        <div className="flex-1 overflow-y-auto p-2 scrollbar-thin">
           {/* Search */}
           <div className="mb-2">
             <SearchDialog />
