@@ -71,7 +71,7 @@ export default function LandingPage() {
             {user ? (
               <Link
                 to="/app"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+                className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
               >
                 Open App
                 <ArrowRight className="h-4 w-4" />
