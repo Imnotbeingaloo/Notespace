@@ -216,7 +216,7 @@ export default function LandingPage() {
             <motion.div
               key={f.title}
               variants={fadeUp}
-              className="rounded-xl border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-shadow"
+              className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                 <f.icon className="h-5 w-5 text-primary" />
