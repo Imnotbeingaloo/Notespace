@@ -4,11 +4,14 @@ import { Sparkles, X, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const EXPLAIN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/explain-topic`;
 
 export function AIExplainPanel() {
   const { activeNote } = useNotebooks();
+  const { session } = useAuth();
   const [open, setOpen] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [loading, setLoading] = useState(false);
