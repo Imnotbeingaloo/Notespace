@@ -244,7 +244,7 @@ export default function LandingPage() {
           </p>
           <Link
             to={user ? "/app" : "/auth"}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
           >
             {user ? "Open App" : "Get Started — It's Free"}
             <ArrowRight className="h-5 w-5" />
