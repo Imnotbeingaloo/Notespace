@@ -128,7 +128,7 @@ export default function LandingPage() {
               </Link>
               <a
                 href="#features"
-                className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors"
+                className="magnetic-btn inline-flex items-center gap-2 rounded-2xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors"
               >
                 See Features
               </a>
