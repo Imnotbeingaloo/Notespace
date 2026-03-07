@@ -34,10 +34,12 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
         console.error("Upload error:", error);
         continue;
       }
-      const { data: urlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
+      const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7); // 7 days
+      const fileUrl = signedUrlData?.signedUrl || '';
       const att = {
         name: file.name,
-        url: urlData.publicUrl,
+        url: fileUrl,
+        path: path,
         type: file.type,
         size: file.size,
       };
@@ -45,7 +47,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
 
       // For images, insert markdown inline into the note content
       if (file.type.startsWith("image/")) {
-        markdownInserts.push(`\n![${file.name}](${urlData.publicUrl})\n`);
+        markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
       }
     }
 

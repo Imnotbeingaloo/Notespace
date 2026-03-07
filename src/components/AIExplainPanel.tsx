@@ -4,11 +4,14 @@ import { Sparkles, X, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const EXPLAIN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/explain-topic`;
 
 export function AIExplainPanel() {
   const { activeNote } = useNotebooks();
+  const { session } = useAuth();
   const [open, setOpen] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,11 +25,18 @@ export function AIExplainPanel() {
     setLoading(true);
 
     try {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const token = currentSession?.access_token;
+      if (!token) {
+        throw new Error("Please sign in to use AI explanations");
+      }
+
       const resp = await fetch(EXPLAIN_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
         body: JSON.stringify({ noteTitle: activeNote.title, noteContent: activeNote.content }),
       });

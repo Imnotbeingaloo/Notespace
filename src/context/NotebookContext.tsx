@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 export interface Attachment {
   name: string;
   url: string;
+  path?: string;
   type: string;
   size: number;
 }

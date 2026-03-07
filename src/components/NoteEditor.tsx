@@ -69,10 +69,11 @@ export function NoteEditor() {
         const path = `${user.id}/${activeNote.id}/${Date.now()}-${file.name}`;
         const { error } = await supabase.storage.from("note-attachments").upload(path, file);
         if (error) { console.error("Drop upload error:", error); continue; }
-        const { data: urlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
-        newAttachments.push({ name: file.name, url: urlData.publicUrl, type: file.type, size: file.size });
+        const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
+        const fileUrl = signedUrlData?.signedUrl || '';
+        newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
         if (file.type.startsWith("image/")) {
-          markdownInserts.push(`\n![${file.name}](${urlData.publicUrl})\n`);
+          markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
         }
       }
 
