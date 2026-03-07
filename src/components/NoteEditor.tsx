@@ -69,6 +69,7 @@ export function NoteEditor() {
       for (const file of files) {
         if (!validateFile(file)) continue;
         const path = buildStoragePath(user.id, activeNote.id, file.name);
+        const { error } = await supabase.storage.from("note-attachments").upload(path, file);
         if (error) { console.error("Drop upload error:", error); continue; }
         const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
         const fileUrl = signedUrlData?.signedUrl || '';
