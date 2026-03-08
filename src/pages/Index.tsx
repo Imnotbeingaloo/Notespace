@@ -94,11 +94,13 @@ const AppPage = () => {
             <div className="flex-1 min-w-0 flex flex-col">
               <NoteEditor />
             </div>
-            {/* Study Planner panel — full overlay on mobile/tablet, inline side panel on desktop */}
+            {/* Study Planner panel — overlays on top so editor layout never resizes */}
             <AnimatePresence>
               {plannerOpen && (
-                <div className="fixed inset-0 z-50 bg-card lg:relative lg:inset-auto lg:bg-transparent lg:z-auto">
-                  <StudyPlanner onClose={() => setPlannerOpen(false)} />
+                <div className="fixed inset-0 z-50 flex justify-end max-lg:bg-card lg:pointer-events-none">
+                  <div className="w-full lg:w-auto lg:pointer-events-auto">
+                    <StudyPlanner onClose={() => setPlannerOpen(false)} />
+                  </div>
                 </div>
               )}
             </AnimatePresence>
