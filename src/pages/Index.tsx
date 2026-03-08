@@ -43,7 +43,7 @@ const AppPage = () => {
         <div
           className={`${
             isMobile
-              ? `fixed inset-0 z-40 transition-transform duration-300 ${
+              ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
                   sidebarOpen ? "translate-x-0" : "-translate-x-full"
                 }`
               : ""
@@ -90,13 +90,17 @@ const AppPage = () => {
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="flex-1 flex min-h-0">
-            <div className="flex-1 min-w-0 flex flex-col">
+          <div className="flex-1 flex min-h-0 relative">
+            <div className={`flex-1 min-w-0 flex flex-col ${plannerOpen ? "max-lg:hidden" : ""}`}>
               <NoteEditor />
             </div>
-            {/* Study Planner panel */}
+            {/* Study Planner panel — full overlay on mobile/tablet, side panel on desktop */}
             <AnimatePresence>
-              {plannerOpen && <StudyPlanner onClose={() => setPlannerOpen(false)} />}
+              {plannerOpen && (
+                <div className="max-lg:fixed max-lg:inset-0 max-lg:z-50 max-lg:bg-card lg:contents">
+                  <StudyPlanner onClose={() => setPlannerOpen(false)} />
+                </div>
+              )}
             </AnimatePresence>
           </div>
         </div>
