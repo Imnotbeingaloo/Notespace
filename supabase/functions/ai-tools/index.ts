@@ -18,9 +18,10 @@ function getCorsHeaders(req: Request) {
 }
 
 const inputSchema = z.object({
-  action: z.enum(["summarize", "flashcards", "auto-tag"]),
+  action: z.enum(["summarize", "flashcards", "auto-tag", "edit"]),
   noteTitle: z.string().max(500).optional().default(""),
   noteContent: z.string().max(50000).optional().default(""),
+  editInstruction: z.string().max(2000).optional().default(""),
 });
 
 const systemPrompts: Record<string, string> = {
@@ -30,6 +31,8 @@ const systemPrompts: Record<string, string> = {
     "You are an educational assistant. Given a note, generate 5-10 flashcards in this exact markdown format:\n\n**Q:** Question here\n**A:** Answer here\n\n---\n\nMake them useful for studying. Cover the most important concepts.",
   "auto-tag":
     "You are a tagging assistant. Given a note, return ONLY a JSON array of 3-6 relevant topic tags (lowercase, no special characters). Example: [\"calculus\", \"derivatives\", \"chain rule\"]. Return ONLY the JSON array, nothing else.",
+  edit:
+    "You are a document editor. The user will provide a note and an editing instruction. Apply the requested changes to the note content and return ONLY the full updated note content in markdown format. Do not include explanations, just the edited content.",
 };
 
 serve(async (req) => {
@@ -69,11 +72,15 @@ serve(async (req) => {
       );
     }
 
-    const { action, noteTitle, noteContent } = parsed.data;
+    const { action, noteTitle, noteContent, editInstruction } = parsed.data;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const isStream = action !== "auto-tag";
+
+    const userContent = action === "edit"
+      ? `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}\n\nEdit instruction: ${editInstruction}`
+      : `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -85,10 +92,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompts[action] },
-          {
-            role: "user",
-            content: `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}`,
-          },
+          { role: "user", content: userContent },
         ],
         stream: isStream,
       }),

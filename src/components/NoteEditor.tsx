@@ -7,6 +7,7 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
+import { AIEditPanel } from "@/components/AIEditPanel";
 import { AIToolsPanel } from "@/components/AIToolsPanel";
 import { ExportButtons } from "@/components/ExportButtons";
 import { VoiceTranscription } from "@/components/VoiceTranscription";
@@ -101,6 +102,15 @@ export function NoteEditor() {
       const newPos = pos + insert.length;
       textarea.setSelectionRange(newPos, newPos);
       textarea.focus();
+      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+    },
+    [activeNotebookId, activeNote?.id, updateNote]
+  );
+
+  const handleAIEdit = useCallback(
+    (newContent: string) => {
+      if (!activeNotebookId || !activeNote) return;
+      if (contentRef.current) contentRef.current.value = newContent;
       updateNote(activeNotebookId, activeNote.id, { content: newContent });
     },
     [activeNotebookId, activeNote?.id, updateNote]
@@ -286,6 +296,7 @@ export function NoteEditor() {
               {/* Desktop: show all tools inline */}
               <div className="hidden md:flex items-center gap-1">
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                <AIEditPanel onApplyEdit={handleAIEdit} />
                 <AIToolsPanel />
                 <AIExplainPanel />
               </div>
@@ -309,6 +320,7 @@ export function NoteEditor() {
                       onClick={() => setMoreOpen(false)}
                     >
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                      <AIEditPanel onApplyEdit={handleAIEdit} />
                       <AIToolsPanel />
                       <AIExplainPanel />
                     </motion.div>
@@ -352,18 +364,50 @@ export function NoteEditor() {
               </ReactMarkdown>
             </div>
           ) : (
-            <textarea
-              ref={contentRef}
-              defaultValue={activeNote.content}
-              onChange={(e) => debouncedUpdate("content", e.target.value)}
-              className="w-full h-full px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
-              placeholder="Start writing in markdown... (drag & drop files here)"
-            />
+            <div className="flex-1 flex flex-col">
+              <textarea
+                ref={contentRef}
+                defaultValue={activeNote.content}
+                onChange={(e) => debouncedUpdate("content", e.target.value)}
+                className="w-full flex-1 px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
+                placeholder="Start writing in markdown... (drag & drop files here)"
+              />
+              {/* Inline image previews in edit mode */}
+              <InlineImagePreviews content={activeNote.content} />
+            </div>
           )}
         </div>
 
         <FileUpload onInsertMarkdown={handleInsertMarkdown} />
       </motion.div>
     </AnimatePresence>
+  );
+}
+
+function InlineImagePreviews({ content }: { content: string }) {
+  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  const images: { alt: string; src: string }[] = [];
+  let match;
+  while ((match = imageRegex.exec(content)) !== null) {
+    images.push({ alt: match[1], src: match[2] });
+  }
+  if (images.length === 0) return null;
+
+  return (
+    <div className="px-3 sm:px-8 pb-3 flex flex-wrap gap-2">
+      {images.map((img, i) => (
+        <div key={i} className="relative group">
+          <img
+            src={img.src}
+            alt={img.alt}
+            className="h-20 w-auto rounded-lg border border-border shadow-sm object-cover"
+            loading="lazy"
+          />
+          <span className="absolute bottom-0 left-0 right-0 bg-background/80 text-[9px] text-muted-foreground px-1 py-0.5 rounded-b-lg truncate opacity-0 group-hover:opacity-100 transition-opacity">
+            {img.alt || "image"}
+          </span>
+        </div>
+      ))}
+    </div>
   );
 }
