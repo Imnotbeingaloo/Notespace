@@ -178,8 +178,8 @@ function PhilosophySection() {
                   <motion.div
                     key={item}
                     animate={{
-                      opacity: phase !== "old" ? 0.3 : 1,
-                      x: phase !== "old" ? -4 : 0,
+                      opacity: phase !== "old" ? 0.5 : 1,
+                      x: 0,
                       textDecoration: phase !== "old" ? "line-through" : "none",
                     }}
                     transition={{ duration: 0.15 }}
