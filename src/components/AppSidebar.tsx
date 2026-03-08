@@ -203,14 +203,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             <button
               onClick={() => sidebarUploadRef.current?.click()}
               disabled={sidebarUploading}
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
               <Upload className="h-3.5 w-3.5" />
               {sidebarUploading ? "..." : "Upload"}
             </button>
             <button
               onClick={() => setShowNewNotebook(true)}
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
               <Plus className="h-3.5 w-3.5" />
               New Notebook
@@ -258,7 +258,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                 >
                   {/* Notebook Item */}
                   <div
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-[13px] transition-all duration-200 ${
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-all duration-200 ${
                       activeNotebookId === nb.id
                         ? "bg-primary/10 text-foreground font-medium"
                         : "text-sidebar-foreground notebook-hover"
@@ -384,7 +384,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                                 setDragNoteId(null);
                                 setDragOverNoteId(null);
                               }}
-                              className={`group/note flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[12px] transition-all duration-200 ${
+                              className={`group/note flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-all duration-200 ${
                                 activeNoteId === note.id
                                   ? "bg-primary/10 text-foreground font-medium"
                                   : "text-muted-foreground notebook-hover"
@@ -415,7 +415,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                           ))}
                           <button
                             onClick={() => createNote(nb.id)}
-                            className="flex items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground notebook-hover rounded-md w-full"
+                            className="flex items-center gap-2 px-2 py-1.5 text-[13px] text-muted-foreground notebook-hover rounded-md w-full"
                           >
                             <Plus className="h-3 w-3" />
                             Add note
