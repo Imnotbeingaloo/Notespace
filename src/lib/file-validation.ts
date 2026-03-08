@@ -6,11 +6,14 @@ const ALLOWED_TYPES = [
   "image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml",
   "application/pdf",
   "text/plain", "text/markdown", "text/csv",
+  "text/html", "application/xhtml+xml",
   "application/json",
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ];
+
+const TEXT_EXTENSIONS = [".md", ".markdown", ".html", ".htm", ".txt"];
 
 export function sanitizeFileName(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, "_");
