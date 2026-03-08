@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -22,32 +22,34 @@ const useCases = [
 ];
 
 function HorizontalSteps() {
-  const [activeGroup, setActiveGroup] = useState(0);
+  const xOffset = useMotionValue(0);
   const progressWidth = useMotionValue(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  // 3 groups: [0,1,2], [1,2,3], [3,4,5] -> simplify to 2 groups of 3
-  const groups = [
-    [0, 1, 2],
-    [3, 4, 5],
-  ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveGroup((prev) => (prev + 1) % groups.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    // Seamless looping animation: slide from 0% to -50% (first half to second half)
+    const sequence = async () => {
+      // Start at first group
+      await animate(xOffset, 0, { duration: 0 });
+      await animate(progressWidth, 0, { duration: 0 });
+
+      while (true) {
+        // Hold on first group
+        await new Promise((r) => setTimeout(r, 4000));
+        // Slide to second group
+        animate(progressWidth, 100, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
+        await animate(xOffset, -50, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
+        // Hold on second group
+        await new Promise((r) => setTimeout(r, 4000));
+        // Slide back to first group
+        animate(progressWidth, 0, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
+        await animate(xOffset, 0, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
+      }
+    };
+    sequence();
   }, []);
 
-  useEffect(() => {
-    animate(progressWidth, ((activeGroup + 1) / groups.length) * 100, {
-      duration: 0.8,
-      ease: [0.22, 1, 0.36, 1],
-    });
-  }, [activeGroup]);
-
-  const progressWidthPercent = useTransform(progressWidth, (v) => `${v}%`);
-  const visibleSteps = groups[activeGroup];
+  const xPercent = useTransform(xOffset, (v) => `${v}%`);
+  const progressPercent = useTransform(progressWidth, (v) => `${v}%`);
 
   return (
     <div className="relative">
@@ -55,81 +57,55 @@ function HorizontalSteps() {
       <div className="relative h-1 bg-border rounded-full mb-10 max-w-md mx-auto overflow-hidden">
         <motion.div
           className="absolute inset-y-0 left-0 bg-primary rounded-full"
-          style={{ width: progressWidthPercent }}
+          style={{ width: progressPercent }}
         />
       </div>
 
-      {/* Dot indicators */}
-      <div className="flex items-center justify-center gap-3 mb-10">
-        {groups.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveGroup(i)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              activeGroup === i ? "bg-primary scale-125" : "bg-border hover:bg-muted-foreground/30"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Steps carousel */}
-      <div ref={scrollRef} className="overflow-hidden">
+      {/* Continuous filmstrip */}
+      <div className="overflow-hidden">
         <motion.div
-          key={activeGroup}
-          initial={{ opacity: 0, x: 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -60 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="grid md:grid-cols-3 gap-8"
+          className="flex"
+          style={{ x: xPercent, width: "200%" }}
         >
-          {visibleSteps.map((stepIdx, i) => {
-            const step = steps[stepIdx];
-            return (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.12, duration: 0.5 }}
-                className="relative"
-              >
-                {/* Step number + dot */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
-                    {stepIdx + 1}
-                  </div>
-                  <div className="flex-1 h-px bg-border" />
+          {steps.map((step, stepIdx) => (
+            <div
+              key={step.title}
+              className="w-[calc(100%/6)] px-4 flex-shrink-0"
+            >
+              {/* Step number + line */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+                  {stepIdx + 1}
                 </div>
+                <div className="flex-1 h-px bg-border" />
+              </div>
 
-                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <step.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-2">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
-              </motion.div>
-            );
-          })}
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <step.icon className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-foreground mb-2">{step.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+            </div>
+          ))}
         </motion.div>
       </div>
 
-      {/* Navigation arrows */}
-      <div className="flex items-center justify-center gap-4 mt-10">
-        <button
-          onClick={() => setActiveGroup((prev) => Math.max(0, prev - 1))}
-          disabled={activeGroup === 0}
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          <ArrowRight className="h-4 w-4 rotate-180" />
-        </button>
-        <span className="text-xs text-muted-foreground font-mono">
-          {activeGroup + 1} / {groups.length}
-        </span>
-        <button
-          onClick={() => setActiveGroup((prev) => Math.min(groups.length - 1, prev + 1))}
-          disabled={activeGroup === groups.length - 1}
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          <ArrowRight className="h-4 w-4" />
-        </button>
+      {/* Dot indicators */}
+      <div className="flex items-center justify-center gap-3 mt-10">
+        <motion.div
+          className="w-2.5 h-2.5 rounded-full"
+          style={{
+            backgroundColor: useTransform(progressWidth, (v) => v < 50 ? "hsl(var(--primary))" : "hsl(var(--border))"),
+            scale: useTransform(progressWidth, (v) => v < 50 ? 1.25 : 1),
+          }}
+        />
+        <motion.div
+          className="w-2.5 h-2.5 rounded-full"
+          style={{
+            backgroundColor: useTransform(progressWidth, (v) => v >= 50 ? "hsl(var(--primary))" : "hsl(var(--border))"),
+            scale: useTransform(progressWidth, (v) => v >= 50 ? 1.25 : 1),
+          }}
+        />
       </div>
     </div>
   );
