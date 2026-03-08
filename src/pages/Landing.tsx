@@ -392,17 +392,29 @@ export default function LandingPage() {
             className="grid gap-10 md:grid-cols-4 mb-16"
           >
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
-              <div className="flex items-center gap-2 mb-4">
+              <motion.div
+                className="flex items-center gap-2 mb-4"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+              >
                 <BookOpen className="h-6 w-6 text-primary" />
                 <span className="font-serif text-xl font-bold text-foreground">Notebook Archive</span>
-              </div>
+              </motion.div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 The intelligent note-taking app that helps you capture, organize, and truly understand your ideas. Built for thinkers who demand more from their tools.
               </p>
-              <div className="flex items-center gap-2">
+              <motion.div
+                className="flex items-center gap-2"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                 <span className="text-xs font-mono text-muted-foreground">All Systems Operational</span>
-              </div>
+              </motion.div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
