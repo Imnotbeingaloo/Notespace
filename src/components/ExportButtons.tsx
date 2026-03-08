@@ -1,80 +1,111 @@
-import { Download, FileText } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Download, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNotebooks } from "@/context/NotebookContext";
 
 export function ExportButtons() {
   const { activeNote } = useNotebooks();
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   if (!activeNote) return null;
 
-  const exportMarkdown = () => {
-    const content = `# ${activeNote.title}\n\n${activeNote.content}`;
-    const blob = new Blob([content], { type: "text/markdown" });
+  const title = activeNote.title || "note";
+  const content = activeNote.content || "";
+
+  const downloadBlob = (blob: Blob, filename: string) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${activeNote.title || "note"}.md`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+    setOpen(false);
+  };
+
+  const exportMarkdown = () => {
+    downloadBlob(new Blob([`# ${title}\n\n${content}`], { type: "text/markdown" }), `${title}.md`);
+  };
+
+  const exportTxt = () => {
+    downloadBlob(new Blob([`${title}\n${"=".repeat(title.length)}\n\n${content}`], { type: "text/plain" }), `${title}.txt`);
+  };
+
+  const exportDocx = () => {
+    const htmlContent = contentToHtml(title, content);
+    const docHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:'Calibri',sans-serif;line-height:1.6;color:#222;}h1{font-size:24pt;}h2{font-size:18pt;}h3{font-size:14pt;}code{background:#f0f0f0;padding:2px 4px;border-radius:3px;font-family:'Consolas',monospace;}</style></head><body>${htmlContent}</body></html>`;
+    downloadBlob(new Blob([docHtml], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }), `${title}.docx`);
   };
 
   const exportPDF = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
-    
-    // Convert basic markdown to HTML for print
-    const htmlContent = activeNote.content
-      .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-      .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-      .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, "<code>$1</code>")
-      .replace(/^- (.*$)/gim, "<li>$1</li>")
-      .replace(/\n/g, "<br>");
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>${activeNote.title}</title>
-        <style>
-          body { font-family: 'Inter', system-ui, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #1a1a2e; line-height: 1.7; }
-          h1 { font-size: 28px; margin-bottom: 8px; }
-          h2 { font-size: 22px; margin-top: 24px; }
-          h3 { font-size: 18px; margin-top: 20px; }
-          code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
-          li { margin-left: 20px; }
-          @media print { body { margin: 0; } }
-        </style>
-      </head>
-      <body>
-        <h1>${activeNote.title}</h1>
-        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 16px 0;">
-        ${htmlContent}
-      </body>
-      </html>
-    `);
+    const htmlContent = contentToHtml(title, content);
+    printWindow.document.write(`<!DOCTYPE html><html><head><title>${title}</title><style>body{font-family:'Inter',system-ui,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7;}h1{font-size:28px;margin-bottom:8px;}h2{font-size:22px;margin-top:24px;}h3{font-size:18px;margin-top:20px;}code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:0.9em;}li{margin-left:20px;}@media print{body{margin:0;}}</style></head><body><h1>${title}</h1><hr style="border:none;border-top:1px solid #e0e0e0;margin:16px 0;">${htmlContent}</body></html>`);
     printWindow.document.close();
     setTimeout(() => printWindow.print(), 300);
+    setOpen(false);
   };
 
+  const formats = [
+    { label: "PDF", ext: "pdf", action: exportPDF },
+    { label: "Markdown (.md)", ext: "md", action: exportMarkdown },
+    { label: "Plain Text (.txt)", ext: "txt", action: exportTxt },
+    { label: "Word (.docx)", ext: "docx", action: exportDocx },
+  ];
+
   return (
-    <div className="flex items-center gap-1">
+    <div className="relative" ref={menuRef}>
       <button
-        onClick={exportMarkdown}
+        onClick={() => setOpen((p) => !p)}
         className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
-        title="Export as Markdown"
-      >
-        <FileText className="h-3.5 w-3.5" />
-        .md
-      </button>
-      <button
-        onClick={exportPDF}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
-        title="Export as PDF"
       >
         <Download className="h-3.5 w-3.5" />
-        PDF
+        Download
+        <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-xl border border-border bg-popover p-1 shadow-lg"
+          >
+            {formats.map((f) => (
+              <button
+                key={f.ext}
+                onClick={f.action}
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-popover-foreground rounded-lg hover:bg-muted transition-colors text-left"
+              >
+                {f.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
+}
+
+function contentToHtml(title: string, content: string): string {
+  return content
+    .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+    .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+    .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/`(.*?)`/g, "<code>$1</code>")
+    .replace(/^- (.*$)/gim, "<li>$1</li>")
+    .replace(/\n/g, "<br>");
 }

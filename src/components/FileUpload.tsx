@@ -36,8 +36,8 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
         console.error("Upload error:", error);
         continue;
       }
-      const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7); // 7 days
-      const fileUrl = signedUrlData?.signedUrl || '';
+      const { data: publicUrlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
+      const fileUrl = publicUrlData?.publicUrl || '';
       const att = {
         name: file.name,
         url: fileUrl,
