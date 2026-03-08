@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight, Heart, Zap, Shield, Lightbulb, Target, Layers } from "lucide-react";
 import AnimatedDivider from "@/components/AnimatedDivider";
+import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 

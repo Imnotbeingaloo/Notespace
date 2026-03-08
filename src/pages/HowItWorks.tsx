@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import AnimatedDivider from "@/components/AnimatedDivider";
+import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 
 const steps = [
