@@ -14,7 +14,7 @@ export default function AnimatedDivider() {
             whileInView={{ scaleX: 1, opacity: 1 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent origin-left"
+            className="flex-1 h-px bg-gradient-to-r from-transparent via-foreground/15 to-transparent origin-left"
           />
           <motion.div
             initial={{ scale: 0, opacity: 0, rotate: -45 }}
