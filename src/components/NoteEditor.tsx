@@ -459,7 +459,7 @@ export function NoteEditor() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.25 }}
-        className={`flex-1 flex flex-col editor-surface overflow-hidden relative ${dragOver ? "ring-2 ring-primary/50 ring-inset" : ""}`}
+        className={`flex-1 flex flex-col items-center w-full editor-surface overflow-hidden relative ${dragOver ? "ring-2 ring-primary/50 ring-inset" : ""}`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -484,12 +484,12 @@ export function NoteEditor() {
         </AnimatePresence>
 
         {/* Title bar */}
-        <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
+        <div className="shrink-0 w-full max-w-4xl mx-auto px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
             onChange={(e) => debouncedUpdate("title", e.target.value)}
-            className="w-full text-xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
+            className="w-full text-xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50 text-center"
             placeholder="Note title..."
           />
 
@@ -576,7 +576,7 @@ export function NoteEditor() {
         </div>
 
         {/* Toolbar */}
-        <div className="shrink-0 flex items-center border-b border-border bg-muted/30">
+        <div className="shrink-0 w-full flex items-center border-b border-border bg-muted/30">
           <MarkdownToolbar
             editorRef={{
               get current() {
@@ -587,7 +587,7 @@ export function NoteEditor() {
         </div>
 
         {/* Content area */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="flex-1 w-full max-w-4xl mx-auto min-h-0 overflow-y-auto">
           <HybridEditor
             ref={hybridEditorRef}
             content={activeNote.content || ""}
@@ -597,7 +597,7 @@ export function NoteEditor() {
         </div>
 
         {/* File upload at bottom */}
-        <div className="shrink-0 px-4 sm:px-8 py-0 border-t border-border">
+        <div className="shrink-0 w-full max-w-4xl mx-auto px-4 sm:px-8 py-0 border-t border-border">
           <FileUpload onInsertMarkdown={handleInsertMarkdown} />
         </div>
       </motion.div>
