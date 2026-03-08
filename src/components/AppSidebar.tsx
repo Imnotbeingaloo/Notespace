@@ -118,7 +118,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   };
 
   // Study plans - fetch upcoming
-  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; completed: boolean }[]>([]);
+  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; scheduled_time: string | null; completed: boolean }[]>([]);
   useEffect(() => {
     if (!user) return;
     const fetchPlans = async () => {
