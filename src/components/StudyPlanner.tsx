@@ -116,7 +116,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
       setPlans((prev) => [...prev, data as any as StudyPlan]);
       setNewTitle("");
       setNewTime("");
-      setNewNotebook("");
+      setNewNotebook(notebooks.length > 0 ? notebooks[0].id : "");
       setNewRemind(false);
       setShowAdd(false);
       toast.success("Study session added!");
