@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight } from "lucide-react";
+import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight, BookOpen, Eye } from "lucide-react";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
