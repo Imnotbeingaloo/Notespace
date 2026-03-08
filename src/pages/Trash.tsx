@@ -66,31 +66,8 @@ function TrashPageContent() {
     trashedNotes.forEach(({ note }) => keys.add(noteKey(note.id)));
     return keys;
   }, [trashedNotebooks, trashedNotes]);
-
   const allSelected = selected.size > 0 && selected.size === allKeys.size;
   const someSelected = selected.size > 0;
-
-  // Keyboard shortcuts: Ctrl+A to select all, Delete to bulk delete
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      // Don't trigger when typing in inputs
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-
-      if ((e.ctrlKey || e.metaKey) && e.key === "a") {
-        e.preventDefault();
-        if (allKeys.size > 0) {
-          setSelected((prev) => prev.size === allKeys.size ? new Set() : new Set(allKeys));
-        }
-      }
-
-      if ((e.key === "Delete" || e.key === "Backspace") && selected.size > 0 && !confirmOpen) {
-        e.preventDefault();
-        handleBulkDeleteRef.current();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [allKeys, selected.size, confirmOpen]);
 
   const toggleItem = (key: string) => {
     setSelected((prev) => {
