@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X } from "lucide-react";
 import { Link } from "react-router-dom";
