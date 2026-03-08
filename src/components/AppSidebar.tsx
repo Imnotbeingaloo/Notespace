@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Zap, Search as SearchIcon, Loader2 } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Zap, Search as SearchIcon, Loader2, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
@@ -13,6 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -24,6 +25,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const { signOut, user } = useAuth();
   const {
     notebooks,
+    trashedNotebooks,
+    trashedNotes,
     activeNotebookId,
     activeNoteId,
     setActiveNotebookId,
@@ -35,6 +38,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     deleteNote,
     updateNote,
     reorderNotes,
+    restoreNotebook,
+    restoreNote,
+    permanentlyDeleteNotebook,
+    permanentlyDeleteNote,
   } = useNotebooks();
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
@@ -52,13 +59,28 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [analyzeLoading, setAnalyzeLoading] = useState(false);
   const [dragNoteId, setDragNoteId] = useState<string | null>(null);
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
+  const [trashExpanded, setTrashExpanded] = useState(false);
+
+  // Confirm dialog state
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmDesc, setConfirmDesc] = useState("");
+  const [confirmLabel, setConfirmLabel] = useState("Delete");
+  const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
+
+  const showConfirm = (title: string, desc: string, action: () => void, label = "Delete") => {
+    setConfirmTitle(title);
+    setConfirmDesc(desc);
+    setConfirmLabel(label);
+    setConfirmAction(() => action);
+    setConfirmOpen(true);
+  };
 
   const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
   const handleQuickNote = async () => {
     if (!quickNote.trim() || !activeNotebookId) return;
     await createNote(activeNotebookId);
-    // The createNote sets activeNoteId, then we update content
     const nb = notebooks.find(n => n.id === activeNotebookId);
     if (nb && nb.notes.length > 0) {
       const lastNote = nb.notes[nb.notes.length - 1];
@@ -125,14 +147,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     if (!files || !user) return;
     setSidebarUploading(true);
 
-    // Ensure we have a notebook and note to upload into
     let nbId = activeNotebookId;
     let noteId = activeNoteId;
 
     if (!nbId) {
-      // Create a notebook first
       await createNotebook("My Notebook");
-      // After creating, the context sets activeNotebookId
       setSidebarUploading(false);
       return;
     }
@@ -183,6 +202,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     setExpandedNotebook((prev) => (prev === id ? null : id));
     setActiveNotebookId(id);
   };
+
+  const trashCount = trashedNotebooks.length + trashedNotes.length;
 
   return (
     <motion.aside
@@ -420,7 +441,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        deleteNotebook(nb.id);
+                        showConfirm(
+                          "Move to Trash?",
+                          `"${nb.name}" and all its notes will be moved to Trash. You can restore them later.`,
+                          () => deleteNotebook(nb.id),
+                          "Move to Trash"
+                        );
                       }}
                       className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
                     >
@@ -482,7 +508,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  deleteNote(nb.id, note.id);
+                                  showConfirm(
+                                    "Move to Trash?",
+                                    `"${note.title}" will be moved to Trash. You can restore it later.`,
+                                    () => deleteNote(nb.id, note.id),
+                                    "Move to Trash"
+                                  );
                                 }}
                                 className="opacity-0 group-hover/note:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
                               >
@@ -503,6 +534,111 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                   </AnimatePresence>
                 </motion.div>
               ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Trash Section */}
+          <div className="mt-3 pt-3 border-t border-sidebar-border">
+            <button
+              onClick={() => setTrashExpanded((prev) => !prev)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1"
+            >
+              <motion.div
+                animate={{ rotate: trashExpanded ? 90 : 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <ChevronRight className="h-3 w-3" />
+              </motion.div>
+              <Trash2 className="h-4 w-4" />
+              <span className="flex-1 text-left">Trash</span>
+              {trashCount > 0 && (
+                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {trashExpanded && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="ml-3 pl-3 border-l-2 border-sidebar-border space-y-0.5 py-1">
+                    {trashCount === 0 && (
+                      <div className="text-xs text-muted-foreground px-2 py-2">Trash is empty</div>
+                    )}
+
+                    {/* Trashed Notebooks */}
+                    {trashedNotebooks.map((nb) => (
+                      <div
+                        key={nb.id}
+                        className="group/trash flex items-center gap-2 px-2 py-1.5 rounded-md text-xs text-muted-foreground"
+                      >
+                        <BookOpen className="h-3 w-3 flex-shrink-0" />
+                        <span className="flex-1 truncate">{nb.emoji} {nb.name}</span>
+                        <button
+                          onClick={() => restoreNotebook(nb.id)}
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-all"
+                          title="Restore"
+                        >
+                          <RotateCcw className="h-2.5 w-2.5" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            showConfirm(
+                              "Delete permanently?",
+                              `"${nb.name}" and all its notes will be permanently deleted. This cannot be undone.`,
+                              () => permanentlyDeleteNotebook(nb.id),
+                              "Delete Forever"
+                            )
+                          }
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
+                          title="Delete permanently"
+                        >
+                          <Trash2 className="h-2.5 w-2.5" />
+                        </button>
+                      </div>
+                    ))}
+
+                    {/* Trashed Notes */}
+                    {trashedNotes.map(({ note, notebookId, notebookName }) => (
+                      <div
+                        key={note.id}
+                        className="group/trash flex items-center gap-2 px-2 py-1.5 rounded-md text-xs text-muted-foreground"
+                      >
+                        <FileText className="h-3 w-3 flex-shrink-0" />
+                        <div className="flex-1 truncate">
+                          <span>{note.title}</span>
+                          <span className="text-muted-foreground/50 ml-1">· {notebookName}</span>
+                        </div>
+                        <button
+                          onClick={() => restoreNote(notebookId, note.id)}
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-all"
+                          title="Restore"
+                        >
+                          <RotateCcw className="h-2.5 w-2.5" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            showConfirm(
+                              "Delete permanently?",
+                              `"${note.title}" will be permanently deleted. This cannot be undone.`,
+                              () => permanentlyDeleteNote(notebookId, note.id),
+                              "Delete Forever"
+                            )
+                          }
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
+                          title="Delete permanently"
+                        >
+                          <Trash2 className="h-2.5 w-2.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
@@ -544,6 +680,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
           {!collapsed && <span>Sign out</span>}
         </button>
       </div>
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={confirmTitle}
+        description={confirmDesc}
+        confirmLabel={confirmLabel}
+        onConfirm={confirmAction}
+      />
     </motion.aside>
   );
 }

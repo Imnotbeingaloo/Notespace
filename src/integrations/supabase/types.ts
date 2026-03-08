@@ -17,6 +17,7 @@ export type Database = {
       notebooks: {
         Row: {
           created_at: string
+          deleted_at: string | null
           emoji: string
           id: string
           name: string
@@ -25,6 +26,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deleted_at?: string | null
           emoji?: string
           id?: string
           name: string
@@ -33,6 +35,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deleted_at?: string | null
           emoji?: string
           id?: string
           name?: string
@@ -46,6 +49,7 @@ export type Database = {
           attachments: Json | null
           content: string
           created_at: string
+          deleted_at: string | null
           id: string
           notebook_id: string
           tags: string[] | null
@@ -57,6 +61,7 @@ export type Database = {
           attachments?: Json | null
           content?: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           notebook_id: string
           tags?: string[] | null
@@ -68,6 +73,7 @@ export type Database = {
           attachments?: Json | null
           content?: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           notebook_id?: string
           tags?: string[] | null
