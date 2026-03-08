@@ -28,16 +28,21 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     setActiveNoteId,
     createNotebook,
     deleteNotebook,
+    updateNotebook,
     createNote,
     deleteNote,
     updateNote,
   } = useNotebooks();
 
+  const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
   const [showNewNotebook, setShowNewNotebook] = useState(false);
   const [newNotebookName, setNewNotebookName] = useState("");
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
   const sidebarUploadRef = useRef<HTMLInputElement>(null);
   const [sidebarUploading, setSidebarUploading] = useState(false);
+  const [editingNotebook, setEditingNotebook] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editEmoji, setEditEmoji] = useState("");
 
   const handleSidebarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
