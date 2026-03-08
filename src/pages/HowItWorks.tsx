@@ -165,7 +165,7 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
-      {/* Why It Matters */}
+      {/* Why It Matters - numbered list with left accent */}
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
@@ -174,7 +174,7 @@ export default function HowItWorksPage() {
               Traditional note-taking is broken. You write things down, file them away, and never look at them again. Notebook Archive changes that.
             </p>
           </motion.div>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="space-y-6 max-w-2xl mx-auto">
             {[
               { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50% compared to re-reading." },
               { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it automatically connects to your math notes about wave equations." },
@@ -183,15 +183,15 @@ export default function HowItWorksPage() {
             ].map((item, i) => (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="flex gap-4"
+                className="flex gap-5 border-l-2 border-primary/30 pl-6 py-2 hover:border-primary transition-colors duration-300"
               >
-                <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+                <span className="text-2xl font-bold text-primary/20 font-mono flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
                 <div>
-                  <h3 className="font-serif text-base font-bold text-foreground mb-2">{item.title}</h3>
+                  <h3 className="font-serif text-base font-bold text-foreground mb-1">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
               </motion.div>
@@ -202,14 +202,14 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
-      {/* Use Cases */}
+      {/* Use Cases - horizontal cards with emoji backgrounds */}
       <section className="py-28">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Built for every kind of thinker</h2>
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">No matter how you work, Notebook Archive adapts to you.</p>
           </motion.div>
-          <div className="grid sm:grid-cols-2 gap-6 mt-12">
+          <div className="grid sm:grid-cols-2 gap-6">
             {useCases.map((uc, i) => (
               <motion.div
                 key={uc.title}
@@ -217,13 +217,14 @@ export default function HowItWorksPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="flex gap-4"
+                className="relative rounded-2xl border border-border bg-card p-6 overflow-hidden group hover:border-primary/30 transition-colors duration-300"
               >
-                <span className="text-2xl flex-shrink-0">{uc.emoji}</span>
-                <div>
-                  <h3 className="font-serif text-lg font-bold text-foreground mb-1">{uc.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-1">{uc.description}</p>
-                  <p className="text-xs text-primary/70 font-medium">{uc.extra}</p>
+                <span className="absolute -top-4 -right-4 text-[5rem] opacity-[0.06] group-hover:opacity-[0.12] transition-opacity duration-500 select-none pointer-events-none">{uc.emoji}</span>
+                <div className="relative z-10">
+                  <span className="text-2xl mb-3 block">{uc.emoji}</span>
+                  <h3 className="font-serif text-lg font-bold text-foreground mb-2">{uc.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">{uc.description}</p>
+                  <p className="text-xs text-primary font-medium">{uc.extra}</p>
                 </div>
               </motion.div>
             ))}
@@ -246,15 +247,7 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-primary" />
-            <span className="font-serif text-sm font-bold text-foreground">Notebook Archive</span>
-          </div>
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Notebook Archive. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
