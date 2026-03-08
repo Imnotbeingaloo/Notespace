@@ -56,11 +56,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [editEmoji, setEditEmoji] = useState("");
   const [quickNote, setQuickNote] = useState("");
 
-  // Smart Tags - collect all unique tags from all notes
+  // Smart Tags
+  const [tagsOpen, setTagsOpen] = useState(false);
+  const [activeFilterTag, setActiveFilterTag] = useState<string | null>(null);
+  const [newTagInput, setNewTagInput] = useState("");
+  const [showAddTag, setShowAddTag] = useState(false);
+
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
     notebooks.forEach((nb) => {
-      nb.notes?.forEach((note: any) => {
+      nb.notes?.forEach((note) => {
         if (note.tags && Array.isArray(note.tags)) {
           note.tags.forEach((t: string) => tagSet.add(t));
         }
@@ -68,6 +73,34 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     });
     return Array.from(tagSet).sort();
   }, [notebooks]);
+
+  // Notes matching the active filter tag
+  const filteredByTag = useMemo(() => {
+    if (!activeFilterTag) return [];
+    const results: { notebookId: string; notebookName: string; notebookEmoji: string; noteId: string; noteTitle: string }[] = [];
+    notebooks.forEach((nb) => {
+      nb.notes?.forEach((note) => {
+        if (note.tags?.includes(activeFilterTag)) {
+          results.push({ notebookId: nb.id, notebookName: nb.name, notebookEmoji: nb.emoji, noteId: note.id, noteTitle: note.title });
+        }
+      });
+    });
+    return results;
+  }, [activeFilterTag, notebooks]);
+
+  const handleAddGlobalTag = async () => {
+    const tag = newTagInput.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!tag || !activeNoteId || !activeNotebookId) return;
+    const nb = notebooks.find((n) => n.id === activeNotebookId);
+    const note = nb?.notes.find((n) => n.id === activeNoteId);
+    if (!note) return;
+    const currentTags = note.tags || [];
+    if (currentTags.includes(tag)) { setNewTagInput(""); return; }
+    await supabase.from("notes").update({ tags: [...currentTags, tag] }).eq("id", activeNoteId);
+    // Refresh will happen via context
+    setNewTagInput("");
+    setShowAddTag(false);
+  };
 
   // Study plans - fetch upcoming
   const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; completed: boolean }[]>([]);
