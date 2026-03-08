@@ -484,7 +484,7 @@ export function NoteEditor() {
         </AnimatePresence>
 
         {/* Title bar */}
-        <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-6 pb-2 sm:pb-3">
+        <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
