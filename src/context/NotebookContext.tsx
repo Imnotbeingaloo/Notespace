@@ -242,7 +242,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [activeNoteId, allNotebooks]);
 
   const updateNote = useCallback(
-    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => {
+    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => {
       await supabase.from("notes").update(updates as any).eq("id", noteId);
       setAllNotebooks((prev) =>
         prev.map((nb) =>
