@@ -41,7 +41,15 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    if (visibleLines >= editorLines.length) return;
+    // When animation finishes, restart after 3 seconds
+    if (visibleLines >= editorLines.length) {
+      const restartTimeout = setTimeout(() => {
+        setVisibleLines(0);
+        setTypingText("");
+        setCurrentCharIndex(0);
+      }, 3000);
+      return () => clearTimeout(restartTimeout);
+    }
     const currentLine = editorLines[visibleLines];
     if (currentLine.text === "") {
       const timeout = setTimeout(() => { setVisibleLines((v) => v + 1); setTypingText(""); setCurrentCharIndex(0); }, 300);
