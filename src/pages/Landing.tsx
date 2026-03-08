@@ -1,19 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, Search, Paperclip, FileText, Eye, ArrowRight, Brain, Mic, FileOutput, Menu, X } from "lucide-react";
+import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
-
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -34,6 +24,15 @@ const navLinks = [
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
 ];
 
+/** Reusable gradient separator */
+function SectionDivider() {
+  return (
+    <div className="container mx-auto max-w-3xl px-6">
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+    </div>
+  );
+}
+
 export default function LandingPage() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
@@ -42,52 +41,37 @@ export default function LandingPage() {
   const [typingText, setTypingText] = useState("");
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
 
-  // Scroll detection for header morph
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Typing animation for preview
   useEffect(() => {
     if (visibleLines >= editorLines.length) return;
     const currentLine = editorLines[visibleLines];
     if (currentLine.text === "") {
-      const timeout = setTimeout(() => {
-        setVisibleLines((v) => v + 1);
-        setTypingText("");
-        setCurrentCharIndex(0);
-      }, 300);
+      const timeout = setTimeout(() => { setVisibleLines((v) => v + 1); setTypingText(""); setCurrentCharIndex(0); }, 300);
       return () => clearTimeout(timeout);
     }
     if (currentCharIndex < currentLine.text.length) {
-      const timeout = setTimeout(() => {
-        setTypingText(currentLine.text.slice(0, currentCharIndex + 1));
-        setCurrentCharIndex((c) => c + 1);
-      }, 25 + Math.random() * 20);
+      const timeout = setTimeout(() => { setTypingText(currentLine.text.slice(0, currentCharIndex + 1)); setCurrentCharIndex((c) => c + 1); }, 25 + Math.random() * 20);
       return () => clearTimeout(timeout);
     } else {
-      const timeout = setTimeout(() => {
-        setVisibleLines((v) => v + 1);
-        setTypingText("");
-        setCurrentCharIndex(0);
-      }, 400);
+      const timeout = setTimeout(() => { setVisibleLines((v) => v + 1); setTypingText(""); setCurrentCharIndex(0); }, 400);
       return () => clearTimeout(timeout);
     }
   }, [visibleLines, currentCharIndex]);
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Floating Navbar */}
+      {/* ── Floating Navbar ── */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
         className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl transition-all duration-500 rounded-2xl ${
-          scrolled
-            ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5"
-            : "bg-transparent"
+          scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
         }`}
       >
         <div className="flex items-center justify-between px-5 py-3">
@@ -95,21 +79,15 @@ export default function LandingPage() {
             <BookOpen className="h-5 w-5 text-primary" />
             <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
           </Link>
-
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) =>
               link.isAnchor ? (
-                <a key={link.label} href={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200">
-                  {link.label}
-                </a>
+                <a key={link.label} href={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200">{link.label}</a>
               ) : (
-                <Link key={link.label} to={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200">
-                  {link.label}
-                </Link>
+                <Link key={link.label} to={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200">{link.label}</Link>
               )
             )}
           </nav>
-
           <div className="flex items-center gap-2">
             {user ? (
               <Link to="/app" className="magnetic-btn inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/20">
@@ -117,9 +95,7 @@ export default function LandingPage() {
               </Link>
             ) : (
               <>
-                <Link to="/auth" className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">
-                  Sign In
-                </Link>
+                <Link to="/auth" className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">Sign In</Link>
                 <Link to="/auth" className="magnetic-btn inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/20">
                   Get Started <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
@@ -130,20 +106,15 @@ export default function LandingPage() {
             </button>
           </div>
         </div>
-
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="md:hidden border-t border-border/50 overflow-hidden">
               <nav className="flex flex-col gap-1 p-3">
                 {navLinks.map((link) =>
                   link.isAnchor ? (
-                    <a key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
-                      {link.label}
-                    </a>
+                    <a key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">{link.label}</a>
                   ) : (
-                    <Link key={link.label} to={link.href} onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
-                      {link.label}
-                    </Link>
+                    <Link key={link.label} to={link.href} onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">{link.label}</Link>
                   )
                 )}
               </nav>
@@ -152,7 +123,7 @@ export default function LandingPage() {
         </AnimatePresence>
       </motion.header>
 
-      {/* Hero */}
+      {/* ── Hero ── */}
       <section className="relative overflow-hidden pt-20">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 text-center relative">
@@ -162,17 +133,14 @@ export default function LandingPage() {
               AI-Powered Note Taking
             </div>
             <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
-              Your thoughts,{" "}
-              <span className="text-primary">organized</span> &{" "}
-              <span className="text-accent">understood</span>
+              Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-accent">understood</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Notebook Archive is the intelligent note-taking app that helps you capture ideas, organize knowledge, and get AI-powered insights — all in one beautiful workspace.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-                {user ? "Open App" : "Start for Free"}
-                <ArrowRight className="h-5 w-5" />
+                {user ? "Open App" : "Start for Free"} <ArrowRight className="h-5 w-5" />
               </Link>
               <a href="#features" className="magnetic-btn inline-flex items-center gap-2 rounded-2xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors">
                 See Features
@@ -182,8 +150,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* App Preview — Animated Typing */}
-      <section className="container mx-auto px-6 -mt-8 mb-14">
+      {/* ── App Preview ── */}
+      <section className="container mx-auto px-6 -mt-8 mb-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -200,7 +168,6 @@ export default function LandingPage() {
             <span className="text-xs text-muted-foreground ml-2">Notebook Archive</span>
           </div>
           <div className="flex min-h-[420px]">
-            {/* Mock sidebar */}
             <div className="w-56 border-r border-border bg-sidebar p-4 hidden md:block">
               <div className="flex items-center gap-2 mb-5">
                 <BookOpen className="h-4 w-4 text-primary" />
@@ -213,18 +180,11 @@ export default function LandingPage() {
                   { emoji: "📘", name: "History Essay", active: false },
                   { emoji: "📙", name: "CS Algorithms", active: false },
                 ].map((item) => (
-                  <motion.div
-                    key={item.name}
-                    whileHover={{ x: 2 }}
-                    className={`px-3 py-2 rounded-xl text-xs cursor-default transition-colors ${
-                      item.active ? "bg-primary/10 text-foreground font-medium" : "text-muted-foreground hover:bg-muted/50"
-                    }`}
-                  >
+                  <motion.div key={item.name} whileHover={{ x: 2 }} className={`px-3 py-2 rounded-xl text-xs cursor-default transition-colors ${item.active ? "bg-primary/10 text-foreground font-medium" : "text-muted-foreground hover:bg-muted/50"}`}>
                     {item.emoji} {item.name}
                   </motion.div>
                 ))}
               </div>
-              {/* Smart Tags */}
               <div className="mt-6 pt-4 border-t border-border">
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-semibold">Smart Tags</p>
                 <div className="flex flex-wrap gap-1">
@@ -233,7 +193,6 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-              {/* Study Planner */}
               <div className="mt-4 pt-4 border-t border-border">
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-semibold">Study Planner</p>
                 <div className="space-y-1.5">
@@ -251,7 +210,6 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            {/* Mock editor with typing animation */}
             <div className="flex-1 p-6 md:p-8">
               <h2 className="font-serif text-xl font-bold text-foreground mb-1">Quantum Mechanics Intro</h2>
               <p className="text-xs text-muted-foreground mb-5">Updated Jan 15, 2:30 PM</p>
@@ -273,23 +231,19 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* Animated Feature Cards */}
-      <section id="features" className="container mx-auto px-6 py-14">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+      {/* ── Separator ── */}
+      <div className="py-10"><SectionDivider /></div>
+
+      {/* ── Features ── */}
+      <section id="features" className="container mx-auto px-6 pb-16">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-            Everything you need to take{" "}
-            <span className="text-primary">better notes</span>
+            Everything you need to take{" "}<span className="text-primary">better notes</span>
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
             Powerful features that make Notebook Archive the perfect companion for students, researchers, and thinkers.
           </p>
         </motion.div>
-
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
           <ShufflerCard />
           <TypewriterCard />
@@ -297,84 +251,30 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Why Notebook Archive */}
-      <section className="py-14">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-6">
-                Note-taking that <span className="text-primary">thinks</span> with you
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Most note apps are glorified text editors. Notebook Archive is different — it's built with AI at its core, designed to help you not just capture information, but actually understand it.
-              </p>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                Whether you're studying for exams, conducting research, or managing projects, our intelligent markdown editor adapts to how you work. Write naturally, and let AI handle the heavy lifting — from generating summaries to connecting related concepts across your notebooks.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "AI explanations that break down complex topics instantly",
-                  "Smart tagging that organizes your notes automatically",
-                  "Lightning-fast search across every notebook you own",
-                ].map((item) => (
-                  <motion.li
-                    key={item}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    className="flex items-start gap-2 text-sm text-foreground"
-                  >
-                    <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    {item}
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="rounded-[2rem] border border-border bg-card p-6 md:p-8"
-            >
-              <div className="space-y-4">
-                <div className="rounded-xl bg-primary/5 border border-primary/10 p-4">
-                  <p className="text-xs font-mono text-muted-foreground mb-1">You write:</p>
-                  <p className="text-sm text-foreground font-medium">Mitochondria are the powerhouse of the cell...</p>
-                </div>
-                <div className="flex items-center justify-center">
-                  <motion.div animate={{ y: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                    <ArrowRight className="h-4 w-4 text-primary rotate-90" />
-                  </motion.div>
-                </div>
-                <div className="rounded-xl bg-accent/5 border border-accent/10 p-4">
-                  <p className="text-xs font-mono text-muted-foreground mb-1">AI explains:</p>
-                  <p className="text-sm text-foreground">Mitochondria generate ATP through oxidative phosphorylation — the process that converts nutrients into usable cellular energy via the electron transport chain.</p>
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  {["#biology", "#cell-structure", "#ATP"].map((tag) => (
-                    <span key={tag} className="text-[11px] font-mono bg-muted text-muted-foreground px-2 py-1 rounded-full">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+      {/* ── Separator ── */}
+      <div className="py-2"><SectionDivider /></div>
+
+      {/* ── Why Notebook Archive ── */}
+      <section className="container mx-auto px-6 py-16 max-w-3xl text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-6">
+            Note-taking that <span className="text-primary">thinks</span> with you
+          </h2>
+          <p className="text-muted-foreground leading-relaxed mb-4">
+            Most note apps are glorified text editors. Notebook Archive is different — it's built with AI at its core, designed to help you not just capture information, but actually understand it.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            Write naturally in markdown, and let AI handle the heavy lifting — from explaining complex topics to auto-tagging concepts and connecting related ideas across all your notebooks.
+          </p>
+        </motion.div>
       </section>
 
-      {/* Testimonials */}
-      <section className="container mx-auto px-6 py-14">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-10"
-        >
+      {/* ── Separator ── */}
+      <div className="py-2"><SectionDivider /></div>
+
+      {/* ── Testimonials ── */}
+      <section className="container mx-auto px-6 py-16">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
             Trusted by <span className="text-accent">professionals</span> and students
           </h2>
@@ -408,8 +308,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="container mx-auto px-6 py-14">
+      {/* ── Separator ── */}
+      <div className="py-2"><SectionDivider /></div>
+
+      {/* ── CTA ── */}
+      <section className="container mx-auto px-6 py-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -422,17 +325,13 @@ export default function LandingPage() {
           <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto">
             Join Notebook Archive and start capturing your ideas with the power of AI.
           </p>
-          <Link
-            to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
-          >
-            {user ? "Open App" : "Get Started — It's Free"}
-            <ArrowRight className="h-5 w-5" />
+          <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+            {user ? "Open App" : "Get Started — It's Free"} <ArrowRight className="h-5 w-5" />
           </Link>
         </motion.div>
       </section>
 
-      {/* Footer */}
+      {/* ── Footer ── */}
       <footer className="border-t border-border bg-card/50 rounded-t-[3rem]">
         <div className="container mx-auto px-6 py-12 md:py-16">
           <div className="grid gap-8 md:grid-cols-4 mb-12">
@@ -441,9 +340,7 @@ export default function LandingPage() {
                 <BookOpen className="h-5 w-5 text-primary" />
                 <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                The intelligent note-taking app that helps you think better.
-              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">The intelligent note-taking app that helps you think better.</p>
               <div className="flex items-center gap-2 mt-4">
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                 <span className="text-xs font-mono text-muted-foreground">All Systems Operational</span>
@@ -466,12 +363,8 @@ export default function LandingPage() {
             </div>
             <div>
               <h4 className="text-sm font-semibold text-foreground mb-4">Get Started</h4>
-              <Link
-                to={user ? "/app" : "/auth"}
-                className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
-              >
-                {user ? "Open App" : "Sign Up Free"}
-                <ArrowRight className="h-4 w-4" />
+              <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20">
+                {user ? "Open App" : "Sign Up Free"} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
