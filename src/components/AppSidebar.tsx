@@ -268,9 +268,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
   return (
     <motion.aside
       initial={false}
-      animate={{ width: collapsed ? 56 : 280 }}
+      animate={{ width: isMobileSidebar ? "100%" : collapsed ? 56 : 280 }}
       transition={{ duration: 0.25, ease: "easeInOut" }}
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
+      className={`h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 scrollbar-thin ${isMobileSidebar ? "w-full" : "w-[280px] max-w-[85vw]"}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-sidebar-border">
