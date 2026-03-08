@@ -40,7 +40,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     recognitionRef.current = recognition;
     recognition.start();
     setListening(true);
-  }, [listening, onTranscript, isPro, requirePro]);
+  }, [listening, onTranscript]);
 
   if (!isSupported) return null;
 
