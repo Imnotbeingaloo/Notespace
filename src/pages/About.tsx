@@ -67,30 +67,117 @@ function RevealCard({ emoji, label, title, titleHighlight, description, delay = 
 }
 
 function PhilosophySection() {
+  const [shifted, setShifted] = useState(false);
+
   return (
-    <section className="bg-foreground/[0.03] py-24">
+    <section className="bg-foreground/[0.03] py-24 overflow-hidden">
       <div className="container mx-auto px-6 max-w-4xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
           <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">Our Philosophy</p>
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Two ways to think about notes</h2>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">A new way to think about notes</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">We rethought what a note-taking app should be from the ground up.</p>
         </motion.div>
-        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          <RevealCard
-            emoji="📁"
-            label="The Old Way"
-            title="Storing information"
-            description="Most apps give you a blank page and leave the rest to you. Your notes sit in folders, disconnected and forgotten. No context, no connections, no intelligence."
-          />
-          <RevealCard
-            emoji="🧠"
-            label="Our Way"
-            title="Understanding"
-            titleHighlight="information"
-            description="We use AI to explain concepts, connect ideas, and help you actually learn from what you write. Your notes become a living knowledge base that grows smarter with you."
-            delay={0.1}
-          />
-        </div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.4 }}
+          onViewportEnter={() => {
+            setTimeout(() => setShifted(true), 1800);
+          }}
+          className="relative max-w-3xl mx-auto"
+        >
+          {/* The Old Way — fades out and slides left */}
+          <motion.div
+            animate={shifted ? { opacity: 0, x: -60, scale: 0.95, filter: "blur(6px)" } : { opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className={`rounded-[2rem] border border-border bg-card p-8 md:p-10 ${shifted ? "pointer-events-none absolute inset-0" : "relative"}`}
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-4xl">📁</span>
+              <div>
+                <p className="text-xs uppercase tracking-widest font-mono text-muted-foreground mb-1">The Old Way</p>
+                <p className="font-serif text-xl font-bold text-foreground">Storing information</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {["Scattered notes across different apps", "No connections between ideas", "Information gets forgotten", "You do all the organizing"].map((item, i) => (
+                <motion.div
+                  key={item}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.1 }}
+                  className="flex items-center gap-3"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0" />
+                  <span className="text-sm text-muted-foreground">{item}</span>
+                </motion.div>
+              ))}
+            </div>
+            {!shifted && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.5 }}
+                className="mt-6 text-center"
+              >
+                <span className="text-xs text-muted-foreground/60 font-mono">Transitioning…</span>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* The New Way — slides in from right */}
+          <motion.div
+            initial={{ opacity: 0, x: 60, scale: 0.95 }}
+            animate={shifted ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: 60, scale: 0.95 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: shifted ? 0.2 : 0 }}
+            className={`rounded-[2rem] border-2 border-primary/30 bg-card p-8 md:p-10 overflow-hidden ${shifted ? "relative" : "absolute inset-0 pointer-events-none"}`}
+          >
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <span className="text-4xl">🧠</span>
+                <div>
+                  <p className="text-xs uppercase tracking-widest font-mono text-primary mb-1">The Notebook Archive Way</p>
+                  <p className="font-serif text-xl font-bold text-foreground">Understanding <span className="text-primary">information</span></p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { text: "AI explains concepts as you write", icon: "✨" },
+                  { text: "Ideas connect automatically", icon: "🔗" },
+                  { text: "Smart recall & study tools", icon: "🎯" },
+                  { text: "Your notes grow smarter with you", icon: "🌱" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={item.text}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={shifted ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.5 + i * 0.12, duration: 0.4 }}
+                    className="flex items-center gap-3"
+                  >
+                    <span className="text-base shrink-0">{item.icon}</span>
+                    <span className="text-sm text-foreground font-medium">{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Replay button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={shifted ? { opacity: 1 } : {}}
+                transition={{ delay: 1.2 }}
+                onClick={() => {
+                  setShifted(false);
+                  setTimeout(() => setShifted(true), 1800);
+                }}
+                className="mt-6 text-xs font-mono text-primary/70 hover:text-primary transition-colors underline underline-offset-2"
+              >
+                ↻ Replay transition
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
