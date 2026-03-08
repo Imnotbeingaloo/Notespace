@@ -4,6 +4,7 @@ import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
+import AnimatedDivider from "@/components/AnimatedDivider";
 
 // Typing animation lines for the preview
 const editorLines = [
