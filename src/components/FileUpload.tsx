@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
+import { toast } from "@/hooks/use-toast";
 
 interface FileUploadProps {
   onInsertMarkdown?: (markdown: string) => void;
