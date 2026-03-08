@@ -477,7 +477,7 @@ export function NoteEditor() {
         </div>
 
         {/* Content area */}
-        <div className="flex-1 w-full max-w-4xl mx-auto min-h-0 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           <HybridEditor
             ref={hybridEditorRef}
             content={activeNote.content || ""}
