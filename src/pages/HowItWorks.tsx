@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useMotionValue, animate } from "framer-motion";
 import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput } from "lucide-react";
 import { Link } from "react-router-dom";
 import AnimatedDivider from "@/components/AnimatedDivider";
@@ -25,135 +25,129 @@ const useCases = [
 /* ─── Cinematic 3-at-a-time Filmstrip ─── */
 function StepReel() {
   const slideX = useMotionValue(0);
+  const dotX = useMotionValue(0); // pixel-based position
   const cancelled = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
-  const dotLeft = useMotionValue(0); // percentage across visible area
-  const dotRotation = useMotionValue(0);
 
-  // Each card is 33.33% of visible width.
-  // Circle center is at ~4% into each card (the 32px circle's center).
-  // Line end is at ~30% into each card.
-  // Positions for circles 0-2 within visible area:
-  const circlePos = [2.5, 35.8, 69.2]; // % positions of each circle center
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const DOT_SIZE = 32;
+
+  // Measure center-x of a circle ref relative to viewport
+  const measureCircleX = useCallback((idx: number): number => {
+    const viewport = viewportRef.current;
+    const circle = circleRefs.current[idx];
+    if (!viewport || !circle) return 0;
+    const vRect = viewport.getBoundingClientRect();
+    const cRect = circle.getBoundingClientRect();
+    return cRect.left + cRect.width / 2 - vRect.left;
+  }, []);
 
   useEffect(() => {
     cancelled.current = false;
-    const run = async () => {
-      while (!cancelled.current) {
-        // Start at circle 0
-        dotLeft.set(circlePos[0]);
-        dotRotation.set(0);
-        setActiveStep(0);
-        setGroup(0);
-        await new Promise((r) => setTimeout(r, 1000));
 
-        // Circle 0 → Circle 1
-        if (cancelled.current) return;
-        setActiveStep(1);
-        await Promise.all([
-          animate(dotLeft, circlePos[1], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
-          animate(dotRotation, 360, { duration: 0.7, ease: "linear" }),
-        ]);
-        await new Promise((r) => setTimeout(r, 1000));
+    // Small delay to let layout settle
+    const startTimeout = setTimeout(() => {
+      const run = async () => {
+        while (!cancelled.current) {
+          // Group 0: steps 0,1,2
+          setGroup(0);
+          setActiveStep(0);
+          await animate(slideX, 0, { duration: 0 });
+          // Wait a frame for layout
+          await new Promise((r) => requestAnimationFrame(r));
+          dotX.set(measureCircleX(0));
+          await new Promise((r) => setTimeout(r, 1000));
 
-        // Circle 1 → Circle 2
-        if (cancelled.current) return;
-        setActiveStep(2);
-        await Promise.all([
-          animate(dotLeft, circlePos[2], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
-          animate(dotRotation, 720, { duration: 0.7, ease: "linear" }),
-        ]);
-        await new Promise((r) => setTimeout(r, 1000));
+          // 0 → 1
+          if (cancelled.current) return;
+          setActiveStep(1);
+          await animate(dotX, measureCircleX(1), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          await new Promise((r) => setTimeout(r, 1000));
 
-        // Slide filmstrip to group 2 + move dot to circle 3's position
-        if (cancelled.current) return;
-        setGroup(1);
-        setActiveStep(3);
-        // Dot needs to appear at circle 3 position (which is circlePos[0] in new visible area)
-        await Promise.all([
-          animate(slideX, -50, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
-          animate(dotLeft, circlePos[0], { duration: 0.01 }),
-          animate(dotRotation, 720, { duration: 0.01 }),
-        ]);
-        await new Promise((r) => setTimeout(r, 1000));
+          // 1 → 2
+          if (cancelled.current) return;
+          setActiveStep(2);
+          await animate(dotX, measureCircleX(2), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          await new Promise((r) => setTimeout(r, 1000));
 
-        // Circle 3 → Circle 4
-        if (cancelled.current) return;
-        setActiveStep(4);
-        await Promise.all([
-          animate(dotLeft, circlePos[1], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
-          animate(dotRotation, 1080, { duration: 0.7, ease: "linear" }),
-        ]);
-        await new Promise((r) => setTimeout(r, 1000));
+          // Slide to group 1: steps 3,4,5
+          if (cancelled.current) return;
+          setGroup(1);
+          setActiveStep(3);
+          await animate(slideX, -50, { duration: 0.6, ease: [0.16, 1, 0.3, 1] });
+          // After slide, measure step 3's new position
+          await new Promise((r) => requestAnimationFrame(r));
+          dotX.set(measureCircleX(3));
+          await new Promise((r) => setTimeout(r, 1000));
 
-        // Circle 4 → Circle 5
-        if (cancelled.current) return;
-        setActiveStep(5);
-        await Promise.all([
-          animate(dotLeft, circlePos[2], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
-          animate(dotRotation, 1440, { duration: 0.7, ease: "linear" }),
-        ]);
-        await new Promise((r) => setTimeout(r, 1200));
+          // 3 → 4
+          if (cancelled.current) return;
+          setActiveStep(4);
+          await animate(dotX, measureCircleX(4), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          await new Promise((r) => setTimeout(r, 1000));
 
-        // Reset
-        if (cancelled.current) return;
-        await animate(slideX, 0, { duration: 0 });
-        dotLeft.set(circlePos[0]);
-        dotRotation.set(0);
-        setActiveStep(0);
-        setGroup(0);
-        await new Promise((r) => setTimeout(r, 400));
-      }
+          // 4 → 5
+          if (cancelled.current) return;
+          setActiveStep(5);
+          await animate(dotX, measureCircleX(5), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          await new Promise((r) => setTimeout(r, 1200));
+
+          // Reset
+          if (cancelled.current) return;
+          await new Promise((r) => setTimeout(r, 400));
+        }
+      };
+      run();
+    }, 200);
+
+    return () => {
+      cancelled.current = true;
+      clearTimeout(startTimeout);
     };
-    run();
-    return () => { cancelled.current = true; };
   }, []);
-
-  const translateX = useTransform(slideX, (v) => `${v}%`);
-  const dotLeftPx = useTransform(dotLeft, (v) => `${v}%`);
-
-  const DOT_SIZE = 32;
 
   return (
     <div className="relative">
-      {/* ── Filmstrip: 6 cards, show 3 at a time ── */}
-      <div className="overflow-hidden relative">
-        {/* Rolling dot overlay — sits on top of the entire visible area */}
+      <div ref={viewportRef} className="overflow-hidden relative">
+        {/* Sliding dot — no rotation */}
         <motion.div
           className="absolute top-0 z-30 pointer-events-none"
           style={{
-            left: dotLeftPx,
+            x: dotX,
             width: DOT_SIZE,
             height: DOT_SIZE,
             marginLeft: -(DOT_SIZE / 2),
           }}
         >
-          <motion.div
+          <div
             className="w-full h-full rounded-full border-2 border-primary bg-background"
-            style={{
-              rotate: dotRotation,
-              boxShadow: "0 0 12px hsl(var(--primary) / 0.4)",
-            }}
+            style={{ boxShadow: "0 0 12px hsl(var(--primary) / 0.4)" }}
           >
-            <div className="w-full h-full relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-primary" />
-              </div>
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-[6px] bg-primary/40" />
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-primary" />
             </div>
-          </motion.div>
+          </div>
         </motion.div>
 
         <motion.div
           className="flex"
-          style={{ x: translateX, width: "200%" }}
+          style={{ x: useMotionValue(0), width: "200%" }}
+        >
+          <motion.div className="flex w-full" style={{ x: slideX.get() !== undefined ? undefined : undefined }}>
+          </motion.div>
+        </motion.div>
+        {/* Actual filmstrip */}
+        <motion.div
+          className="flex"
+          style={{ x: slideX, width: "200%" }}
         >
           {steps.map((step, idx) => (
             <div key={step.title} className="w-[calc(100%/6)] px-5 flex-shrink-0">
-              {/* Step number + connector line */}
               <div className="flex items-center gap-3 mb-5 relative">
                 <motion.div
+                  ref={(el) => { circleRefs.current[idx] = el; }}
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 flex-shrink-0"
                   animate={{
                     backgroundColor: activeStep === idx ? "hsl(var(--primary))" : "hsl(var(--muted))",
@@ -176,7 +170,6 @@ function StepReel() {
         </motion.div>
       </div>
 
-      {/* ── Bottom pills ── */}
       <div className="flex items-center justify-center gap-2 mt-10">
         {[0, 1].map((g) => (
           <motion.div
