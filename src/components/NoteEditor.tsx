@@ -315,10 +315,11 @@ function FlashcardsButton() {
     <>
       <button
         onClick={run}
-        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
         title="Generate Flashcards"
       >
-        <Layers className="h-4 w-4" />
+        <Layers className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">Flashcards</span>
       </button>
       <AnimatePresence>
         {open && (
@@ -327,7 +328,7 @@ function FlashcardsButton() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed right-0 top-0 h-full w-[420px] max-w-[95vw] bg-card border-l border-border shadow-2xl z-50 flex flex-col"
+            className="fixed right-0 top-0 h-full w-[520px] max-w-[95vw] bg-card border-l border-border shadow-2xl z-50 flex flex-col"
           >
             <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
