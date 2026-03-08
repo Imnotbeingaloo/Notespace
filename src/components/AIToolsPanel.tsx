@@ -102,7 +102,6 @@ export function AIToolsPanel() {
         >
           <BookOpen className="h-3.5 w-3.5" />
           Summarize
-          {!isPro && <Lock className="h-2.5 w-2.5 ml-0.5 opacity-50" />}
         </button>
         <button
           onClick={() => runTool("flashcards")}
