@@ -311,6 +311,7 @@ export function NoteEditor() {
                       onClick={() => setMoreOpen(false)}
                     >
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                      <AIEditPanel onApplyEdit={handleAIEdit} />
                       <AIToolsPanel />
                       <AIExplainPanel />
                     </motion.div>

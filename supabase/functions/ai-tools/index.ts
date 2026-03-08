@@ -72,11 +72,15 @@ serve(async (req) => {
       );
     }
 
-    const { action, noteTitle, noteContent } = parsed.data;
+    const { action, noteTitle, noteContent, editInstruction } = parsed.data;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const isStream = action !== "auto-tag";
+
+    const userContent = action === "edit"
+      ? `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}\n\nEdit instruction: ${editInstruction}`
+      : `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -88,10 +92,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompts[action] },
-          {
-            role: "user",
-            content: `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}`,
-          },
+          { role: "user", content: userContent },
         ],
         stream: isStream,
       }),
