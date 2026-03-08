@@ -264,63 +264,26 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
                 autoFocus
               />
               <div className="flex gap-2">
-                <div className="flex-1">
-                  <Input
-                    type="time"
-                    value={newTime}
-                    onChange={(e) => setNewTime(e.target.value)}
-                    className="h-8 text-xs"
-                    placeholder="Time (optional)"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowNotebookPicker((p) => !p)}
-                  className="h-8 text-xs rounded-md border border-border bg-background px-3 flex-1 text-left truncate flex items-center gap-1.5 hover:bg-muted transition-colors"
+                <Input
+                  type="time"
+                  value={newTime}
+                  onChange={(e) => setNewTime(e.target.value)}
+                  className="h-8 text-xs flex-1"
+                  placeholder="Time (optional)"
+                />
+                <select
+                  value={newNotebook}
+                  onChange={(e) => setNewNotebook(e.target.value)}
+                  className="h-8 text-xs rounded-md border border-border bg-background px-2 flex-1"
                 >
-                  <BookOpen className="h-3 w-3 shrink-0" />
-                  {selectedNotebooks.length === 0
-                    ? "Link notebook(s)"
-                    : `${selectedNotebooks.length} selected`}
-                </button>
+                  <option value="">No notebook</option>
+                  {notebooks.map((nb) => (
+                    <option key={nb.id} value={nb.id}>
+                      {nb.emoji} {nb.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-
-              {/* Notebook checkboxes */}
-              <AnimatePresence>
-                {showNotebookPicker && notebooks.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="rounded-lg border border-border bg-muted/30 p-2 space-y-1 max-h-32 overflow-y-auto scrollbar-thin">
-                      {notebooks.map((nb) => {
-                        const checked = selectedNotebooks.includes(nb.id);
-                        return (
-                          <label
-                            key={nb.id}
-                            className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted cursor-pointer text-xs"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => {
-                                setSelectedNotebooks((prev) =>
-                                  checked ? prev.filter((id) => id !== nb.id) : [...prev, nb.id]
-                                );
-                              }}
-                              className="rounded border-border accent-primary h-3.5 w-3.5"
-                            />
-                            <span>{nb.emoji}</span>
-                            <span className="truncate text-foreground">{nb.name}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
               <div className="flex items-center justify-between">
                 <button
                   onClick={() => setNewRemind(!newRemind)}
