@@ -145,11 +145,11 @@ function PhilosophySection() {
           {/* Old Way Card */}
           <motion.div
             animate={{
-              opacity: phase === "new" ? 0.3 : 1,
-              scale: phase === "new" ? 0.92 : 1,
-              filter: phase === "new" ? "grayscale(0.8) blur(1px)" : "grayscale(0) blur(0px)",
+              opacity: phase === "old" ? 1 : 0.3,
+              scale: phase === "old" ? 1 : 0.92,
+              filter: phase === "old" ? "grayscale(0) blur(0px)" : "grayscale(0.8) blur(1px)",
             }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
             {/* Red tint overlay when in "old" phase */}
@@ -200,9 +200,9 @@ function PhilosophySection() {
           <div className="flex-shrink-0 flex items-center justify-center w-16 md:w-24 py-4 md:py-0">
             <motion.div
               animate={{
-                color: progress >= 0.5 ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
+                color: phase !== "old" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
               }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.15 }}
             >
               <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
             </motion.div>
