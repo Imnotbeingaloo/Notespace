@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home } from "lucide-react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -73,8 +74,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
       const path = buildStoragePath(user.id, noteId, file.name);
       const { error } = await supabase.storage.from("note-attachments").upload(path, file);
       if (error) { console.error("Upload error:", error); continue; }
-      const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
-      const fileUrl = signedUrlData?.signedUrl || '';
+      const { data: publicUrlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
+      const fileUrl = publicUrlData?.publicUrl || '';
       newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
       if (file.type.startsWith("image/")) {
         contentAppend += `\n![${file.name}](${fileUrl})\n`;
@@ -120,6 +121,13 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             >
               <BookOpen className="h-5 w-5 text-primary" />
               <span className="font-serif font-bold text-foreground text-lg">Notebook Archive</span>
+              <Link
+                to="/"
+                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-1"
+                title="Back to Home"
+              >
+                <Home className="h-4 w-4" />
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
