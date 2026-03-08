@@ -520,7 +520,9 @@ export function NoteEditor() {
               },
             } as React.RefObject<HTMLDivElement>}
           />
+          <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
           <SymbolsPicker onInsert={handleSymbolInsert} />
+          <div className="pr-4 sm:pr-8" />
         </div>
 
         {/* Content area */}
