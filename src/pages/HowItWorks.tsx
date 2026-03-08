@@ -57,9 +57,7 @@ function StepReel() {
     if (cancelled.current) return;
     setActiveStep(idx);
     await animate(dotX, measureCircleX(idx), { duration, ease: [0.16, 1, 0.3, 1] });
-    if (cancelled.current) return;
-    await snapPulse();
-  }, [dotX, measureCircleX, snapPulse]);
+  }, [dotX, measureCircleX]);
 
   useEffect(() => {
     cancelled.current = false;
