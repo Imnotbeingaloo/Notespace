@@ -387,12 +387,3 @@ export default function LandingPage() {
     </div>
   );
 }
-          </div>
-          <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Notebook Archive. All rights reserved.
-          </p>
-        </div>
-      </footer>
-    </div>
-  );
-}
