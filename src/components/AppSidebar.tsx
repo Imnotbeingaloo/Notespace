@@ -501,6 +501,53 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
         </div>
       )}
 
+      {/* Smart Tags & Study Planner - above footer */}
+      {!collapsed && (
+        <div className="px-2 space-y-3 mb-2">
+          {/* Smart Tags */}
+          {allTags.length > 0 && (
+            <div>
+              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 flex items-center gap-1.5">
+                <Tag className="h-3 w-3" />
+                Smart Tags
+              </p>
+              <div className="flex flex-wrap gap-1.5 px-1">
+                {allTags.slice(0, 12).map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors cursor-default"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+                {allTags.length > 12 && (
+                  <span className="text-[10px] text-muted-foreground px-1">+{allTags.length - 12} more</span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Study Planner Summary */}
+          {upcomingPlans.length > 0 && (
+            <div>
+              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 flex items-center gap-1.5">
+                <CalendarDays className="h-3 w-3" />
+                Study Planner
+              </p>
+              <div className="space-y-1 px-1">
+                {upcomingPlans.map((plan) => (
+                  <div key={plan.id} className="flex items-center gap-2 py-1 px-1.5 rounded-lg text-xs">
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)}`} />
+                    <span className="text-muted-foreground font-medium min-w-[52px]">{getDayLabel(plan.scheduled_date)}:</span>
+                    <span className="text-foreground truncate">{plan.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Footer */}
       <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
         {/* Trash Link */}
