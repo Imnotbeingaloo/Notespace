@@ -34,6 +34,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     createNote,
     deleteNote,
     updateNote,
+    reorderNotes,
   } = useNotebooks();
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
