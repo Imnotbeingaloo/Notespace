@@ -116,6 +116,7 @@ export function NoteEditor() {
     [activeNotebookId, activeNote?.id, updateNote]
   );
 
+  const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
       setDragOver(false);
