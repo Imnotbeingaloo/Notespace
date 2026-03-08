@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import {
   Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
-  Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare
+  Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare, Highlighter
 } from "lucide-react";
 
 interface MarkdownToolbarProps {
