@@ -577,17 +577,31 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                   {allTags.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5 mb-2">
                       {allTags.map((tag) => (
-                        <button
+                        <span
                           key={tag}
-                          onClick={() => setActiveFilterTag(activeFilterTag === tag ? null : tag)}
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border transition-all duration-150 ${
+                          className={`inline-flex items-center gap-0.5 pl-2 pr-1 py-0.5 rounded-full text-[11px] font-medium border transition-all duration-150 ${
                             activeFilterTag === tag
                               ? "bg-primary text-primary-foreground border-primary shadow-sm"
                               : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
                           }`}
                         >
-                          #{tag}
-                        </button>
+                          <button
+                            onClick={() => setActiveFilterTag(activeFilterTag === tag ? null : tag)}
+                            className="hover:opacity-80"
+                          >
+                            #{tag}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveTag(tag);
+                            }}
+                            className="ml-0.5 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive transition-colors"
+                            title={`Remove #${tag} from all notes`}
+                          >
+                            <X className="h-2.5 w-2.5" />
+                          </button>
+                        </span>
                       ))}
                     </div>
                   ) : (
