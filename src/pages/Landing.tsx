@@ -73,7 +73,7 @@ export default function LandingPage() {
         } else {
           setTypingText("");
         }
-      }, 400);
+      }, 80);
       return () => clearTimeout(timeout);
     }
   }, [visibleLines, currentCharIndex]);
