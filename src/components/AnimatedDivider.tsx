@@ -14,7 +14,7 @@ export default function AnimatedDivider() {
             whileInView={{ scaleX: 1, opacity: 1 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent origin-left"
+            className="flex-1 h-px bg-gradient-to-r from-transparent via-foreground/15 to-transparent origin-left"
           />
           <motion.div
             initial={{ scale: 0, opacity: 0, rotate: -45 }}
@@ -23,8 +23,8 @@ export default function AnimatedDivider() {
             transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 200 }}
             className="relative flex items-center justify-center"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-border/60 flex items-center justify-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary/50" />
+             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/15 to-accent/15 border border-foreground/10 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary/70" />
             </div>
           </motion.div>
           <motion.div
@@ -32,7 +32,7 @@ export default function AnimatedDivider() {
             whileInView={{ scaleX: 1, opacity: 1 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent origin-right"
+            className="flex-1 h-px bg-gradient-to-r from-transparent via-foreground/15 to-transparent origin-right"
           />
         </div>
       </div>
