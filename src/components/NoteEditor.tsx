@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Plus, Upload, MoreHorizontal, Layers, Cloud, Check, Loader2, Search as SearchIcon } from "lucide-react";
+import { FileText, Clock, Plus, Upload, MoreHorizontal, Layers, Cloud, Check, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
