@@ -131,13 +131,6 @@ function StepReel() {
           </div>
         </motion.div>
 
-        <motion.div
-          className="flex"
-          style={{ x: useMotionValue(0), width: "200%" }}
-        >
-          <motion.div className="flex w-full" style={{ x: slideX.get() !== undefined ? undefined : undefined }}>
-          </motion.div>
-        </motion.div>
         {/* Actual filmstrip */}
         <motion.div
           className="flex"
