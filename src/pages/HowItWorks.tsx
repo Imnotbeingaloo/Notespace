@@ -73,7 +73,6 @@ function StepReel() {
           await nextFrame();
           dotX.set(measureCircleX(0));
           dotScale.set(1);
-          await snapPulse();
           await wait(900);
 
           if (cancelled.current) return;
