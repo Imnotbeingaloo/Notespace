@@ -239,7 +239,76 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* CTA */}
+      {/* Social Proof / Stats */}
+      <section className="container mx-auto px-6 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-5xl mx-auto"
+        >
+          <div className="rounded-[2rem] border border-border bg-card p-8 md:p-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              {[
+                { value: "50K+", label: "Notes created", delay: 0 },
+                { value: "12K+", label: "Happy users", delay: 0.1 },
+                { value: "99.9%", label: "Uptime", delay: 0.2 },
+                { value: "4.8★", label: "User rating", delay: 0.3 },
+              ].map((stat) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: stat.delay, type: "spring", stiffness: 200 }}
+                >
+                  <div className="text-3xl md:text-4xl font-bold text-primary mb-1">{stat.value}</div>
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Testimonials / Use Cases */}
+      <section className="container mx-auto px-6 pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+            Loved by <span className="text-accent">thinkers</span> everywhere
+          </h2>
+        </motion.div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          {[
+            { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
+            { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
+            { quote: "Our team switched from Notion and haven't looked back. The search alone is worth it.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+          ].map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 30, rotate: -1 }}
+              whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.12, type: "spring", stiffness: 150 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
+            >
+              <span className="text-2xl mb-3 block">{t.emoji}</span>
+              <p className="text-sm text-foreground leading-relaxed mb-4 italic">"{t.quote}"</p>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.role}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       <section className="container mx-auto px-6 py-20">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
