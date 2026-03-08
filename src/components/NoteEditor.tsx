@@ -348,7 +348,7 @@ export function NoteEditor() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.25 }}
-        className={`flex-1 flex flex-col items-center w-full editor-surface overflow-hidden relative ${dragOver ? "ring-2 ring-primary/50 ring-inset" : ""}`}
+        className={`flex-1 flex flex-col editor-surface overflow-hidden relative ${dragOver ? "ring-2 ring-primary/50 ring-inset" : ""}`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
