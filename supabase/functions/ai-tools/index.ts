@@ -69,8 +69,8 @@ serve(async (req) => {
     const isAnalyze = action === "analyze";
 
     const userContent = action === "edit"
-      ? `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}\n\nEdit instruction: ${editInstruction}`
-      : `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}`;
+      ? `<note-title>${noteTitle || "Untitled"}</note-title>\n<note-content>${noteContent || "(empty note)"}</note-content>\n<edit-instruction>${editInstruction}</edit-instruction>`
+      : `<note-title>${noteTitle || "Untitled"}</note-title>\n<note-content>${noteContent || "(empty note)"}</note-content>`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
