@@ -25,56 +25,85 @@ const useCases = [
 /* ─── Cinematic 3-at-a-time Filmstrip ─── */
 function StepReel() {
   const slideX = useMotionValue(0);
-  const stepProgress = useMotionValue(0); // 0-5 across all steps
   const cancelled = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
+  const dotLeft = useMotionValue(0); // percentage across visible area
+  const dotRotation = useMotionValue(0);
+
+  // Each card is 33.33% of visible width.
+  // Circle center is at ~4% into each card (the 32px circle's center).
+  // Line end is at ~30% into each card.
+  // Positions for circles 0-2 within visible area:
+  const circlePos = [2.5, 35.8, 69.2]; // % positions of each circle center
 
   useEffect(() => {
     cancelled.current = false;
     const run = async () => {
       while (!cancelled.current) {
-        // Animate through steps 0-2 (group 1)
-        for (let i = 0; i <= 2; i++) {
-          if (cancelled.current) return;
-          await animate(stepProgress, i, {
-            duration: i === 0 ? 0 : 0.5,
-            ease: [0.16, 1, 0.3, 1],
-            onUpdate: (v) => setActiveStep(Math.round(v)),
-          });
-          await new Promise((r) => setTimeout(r, 1000));
-        }
-        if (cancelled.current) return;
-
-        // Slide filmstrip to group 2 while dot moves to step 3
-        setGroup(1);
-        animate(slideX, -50, { duration: 0.6, ease: [0.16, 1, 0.3, 1] });
-        await animate(stepProgress, 3, {
-          duration: 0.6,
-          ease: [0.16, 1, 0.3, 1],
-          onUpdate: (v) => setActiveStep(Math.round(v)),
-        });
+        // Start at circle 0
+        dotLeft.set(circlePos[0]);
+        dotRotation.set(0);
+        setActiveStep(0);
+        setGroup(0);
         await new Promise((r) => setTimeout(r, 1000));
 
-        // Steps 4-5
-        for (let i = 4; i <= 5; i++) {
-          if (cancelled.current) return;
-          await animate(stepProgress, i, {
-            duration: 0.5,
-            ease: [0.16, 1, 0.3, 1],
-            onUpdate: (v) => setActiveStep(Math.round(v)),
-          });
-          await new Promise((r) => setTimeout(r, 1000));
-        }
+        // Circle 0 → Circle 1
         if (cancelled.current) return;
+        setActiveStep(1);
+        await Promise.all([
+          animate(dotLeft, circlePos[1], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
+          animate(dotRotation, 360, { duration: 0.7, ease: "linear" }),
+        ]);
+        await new Promise((r) => setTimeout(r, 1000));
+
+        // Circle 1 → Circle 2
+        if (cancelled.current) return;
+        setActiveStep(2);
+        await Promise.all([
+          animate(dotLeft, circlePos[2], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
+          animate(dotRotation, 720, { duration: 0.7, ease: "linear" }),
+        ]);
+        await new Promise((r) => setTimeout(r, 1000));
+
+        // Slide filmstrip to group 2 + move dot to circle 3's position
+        if (cancelled.current) return;
+        setGroup(1);
+        setActiveStep(3);
+        // Dot needs to appear at circle 3 position (which is circlePos[0] in new visible area)
+        await Promise.all([
+          animate(slideX, -50, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+          animate(dotLeft, circlePos[0], { duration: 0.01 }),
+          animate(dotRotation, 720, { duration: 0.01 }),
+        ]);
+        await new Promise((r) => setTimeout(r, 1000));
+
+        // Circle 3 → Circle 4
+        if (cancelled.current) return;
+        setActiveStep(4);
+        await Promise.all([
+          animate(dotLeft, circlePos[1], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
+          animate(dotRotation, 1080, { duration: 0.7, ease: "linear" }),
+        ]);
+        await new Promise((r) => setTimeout(r, 1000));
+
+        // Circle 4 → Circle 5
+        if (cancelled.current) return;
+        setActiveStep(5);
+        await Promise.all([
+          animate(dotLeft, circlePos[2], { duration: 0.7, ease: [0.16, 1, 0.3, 1] }),
+          animate(dotRotation, 1440, { duration: 0.7, ease: "linear" }),
+        ]);
+        await new Promise((r) => setTimeout(r, 1200));
 
         // Reset
-        await new Promise((r) => setTimeout(r, 400));
-        setGroup(0);
+        if (cancelled.current) return;
         await animate(slideX, 0, { duration: 0 });
-        await animate(stepProgress, 0, { duration: 0 });
+        dotLeft.set(circlePos[0]);
+        dotRotation.set(0);
         setActiveStep(0);
-        await new Promise((r) => setTimeout(r, 300));
+        setGroup(0);
+        await new Promise((r) => setTimeout(r, 400));
       }
     };
     run();
@@ -82,77 +111,63 @@ function StepReel() {
   }, []);
 
   const translateX = useTransform(slideX, (v) => `${v}%`);
+  const dotLeftPx = useTransform(dotLeft, (v) => `${v}%`);
 
-  // The dot position: within the visible 3 cards, the dot sits on the connector line
-  // Each card is 1/6 of 200% width = 1/3 of visible width
-  // Dot moves relative to visible area based on (activeStep % 3)
-  const DOT_SIZE = 22;
-
-  // Position the dot along the connector lines of the visible 3 cards
-  // Each step card is 33.33% wide. The number circle is at the left edge (~16px in).
-  // The connector line stretches from after the number to the right edge.
-  // We want the dot to be at the middle of the connector line of the active step.
-  const dotLeftInGroup = useTransform(stepProgress, (v) => {
-    const inGroup = v % 3; // 0, 1, 2 within current visible group
-    // Each card = 33.33% of container. Dot should be ~65% across each card (middle of the line)
-    const pct = (inGroup * 33.33) + 20; // 20% into each card (on the connector line)
-    return `${pct}%`;
-  });
-
-  const dotRotation = useTransform(stepProgress, [0, 5], [0, 1080]);
+  const DOT_SIZE = 32;
 
   return (
     <div className="relative">
       {/* ── Filmstrip: 6 cards, show 3 at a time ── */}
       <div className="overflow-hidden relative">
+        {/* Rolling dot overlay — sits on top of the entire visible area */}
+        <motion.div
+          className="absolute top-[12px] z-30 pointer-events-none"
+          style={{
+            left: dotLeftPx,
+            width: DOT_SIZE,
+            height: DOT_SIZE,
+            marginLeft: -(DOT_SIZE / 2),
+          }}
+        >
+          <motion.div
+            className="w-full h-full rounded-full border-2 border-primary bg-background"
+            style={{
+              rotate: dotRotation,
+              boxShadow: "0 0 12px hsl(var(--primary) / 0.4)",
+            }}
+          >
+            <div className="w-full h-full relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-primary" />
+              </div>
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-[6px] bg-primary/40" />
+            </div>
+          </motion.div>
+        </motion.div>
+
         <motion.div
           className="flex"
           style={{ x: translateX, width: "200%" }}
         >
           {steps.map((step, idx) => (
-            <div key={step.title} className="w-[calc(100%/6)] px-4 flex-shrink-0">
+            <div key={step.title} className="w-[calc(100%/6)] px-5 flex-shrink-0">
               {/* Step number + connector line */}
-              <div className="flex items-center gap-3 mb-4 relative">
+              <div className="flex items-center gap-3 mb-5 relative">
                 <motion.div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 flex-shrink-0"
                   animate={{
-                    backgroundColor: activeStep === idx ? "hsl(var(--primary))" : "hsl(var(--primary))",
-                    color: "hsl(var(--primary-foreground))",
+                    backgroundColor: activeStep === idx ? "hsl(var(--primary))" : "hsl(var(--muted))",
+                    color: activeStep === idx ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
                     scale: activeStep === idx ? 1.15 : 1,
                   }}
                   transition={{ duration: 0.3 }}
                 >
                   {idx + 1}
                 </motion.div>
-                <div className="flex-1 h-px bg-border relative">
-                  {/* Rolling dot on the active step's line */}
-                  {activeStep === idx && (
-                    <motion.div
-                      className="absolute top-1/2 z-20 pointer-events-none"
-                      initial={{ left: "0%", marginTop: -(DOT_SIZE / 2) }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                      style={{ width: DOT_SIZE, height: DOT_SIZE, marginLeft: -(DOT_SIZE / 2) }}
-                    >
-                      <motion.div
-                        className="w-full h-full rounded-full border-2 border-primary bg-background"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 0.8, ease: "linear" }}
-                        style={{ boxShadow: "0 0 10px hsl(var(--primary) / 0.35)" }}
-                      >
-                        <div className="w-full h-full relative">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                          </div>
-                          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-[5px] bg-primary/40" />
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </div>
+                <div className="flex-1 h-px bg-border" />
               </div>
-              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                <step.icon className="h-5 w-5 text-primary" />
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <step.icon className="h-6 w-6 text-primary" />
               </div>
               <h3 className="font-serif text-lg font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
@@ -275,7 +290,7 @@ export default function HowItWorksPage() {
 
       {/* Step Reel */}
       <section className="py-28">
-        <div className="container mx-auto px-6 max-w-3xl">
+        <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps to smarter notes</h2>
             <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold — each step builds on the last.</p>
