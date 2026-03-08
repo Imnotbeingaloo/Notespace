@@ -347,13 +347,13 @@ export function NoteEditor() {
 
   if (!activeNotebook) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center w-full editor-surface">
+      <div className="flex-1 flex flex-col items-center justify-start pt-24 w-full editor-surface">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 text-center">
-          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center">
-            <FileText className="h-9 w-9 text-muted-foreground" />
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+            <FileText className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="font-sans text-2xl font-bold text-foreground text-center">No notebook selected</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed text-center">Select a notebook from the sidebar or create a new one to get started.</p>
+          <h2 className="font-sans text-xl font-bold text-foreground">No notebook selected</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">Select a notebook from the sidebar or create a new one to get started.</p>
         </motion.div>
       </div>
     );
@@ -361,20 +361,20 @@ export function NoteEditor() {
 
   if (!activeNote) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center w-full editor-surface">
+      <div className="flex-1 flex flex-col items-center justify-start pt-24 w-full editor-surface">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 text-center">
-          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center">
-            <span className="text-4xl">{activeNotebook.emoji}</span>
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+            <span className="text-3xl">{activeNotebook.emoji}</span>
           </div>
-          <h2 className="font-sans text-2xl font-bold text-foreground text-center">{activeNotebook.name}</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed text-center">
+          <h2 className="font-sans text-xl font-bold text-foreground">{activeNotebook.name}</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
             {activeNotebook.notes.length === 0
               ? "This notebook is empty. Create your first note!"
               : `${activeNotebook.notes.length} note${activeNotebook.notes.length > 1 ? "s" : ""} — select one to edit.`}
           </p>
           <button
             onClick={() => activeNotebookId && createNote(activeNotebookId)}
-            className="magnetic-btn inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
+            className="magnetic-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
           >
             <Plus className="h-4 w-4" />
             New Note
