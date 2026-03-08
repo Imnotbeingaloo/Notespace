@@ -251,23 +251,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Separator ── */}
-      <div className="py-2"><SectionDivider /></div>
-
-      {/* ── Why Notebook Archive ── */}
-      <section className="container mx-auto px-6 py-16 max-w-3xl text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Note-taking that <span className="text-primary">thinks</span> with you
-          </h2>
-          <p className="text-muted-foreground leading-relaxed mb-4">
-            Most note apps are glorified text editors. Notebook Archive is different — it's built with AI at its core, designed to help you not just capture information, but actually understand it.
-          </p>
-          <p className="text-muted-foreground leading-relaxed">
-            Write naturally in markdown, and let AI handle the heavy lifting — from explaining complex topics to auto-tagging concepts and connecting related ideas across all your notebooks.
-          </p>
-        </motion.div>
-      </section>
 
       {/* ── Separator ── */}
       <div className="py-2"><SectionDivider /></div>
