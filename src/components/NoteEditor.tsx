@@ -539,17 +539,6 @@ export function NoteEditor() {
                 <FlashcardsButton />
                 <AnalyzeButton />
                 <SymbolsPicker onInsert={handleSymbolInsert} />
-                <button
-                  onClick={() => setPreview((p) => !p)}
-                  className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
-                    preview
-                      ? "bg-primary/10 text-primary shadow-sm"
-                      : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                  {preview ? "Edit" : "Preview"}
-                </button>
               </div>
 
               {/* Mobile: "More" dropdown */}
