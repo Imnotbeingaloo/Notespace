@@ -293,43 +293,58 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
-      {/* Why It Matters — staggered split layout */}
+      {/* Why It Matters — alternating zigzag */}
       <section className="py-28 overflow-hidden">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
             <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">The Problem We Solve</span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Why it matters</h2>
-            <p className="text-muted-foreground max-w-xl leading-relaxed">
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
               Traditional note-taking is broken. You write things down, file them away, and never look at them again.
             </p>
           </motion.div>
-          <div className="grid md:grid-cols-2 gap-x-16 gap-y-14">
+
+          <div className="relative">
+            {/* Vertical connector line */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2 hidden md:block" />
+
             {[
-              { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50%.", accent: "172 50% 36%" },
-              { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it connects to your math notes.", accent: "32 80% 55%" },
-              { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies. Just write, and the AI handles organization. Your knowledge graph builds itself.", accent: "172 50% 36%" },
-              { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday.", accent: "32 80% 55%" },
-            ].map((item, i) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="group"
-              >
-                <div className="flex items-start gap-4">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg font-bold font-mono"
-                    style={{ background: `hsl(${item.accent} / 0.1)`, color: `hsl(${item.accent})` }}
-                  >
-                    {i + 1}
+              { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50%.", icon: Brain },
+              { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it connects to your math notes.", icon: Sparkles },
+              { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies. Just write, and the AI handles organization. Your knowledge graph builds itself.", icon: PenLine },
+              { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday.", icon: Search },
+            ].map((item, i) => {
+              const isLeft = i % 2 === 0;
+              return (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: isLeft ? -40 : 40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className={`relative flex flex-col md:flex-row items-center gap-6 md:gap-12 mb-20 last:mb-0 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"}`}
+                >
+                  {/* Content card */}
+                  <div className={`flex-1 ${isLeft ? "md:text-right" : "md:text-left"}`}>
+                    <div className={`rounded-2xl border border-border bg-card p-6 md:p-8 group hover:border-primary/30 transition-colors duration-300`}>
+                      <h3 className="font-serif text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-serif text-base font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+
+                  {/* Center dot on the line */}
+                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
+                    <item.icon className="h-5 w-5 text-primary" />
                   </div>
-                </div>
+
+                  {/* Spacer for the other side */}
+                  <div className="flex-1 hidden md:block" />
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
               </motion.div>
             ))}
           </div>
