@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { BookOpen, Sparkles, Search, Paperclip, FileText, Eye, ArrowRight } from "lucide-react";
+import { BookOpen, Sparkles, Search, Paperclip, FileText, Eye, ArrowRight, Brain, Mic, FileOutput } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
 
 const features = [
   {
