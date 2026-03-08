@@ -16,6 +16,7 @@ export interface Note {
   title: string;
   content: string;
   attachments: Attachment[];
+  tags: string[];
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
