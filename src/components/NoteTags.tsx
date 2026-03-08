@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tag, Loader2, Sparkles, X } from "lucide-react";
+import { Tag, Loader2, Sparkles, X, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -14,6 +15,8 @@ interface NoteTagsProps {
 
 export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsProps) {
   const [loading, setLoading] = useState(false);
+  const [showInput, setShowInput] = useState(false);
+  const [newTag, setNewTag] = useState("");
 
   const autoTag = async () => {
     setLoading(true);
@@ -67,6 +70,17 @@ export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsPr
     onTagsUpdated(newTags);
   };
 
+  const addTag = async () => {
+    const tag = newTag.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!tag) return;
+    if (tags.includes(tag)) { setNewTag(""); return; }
+    const updated = [...tags, tag];
+    await supabase.from("notes").update({ tags: updated } as any).eq("id", noteId);
+    onTagsUpdated(updated);
+    setNewTag("");
+    setShowInput(false);
+  };
+
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
       <AnimatePresence>
@@ -90,6 +104,37 @@ export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsPr
           </motion.span>
         ))}
       </AnimatePresence>
+
+      {/* Inline add tag */}
+      {showInput ? (
+        <motion.div
+          initial={{ opacity: 0, width: 0 }}
+          animate={{ opacity: 1, width: "auto" }}
+          exit={{ opacity: 0, width: 0 }}
+          className="inline-flex items-center gap-1"
+        >
+          <Input
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") addTag();
+              if (e.key === "Escape") { setShowInput(false); setNewTag(""); }
+            }}
+            placeholder="tag..."
+            className="h-5 w-20 text-[10px] px-1.5 py-0 rounded-full border-primary/30"
+            autoFocus
+          />
+        </motion.div>
+      ) : (
+        <button
+          onClick={() => setShowInput(true)}
+          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+          title="Add tag"
+        >
+          <Plus className="h-2.5 w-2.5" />
+        </button>
+      )}
+
       <button
         onClick={autoTag}
         disabled={loading}
