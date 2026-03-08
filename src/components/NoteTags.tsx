@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tag, Loader2, Sparkles, Lock } from "lucide-react";
+import { Tag, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useProGate } from "@/hooks/use-pro-gate";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -15,14 +14,8 @@ interface NoteTagsProps {
 
 export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsProps) {
   const [loading, setLoading] = useState(false);
-  const { isPro, requirePro } = useProGate();
 
   const autoTag = async () => {
-    if (!isPro) {
-      requirePro("Smart Auto-tagging");
-      return;
-    }
-
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -96,7 +89,6 @@ export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsPr
           <Sparkles className="h-2.5 w-2.5" />
         )}
         Auto-tag
-        {!isPro && <Lock className="h-2 w-2 ml-0.5 opacity-50" />}
       </button>
     </div>
   );

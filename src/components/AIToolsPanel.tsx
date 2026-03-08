@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Layers, X, Loader2, Lock } from "lucide-react";
+import { BookOpen, Layers, X, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useProGate } from "@/hooks/use-pro-gate";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -13,7 +12,6 @@ type ToolMode = "summarize" | "flashcards";
 
 export function AIToolsPanel() {
   const { activeNote } = useNotebooks();
-  const { isPro, requirePro } = useProGate();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<ToolMode>("summarize");
   const [result, setResult] = useState("");
@@ -21,10 +19,6 @@ export function AIToolsPanel() {
   const [error, setError] = useState("");
 
   const runTool = async (toolMode: ToolMode) => {
-    if (!isPro) {
-      requirePro(toolMode === "summarize" ? "AI Summaries" : "Flashcard Generation");
-      return;
-    }
     if (!activeNote) return;
     setMode(toolMode);
     setOpen(true);
@@ -108,7 +102,6 @@ export function AIToolsPanel() {
         >
           <BookOpen className="h-3.5 w-3.5" />
           Summarize
-          {!isPro && <Lock className="h-2.5 w-2.5 ml-0.5 opacity-50" />}
         </button>
         <button
           onClick={() => runTool("flashcards")}
@@ -117,7 +110,6 @@ export function AIToolsPanel() {
         >
           <Layers className="h-3.5 w-3.5" />
           Flashcards
-          {!isPro && <Lock className="h-2.5 w-2.5 ml-0.5 opacity-50" />}
         </button>
       </div>
 

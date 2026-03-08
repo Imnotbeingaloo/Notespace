@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Lock } from "lucide-react";
-import { useProGate } from "@/hooks/use-pro-gate";
+import { Mic, MicOff } from "lucide-react";
 
 interface VoiceTranscriptionProps {
   onTranscript: (text: string) => void;
@@ -10,16 +9,10 @@ interface VoiceTranscriptionProps {
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<any>(null);
-  const { isPro, requirePro } = useProGate();
 
   const isSupported = typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
 
   const toggleListening = useCallback(() => {
-    if (!isPro) {
-      requirePro("Voice Transcription");
-      return;
-    }
-
     if (listening) {
       recognitionRef.current?.stop();
       setListening(false);
@@ -47,7 +40,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     recognitionRef.current = recognition;
     recognition.start();
     setListening(true);
-  }, [listening, onTranscript, isPro, requirePro]);
+  }, [listening, onTranscript]);
 
   if (!isSupported) return null;
 
@@ -59,7 +52,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
           ? "bg-destructive/10 text-destructive border border-destructive/30 animate-pulse-glow"
           : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
       }`}
-      title={listening ? "Stop recording" : "Voice to text (Pro)"}
+      title={listening ? "Stop recording" : "Voice to text"}
     >
       <AnimatePresence mode="wait">
         {listening ? (
@@ -73,7 +66,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
         )}
       </AnimatePresence>
       {listening ? "Stop" : "Voice"}
-      {!isPro && !listening && <Lock className="h-2.5 w-2.5 ml-0.5 opacity-50" />}
     </button>
   );
 }
