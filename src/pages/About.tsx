@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight } from "lucide-react";
+import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight, BookOpen, Eye } from "lucide-react";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
@@ -23,6 +24,78 @@ const timeline = [
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
 
+function RevealCard({ emoji, label, title, titleHighlight, description, delay = 0 }: {
+  emoji: string; label: string; title: string; titleHighlight?: string; description: string; delay?: number;
+}) {
+  const [revealed, setRevealed] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
+      onClick={() => setRevealed(true)}
+      className="group relative rounded-[2rem] border border-border bg-card overflow-hidden cursor-pointer hover:border-primary/30 transition-all duration-300 min-h-[260px]"
+    >
+      {/* Front face */}
+      <motion.div
+        animate={{ opacity: revealed ? 0 : 1, filter: revealed ? "blur(10px)" : "blur(0px)" }}
+        transition={{ duration: 0.4 }}
+        className="absolute inset-0 flex flex-col items-center justify-center p-8 pointer-events-none"
+      >
+        <span className="text-5xl mb-4">{emoji}</span>
+        <p className="text-xs uppercase tracking-widest font-mono text-muted-foreground mb-2">{label}</p>
+        <p className="font-serif text-xl font-bold text-foreground text-center">{titleHighlight ? <>{title} <span className="text-primary">{titleHighlight}</span></> : title}</p>
+        <p className="text-xs text-muted-foreground mt-4 opacity-60">Tap to reveal</p>
+      </motion.div>
+      {/* Back face */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: revealed ? 1 : 0 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
+        className="relative z-10 p-8 h-full flex flex-col justify-center"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="relative z-10">
+          <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">{label}</p>
+          <p className="font-serif text-xl font-bold text-foreground mb-4">{titleHighlight ? <>{title} <span className="text-primary">{titleHighlight}</span></> : title}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function PhilosophySection() {
+  return (
+    <section className="bg-foreground/[0.03] py-24">
+      <div className="container mx-auto px-6 max-w-4xl">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">Our Philosophy</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Two ways to think about notes</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">We rethought what a note-taking app should be from the ground up.</p>
+        </motion.div>
+        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+          <RevealCard
+            emoji="📁"
+            label="The Old Way"
+            title="Storing information"
+            description="Most apps give you a blank page and leave the rest to you. Your notes sit in folders, disconnected and forgotten. No context, no connections, no intelligence."
+          />
+          <RevealCard
+            emoji="🧠"
+            label="Our Way"
+            title="Understanding"
+            titleHighlight="information"
+            description="We use AI to explain concepts, connect ideas, and help you actually learn from what you write. Your notes become a living knowledge base that grows smarter with you."
+            delay={0.1}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function AboutPage() {
   const { user } = useAuth();
 
@@ -44,53 +117,83 @@ export default function AboutPage() {
 
       <AnimatedDivider />
 
-      {/* Mission Statement */}
-      <section className="py-20">
+      {/* Mission & Approach — Zigzag */}
+      <section className="py-24">
         <div className="container mx-auto px-6 max-w-4xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -30, y: 20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
-                <Target className="h-6 w-6 text-primary" />
+          <div className="relative">
+            {/* Vertical connector line */}
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
+              <motion.div
+                initial={{ scaleY: 0 }}
+                whileInView={{ scaleY: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full w-full bg-border origin-top"
+              />
+            </div>
+
+            <div className="flex flex-col gap-20">
+              {/* Mission — left */}
+              <div className="md:grid md:grid-cols-2 md:gap-16 items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                >
+                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(600px_circle_at_50%_50%,hsl(var(--primary)/0.06),transparent_70%)]" />
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                      <Target className="h-6 w-6 text-primary" />
+                    </div>
+                    <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Mission</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-3">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge.</p>
+                    <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
+                  </div>
+                </motion.div>
+                <div className="hidden md:flex items-center justify-start relative">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                    className="absolute left-1/2 -translate-x-[calc(50%+50%)] w-4 h-4 rounded-full bg-primary border-4 border-background shadow-lg shadow-primary/25"
+                    style={{ left: 0, transform: "translateX(-200%)" }}
+                  />
+                </div>
               </div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Mission</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge that can be searched, connected, and understood.</p>
-              <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30, y: 20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}>
-              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                <Layers className="h-6 w-6 text-accent" />
+
+              {/* Approach — right */}
+              <div className="md:grid md:grid-cols-2 md:gap-16 items-center">
+                <div className="hidden md:block" />
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-accent/30 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                >
+                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(600px_circle_at_50%_50%,hsl(var(--accent)/0.06),transparent_70%)]" />
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
+                      <Layers className="h-6 w-6 text-accent" />
+                    </div>
+                    <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Approach</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-3">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
+                    <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
+                  </div>
+                </motion.div>
               </div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Approach</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
-              <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
 
       <AnimatedDivider />
 
-      {/* Philosophy */}
-      <section className="bg-foreground/[0.03] py-24">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Philosophy</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">We rethought what a note-taking app should be from the ground up.</p>
-          </motion.div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto mt-10">
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="rounded-[2rem] border border-border bg-card p-8">
-              <p className="text-muted-foreground text-sm mb-2">Most note apps focus on:</p>
-              <p className="font-serif text-xl font-bold text-foreground mb-3">Storing information</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">They give you a blank page and leave the rest to you. Your notes sit in folders, disconnected and forgotten.</p>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="rounded-[2rem] border border-primary/30 bg-primary/5 p-8">
-              <p className="text-muted-foreground text-sm mb-2">We focus on:</p>
-              <p className="font-serif text-xl font-bold text-foreground mb-3"><span className="text-primary">Understanding</span> information</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">We use AI to explain concepts, connect ideas, and help you actually learn from what you write.</p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      {/* Philosophy — Reveal Cards */}
+      <PhilosophySection />
 
       <AnimatedDivider />
 
