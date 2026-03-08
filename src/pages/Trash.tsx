@@ -119,6 +119,25 @@ function TrashPageContent() {
     );
   };
 
+  // Keyboard shortcuts: Ctrl+A to select all, Delete to bulk delete
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+        e.preventDefault();
+        if (allKeys.size > 0) {
+          setSelected((prev) => prev.size === allKeys.size ? new Set() : new Set(allKeys));
+        }
+      }
+      if ((e.key === "Delete" || e.key === "Backspace") && someSelected && !confirmOpen) {
+        e.preventDefault();
+        handleBulkDelete();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [allKeys, someSelected, confirmOpen, handleBulkDelete]);
+
   const handleEmptyTrash = () => {
     const parts: string[] = [];
     if (trashedNotebooks.length > 0) parts.push(`${trashedNotebooks.length} notebook${trashedNotebooks.length !== 1 ? "s" : ""}`);
