@@ -411,13 +411,13 @@ export function NoteEditor() {
 
   if (!activeNotebook) {
     return (
-      <div className="flex-1 flex items-center justify-center editor-surface">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
-          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-6">
+      <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[60vh] editor-surface">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 text-center">
+          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center">
             <FileText className="h-9 w-9 text-muted-foreground" />
           </div>
-          <h2 className="font-sans text-2xl font-bold text-foreground mb-3">No notebook selected</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">Select a notebook from the sidebar or create a new one to get started.</p>
+          <h2 className="font-sans text-2xl font-bold text-foreground text-center">No notebook selected</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed text-center">Select a notebook from the sidebar or create a new one to get started.</p>
         </motion.div>
       </div>
     );
@@ -425,13 +425,13 @@ export function NoteEditor() {
 
   if (!activeNote) {
     return (
-      <div className="flex-1 flex items-center justify-center editor-surface">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
-          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-3">
+      <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[60vh] editor-surface">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 text-center">
+          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center">
             <span className="text-4xl">{activeNotebook.emoji}</span>
           </div>
-          <h2 className="font-sans text-2xl font-bold text-foreground mb-2">{activeNotebook.name}</h2>
-          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+          <h2 className="font-sans text-2xl font-bold text-foreground text-center">{activeNotebook.name}</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed text-center">
             {activeNotebook.notes.length === 0
               ? "This notebook is empty. Create your first note!"
               : `${activeNotebook.notes.length} note${activeNotebook.notes.length > 1 ? "s" : ""} — select one to edit.`}

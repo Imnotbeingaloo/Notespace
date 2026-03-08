@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, RotateCcw, BookOpen, FileText, ArrowLeft, Clock, AlertTriangle, CheckSquare, Square } from "lucide-react";
@@ -66,7 +66,6 @@ function TrashPageContent() {
     trashedNotes.forEach(({ note }) => keys.add(noteKey(note.id)));
     return keys;
   }, [trashedNotebooks, trashedNotes]);
-
   const allSelected = selected.size > 0 && selected.size === allKeys.size;
   const someSelected = selected.size > 0;
 
@@ -119,6 +118,25 @@ function TrashPageContent() {
       "Delete Selected"
     );
   };
+
+  // Keyboard shortcuts: Ctrl+A to select all, Delete to bulk delete
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+        e.preventDefault();
+        if (allKeys.size > 0) {
+          setSelected((prev) => prev.size === allKeys.size ? new Set() : new Set(allKeys));
+        }
+      }
+      if ((e.key === "Delete" || e.key === "Backspace") && someSelected && !confirmOpen) {
+        e.preventDefault();
+        handleBulkDelete();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [allKeys, someSelected, confirmOpen, handleBulkDelete]);
 
   const handleEmptyTrash = () => {
     const parts: string[] = [];
