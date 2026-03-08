@@ -12,7 +12,6 @@ type ToolMode = "summarize" | "flashcards";
 
 export function AIToolsPanel() {
   const { activeNote } = useNotebooks();
-  const { isPro, requirePro } = useProGate();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<ToolMode>("summarize");
   const [result, setResult] = useState("");
