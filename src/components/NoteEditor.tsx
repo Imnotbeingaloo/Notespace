@@ -539,6 +539,7 @@ export function NoteEditor() {
                 <AIExplainPanel />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
                 <FlashcardsButton />
+                <AnalyzeButton />
                 <SymbolsPicker onInsert={handleSymbolInsert} />
                 <button
                   onClick={() => setPreview((p) => !p)}
