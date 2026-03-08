@@ -89,11 +89,9 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
           title="Insert Symbol">
-          
-          <span className="font-bold text-lg font-sans">Ω</span>
-          <span className="hidden sm:inline"></span>
+          <span className="text-sm font-medium leading-none">Ω</span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end" sideOffset={8}>
