@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
+import { PageHeader } from "@/components/PageHeader";
 
 const steps = [
   { icon: FolderOpen, title: "Create a Notebook", description: "Organize your notes by topic, class, or project. Each notebook is a dedicated space for related ideas." },
