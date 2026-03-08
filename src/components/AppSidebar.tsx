@@ -193,8 +193,13 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
 
       {!collapsed && (
         <div className="flex-1 overflow-y-auto p-2 scrollbar-thin">
+          {/* Search */}
+          <div className="mb-1.5">
+            <SearchDialog />
+          </div>
+
           {/* Quick Note Input */}
-          <div className="mb-2">
+          <div className="mb-1.5">
             <div className="flex gap-1">
               <Input
                 value={quickNote}
@@ -209,33 +214,25 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             </div>
           </div>
 
-
-
-
-          {/* Search */}
-          <div className="mb-2">
-            <SearchDialog />
+          {/* Actions */}
+          <div className="flex gap-1 mb-2">
+            <button
+              onClick={() => sidebarUploadRef.current?.click()}
+              disabled={sidebarUploading}
+              className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+            >
+              <Upload className="h-3.5 w-3.5" />
+              {sidebarUploading ? "..." : "Upload"}
+            </button>
+            <button
+              onClick={() => setShowNewNotebook(true)}
+              className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              New Notebook
+            </button>
           </div>
-
-          {/* Quick Upload Button */}
-          <button
-            onClick={() => sidebarUploadRef.current?.click()}
-            disabled={sidebarUploading}
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1 magnetic-btn"
-          >
-            <Upload className="h-4 w-4" />
-            {sidebarUploading ? "Uploading..." : "Upload to note"}
-          </button>
           <input ref={sidebarUploadRef} type="file" multiple className="hidden" onChange={handleSidebarUpload} />
-
-          {/* New Notebook Button */}
-          <button
-            onClick={() => setShowNewNotebook(true)}
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1 magnetic-btn"
-          >
-            <Plus className="h-4 w-4" />
-            New Notebook
-          </button>
 
           {/* New Notebook Input */}
           <AnimatePresence>
