@@ -297,6 +297,7 @@ export default function LandingPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </div>
             ))}
+          </div>
         </div>
       </section>
 
