@@ -2,14 +2,19 @@ import { useState } from "react";
 import { NotebookProvider } from "@/context/NotebookContext";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
+import { StudyPlanner } from "@/components/StudyPlanner";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { CalendarDays, Loader2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [plannerOpen, setPlannerOpen] = useState(false);
   const isMobile = useIsMobile();
 
   if (authLoading) {
@@ -62,8 +67,36 @@ const AppPage = () => {
               Open Sidebar
             </button>
           )}
-          <NoteEditor />
+          <div className="flex-1 flex min-h-0">
+            <div className="flex-1 min-w-0">
+              <NoteEditor />
+            </div>
+            {/* Study Planner panel */}
+            <AnimatePresence>
+              {plannerOpen && <StudyPlanner onClose={() => setPlannerOpen(false)} />}
+            </AnimatePresence>
+          </div>
         </div>
+
+        {/* Floating planner toggle */}
+        {!plannerOpen && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setPlannerOpen(true)}
+                  size="icon"
+                  className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-2xl shadow-lg shadow-primary/25"
+                >
+                  <CalendarDays className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p>Study Planner</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
     </NotebookProvider>
   );
