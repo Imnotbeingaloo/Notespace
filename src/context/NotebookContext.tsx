@@ -194,19 +194,49 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  // Soft delete note
   const deleteNote = useCallback(async (notebookId: string, noteId: string) => {
     const now = new Date().toISOString();
-    await supabase.from("notes").update({ deleted_at: now } as any).eq("id", noteId);
+    const nb = allNotebooks.find((n) => n.id === notebookId);
+    const note = nb?.notes.find((n) => n.id === noteId);
+    // Optimistically soft-delete
     setAllNotebooks((prev) =>
-      prev.map((nb) =>
-        nb.id === notebookId
-          ? { ...nb, notes: nb.notes.map((n) => n.id === noteId ? { ...n, deleted_at: now } : n) }
-          : nb
+      prev.map((n) =>
+        n.id === notebookId
+          ? { ...n, notes: n.notes.map((nt) => nt.id === noteId ? { ...nt, deleted_at: now } : nt) }
+          : n
       )
     );
     if (activeNoteId === noteId) setActiveNoteId(null);
-  }, [activeNoteId]);
+
+    let undone = false;
+    toast(`"${note?.title || "Note"}" moved to trash`, {
+      duration: 5000,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          undone = true;
+          setAllNotebooks((prev) =>
+            prev.map((n) =>
+              n.id === notebookId
+                ? { ...n, notes: n.notes.map((nt) => nt.id === noteId ? { ...nt, deleted_at: null } : nt) }
+                : n
+            )
+          );
+          supabase.from("notes").update({ deleted_at: null } as any).eq("id", noteId).then(() => {});
+        },
+      },
+      onAutoClose: () => {
+        if (!undone) {
+          supabase.from("notes").update({ deleted_at: now } as any).eq("id", noteId).then(() => {});
+        }
+      },
+      onDismiss: () => {
+        if (!undone) {
+          supabase.from("notes").update({ deleted_at: now } as any).eq("id", noteId).then(() => {});
+        }
+      },
+    });
+  }, [activeNoteId, allNotebooks]);
 
   const updateNote = useCallback(
     async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => {
