@@ -239,55 +239,99 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* Social Proof / Stats */}
-      <section className="container mx-auto px-6 py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-5xl mx-auto"
-        >
-          <div className="rounded-[2rem] border border-border bg-card p-8 md:p-12">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              {[
-                { value: "50K+", label: "Notes created", delay: 0 },
-                { value: "12K+", label: "Happy users", delay: 0.1 },
-                { value: "99.9%", label: "Uptime", delay: 0.2 },
-                { value: "4.8★", label: "User rating", delay: 0.3 },
-              ].map((stat) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: stat.delay, type: "spring", stiffness: 200 }}
-                >
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
+      {/* Why Notebook Archive */}
+      <section className="py-14">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-6">
+                Note-taking that <span className="text-primary">thinks</span> with you
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Most note apps are glorified text editors. Notebook Archive is different — it's built with AI at its core, designed to help you not just capture information, but actually understand it.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Whether you're studying for exams, conducting research, or managing projects, our intelligent markdown editor adapts to how you work. Write naturally, and let AI handle the heavy lifting — from generating summaries to connecting related concepts across your notebooks.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "AI explanations that break down complex topics instantly",
+                  "Smart tagging that organizes your notes automatically",
+                  "Lightning-fast search across every notebook you own",
+                ].map((item) => (
+                  <motion.li
+                    key={item}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    className="flex items-start gap-2 text-sm text-foreground"
+                  >
+                    <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    {item}
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="rounded-[2rem] border border-border bg-card p-6 md:p-8"
+            >
+              <div className="space-y-4">
+                <div className="rounded-xl bg-primary/5 border border-primary/10 p-4">
+                  <p className="text-xs font-mono text-muted-foreground mb-1">You write:</p>
+                  <p className="text-sm text-foreground font-medium">Mitochondria are the powerhouse of the cell...</p>
+                </div>
+                <div className="flex items-center justify-center">
+                  <motion.div
+                    animate={{ y: [0, 4, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    <ArrowRight className="h-4 w-4 text-primary rotate-90" />
+                  </motion.div>
+                </div>
+                <div className="rounded-xl bg-accent/5 border border-accent/10 p-4">
+                  <p className="text-xs font-mono text-muted-foreground mb-1">AI explains:</p>
+                  <p className="text-sm text-foreground">Mitochondria generate ATP through oxidative phosphorylation — the process that converts nutrients into usable cellular energy via the electron transport chain.</p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {["#biology", "#cell-structure", "#ATP"].map((tag) => (
+                    <span key={tag} className="text-[11px] font-mono bg-muted text-muted-foreground px-2 py-1 rounded-full">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* Testimonials / Use Cases */}
-      <section className="container mx-auto px-6 pb-10">
+      {/* Testimonials */}
+      <section className="container mx-auto px-6 py-14">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-            Loved by <span className="text-accent">thinkers</span> everywhere
+            Trusted by <span className="text-accent">professionals</span> and students
           </h2>
+          <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
+            See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools.
+          </p>
         </motion.div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
           {[
-            { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
-            { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-            { quote: "Our team switched from Notion and haven't looked back. The search alone is worth it.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+            { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
+            { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
+            { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
           ].map((t, i) => (
             <motion.div
               key={t.name}
