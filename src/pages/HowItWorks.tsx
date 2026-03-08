@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useMotionValue, animate, useTransform } from "framer-motion";
+import { motion, useMotionValue, animate, useScroll, useTransform } from "framer-motion";
 import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput } from "lucide-react";
 import { Link } from "react-router-dom";
 import AnimatedDivider from "@/components/AnimatedDivider";
@@ -48,17 +48,18 @@ function StepReel() {
     return cRect.left + cRect.width / 2 - vRect.left;
   }, []);
 
-  /* Two-phase arrival: travel along line → snap into circle with scale pulse */
+  const snapPulse = useCallback(async () => {
+    await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
+    await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+  }, [dotScale]);
+
   const moveToStep = useCallback(async (idx: number, duration = 0.7) => {
     if (cancelled.current) return;
     setActiveStep(idx);
-    // Phase A: travel to circle position
     await animate(dotX, measureCircleX(idx), { duration, ease: [0.16, 1, 0.3, 1] });
-    // Phase B: snap-into-circle micro-animation (scale pulse)
     if (cancelled.current) return;
-    await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
-    await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
-  }, [dotX, dotScale, measureCircleX]);
+    await snapPulse();
+  }, [dotX, measureCircleX, snapPulse]);
 
   useEffect(() => {
     cancelled.current = false;
@@ -66,7 +67,7 @@ function StepReel() {
     const startTimeout = setTimeout(() => {
       const run = async () => {
         while (!cancelled.current) {
-          // ── Forward: Group 0 (steps 0,1,2) ──
+          // ── Group 0 (steps 0,1,2) ──
           setGroup(0);
           setActiveStep(0);
           await animate(slideX, 0, { duration: 0 });
@@ -74,17 +75,13 @@ function StepReel() {
           await nextFrame();
           dotX.set(measureCircleX(0));
           dotScale.set(1);
-          // Arrival pulse on step 0
-          await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
-          await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+          await snapPulse();
           await wait(900);
 
-          // 0 → 1
           if (cancelled.current) return;
           await moveToStep(1);
           await wait(900);
 
-          // 1 → 2
           if (cancelled.current) return;
           await moveToStep(2);
           await wait(900);
@@ -100,23 +97,19 @@ function StepReel() {
             animate(dotX, dotStartX - viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
           ]);
           await nextFrame();
-          // Snap dot to step 3 circle + arrival pulse
           await animate(dotX, measureCircleX(3), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
-          await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
-          await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+          await snapPulse();
           await wait(500);
 
-          // 3 → 4
           if (cancelled.current) return;
           await moveToStep(4);
           await wait(900);
 
-          // 4 → 5
           if (cancelled.current) return;
           await moveToStep(5);
           await wait(1100);
 
-          // ── Fast return: slide back to group 0 and land on step 0 in 0.5s ──
+          // ── Direct return to step 0 in 0.5s ──
           if (cancelled.current) return;
           setGroup(0);
           setActiveStep(0);
@@ -126,10 +119,8 @@ function StepReel() {
             animate(dotX, dotPos + viewportWidth, { duration: 0.5, ease: [0.16, 1, 0.3, 1] }),
           ]);
           await nextFrame();
-          // Snap dot to step 0 with arrival pulse
           await animate(dotX, measureCircleX(0), { duration: 0.15, ease: [0.16, 1, 0.3, 1] });
-          await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
-          await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+          await snapPulse();
           await wait(600);
         }
       };
@@ -165,12 +156,15 @@ function StepReel() {
 
         {/* Filmstrip */}
         <motion.div
-          className="flex"
+          className="flex relative"
           style={{ x: slideX, width: "200%" }}
         >
+          {/* Continuous rail line behind all circles */}
+          <div className="absolute top-[18px] left-0 right-0 h-px bg-border z-0" />
+
           {steps.map((step, idx) => (
-            <div key={step.title} className="w-[calc(100%/6)] px-8 flex-shrink-0">
-              <div className="flex items-center gap-3 mb-6 relative">
+            <div key={step.title} className="w-[calc(100%/6)] px-3 md:px-8 flex-shrink-0">
+              <div className="flex items-center mb-6 relative">
                 <motion.div
                   ref={(el) => { circleRefs.current[idx] = el; }}
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 flex-shrink-0"
@@ -183,13 +177,12 @@ function StepReel() {
                 >
                   {idx + 1}
                 </motion.div>
-                <div className="flex-1 h-px bg-border" />
               </div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                <step.icon className="h-6 w-6 text-primary" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 md:mb-4">
+                <step.icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold text-foreground mb-2">{step.title}</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">{step.description}</p>
+              <h3 className="font-serif text-base md:text-xl font-bold text-foreground mb-1 md:mb-2">{step.title}</h3>
+              <p className="text-xs md:text-base text-muted-foreground leading-relaxed">{step.description}</p>
             </div>
           ))}
         </motion.div>
@@ -287,7 +280,6 @@ function ZigzagCard({ item, index }: { item: typeof zigzagItems[0]; index: numbe
           whileHover={{ scale: 1.015 }}
           transition={{ duration: 0.25 }}
         >
-          {/* Hover glow overlay */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06)_0%,transparent_70%)] pointer-events-none" />
           <h3 className="relative font-serif text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
           <p className="relative text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
@@ -314,6 +306,11 @@ function ZigzagCard({ item, index }: { item: typeof zigzagItems[0]; index: numbe
 /* ─── Page ─── */
 export default function HowItWorksPage() {
   const { user } = useAuth();
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const badgeY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  const headingY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const subtitleY = useTransform(scrollYProgress, [0, 1], [0, -70]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -335,28 +332,28 @@ export default function HowItWorksPage() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="container mx-auto px-6 pt-32 md:pt-36 pb-28 md:pb-32 max-w-5xl text-center">
+      {/* Hero with parallax */}
+      <section ref={heroRef} className="container mx-auto px-6 pt-32 md:pt-36 pb-28 md:pb-32 max-w-5xl text-center overflow-hidden">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-8">
+          <motion.div style={{ y: badgeY }} className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-8">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             Get Started in Minutes
-          </div>
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+          </motion.div>
+          <motion.h1 style={{ y: headingY }} className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
             How Notebook Archive <span className="text-primary">works</span>
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          </motion.h1>
+          <motion.p style={{ y: subtitleY }} className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             From first note to full knowledge base — here's how you go from scattered thoughts to organized understanding.
-          </p>
+          </motion.p>
         </motion.div>
       </section>
 
       <AnimatedDivider />
 
       {/* Step Reel */}
-      <section className="py-28">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+      <section className="py-16 md:py-28">
+        <div className="container mx-auto px-4 md:px-6 max-w-5xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10 md:mb-16">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps to smarter notes</h2>
             <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold — each step builds on the last.</p>
           </motion.div>
@@ -367,9 +364,9 @@ export default function HowItWorksPage() {
       <AnimatedDivider />
 
       {/* Why It Matters — zigzag */}
-      <section className="py-28 overflow-hidden">
+      <section className="py-16 md:py-28 overflow-hidden">
         <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12 md:mb-20">
             <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">The Problem We Solve</span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Why it matters</h2>
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
@@ -389,7 +386,7 @@ export default function HowItWorksPage() {
       <AnimatedDivider />
 
       {/* Use Cases */}
-      <section className="bg-foreground/[0.02] py-28">
+      <section className="bg-foreground/[0.02] py-16 md:py-28">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who It's For</span>
