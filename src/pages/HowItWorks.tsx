@@ -62,6 +62,8 @@ export default function HowItWorksPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Steps */}
       <section className="container mx-auto px-6 pb-28 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
