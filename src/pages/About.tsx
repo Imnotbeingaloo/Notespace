@@ -10,13 +10,6 @@ const values = [
   { icon: Lightbulb, title: "AI That Assists, Not Replaces", description: "Our AI helps you understand, organize, and recall — but your thinking stays yours. We enhance, not automate." },
 ];
 
-const stats = [
-  { value: "50K+", label: "Notes created" },
-  { value: "12K+", label: "Active users" },
-  { value: "99.9%", label: "Uptime" },
-  { value: "4.8★", label: "User rating" },
-];
-
 const timeline = [
   { year: "2024", title: "The Idea", description: "Born from frustration with note apps that were either too simple or too complex. We wanted both." },
   { year: "2024", title: "First Beta", description: "Launched with markdown editing, notebooks, and instant search. Early adopters loved the clean interface." },
