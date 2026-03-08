@@ -60,6 +60,7 @@ interface HybridEditorProps {
   content: string;
   onChange: (content: string) => void;
   placeholder?: string;
+  onTogglePreview?: () => void;
 }
 
 export interface HybridEditorHandle {
@@ -68,18 +69,35 @@ export interface HybridEditorHandle {
   getActiveTextarea: () => HTMLTextAreaElement | null;
 }
 
+function wrapSelection(textarea: HTMLTextAreaElement, wrapper: string): string {
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const val = textarea.value;
+  const selected = val.substring(start, end);
+  const newVal = val.substring(0, start) + wrapper + selected + wrapper + val.substring(end);
+  // Set value and cursor after React re-render
+  setTimeout(() => {
+    textarea.value = newVal;
+    textarea.setSelectionRange(start + wrapper.length, end + wrapper.length);
+    textarea.focus();
+  }, 0);
+  return newVal;
+}
+
 function AutoResizeTextarea({
   value,
   onChange,
   placeholder,
   onFocus,
   textareaRef,
+  onKeyDown,
 }: {
   value: string;
   onChange: (val: string) => void;
   placeholder?: string;
   onFocus?: () => void;
   textareaRef?: React.RefObject<HTMLTextAreaElement>;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
 }) {
   const fallbackRef = useRef<HTMLTextAreaElement>(null);
   const ref = textareaRef || fallbackRef;
@@ -104,6 +122,7 @@ function AutoResizeTextarea({
         resize();
       }}
       onFocus={onFocus}
+      onKeyDown={onKeyDown}
       placeholder={placeholder}
       rows={1}
       className="w-full bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono overflow-hidden"
@@ -113,13 +132,12 @@ function AutoResizeTextarea({
 }
 
 export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
-  ({ content, onChange, placeholder }, ref) => {
+  ({ content, onChange, placeholder, onTogglePreview }, ref) => {
     const [segments, setSegments] = useState<Segment[]>(() => parseContent(content));
     const lastEmittedRef = useRef(content);
     const activeTextareaRef = useRef<HTMLTextAreaElement>(null);
     const textareaRefsMap = useRef<Map<number, React.RefObject<HTMLTextAreaElement>>>(new Map());
 
-    // Only re-parse when content changes externally
     useEffect(() => {
       if (content !== lastEmittedRef.current) {
         setSegments(parseContent(content));
@@ -138,7 +156,6 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       insertAtCursor: (text: string) => {
         setSegments((prev) => {
           const segs = [...prev];
-          // Find the active textarea's segment index
           let targetIdx = -1;
           for (const [idx, taRef] of textareaRefsMap.current.entries()) {
             if (taRef.current === activeTextareaRef.current) {
@@ -146,7 +163,6 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
               break;
             }
           }
-          // Fallback: last text segment
           if (targetIdx === -1 || segs[targetIdx]?.type !== "text") {
             for (let i = segs.length - 1; i >= 0; i--) {
               if (segs[i].type === "text") { targetIdx = i; break; }
@@ -164,6 +180,40 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       getValue: () => reassemble(segments),
       getActiveTextarea: () => activeTextareaRef.current,
     }));
+
+    const handleKeyDown = useCallback((segIndex: number, e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      const mod = e.metaKey || e.ctrlKey;
+      if (!mod) return;
+
+      if (e.key === "b" || e.key === "B") {
+        e.preventDefault();
+        const ta = textareaRefsMap.current.get(segIndex)?.current;
+        if (!ta) return;
+        const newVal = wrapSelection(ta, "**");
+        setSegments((prev) => {
+          const segs = prev.map((s, i) => i === segIndex ? { ...s, value: newVal } : s) as Segment[];
+          const assembled = reassemble(segs);
+          lastEmittedRef.current = assembled;
+          onChange(assembled);
+          return segs;
+        });
+      } else if (e.key === "i" || e.key === "I") {
+        e.preventDefault();
+        const ta = textareaRefsMap.current.get(segIndex)?.current;
+        if (!ta) return;
+        const newVal = wrapSelection(ta, "_");
+        setSegments((prev) => {
+          const segs = prev.map((s, i) => i === segIndex ? { ...s, value: newVal } : s) as Segment[];
+          const assembled = reassemble(segs);
+          lastEmittedRef.current = assembled;
+          onChange(assembled);
+          return segs;
+        });
+      } else if (e.key === "p" || e.key === "P") {
+        e.preventDefault();
+        onTogglePreview?.();
+      }
+    }, [onChange, onTogglePreview]);
 
     const handleTextChange = useCallback((segIndex: number, newValue: string) => {
       setSegments((prev) => {
@@ -205,6 +255,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
                 value={seg.value}
                 onChange={(val) => handleTextChange(i, val)}
                 onFocus={() => handleFocus(i)}
+                onKeyDown={(e) => handleKeyDown(i, e)}
                 textareaRef={taRef}
                 placeholder={i === 0 && segments.length <= 1 ? placeholder : undefined}
               />
