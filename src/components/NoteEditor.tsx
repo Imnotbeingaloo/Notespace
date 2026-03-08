@@ -361,7 +361,7 @@ export function NoteEditor() {
 
   if (!activeNote) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center w-full bg-background">
+      <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-5 text-center">
           <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center">
             <span className="text-4xl">{activeNotebook.emoji}</span>
