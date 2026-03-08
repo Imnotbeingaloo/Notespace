@@ -500,8 +500,8 @@ export function NoteEditor() {
                       <AIExplainPanel />
                       <AIEditPanel onApplyEdit={handleAIEdit} />
                       <FlashcardsButton />
-                      
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                      <PreviewButton />
                       <ExportButtons />
                     </motion.div>
                   )}
