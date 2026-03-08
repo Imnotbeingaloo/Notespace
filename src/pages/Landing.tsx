@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, ArrowRight, Menu, X, Users, Globe, Clock } from "lucide-react";
+import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
+import AnimatedDivider from "@/components/AnimatedDivider";
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -222,50 +223,10 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ── Stats / Social Proof Strip ── */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-4xl mx-auto"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="font-serif text-2xl font-bold text-foreground">10,000+</p>
-                  <p className="text-sm text-muted-foreground mt-1">Students & researchers actively using Notebook Archive to organize their thinking</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center">
-                  <Globe className="h-6 w-6 text-accent" />
-                </div>
-                <div>
-                  <p className="font-serif text-2xl font-bold text-foreground">50+ Countries</p>
-                  <p className="text-sm text-muted-foreground mt-1">Used by thinkers across the globe, from university campuses to remote research labs</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <Clock className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="font-serif text-2xl font-bold text-foreground">2M+ Notes</p>
-                  <p className="text-sm text-muted-foreground mt-1">Notes created and counting — each one smarter with AI-powered insights and tagging</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <AnimatedDivider />
 
       {/* ── Features ── */}
-      <section id="features" className="relative py-28">
+      <section id="features" className="relative py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
@@ -275,6 +236,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <AnimatedDivider />
 
       {/* ── How It Works Mini ── */}
       <section className="py-28">
@@ -309,6 +272,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <AnimatedDivider />
 
       {/* ── Testimonials ── */}
       <section className="relative py-28">
@@ -348,6 +313,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <AnimatedDivider />
 
       {/* ── CTA ── */}
       <section className="container mx-auto px-6 py-28">
