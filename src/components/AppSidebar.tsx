@@ -56,6 +56,53 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [editEmoji, setEditEmoji] = useState("");
   const [quickNote, setQuickNote] = useState("");
 
+  // Smart Tags - collect all unique tags from all notes
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    notebooks.forEach((nb) => {
+      nb.notes?.forEach((note: any) => {
+        if (note.tags && Array.isArray(note.tags)) {
+          note.tags.forEach((t: string) => tagSet.add(t));
+        }
+      });
+    });
+    return Array.from(tagSet).sort();
+  }, [notebooks]);
+
+  // Study plans - fetch upcoming
+  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; completed: boolean }[]>([]);
+  useEffect(() => {
+    if (!user) return;
+    const fetchPlans = async () => {
+      const today = format(new Date(), "yyyy-MM-dd");
+      const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
+      const { data } = await supabase
+        .from("study_plans" as any)
+        .select("id, title, scheduled_date, completed")
+        .eq("user_id", user.id)
+        .eq("completed", false)
+        .gte("scheduled_date", today)
+        .lte("scheduled_date", threeDaysOut)
+        .order("scheduled_date", { ascending: true })
+        .limit(5);
+      setUpcomingPlans((data as any) ?? []);
+    };
+    fetchPlans();
+  }, [user]);
+
+  const getDayLabel = (dateStr: string) => {
+    const d = new Date(dateStr + "T00:00:00");
+    if (isToday(d)) return "Today";
+    if (isTomorrow(d)) return "Tomorrow";
+    return format(d, "EEE");
+  };
+
+  const getDayColor = (dateStr: string) => {
+    const d = new Date(dateStr + "T00:00:00");
+    if (isToday(d)) return "bg-primary";
+    if (isTomorrow(d)) return "bg-amber-500";
+    return "bg-muted-foreground/40";
+  };
 
   const [dragNoteId, setDragNoteId] = useState<string | null>(null);
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
