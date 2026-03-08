@@ -287,9 +287,9 @@ export default function LandingPage() {
           </motion.div>
           <div className="grid md:grid-cols-3 gap-10">
             {[
-              { step: "01", title: "Create a notebook", desc: "Organize by topic, class, or project. Each notebook is a dedicated space for related ideas. Add an emoji to make it yours." },
-              { step: "02", title: "Write naturally", desc: "Use our distraction-free markdown editor. Bold, headings, code blocks, checklists — everything you need, nothing you don't." },
-              { step: "03", title: "Let AI enhance", desc: "Highlight any concept and get instant explanations, summaries, and flashcards. Your notes become a living study guide." },
+              { step: "1", title: "Create a notebook", desc: "Organize by topic, class, or project. Each notebook is a dedicated space for related ideas. Add an emoji to make it yours." },
+              { step: "2", title: "Write naturally", desc: "Use our distraction-free markdown editor. Bold, headings, code blocks, checklists — everything you need, nothing you don't." },
+              { step: "3", title: "Let AI enhance", desc: "Highlight any concept and get instant explanations, summaries, and flashcards. Your notes become a living study guide." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -299,7 +299,7 @@ export default function LandingPage() {
                 transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="text-center"
               >
-                <span className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4">{item.step}</span>
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold text-sm mb-4">{item.step}</div>
                 <h3 className="font-serif text-lg font-bold text-foreground mb-3">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
