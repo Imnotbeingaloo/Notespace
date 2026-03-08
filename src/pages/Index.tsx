@@ -91,13 +91,13 @@ const AppPage = () => {
             </TooltipProvider>
           </div>
           <div className="flex-1 flex min-h-0 relative">
-            <div className={`flex-1 min-w-0 flex flex-col ${plannerOpen ? "max-lg:hidden" : ""}`}>
+            <div className="flex-1 min-w-0 flex flex-col">
               <NoteEditor />
             </div>
             {/* Study Planner panel — full overlay on mobile/tablet, inline side panel on desktop */}
             <AnimatePresence>
               {plannerOpen && (
-                <div className="max-lg:fixed max-lg:inset-0 max-lg:z-50 max-lg:bg-card lg:contents">
+                <div className="fixed inset-0 z-50 bg-card lg:relative lg:inset-auto lg:bg-transparent lg:z-auto">
                   <StudyPlanner onClose={() => setPlannerOpen(false)} />
                 </div>
               )}
