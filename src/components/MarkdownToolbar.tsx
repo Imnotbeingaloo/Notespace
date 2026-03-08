@@ -87,6 +87,7 @@ export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
     { icon: Bold, label: "Bold", action: () => exec("bold") },
     { icon: Italic, label: "Italic", action: () => exec("italic") },
     { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
+    { icon: Highlighter, label: "Highlight", action: () => exec("hiliteColor", "#fef08a") },
     { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "h1") },
     { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "h2") },
     { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "h3") },
