@@ -4,6 +4,7 @@ import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
+import AnimatedDivider from "@/components/AnimatedDivider";
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -24,13 +25,9 @@ const navLinks = [
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
 ];
 
-/** Reusable gradient separator */
+/** Reusable gradient separator — kept as fallback */
 function SectionDivider() {
-  return (
-    <div className="container mx-auto max-w-3xl px-6">
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-    </div>
-  );
+  return <AnimatedDivider />;
 }
 
 export default function LandingPage() {
@@ -132,13 +129,13 @@ export default function LandingPage() {
               <Sparkles className="h-3.5 w-3.5 text-accent" />
               AI-Powered Note Taking
             </div>
-            <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+            <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
               Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-accent">understood</span>
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Notebook Archive is the intelligent note-taking app that helps you capture ideas, organize knowledge, and get AI-powered insights — all in one beautiful workspace.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
                 {user ? "Open App" : "Start for Free"} <ArrowRight className="h-5 w-5" />
               </Link>
