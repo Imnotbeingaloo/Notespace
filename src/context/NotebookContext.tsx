@@ -161,12 +161,28 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderNotes = useCallback(
+    (notebookId: string, fromIndex: number, toIndex: number) => {
+      setNotebooks((prev) =>
+        prev.map((nb) => {
+          if (nb.id !== notebookId) return nb;
+          const notes = [...nb.notes];
+          const [moved] = notes.splice(fromIndex, 1);
+          notes.splice(toIndex, 0, moved);
+          return { ...nb, notes };
+        })
+      );
+    },
+    []
+  );
+
   return (
     <NotebookContext.Provider
       value={{
         notebooks, activeNotebookId, activeNoteId,
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
+        reorderNotes,
         activeNotebook, activeNote, loading,
       }}
     >
