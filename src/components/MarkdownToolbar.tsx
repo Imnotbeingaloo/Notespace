@@ -26,7 +26,7 @@ function insertHTML(html: string) {
   document.execCommand("insertHTML", false, html);
 }
 
-export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
+export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
   const exec = useCallback((command: string, value?: string) => {
     focusEditor(editorRef.current);
     document.execCommand(command, false, value);
