@@ -252,11 +252,23 @@ export default function LandingPage() {
       <section id="features" className="relative py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-            <ShufflerCard />
-            <TypewriterCard />
-            <SchedulerCard />
-          </div>
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto"
+          >
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
+              <ShufflerCard />
+            </motion.div>
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
+              <TypewriterCard />
+            </motion.div>
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
+              <SchedulerCard />
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
