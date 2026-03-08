@@ -121,7 +121,7 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden pt-20">
+      <section className="relative overflow-hidden pt-24">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 text-center relative">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
