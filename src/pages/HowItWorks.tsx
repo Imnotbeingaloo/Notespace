@@ -120,7 +120,7 @@ function StepReel() {
       <div ref={viewportRef} className="overflow-hidden relative pt-2">
         {/* Sliding dot — hidden when stationary on a circle */}
         <motion.div
-          className="absolute top-0 z-30 pointer-events-none transition-opacity duration-200"
+          className="absolute top-2 z-30 pointer-events-none transition-opacity duration-200"
           style={{
             x: dotX,
             width: DOT_SIZE,
