@@ -1,12 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, RotateCcw, BookOpen, FileText, ArrowLeft, Clock, AlertTriangle } from "lucide-react";
-import { useNotebooks } from "@/context/NotebookContext";
+import { NotebookProvider, useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { useState } from "react";
 
 const TRASH_EXPIRY_DAYS = 30;
 
