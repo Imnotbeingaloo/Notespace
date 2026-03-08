@@ -217,21 +217,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             </button>
           </div>
 
-          {/* Quick Note Input */}
-          <div className="mb-1.5">
-            <div className="flex gap-1">
-              <Input
-                value={quickNote}
-                onChange={(e) => setQuickNote(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleQuickNote()}
-                placeholder="Quick note..."
-                className="h-8 text-xs"
-              />
-              <Button size="sm" onClick={handleQuickNote} className="h-8 px-2" disabled={!quickNote.trim() || !activeNotebookId}>
-                <Plus className="h-3 w-3" />
-              </Button>
-            </div>
-          </div>
           <input ref={sidebarUploadRef} type="file" multiple className="hidden" onChange={handleSidebarUpload} />
 
           {/* New Notebook Input */}
