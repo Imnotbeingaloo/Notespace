@@ -35,6 +35,7 @@ interface NotebookContextType {
   setActiveNoteId: (id: string | null) => void;
   createNotebook: (name: string, emoji?: string) => Promise<void>;
   deleteNotebook: (id: string) => Promise<void>;
+  updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<void>;
   createNote: (notebookId: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => Promise<void>;
@@ -112,6 +113,13 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     if (activeNotebookId === id) { setActiveNotebookId(null); setActiveNoteId(null); }
   }, [activeNotebookId]);
 
+  const updateNotebook = useCallback(async (id: string, updates: { name?: string; emoji?: string }) => {
+    await supabase.from("notebooks").update(updates).eq("id", id);
+    setNotebooks((prev) =>
+      prev.map((nb) => nb.id === id ? { ...nb, ...updates } : nb)
+    );
+  }, []);
+
   const createNote = useCallback(async (notebookId: string) => {
     if (!user) return;
     const { data } = await supabase
@@ -157,7 +165,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       value={{
         notebooks, activeNotebookId, activeNoteId,
         setActiveNotebookId, setActiveNoteId,
-        createNotebook, deleteNotebook, createNote, deleteNote, updateNote,
+        createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
         activeNotebook, activeNote, loading,
       }}
     >

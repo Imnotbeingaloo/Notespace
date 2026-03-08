@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
@@ -10,6 +10,7 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -27,16 +28,21 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     setActiveNoteId,
     createNotebook,
     deleteNotebook,
+    updateNotebook,
     createNote,
     deleteNote,
     updateNote,
   } = useNotebooks();
 
+  const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
   const [showNewNotebook, setShowNewNotebook] = useState(false);
   const [newNotebookName, setNewNotebookName] = useState("");
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
   const sidebarUploadRef = useRef<HTMLInputElement>(null);
   const [sidebarUploading, setSidebarUploading] = useState(false);
+  const [editingNotebook, setEditingNotebook] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editEmoji, setEditEmoji] = useState("");
 
   const handleSidebarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -220,6 +226,63 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                     </motion.div>
                     <span>{nb.emoji}</span>
                     <span className="flex-1 truncate">{nb.name}</span>
+                    <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
+                      if (!open) setEditingNotebook(null);
+                    }}>
+                      <PopoverTrigger asChild>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingNotebook(nb.id);
+                            setEditName(nb.name);
+                            setEditEmoji(nb.emoji);
+                          }}
+                          className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-accent hover:text-accent-foreground transition-all"
+                        >
+                          <Pencil className="h-3 w-3" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-3" side="right" align="start">
+                        <div className="space-y-3">
+                          <div className="text-sm font-medium text-foreground">Edit Notebook</div>
+                          <Input
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            placeholder="Notebook name"
+                            className="h-8 text-sm"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && editName.trim()) {
+                                updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
+                                setEditingNotebook(null);
+                              }
+                            }}
+                          />
+                          <div>
+                            <div className="text-xs text-muted-foreground mb-1">Emoji</div>
+                            <div className="grid grid-cols-6 gap-1">
+                              {EMOJIS.map((em) => (
+                                <button
+                                  key={em}
+                                  onClick={() => setEditEmoji(em)}
+                                  className={`p-1.5 rounded-md text-base hover:bg-accent transition-colors ${editEmoji === em ? "bg-primary/15 ring-1 ring-primary" : ""}`}
+                                >
+                                  {em}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex gap-2 justify-end">
+                            <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingNotebook(null)}>Cancel</Button>
+                            <Button size="sm" className="h-7 text-xs" onClick={() => {
+                              if (editName.trim()) {
+                                updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
+                                setEditingNotebook(null);
+                              }
+                            }}>Save</Button>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
