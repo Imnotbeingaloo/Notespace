@@ -68,6 +68,7 @@ function RevealCard({ emoji, label, title, titleHighlight, description, delay = 
 
 function PhilosophySection() {
   const [phase, setPhase] = useState<"old" | "transition" | "new">("old");
+  const [blurry, setBlurry] = useState(false);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
