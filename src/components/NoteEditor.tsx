@@ -400,7 +400,7 @@ export function NoteEditor() {
       }
 
       if (hasImages) {
-        toast({ title: "Image added", description: "Switch to Preview mode to see it rendered." });
+        toast({ title: "Image added", description: "Image inserted into note." });
       }
     },
     [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote]
