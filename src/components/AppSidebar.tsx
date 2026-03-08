@@ -415,7 +415,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                           ))}
                           <button
                             onClick={() => createNote(nb.id)}
-                            className="flex items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground notebook-hover rounded-md w-full"
+                            className="flex items-center gap-2 px-2 py-1.5 text-[13px] text-muted-foreground notebook-hover rounded-md w-full"
                           >
                             <Plus className="h-3 w-3" />
                             Add note
