@@ -262,32 +262,18 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
-      {/* Use Cases — horizontal scroll ticker */}
+      {/* Use Cases — reveal cards */}
       <section className="bg-foreground/[0.02] py-28">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who It's For</span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Built for every kind of thinker</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">No matter how you work, Notebook Archive adapts to you.</p>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Click to reveal who it's built for.</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-4 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {useCases.map((uc, i) => (
-              <motion.div
-                key={uc.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="group text-center"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-card border border-border mx-auto mb-4 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:shadow-lg transition-all duration-300">
-                  {uc.emoji}
-                </div>
-                <h3 className="font-serif text-sm font-bold text-foreground mb-1.5">{uc.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed mb-2">{uc.description}</p>
-                <p className="text-[10px] text-primary/60 font-medium font-mono">{uc.extra}</p>
-              </motion.div>
+              <RevealCard key={uc.title} uc={uc} index={i} />
             ))}
           </div>
         </div>
