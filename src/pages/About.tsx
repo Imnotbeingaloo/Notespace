@@ -148,9 +148,9 @@ function PhilosophySection() {
           {/* Old Way Card */}
           <motion.div
             animate={{
-              opacity: phase === "old" ? 1 : 0.3,
-              scale: phase === "old" ? 1 : 0.92,
-              filter: phase === "old" ? "grayscale(0) blur(0px)" : "grayscale(0.8) blur(1px)",
+              opacity: blurry ? 0.3 : 1,
+              scale: blurry ? 0.92 : 1,
+              filter: blurry ? "grayscale(0.8) blur(1px)" : "grayscale(0) blur(0px)",
             }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 relative overflow-hidden"
