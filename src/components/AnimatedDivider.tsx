@@ -23,8 +23,8 @@ export default function AnimatedDivider() {
             transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 200 }}
             className="relative flex items-center justify-center"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-border/60 flex items-center justify-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary/50" />
+             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/15 to-accent/15 border border-foreground/10 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary/70" />
             </div>
           </motion.div>
           <motion.div
