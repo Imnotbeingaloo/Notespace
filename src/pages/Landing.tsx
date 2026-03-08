@@ -285,8 +285,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Separator ── */}
-      <div className="py-2"><SectionDivider /></div>
+      <SectionDivider />
 
       {/* ── CTA ── */}
       <section className="container mx-auto px-6 py-16">
