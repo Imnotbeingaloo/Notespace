@@ -265,7 +265,6 @@ export function NoteEditor() {
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
-    setPreview(false);
     setSaveStatus("idle");
     if (activeNote) {
       supabase
