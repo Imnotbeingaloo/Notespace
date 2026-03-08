@@ -50,6 +50,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [analyzeOpen, setAnalyzeOpen] = useState(false);
   const [analyzeResult, setAnalyzeResult] = useState("");
   const [analyzeLoading, setAnalyzeLoading] = useState(false);
+  const [dragNoteId, setDragNoteId] = useState<string | null>(null);
+  const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
 
   const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
