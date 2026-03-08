@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight, Check, Sparkles, Zap, HelpCircle } from "lucide-react";
+import AnimatedDivider from "@/components/AnimatedDivider";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -140,6 +141,8 @@ export default function PricingPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Feature Comparison Table */}
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -172,6 +175,8 @@ export default function PricingPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* FAQ */}
       <section className="py-28">
         <div className="container mx-auto px-6 max-w-3xl">
@@ -199,6 +204,8 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
+
+      <AnimatedDivider />
 
       {/* CTA */}
       <section className="container mx-auto px-6 pb-28">

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight, Heart, Zap, Shield, Lightbulb, Target, Layers } from "lucide-react";
+import AnimatedDivider from "@/components/AnimatedDivider";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -55,6 +56,8 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Mission Statement */}
       <section className="py-20">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -92,6 +95,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Philosophy */}
       <section className="bg-foreground/[0.03] py-24">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -118,6 +123,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Values */}
       <section className="container mx-auto px-6 py-28 max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
@@ -140,6 +147,8 @@ export default function AboutPage() {
           ))}
         </motion.div>
       </section>
+
+      <AnimatedDivider />
 
       {/* Timeline */}
       <section className="bg-foreground/[0.03] py-28">
@@ -184,6 +193,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <AnimatedDivider />
 
       {/* CTA */}
       <section className="container mx-auto px-6 py-28">

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import AnimatedDivider from "@/components/AnimatedDivider";
 import { useAuth } from "@/context/AuthContext";
 
 const steps = [
@@ -61,6 +62,8 @@ export default function HowItWorksPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Steps */}
       <section className="container mx-auto px-6 pb-28 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
@@ -105,6 +108,8 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Why It Matters */}
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -140,6 +145,8 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Use Cases */}
       <section className="py-28">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -159,6 +166,8 @@ export default function HowItWorksPage() {
           </motion.div>
         </div>
       </section>
+
+      <AnimatedDivider />
 
       {/* CTA */}
       <section className="container mx-auto px-6 py-28">
