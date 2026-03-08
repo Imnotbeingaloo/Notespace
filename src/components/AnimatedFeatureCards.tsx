@@ -39,7 +39,7 @@ export function ShufflerCard() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
     >
       <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
         <Brain className="h-5 w-5 text-primary" />
@@ -48,7 +48,7 @@ export function ShufflerCard() {
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Automatically analyze, summarize, and extract insights from your notes.
       </p>
-      <div className="relative h-32 overflow-hidden">
+      <div className="relative h-[5.5rem] overflow-hidden mt-auto">
         <AnimatePresence mode="popLayout">
           {cards.map((card, i) => (
             <motion.div
@@ -114,7 +114,7 @@ export function TypewriterCard() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: 0.1 }}
-      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
     >
       <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
         <ScanText className="h-5 w-5 text-accent" />
@@ -123,7 +123,7 @@ export function TypewriterCard() {
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Real-time intelligence that tags, links, and organizes as you write.
       </p>
-      <div className="rounded-xl border border-border bg-background p-4 font-mono text-xs">
+      <div className="rounded-xl border border-border bg-background p-4 font-mono text-xs mt-auto">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <span className="text-muted-foreground uppercase tracking-wider text-[10px]">Live Feed</span>
@@ -176,7 +176,7 @@ export function SchedulerCard() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
     >
       <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
         <Mic className="h-5 w-5 text-primary" />
@@ -185,7 +185,7 @@ export function SchedulerCard() {
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Plan your study sessions and track progress with smart scheduling.
       </p>
-      <div className="relative rounded-xl border border-border bg-background p-4" ref={gridRef}>
+      <div className="relative rounded-xl border border-border bg-background p-4 mt-auto" ref={gridRef}>
         <div className="grid grid-cols-7 gap-1 mb-3">
           {days.map((day, i) => (
             <motion.div
