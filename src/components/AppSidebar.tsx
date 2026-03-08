@@ -105,16 +105,32 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   };
 
   const handleRemoveTag = async (tagToRemove: string) => {
+    // Update DB
+    const promises: Promise<void>[] = [];
+    const updatedNotebooks = notebooks.map((nb) => ({
+      ...nb,
+      notes: (nb.notes || []).map((note) => {
+        if (note.tags?.includes(tagToRemove)) {
+          const newTags = note.tags.filter((t) => t !== tagToRemove);
+          promises.push(
+            supabase.from("notes").update({ tags: newTags }).eq("id", note.id).then(() => {})
+          );
+          return { ...note, tags: newTags };
+        }
+        return note;
+      }),
+    }));
+    // Update local state immediately via updateNote for each affected note
     for (const nb of notebooks) {
       for (const note of (nb.notes || [])) {
         if (note.tags?.includes(tagToRemove)) {
           const newTags = note.tags.filter((t) => t !== tagToRemove);
-          await supabase.from("notes").update({ tags: newTags }).eq("id", note.id);
+          updateNote(nb.id, note.id, { tags: newTags });
         }
       }
     }
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
-    await refreshData();
+    await Promise.all(promises);
   };
 
   // Study plans - fetch upcoming
