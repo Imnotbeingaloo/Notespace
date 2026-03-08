@@ -776,7 +776,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
           ) : (
             /* No plans — helpful message */
             <div className="px-1">
-              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-1.5 mt-2 flex items-center gap-1.5">
+              <p className="text-xs uppercase tracking-wider font-semibold text-muted-foreground px-2 mb-1.5 mt-2 flex items-center gap-1.5">
                 <CalendarDays className="h-3 w-3" />
                 Study Schedule
               </p>
