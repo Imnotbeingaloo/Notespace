@@ -105,17 +105,13 @@ function StepReel() {
           await moveToStep(5);
           await wait(1100);
 
-          // ── Direct return to step 0 in 0.5s ──
+          // ── Reset: slide back to group 0, dot appears at step 0 ──
           if (cancelled.current) return;
           setGroup(0);
           setActiveStep(0);
-          const dotPos = dotX.get();
-          await Promise.all([
-            animate(slideX, 0, { duration: 0.5, ease: [0.16, 1, 0.3, 1] }),
-            animate(dotX, dotPos + viewportWidth, { duration: 0.5, ease: [0.16, 1, 0.3, 1] }),
-          ]);
+          await animate(slideX, 0, { duration: 0.35, ease: [0.16, 1, 0.3, 1] });
           await nextFrame();
-          await animate(dotX, measureCircleX(0), { duration: 0.15, ease: [0.16, 1, 0.3, 1] });
+          dotX.set(measureCircleX(0));
           await wait(600);
         }
       };
