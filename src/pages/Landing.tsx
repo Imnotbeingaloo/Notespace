@@ -299,7 +299,15 @@ export default function LandingPage() {
                 transition={{ delay: i * 0.15, duration: 0.5 }}
                 className="text-center"
               >
-                <span className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4">{item.step}</span>
+                <motion.span
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+                  className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4"
+                >
+                  {item.step}
+                </motion.span>
                 <h3 className="font-serif text-lg font-bold text-foreground mb-3">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
