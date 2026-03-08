@@ -102,7 +102,7 @@ export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
   ];
 
   return (
-    <div className="flex items-center gap-0.5 px-4 sm:px-8 py-2 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-0.5 px-4 sm:px-8 py-2 overflow-x-auto scrollbar-none">
       {actions.map((a, i) => (
         <div key={a.label} className="contents">
           <button

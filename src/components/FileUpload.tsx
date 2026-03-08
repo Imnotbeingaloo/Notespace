@@ -119,18 +119,16 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
 
   return (
     <div className="flex items-center gap-2 px-2 py-0">
-      <div className="flex items-center gap-2 mb-2">
-        <button
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-        >
-          {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Paperclip className="h-3.5 w-3.5" />}
-          {uploading ? "Uploading..." : "Add to note"}
-        </button>
-        <span className="text-[10px] text-muted-foreground">Images are embedded inline. Files are listed below.</span>
-        <input ref={inputRef} type="file" multiple className="hidden" onChange={handleUpload} />
-      </div>
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        disabled={uploading}
+        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+        title={uploading ? "Uploading..." : "Add to note"}
+      >
+        {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />}
+      </button>
+      <input ref={inputRef} type="file" multiple className="hidden" onChange={handleUpload} />
 
       <AnimatePresence>
         {attachments.filter(a => !isImage(a.type)).length > 0 && (
