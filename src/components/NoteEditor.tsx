@@ -373,12 +373,12 @@ export function NoteEditor() {
         </AnimatePresence>
 
         {/* Title bar */}
-        <div className="shrink-0 w-full max-w-4xl mx-auto px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
+        <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
             onChange={(e) => debouncedUpdate("title", e.target.value)}
-            className="w-full text-xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50 text-center"
+            className="w-full text-xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
             placeholder="Note title..."
           />
 
