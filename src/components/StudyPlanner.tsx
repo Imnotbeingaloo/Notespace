@@ -33,11 +33,11 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [showAdd, setShowAdd] = useState(false);
-
+  const [notebookPickerOpen, setNotebookPickerOpen] = useState(false);
   // New plan form
   const [newTitle, setNewTitle] = useState("");
   const [newTime, setNewTime] = useState("");
-  const [newNotebook, setNewNotebook] = useState("");
+  const [newNotebook, setNewNotebook] = useState(notebooks.length > 0 ? notebooks[0].id : "");
   const [newRemind, setNewRemind] = useState(false);
 
   const fetchPlans = useCallback(async () => {
@@ -99,7 +99,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
   ).length;
 
   const addPlan = async () => {
-    if (!user || !newTitle.trim()) return;
+    if (!user || !newTitle.trim() || !newNotebook) return;
     const { data } = await supabase
       .from("study_plans" as any)
       .insert({
@@ -107,7 +107,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
         title: newTitle.trim(),
         scheduled_date: selectedDateStr,
         scheduled_time: newTime || null,
-        notebook_id: newNotebook || null,
+        notebook_id: newNotebook,
         remind_via_email: newRemind,
       } as any)
       .select()
@@ -116,7 +116,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
       setPlans((prev) => [...prev, data as any as StudyPlan]);
       setNewTitle("");
       setNewTime("");
-      setNewNotebook("");
+      setNewNotebook(notebooks.length > 0 ? notebooks[0].id : "");
       setNewRemind(false);
       setShowAdd(false);
       toast.success("Study session added!");
@@ -292,18 +292,56 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
                   className="h-8 text-xs flex-1"
                   placeholder="Time (optional)"
                 />
-                <select
-                  value={newNotebook}
-                  onChange={(e) => setNewNotebook(e.target.value)}
-                  className="h-8 text-xs rounded-md border border-border bg-background px-2 flex-1"
-                >
-                  <option value="">No notebook</option>
-                  {notebooks.map((nb) => (
-                    <option key={nb.id} value={nb.id}>
-                      {nb.emoji} {nb.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative flex-1">
+                  <button
+                    type="button"
+                    onClick={() => setNotebookPickerOpen((p) => !p)}
+                    className="w-full h-8 text-xs rounded-xl border border-border bg-background px-3 text-left truncate flex items-center gap-2 hover:bg-muted/50 transition-colors"
+                  >
+                    {newNotebook ? (
+                      <>
+                        <span>{notebooks.find((nb) => nb.id === newNotebook)?.emoji}</span>
+                        <span className="truncate text-foreground">{notebooks.find((nb) => nb.id === newNotebook)?.name}</span>
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground">Select notebook</span>
+                    )}
+                    <ChevronRight className={`h-3 w-3 ml-auto text-muted-foreground transition-transform duration-200 ${notebookPickerOpen ? "rotate-90" : ""}`} />
+                  </button>
+                  <AnimatePresence>
+                    {notebookPickerOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute z-20 top-full mt-1 left-0 right-0 rounded-xl border border-border bg-popover shadow-lg overflow-hidden"
+                      >
+                        <div className="max-h-36 overflow-y-auto scrollbar-thin p-1">
+                          {notebooks.map((nb) => (
+                            <button
+                              key={nb.id}
+                              type="button"
+                              onClick={() => {
+                                setNewNotebook(nb.id);
+                                setNotebookPickerOpen(false);
+                              }}
+                              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors ${
+                                newNotebook === nb.id
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : "text-foreground hover:bg-muted"
+                              }`}
+                            >
+                              <span className="text-base">{nb.emoji}</span>
+                              <span className="truncate">{nb.name}</span>
+                              {newNotebook === nb.id && <Check className="h-3 w-3 ml-auto text-primary" />}
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <button
@@ -317,7 +355,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
                   <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setShowAdd(false)}>
                     Cancel
                   </Button>
-                  <Button size="sm" className="h-6 text-xs" onClick={addPlan} disabled={!newTitle.trim()}>
+                  <Button size="sm" className="h-6 text-xs" onClick={addPlan} disabled={!newTitle.trim() || !newNotebook}>
                     Save
                   </Button>
                 </div>
