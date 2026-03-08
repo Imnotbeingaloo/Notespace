@@ -355,7 +355,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
                   <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setShowAdd(false)}>
                     Cancel
                   </Button>
-                  <Button size="sm" className="h-6 text-xs" onClick={addPlan} disabled={!newTitle.trim()}>
+                  <Button size="sm" className="h-6 text-xs" onClick={addPlan} disabled={!newTitle.trim() || !newNotebook}>
                     Save
                   </Button>
                 </div>
