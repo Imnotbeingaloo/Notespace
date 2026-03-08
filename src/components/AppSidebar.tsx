@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Zap, Search as SearchIcon, Loader2, RotateCcw } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
@@ -54,9 +54,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [editName, setEditName] = useState("");
   const [editEmoji, setEditEmoji] = useState("");
   const [quickNote, setQuickNote] = useState("");
-  const [analyzeOpen, setAnalyzeOpen] = useState(false);
-  const [analyzeResult, setAnalyzeResult] = useState("");
-  const [analyzeLoading, setAnalyzeLoading] = useState(false);
+
+
   const [dragNoteId, setDragNoteId] = useState<string | null>(null);
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
   const [trashExpanded, setTrashExpanded] = useState(false);
@@ -89,58 +88,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     setQuickNote("");
   };
 
-  const handleAnalyzeAll = async () => {
-    if (!activeNotebookId) return;
-    const nb = notebooks.find(n => n.id === activeNotebookId);
-    if (!nb || nb.notes.length === 0) return;
-    setAnalyzeOpen(true);
-    setAnalyzeResult("");
-    setAnalyzeLoading(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      if (!token) throw new Error("Please sign in");
-      const allContent = nb.notes.map(n => `## ${n.title}\n${n.content}`).join("\n\n---\n\n");
-      const resp = await fetch(AI_TOOLS_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        },
-        body: JSON.stringify({ action: "analyze", noteTitle: nb.name, noteContent: allContent.slice(0, 50000) }),
-      });
-      if (!resp.ok) throw new Error("Failed");
-      const reader = resp.body?.getReader();
-      if (!reader) throw new Error("No stream");
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let text = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        let idx: number;
-        while ((idx = buffer.indexOf("\n")) !== -1) {
-          let line = buffer.slice(0, idx);
-          buffer = buffer.slice(idx + 1);
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (!line.startsWith("data: ")) continue;
-          const json = line.slice(6).trim();
-          if (json === "[DONE]") break;
-          try {
-            const parsed = JSON.parse(json);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) { text += content; setAnalyzeResult(text); }
-          } catch {}
-        }
-      }
-    } catch {
-      setAnalyzeResult("Failed to analyze. Please try again.");
-    } finally {
-      setAnalyzeLoading(false);
-    }
-  };
+
+
 
   const handleSidebarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -260,47 +209,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             </div>
           </div>
 
-          {/* Analyze All Notes */}
-          <button
-            onClick={handleAnalyzeAll}
-            disabled={!activeNotebookId || analyzeLoading}
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1 magnetic-btn disabled:opacity-50"
-          >
-            {analyzeLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-            Analyze Notebook
-          </button>
 
-          {/* Analyze Result Panel */}
-          <AnimatePresence>
-            {analyzeOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-2 overflow-hidden"
-              >
-                <div className="rounded-xl border border-border bg-card p-3 max-h-60 overflow-y-auto scrollbar-thin">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-foreground">Notebook Analysis</span>
-                    <button onClick={() => setAnalyzeOpen(false)} className="text-muted-foreground hover:text-foreground">
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
-                  {analyzeLoading && !analyzeResult && (
-                    <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      Analyzing…
-                    </div>
-                  )}
-                  {analyzeResult && (
-                    <div className="prose prose-xs max-w-none text-foreground text-xs">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{analyzeResult}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+
 
           {/* Search */}
           <div className="mb-2">
