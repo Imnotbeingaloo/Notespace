@@ -154,7 +154,7 @@ function StepReel() {
           <div className="absolute top-[18px] h-px bg-border z-0" style={{ left: 'calc(100% / 12)', right: 0 }} />
 
           {steps.map((step, idx) => (
-            <div key={step.title} className="w-[calc(100%/6)] px-3 md:px-8 flex-shrink-0">
+            <div key={step.title} className="w-[calc(100%/6)] px-3 md:px-8 flex-shrink-0 text-left">
               <div className="flex items-center mb-6 relative">
                 <motion.div
                   ref={(el) => { circleRefs.current[idx] = el; }}
