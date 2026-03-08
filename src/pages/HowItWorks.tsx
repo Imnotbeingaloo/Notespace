@@ -69,7 +69,7 @@ function StepReel() {
   return (
     <div className="relative">
       {/* ── Track line with dot indicators ── */}
-      <div className="relative mb-12 mx-auto max-w-xs">
+      <div className="relative mb-12">
         {/* Line */}
         <div className="h-px bg-border w-full absolute top-1/2 -translate-y-1/2" />
 
@@ -337,7 +337,7 @@ export default function HowItWorksPage() {
       {/* CTA */}
       <section className="bg-foreground/[0.04] py-20">
         <div className="container mx-auto px-6">
-          <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto">
+          <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/15 via-card to-accent/15 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Ready to think better?</h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">Start capturing, organizing, and understanding your knowledge today. Free to start, no credit card required.</p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
