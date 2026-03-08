@@ -135,9 +135,6 @@ function PhilosophySection() {
             <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "old" ? "text-foreground font-semibold" : "text-muted-foreground/50"}`}>
               Old Way
             </span>
-            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "transition" ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
-              Evolving
-            </span>
             <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "new" ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
               Notebook Archive
             </span>
@@ -203,9 +200,9 @@ function PhilosophySection() {
           <div className="flex-shrink-0 flex items-center justify-center w-16 md:w-24 py-4 md:py-0">
             <motion.div
               animate={{
-                color: phase === "new" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
+                color: progress >= 0.5 ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
               }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.3 }}
             >
               <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
             </motion.div>
