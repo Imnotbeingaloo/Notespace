@@ -29,6 +29,7 @@ function StepReel() {
   const cancelled = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
+  const [dotVisible, setDotVisible] = useState(true);
   
 
   const viewportRef = useRef<HTMLDivElement>(null);
