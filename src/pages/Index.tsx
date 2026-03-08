@@ -57,16 +57,37 @@ const AppPage = () => {
 
         {/* Editor */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Mobile top bar */}
-          {isMobile && !sidebarOpen && (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="flex items-center gap-2 px-4 py-3 border-b border-border text-sm text-muted-foreground"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-              Open Sidebar
-            </button>
-          )}
+          {/* Top bar */}
+          <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
+            <div>
+              {isMobile && !sidebarOpen && (
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                  Open Sidebar
+                </button>
+              )}
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setPlannerOpen((p) => !p)}
+                    variant={plannerOpen ? "default" : "ghost"}
+                    size="icon"
+                    className="h-8 w-8 rounded-xl shrink-0"
+                  >
+                    <CalendarDays className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <div className="flex-1 flex min-h-0">
             <div className="flex-1 min-w-0 flex flex-col">
               <NoteEditor />
@@ -77,26 +98,6 @@ const AppPage = () => {
             </AnimatePresence>
           </div>
         </div>
-
-        {/* Floating planner toggle */}
-        {!plannerOpen && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() => setPlannerOpen(true)}
-                  size="icon"
-                  className="fixed bottom-6 left-6 z-50 h-12 w-12 rounded-2xl shadow-lg shadow-primary/25"
-                >
-                  <CalendarDays className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="left">
-                <p>Study Planner</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
       </div>
     </NotebookProvider>
   );
