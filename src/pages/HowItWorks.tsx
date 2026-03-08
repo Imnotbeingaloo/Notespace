@@ -69,7 +69,7 @@ function StepReel() {
   return (
     <div className="relative">
       {/* ── Track line with dot indicators ── */}
-      <div className="relative mb-12 mx-auto max-w-xs">
+      <div className="relative mb-12">
         {/* Line */}
         <div className="h-px bg-border w-full absolute top-1/2 -translate-y-1/2" />
 
