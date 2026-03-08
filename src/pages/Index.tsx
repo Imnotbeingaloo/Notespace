@@ -91,7 +91,7 @@ const AppPage = () => {
             </TooltipProvider>
           </div>
           <div className="flex-1 flex min-h-0 relative">
-            <div className={`flex-1 min-w-0 flex flex-col ${plannerOpen ? "max-lg:hidden" : ""}`}>
+            <div className="flex-1 min-w-0 flex flex-col">
               <NoteEditor />
             </div>
             {/* Study Planner panel — full overlay on mobile/tablet, inline side panel on desktop */}
