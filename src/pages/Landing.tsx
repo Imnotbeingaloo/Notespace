@@ -254,9 +254,8 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
+            initial="show"
+            animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto"
           >
