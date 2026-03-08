@@ -123,7 +123,7 @@ export function TypewriterCard() {
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Real-time intelligence that tags, links, and organizes as you write.
       </p>
-      <div className="rounded-xl border border-border bg-background p-4 font-mono text-xs">
+      <div className="rounded-xl border border-border bg-background p-4 font-mono text-xs mt-auto">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <span className="text-muted-foreground uppercase tracking-wider text-[10px]">Live Feed</span>
