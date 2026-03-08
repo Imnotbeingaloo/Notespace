@@ -107,7 +107,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
         title: newTitle.trim(),
         scheduled_date: selectedDateStr,
         scheduled_time: newTime || null,
-        notebook_id: newNotebook || null,
+        notebook_id: newNotebook,
         remind_via_email: newRemind,
       } as any)
       .select()
