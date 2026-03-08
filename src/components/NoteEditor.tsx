@@ -193,7 +193,7 @@ export function NoteEditor() {
             ref={titleRef}
             defaultValue={activeNote.title}
             onChange={(e) => debouncedUpdate("title", e.target.value)}
-            className="w-full text-2xl sm:text-3xl font-serif font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
+            className="w-full text-2xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
             placeholder="Note title..."
           />
           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
