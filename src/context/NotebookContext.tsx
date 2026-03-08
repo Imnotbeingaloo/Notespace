@@ -165,7 +165,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       value={{
         notebooks, activeNotebookId, activeNoteId,
         setActiveNotebookId, setActiveNoteId,
-        createNotebook, deleteNotebook, createNote, deleteNote, updateNote,
+        createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
         activeNotebook, activeNote, loading,
       }}
     >
