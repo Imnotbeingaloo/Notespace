@@ -727,7 +727,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
           </div>
         </div>
       )}
-      )}
 
       {/* Footer */}
       <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
