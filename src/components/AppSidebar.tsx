@@ -20,9 +20,10 @@ interface AppSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
   onSelectNote?: () => void;
+  onOpenPlanner?: () => void;
 }
 
-export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }: AppSidebarProps) {
   const { signOut, user } = useAuth();
   const {
     notebooks,
