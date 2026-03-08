@@ -290,27 +290,12 @@ export default function LandingPage() {
               { step: "01", title: "Create a notebook", desc: "Organize by topic, class, or project. Each notebook is a dedicated space for related ideas. Add an emoji to make it yours." },
               { step: "02", title: "Write naturally", desc: "Use our distraction-free markdown editor. Bold, headings, code blocks, checklists — everything you need, nothing you don't." },
               { step: "03", title: "Let AI enhance", desc: "Highlight any concept and get instant explanations, summaries, and flashcards. Your notes become a living study guide." },
-            ].map((item, i) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.5 }}
-                className="text-center"
-              >
-                <motion.span
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 + 0.3, type: "spring", stiffness: 200 }}
-                  className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4"
-                >
-                  {item.step}
-                </motion.span>
+            ].map((item) => (
+              <div key={item.step} className="text-center">
+                <span className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4">{item.step}</span>
                 <h3 className="font-serif text-lg font-bold text-foreground mb-3">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
