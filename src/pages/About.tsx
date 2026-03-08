@@ -123,6 +123,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Values */}
       <section className="container mx-auto px-6 py-28 max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
