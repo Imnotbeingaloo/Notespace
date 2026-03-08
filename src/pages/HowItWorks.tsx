@@ -121,7 +121,7 @@ function StepReel() {
       <div className="overflow-hidden relative">
         {/* Rolling dot overlay — sits on top of the entire visible area */}
         <motion.div
-          className="absolute top-[12px] z-30 pointer-events-none"
+          className="absolute top-0 z-30 pointer-events-none"
           style={{
             left: dotLeftPx,
             width: DOT_SIZE,
