@@ -31,6 +31,31 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
 
     for (const file of Array.from(files)) {
       if (!validateFile(file)) continue;
+
+      // If it's an HTML or MD file, read content and insert into note
+      if (isTextDocument(file)) {
+        const text = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsText(file);
+        });
+
+        const content = isHtmlFile(file) ? stripHtmlTags(text) : text;
+        const separator = activeNote.content ? "\n\n---\n\n" : "";
+        const newContent = (activeNote.content || "") + separator + `## Imported: ${file.name}\n\n${content}`;
+
+        await updateNote(activeNotebookId, activeNote.id, { content: newContent });
+
+        if (onInsertMarkdown) {
+          onInsertMarkdown(""); // trigger re-render
+        }
+        toast({
+          title: "Document imported",
+          description: `"${file.name}" content has been added to your note.`,
+        });
+        continue;
+      }
+
       const path = buildStoragePath(user.id, activeNote.id, file.name);
       const { error } = await supabase.storage.from("note-attachments").upload(path, file);
       if (error) {
