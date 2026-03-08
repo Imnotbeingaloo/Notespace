@@ -37,7 +37,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
   // New plan form
   const [newTitle, setNewTitle] = useState("");
   const [newTime, setNewTime] = useState("");
-  const [newNotebook, setNewNotebook] = useState("");
+  const [newNotebook, setNewNotebook] = useState(notebooks.length > 0 ? notebooks[0].id : "");
   const [newRemind, setNewRemind] = useState(false);
 
   const fetchPlans = useCallback(async () => {
