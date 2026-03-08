@@ -534,6 +534,10 @@ export function NoteEditor() {
           />
         </div>
 
+        {/* File upload at bottom */}
+        <div className="shrink-0 px-4 sm:px-8 py-2 border-t border-border">
+          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
+        </div>
       </motion.div>
     </AnimatePresence>
   );
