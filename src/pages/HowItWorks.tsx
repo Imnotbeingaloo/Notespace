@@ -25,33 +25,56 @@ const useCases = [
 /* ─── Cinematic 3-at-a-time Filmstrip ─── */
 function StepReel() {
   const slideX = useMotionValue(0);
-  const dotProgress = useMotionValue(0); // 0 = group 1, 1 = group 2
+  const stepProgress = useMotionValue(0); // 0-5 across all steps
   const cancelled = useRef(false);
+  const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
 
   useEffect(() => {
     cancelled.current = false;
     const run = async () => {
       while (!cancelled.current) {
-        // Show group 1 (steps 1-3)
+        // Animate through steps 0-2 (group 1)
+        for (let i = 0; i <= 2; i++) {
+          if (cancelled.current) return;
+          await animate(stepProgress, i, {
+            duration: i === 0 ? 0 : 0.5,
+            ease: [0.16, 1, 0.3, 1],
+            onUpdate: (v) => setActiveStep(Math.round(v)),
+          });
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+        if (cancelled.current) return;
+
+        // Slide filmstrip to group 2 while dot moves to step 3
+        setGroup(1);
+        animate(slideX, -50, { duration: 0.6, ease: [0.16, 1, 0.3, 1] });
+        await animate(stepProgress, 3, {
+          duration: 0.6,
+          ease: [0.16, 1, 0.3, 1],
+          onUpdate: (v) => setActiveStep(Math.round(v)),
+        });
+        await new Promise((r) => setTimeout(r, 1000));
+
+        // Steps 4-5
+        for (let i = 4; i <= 5; i++) {
+          if (cancelled.current) return;
+          await animate(stepProgress, i, {
+            duration: 0.5,
+            ease: [0.16, 1, 0.3, 1],
+            onUpdate: (v) => setActiveStep(Math.round(v)),
+          });
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+        if (cancelled.current) return;
+
+        // Reset
+        await new Promise((r) => setTimeout(r, 400));
         setGroup(0);
         await animate(slideX, 0, { duration: 0 });
-        await animate(dotProgress, 0, { duration: 0 });
-        await new Promise((r) => setTimeout(r, 1800));
-        if (cancelled.current) return;
-
-        // Slide to group 2 (steps 4-6)
-        setGroup(1);
-        animate(dotProgress, 1, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-        await animate(slideX, -50, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-        await new Promise((r) => setTimeout(r, 1800));
-        if (cancelled.current) return;
-
-        // Slide back to group 1
-        setGroup(0);
-        animate(dotProgress, 0, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-        await animate(slideX, 0, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-        await new Promise((r) => setTimeout(r, 400));
+        await animate(stepProgress, 0, { duration: 0 });
+        setActiveStep(0);
+        await new Promise((r) => setTimeout(r, 300));
       }
     };
     run();
@@ -60,80 +83,73 @@ function StepReel() {
 
   const translateX = useTransform(slideX, (v) => `${v}%`);
 
-  // Dot travels between two positions on the track line
-  const dotLeft = useTransform(dotProgress, [0, 1], ["25%", "75%"]);
-  const dotRotation = useTransform(dotProgress, [0, 1], [0, 360]);
+  // The dot position: within the visible 3 cards, the dot sits on the connector line
+  // Each card is 1/6 of 200% width = 1/3 of visible width
+  // Dot moves relative to visible area based on (activeStep % 3)
+  const DOT_SIZE = 22;
 
-  const DOT_SIZE = 22; // same as step circles
+  // Position the dot along the connector lines of the visible 3 cards
+  // Each step card is 33.33% wide. The number circle is at the left edge (~16px in).
+  // The connector line stretches from after the number to the right edge.
+  // We want the dot to be at the middle of the connector line of the active step.
+  const dotLeftInGroup = useTransform(stepProgress, (v) => {
+    const inGroup = v % 3; // 0, 1, 2 within current visible group
+    // Each card = 33.33% of container. Dot should be ~65% across each card (middle of the line)
+    const pct = (inGroup * 33.33) + 20; // 20% into each card (on the connector line)
+    return `${pct}%`;
+  });
+
+  const dotRotation = useTransform(stepProgress, [0, 5], [0, 1080]);
 
   return (
     <div className="relative">
-      {/* ── Track line with dot indicators ── */}
-      <div className="relative mb-12">
-        {/* Line */}
-        <div className="h-px bg-border w-full absolute top-1/2 -translate-y-1/2" />
-
-        {/* Two group circles at fixed positions */}
-        <div className="relative flex justify-between items-center" style={{ height: DOT_SIZE }}>
-          {[0, 1].map((g) => (
-            <div key={g} className="flex-1 flex justify-center">
-              <motion.div
-                className="rounded-full border-2 flex items-center justify-center font-mono text-[9px] font-bold z-10"
-                style={{ width: DOT_SIZE, height: DOT_SIZE }}
-                animate={{
-                  borderColor: group === g ? "hsl(var(--primary))" : "hsl(var(--border))",
-                  backgroundColor: group === g ? "hsl(var(--primary))" : "hsl(var(--background))",
-                  color: group === g ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                {g === 0 ? "1–3" : "4–6"}
-              </motion.div>
-            </div>
-          ))}
-        </div>
-
-        {/* Rolling dot */}
-        <motion.div
-          className="absolute top-1/2 z-20 pointer-events-none"
-          style={{
-            left: dotLeft,
-            width: DOT_SIZE,
-            height: DOT_SIZE,
-            marginLeft: -(DOT_SIZE / 2),
-            marginTop: -(DOT_SIZE / 2),
-          }}
-        >
-          <motion.div
-            className="w-full h-full rounded-full border-2 border-primary bg-background"
-            style={{
-              rotate: dotRotation,
-              boxShadow: "0 0 10px hsl(var(--primary) / 0.35)",
-            }}
-          >
-            <div className="w-full h-full relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              </div>
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-[5px] bg-primary/40" />
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-
       {/* ── Filmstrip: 6 cards, show 3 at a time ── */}
-      <div className="overflow-hidden">
+      <div className="overflow-hidden relative">
         <motion.div
           className="flex"
           style={{ x: translateX, width: "200%" }}
         >
           {steps.map((step, idx) => (
             <div key={step.title} className="w-[calc(100%/6)] px-4 flex-shrink-0">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+              {/* Step number + connector line */}
+              <div className="flex items-center gap-3 mb-4 relative">
+                <motion.div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 flex-shrink-0"
+                  animate={{
+                    backgroundColor: activeStep === idx ? "hsl(var(--primary))" : "hsl(var(--primary))",
+                    color: "hsl(var(--primary-foreground))",
+                    scale: activeStep === idx ? 1.15 : 1,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
                   {idx + 1}
+                </motion.div>
+                <div className="flex-1 h-px bg-border relative">
+                  {/* Rolling dot on the active step's line */}
+                  {activeStep === idx && (
+                    <motion.div
+                      className="absolute top-1/2 z-20 pointer-events-none"
+                      initial={{ left: "0%", marginTop: -(DOT_SIZE / 2) }}
+                      animate={{ left: "100%" }}
+                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ width: DOT_SIZE, height: DOT_SIZE, marginLeft: -(DOT_SIZE / 2) }}
+                    >
+                      <motion.div
+                        className="w-full h-full rounded-full border-2 border-primary bg-background"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 0.8, ease: "linear" }}
+                        style={{ boxShadow: "0 0 10px hsl(var(--primary) / 0.35)" }}
+                      >
+                        <div className="w-full h-full relative">
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                          </div>
+                          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-[5px] bg-primary/40" />
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
                 </div>
-                <div className="flex-1 h-px bg-border" />
               </div>
               <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <step.icon className="h-5 w-5 text-primary" />
