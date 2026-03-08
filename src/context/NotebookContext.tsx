@@ -44,7 +44,7 @@ interface NotebookContextType {
   updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<void>;
   createNote: (notebookId: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
-  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => Promise<void>;
+  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
   restoreNotebook: (id: string) => Promise<void>;
   restoreNote: (notebookId: string, noteId: string) => Promise<void>;
