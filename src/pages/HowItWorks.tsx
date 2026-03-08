@@ -118,12 +118,13 @@ function StepReel() {
       <div ref={viewportRef} className="overflow-hidden relative pt-2">
         {/* Sliding dot — always visible, travels along the line */}
         <motion.div
-          className="absolute top-2 z-30 pointer-events-none"
+          className="absolute top-2 z-30 pointer-events-none transition-opacity duration-150"
           style={{
             x: dotX,
             width: DOT_SIZE,
             height: DOT_SIZE,
             marginLeft: -(DOT_SIZE / 2),
+            opacity: dotVisible ? 1 : 0,
           }}
         >
           <div
