@@ -309,7 +309,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="container mx-auto px-6 py-20">
+      <section className="container mx-auto px-6 py-14">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
