@@ -563,6 +563,111 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
 
       {/* Footer */}
       <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
+        {/* Trash Section */}
+        {!collapsed && (
+          <div className="mb-1">
+            <button
+              onClick={() => setTrashExpanded((prev) => !prev)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl"
+            >
+              <motion.div
+                animate={{ rotate: trashExpanded ? 90 : 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <ChevronRight className="h-3 w-3" />
+              </motion.div>
+              <Trash2 className="h-4 w-4" />
+              <span className="flex-1 text-left">Trash</span>
+              {trashCount > 0 && (
+                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {trashExpanded && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="ml-3 pl-3 border-l-2 border-sidebar-border space-y-0.5 py-1 max-h-40 overflow-y-auto scrollbar-thin">
+                    {trashCount === 0 && (
+                      <div className="text-xs text-muted-foreground px-2 py-2">Trash is empty</div>
+                    )}
+
+                    {trashedNotebooks.map((nb) => (
+                      <div
+                        key={nb.id}
+                        className="group/trash flex items-center gap-2 px-2 py-1.5 rounded-md text-xs text-muted-foreground"
+                      >
+                        <BookOpen className="h-3 w-3 flex-shrink-0" />
+                        <span className="flex-1 truncate">{nb.emoji} {nb.name}</span>
+                        <button
+                          onClick={() => restoreNotebook(nb.id)}
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-all"
+                          title="Restore"
+                        >
+                          <RotateCcw className="h-2.5 w-2.5" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            showConfirm(
+                              "Delete permanently?",
+                              `"${nb.name}" and all its notes will be permanently deleted. This cannot be undone.`,
+                              () => permanentlyDeleteNotebook(nb.id),
+                              "Delete Forever"
+                            )
+                          }
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
+                          title="Delete permanently"
+                        >
+                          <Trash2 className="h-2.5 w-2.5" />
+                        </button>
+                      </div>
+                    ))}
+
+                    {trashedNotes.map(({ note, notebookId, notebookName }) => (
+                      <div
+                        key={note.id}
+                        className="group/trash flex items-center gap-2 px-2 py-1.5 rounded-md text-xs text-muted-foreground"
+                      >
+                        <FileText className="h-3 w-3 flex-shrink-0" />
+                        <div className="flex-1 truncate">
+                          <span>{note.title}</span>
+                          <span className="text-muted-foreground/50 ml-1">· {notebookName}</span>
+                        </div>
+                        <button
+                          onClick={() => restoreNote(notebookId, note.id)}
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-all"
+                          title="Restore"
+                        >
+                          <RotateCcw className="h-2.5 w-2.5" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            showConfirm(
+                              "Delete permanently?",
+                              `"${note.title}" will be permanently deleted. This cannot be undone.`,
+                              () => permanentlyDeleteNote(notebookId, note.id),
+                              "Delete Forever"
+                            )
+                          }
+                          className="opacity-0 group-hover/trash:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
+                          title="Delete permanently"
+                        >
+                          <Trash2 className="h-2.5 w-2.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
         <div className={`flex items-center ${collapsed ? "justify-center" : "px-1"}`}>
           <ThemeToggle />
           {!collapsed && <span className="text-xs text-muted-foreground ml-1">Theme</span>}

@@ -584,7 +584,6 @@ export function NoteEditor() {
               },
             } as React.RefObject<HTMLDivElement>}
           />
-          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
         </div>
 
         {/* Content area */}
@@ -595,6 +594,11 @@ export function NoteEditor() {
             onChange={(content) => debouncedUpdate("content", content)}
             placeholder="Start writing... (drag & drop files here)"
           />
+        </div>
+
+        {/* File upload at bottom */}
+        <div className="shrink-0 px-4 sm:px-8 py-3 border-t border-border">
+          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
         </div>
       </motion.div>
     </AnimatePresence>
