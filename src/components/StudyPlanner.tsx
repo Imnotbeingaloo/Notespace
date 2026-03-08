@@ -123,8 +123,16 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const hasEverCompleted = useRef(false);
+
+  // Track if user has already completed something before this session
+  useEffect(() => {
+    if (totalCompleted > 0) hasEverCompleted.current = true;
+  }, []);
+
   const toggleComplete = async (plan: StudyPlan) => {
     const completed = !plan.completed;
+    const wasFirstCompletion = completed && totalCompleted === 0 && !hasEverCompleted.current;
     await supabase
       .from("study_plans" as any)
       .update({
@@ -137,7 +145,19 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
         p.id === plan.id ? { ...p, completed, completed_at: completed ? new Date().toISOString() : null } : p
       )
     );
-    if (completed) toast.success("🎉 Session completed!");
+    if (completed) {
+      toast.success("🎉 Session completed!");
+      if (wasFirstCompletion) {
+        // Fire confetti!
+        hasEverCompleted.current = true;
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { x: 0.7, y: 0.4 },
+          colors: ["hsl(142, 71%, 45%)", "hsl(48, 96%, 53%)", "hsl(262, 83%, 58%)", "hsl(0, 84%, 60%)"],
+        });
+      }
+    }
   };
 
   const deletePlan = async (id: string) => {
