@@ -114,7 +114,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
       }
     }
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
-    window.location.reload();
+    await refreshData();
   };
 
   // Study plans - fetch upcoming
