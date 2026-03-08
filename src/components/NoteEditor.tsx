@@ -87,9 +87,11 @@ export function NoteEditor() {
   const handleToolbarChange = useCallback(
     (content: string) => {
       if (!activeNotebookId || !activeNote) return;
-      debouncedUpdate("content", content);
+      // Toolbar modifies the textarea value directly, so we need to
+      // update through the parent which will flow back to HybridEditor
+      updateNote(activeNotebookId, activeNote.id, { content });
     },
-    [activeNotebookId, activeNote?.id, debouncedUpdate]
+    [activeNotebookId, activeNote?.id, updateNote]
   );
 
   const handleVoiceTranscript = useCallback(
