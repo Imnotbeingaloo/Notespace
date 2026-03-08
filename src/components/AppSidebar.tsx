@@ -104,21 +104,21 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   };
 
   const handleRemoveTag = async (tagToRemove: string) => {
-    // Remove this tag from ALL notes that have it
     const updates: Promise<any>[] = [];
     notebooks.forEach((nb) => {
       nb.notes?.forEach((note) => {
         if (note.tags?.includes(tagToRemove)) {
           const newTags = note.tags.filter((t) => t !== tagToRemove);
           updates.push(
-            supabase.from("notes").update({ tags: newTags }).eq("id", note.id)
+            supabase.from("notes").update({ tags: newTags }).eq("id", note.id).then(() => {})
           );
-          updateNote(nb.id, note.id, {} as any);
         }
       });
     });
     await Promise.all(updates);
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
+    // Re-fetch to update local state
+    window.location.reload();
   };
 
   // Study plans - fetch upcoming
