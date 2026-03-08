@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, RotateCcw, BookOpen, FileText, ArrowLeft, Clock, AlertTriangle, CheckSquare, Square } from "lucide-react";
