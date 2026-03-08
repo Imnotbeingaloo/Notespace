@@ -64,6 +64,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
   const [newTagInput, setNewTagInput] = useState("");
   const [showAddTag, setShowAddTag] = useState(false);
 
+  // Study Schedule
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
     notebooks.forEach((nb) => {
