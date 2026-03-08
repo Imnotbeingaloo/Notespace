@@ -31,6 +31,7 @@ const App = () => (
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
+              <Route path="/trash" element={<TrashPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
