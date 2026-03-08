@@ -473,7 +473,7 @@ export function NoteEditor() {
                 <AIExplainPanel />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
                 <FlashcardsButton />
-                <SymbolsPicker onInsert={handleSymbolInsert} />
+                
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <PreviewButton />
                 <ExportButtons />
@@ -520,6 +520,7 @@ export function NoteEditor() {
               },
             } as React.RefObject<HTMLDivElement>}
           />
+          <SymbolsPicker onInsert={handleSymbolInsert} />
         </div>
 
         {/* Content area */}
