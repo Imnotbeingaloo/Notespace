@@ -228,8 +228,7 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ── Separator ── */}
-      <div className="py-10"><SectionDivider /></div>
+      <SectionDivider />
 
       {/* ── Features ── */}
       <section id="features" className="container mx-auto px-6 pb-16">
