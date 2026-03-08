@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
   const isMobile = useIsMobile();
 
@@ -49,8 +50,8 @@ const AppPage = () => {
           }`}
         >
           <AppSidebar
-            collapsed={false}
-            onToggle={() => setSidebarOpen((p) => !p)}
+            collapsed={!isMobile && sidebarCollapsed}
+            onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
             onSelectNote={() => isMobile && setSidebarOpen(false)}
           />
         </div>
