@@ -10,13 +10,6 @@ const values = [
   { icon: Lightbulb, title: "AI That Assists, Not Replaces", description: "Our AI helps you understand, organize, and recall — but your thinking stays yours. We enhance, not automate." },
 ];
 
-const stats = [
-  { value: "50K+", label: "Notes created" },
-  { value: "12K+", label: "Active users" },
-  { value: "99.9%", label: "Uptime" },
-  { value: "4.8★", label: "User rating" },
-];
-
 const timeline = [
   { year: "2024", title: "The Idea", description: "Born from frustration with note apps that were either too simple or too complex. We wanted both." },
   { year: "2024", title: "First Beta", description: "Launched with markdown editing, notebooks, and instant search. Early adopters loved the clean interface." },
@@ -69,27 +62,8 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* Stats */}
-      <section className="container mx-auto px-6 pb-20 max-w-3xl">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          {stats.map((stat) => (
-            <motion.div
-              key={stat.label}
-              variants={fadeUp}
-              className="rounded-[2rem] border border-border bg-card p-6 text-center"
-            >
-              <div className="text-2xl md:text-3xl font-bold text-primary mb-1">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+
+
 
       {/* Philosophy */}
       <section className="bg-foreground/[0.03] py-20">
