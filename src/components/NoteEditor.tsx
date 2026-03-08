@@ -719,7 +719,7 @@ export function NoteEditor() {
 
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
               {/* Desktop: Ask AI | AI Edit | Flashcards | Symbols | Preview */}
-              <div className="hidden md:flex items-center gap-1">
+              <div className="hidden lg:flex items-center gap-1">
                 <AIExplainPanel />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
                 <FlashcardsButton />
