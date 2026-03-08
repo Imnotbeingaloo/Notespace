@@ -719,7 +719,7 @@ export function NoteEditor() {
 
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
               {/* Desktop: Ask AI | AI Edit | Flashcards | Symbols | Preview */}
-              <div className="hidden md:flex items-center gap-1">
+              <div className="hidden lg:flex items-center gap-1">
                 <AIExplainPanel />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
                 <FlashcardsButton />
@@ -730,7 +730,7 @@ export function NoteEditor() {
               </div>
 
               {/* Mobile: "More" dropdown */}
-              <div className="md:hidden relative" ref={moreRef}>
+              <div className="lg:hidden relative" ref={moreRef}>
                 <button
                   onClick={() => setMoreOpen((p) => !p)}
                   className="magnetic-btn inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"

@@ -94,10 +94,10 @@ const AppPage = () => {
             <div className={`flex-1 min-w-0 flex flex-col ${plannerOpen ? "max-lg:hidden" : ""}`}>
               <NoteEditor />
             </div>
-            {/* Study Planner panel — full overlay on mobile/tablet, side panel on desktop */}
+            {/* Study Planner panel — full overlay on mobile/tablet, overlay panel on desktop */}
             <AnimatePresence>
               {plannerOpen && (
-                <div className="max-lg:fixed max-lg:inset-0 max-lg:z-50 max-lg:bg-card lg:contents">
+                <div className="fixed inset-0 z-50 max-lg:bg-card lg:inset-auto lg:top-0 lg:right-0 lg:bottom-0 lg:w-[380px] lg:bg-transparent">
                   <StudyPlanner onClose={() => setPlannerOpen(false)} />
                 </div>
               )}
