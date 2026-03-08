@@ -454,7 +454,7 @@ export function NoteEditor() {
                       <AIExplainPanel />
                       <AIEditPanel onApplyEdit={handleAIEdit} />
                       <FlashcardsButton />
-                      <AnalyzeButton />
+                      
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <ExportButtons />
                     </motion.div>
