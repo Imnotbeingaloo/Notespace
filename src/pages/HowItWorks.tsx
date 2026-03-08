@@ -98,6 +98,7 @@ function StepReel() {
 
           // Reset
           if (cancelled.current) return;
+          setDotVisible(false);
           await new Promise((r) => setTimeout(r, 400));
         }
       };
