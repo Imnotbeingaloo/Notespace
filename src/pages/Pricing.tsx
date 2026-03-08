@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { BookOpen, ArrowRight, Check } from "lucide-react";
+import { BookOpen, ArrowRight, Check, Sparkles, Brain, Mic, FileText, Layers, Users, Shield, Zap, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -7,30 +7,79 @@ const tiers = [
   {
     name: "Free",
     price: "$0",
-    description: "Perfect for getting started with note-taking.",
-    features: ["Up to 3 notebooks", "Unlimited notes", "Markdown preview", "Instant search", "Auto-save"],
+    description: "Great for students getting started with smarter note-taking.",
+    features: [
+      "Up to 3 notebooks",
+      "Unlimited notes with markdown",
+      "AI topic explanations (5/day)",
+      "Instant ⌘K search",
+      "Auto-save & sync",
+      "Basic file attachments (50 MB)",
+    ],
     cta: "Get Started",
     highlighted: false,
   },
   {
     name: "Pro",
-    price: "$9",
+    price: "$19",
     period: "/month",
-    description: "For power users who need AI insights and more storage.",
-    features: ["Unlimited notebooks", "AI-powered explanations", "File attachments (10 GB)", "Version history", "Priority support"],
-    cta: "Start Free Trial",
+    description: "For power users who need full AI capabilities and deeper insights.",
+    features: [
+      "Unlimited notebooks",
+      "Unlimited AI explanations",
+      "AI summaries & flashcard generation",
+      "Smart auto-tagging & linking",
+      "Voice-to-note transcription",
+      "File attachments (10 GB)",
+      "Version history & note recovery",
+      "Export to PDF, Markdown, Notion",
+      "Priority support",
+    ],
+    cta: "Start 14-Day Free Trial",
     highlighted: true,
   },
   {
     name: "Team",
-    price: "$19",
+    price: "$29",
     period: "/user/month",
-    description: "Collaborate with your team on shared notebooks.",
-    features: ["Everything in Pro", "Shared notebooks", "Team management", "Admin dashboard", "SSO & advanced security"],
+    description: "Collaborate on shared notebooks with your team or study group.",
+    features: [
+      "Everything in Pro",
+      "Shared notebooks & real-time co-editing",
+      "Team knowledge base",
+      "Admin dashboard & permissions",
+      "SSO & advanced security",
+      "Custom AI training on team data",
+      "API access & integrations",
+      "Dedicated account manager",
+    ],
     cta: "Contact Sales",
     highlighted: false,
   },
 ];
+
+const comparisons = [
+  { feature: "AI-powered explanations", free: true, pro: true, team: true },
+  { feature: "AI summaries & flashcards", free: false, pro: true, team: true },
+  { feature: "Voice transcription", free: false, pro: true, team: true },
+  { feature: "Smart auto-tagging", free: false, pro: true, team: true },
+  { feature: "Shared notebooks", free: false, pro: false, team: true },
+  { feature: "Real-time collaboration", free: false, pro: false, team: true },
+  { feature: "Export (PDF, MD, Notion)", free: false, pro: true, team: true },
+  { feature: "API access", free: false, pro: false, team: true },
+  { feature: "Version history", free: false, pro: true, team: true },
+  { feature: "Custom AI training", free: false, pro: false, team: true },
+];
+
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
 export default function PricingPage() {
   const { user } = useAuth();
@@ -49,50 +98,68 @@ export default function PricingPage() {
             <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">About</Link>
             <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">How It Works</Link>
           </nav>
-          <Link to={user ? "/app" : "/auth"} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity">
+          <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20">
             {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </header>
 
-      <section className="container mx-auto px-6 pt-20 pb-24 text-center">
+      <section className="container mx-auto px-6 pt-20 pb-8 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Simple, transparent pricing</h1>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">Choose the plan that fits your workflow. Upgrade or downgrade anytime.</p>
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
+            <Sparkles className="h-3.5 w-3.5 text-accent" />
+            Simple Pricing
+          </div>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Plans that grow with you</h1>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Start free, upgrade when you need more AI power. No hidden fees, cancel anytime.
+          </p>
         </motion.div>
+      </section>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-16">
-          {tiers.map((tier, i) => (
+      {/* Pricing Cards */}
+      <section className="container mx-auto px-6 pb-20">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-12"
+        >
+          {tiers.map((tier) => (
             <motion.div
               key={tier.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`rounded-2xl border p-8 text-left flex flex-col ${
+              variants={fadeUp}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className={`rounded-[2rem] border p-8 text-left flex flex-col transition-shadow duration-300 ${
                 tier.highlighted
-                  ? "border-primary bg-primary/5 shadow-xl shadow-primary/10"
-                  : "border-border bg-card"
+                  ? "border-primary bg-primary/5 shadow-xl shadow-primary/10 ring-1 ring-primary/20"
+                  : "border-border bg-card hover:shadow-lg hover:shadow-primary/5"
               }`}
             >
+              {tier.highlighted && (
+                <div className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold text-primary-foreground mb-4 w-fit">
+                  <Zap className="h-3 w-3" /> Most Popular
+                </div>
+              )}
               <h3 className="font-serif text-xl font-bold text-foreground">{tier.name}</h3>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-4xl font-bold text-foreground">{tier.price}</span>
                 {tier.period && <span className="text-sm text-muted-foreground">{tier.period}</span>}
               </div>
-              <p className="mt-3 text-sm text-muted-foreground">{tier.description}</p>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{tier.description}</p>
               <ul className="mt-6 space-y-3 flex-1">
                 {tier.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                  <li key={f} className="flex items-start gap-2 text-sm text-foreground">
+                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     {f}
                   </li>
                 ))}
               </ul>
               <Link
                 to={user ? "/app" : "/auth"}
-                className={`mt-8 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-opacity ${
+                className={`magnetic-btn mt-8 inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold transition-all ${
                   tier.highlighted
-                    ? "bg-primary text-primary-foreground hover:opacity-90"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                     : "border border-border text-foreground hover:bg-muted"
                 }`}
               >
@@ -100,8 +167,81 @@ export default function PricingPage() {
               </Link>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
+
+      {/* Feature Comparison Table */}
+      <section className="container mx-auto px-6 pb-20 max-w-4xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Compare plans in detail</h2>
+          <p className="text-muted-foreground">See exactly what's included in each plan.</p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-[2rem] border border-border bg-card overflow-hidden"
+        >
+          <div className="grid grid-cols-4 gap-0 text-sm">
+            <div className="p-4 font-medium text-muted-foreground border-b border-border">Feature</div>
+            <div className="p-4 font-semibold text-foreground text-center border-b border-border">Free</div>
+            <div className="p-4 font-semibold text-primary text-center border-b border-border bg-primary/5">Pro</div>
+            <div className="p-4 font-semibold text-foreground text-center border-b border-border">Team</div>
+            {comparisons.map((row, i) => (
+              <>
+                <div key={`f-${i}`} className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
+                <div key={`free-${i}`} className="p-4 text-center border-b border-border/50">
+                  {row.free ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                </div>
+                <div key={`pro-${i}`} className="p-4 text-center border-b border-border/50 bg-primary/5">
+                  {row.pro ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                </div>
+                <div key={`team-${i}`} className="p-4 text-center border-b border-border/50">
+                  {row.team ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                </div>
+              </>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* FAQ-like CTA */}
+      <section className="container mx-auto px-6 pb-24">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto"
+        >
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Still have questions?</h2>
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+            Start with the free plan — no credit card required. Upgrade whenever you're ready.
+          </p>
+          <Link
+            to={user ? "/app" : "/auth"}
+            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
+          >
+            {user ? "Open App" : "Get Started Free"}
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-8">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-primary" />
+            <span className="font-serif text-sm font-bold text-foreground">Notebook Archive</span>
+          </div>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Notebook Archive. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
