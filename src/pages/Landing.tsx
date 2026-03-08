@@ -232,17 +232,19 @@ export default function LandingPage() {
       <section id="features" className="relative py-24">
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-            Everything you need to take{" "}<span className="text-primary">better notes</span>
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
-            Powerful features that make Notebook Archive the perfect companion for students, researchers, and thinkers.
-          </p>
-        </motion.div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-          <ShufflerCard />
-          <TypewriterCard />
-          <SchedulerCard />
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+              Everything you need to take{" "}<span className="text-primary">better notes</span>
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
+              Powerful features that make Notebook Archive the perfect companion for students, researchers, and thinkers.
+            </p>
+          </motion.div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+            <ShufflerCard />
+            <TypewriterCard />
+            <SchedulerCard />
+          </div>
         </div>
       </section>
 
