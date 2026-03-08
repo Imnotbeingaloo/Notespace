@@ -13,11 +13,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const isSupported = typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
 
   const toggleListening = useCallback(() => {
-    if (!isPro) {
-      requirePro("Voice Transcription");
-      return;
-    }
-
     if (listening) {
       recognitionRef.current?.stop();
       setListening(false);
