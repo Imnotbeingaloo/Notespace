@@ -48,7 +48,7 @@ export function ShufflerCard() {
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Automatically analyze, summarize, and extract insights from your notes.
       </p>
-      <div className="relative h-32 overflow-hidden">
+      <div className="relative h-[5.5rem] overflow-hidden mt-auto">
         <AnimatePresence mode="popLayout">
           {cards.map((card, i) => (
             <motion.div
