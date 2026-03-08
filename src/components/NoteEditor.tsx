@@ -352,13 +352,17 @@ export function NoteEditor() {
               </ReactMarkdown>
             </div>
           ) : (
-            <textarea
-              ref={contentRef}
-              defaultValue={activeNote.content}
-              onChange={(e) => debouncedUpdate("content", e.target.value)}
-              className="w-full h-full px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
-              placeholder="Start writing in markdown... (drag & drop files here)"
-            />
+            <div className="flex-1 flex flex-col">
+              <textarea
+                ref={contentRef}
+                defaultValue={activeNote.content}
+                onChange={(e) => debouncedUpdate("content", e.target.value)}
+                className="w-full flex-1 px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
+                placeholder="Start writing in markdown... (drag & drop files here)"
+              />
+              {/* Inline image previews in edit mode */}
+              <InlineImagePreviews content={activeNote.content} />
+            </div>
           )}
         </div>
 

@@ -31,6 +31,8 @@ const systemPrompts: Record<string, string> = {
     "You are an educational assistant. Given a note, generate 5-10 flashcards in this exact markdown format:\n\n**Q:** Question here\n**A:** Answer here\n\n---\n\nMake them useful for studying. Cover the most important concepts.",
   "auto-tag":
     "You are a tagging assistant. Given a note, return ONLY a JSON array of 3-6 relevant topic tags (lowercase, no special characters). Example: [\"calculus\", \"derivatives\", \"chain rule\"]. Return ONLY the JSON array, nothing else.",
+  edit:
+    "You are a document editor. The user will provide a note and an editing instruction. Apply the requested changes to the note content and return ONLY the full updated note content in markdown format. Do not include explanations, just the edited content.",
 };
 
 serve(async (req) => {
