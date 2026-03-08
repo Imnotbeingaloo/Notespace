@@ -91,7 +91,7 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
         <button
           className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
           title="Insert Symbol">
-          <span className="flex items-center justify-center h-4 w-4 text-sm font-medium leading-none">Ω</span>
+          <span className="flex items-center justify-center h-4 w-4 text-[16px] font-medium leading-none">Ω</span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end" sideOffset={8}>

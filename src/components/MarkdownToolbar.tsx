@@ -6,6 +6,7 @@ import {
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
+  children?: React.ReactNode;
 }
 
 type FormatAction = {
