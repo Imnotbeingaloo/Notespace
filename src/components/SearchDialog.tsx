@@ -39,7 +39,7 @@ export function SearchDialog() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg border border-border"
+        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg border border-border"
       >
         <Search className="h-3 w-3" />
         <span>Search…</span>
