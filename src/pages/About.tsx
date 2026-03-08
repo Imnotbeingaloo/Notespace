@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight, BookOpen, Eye } from "lucide-react";
 import AnimatedDivider from "@/components/AnimatedDivider";
