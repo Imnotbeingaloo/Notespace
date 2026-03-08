@@ -730,7 +730,7 @@ export function NoteEditor() {
               </div>
 
               {/* Mobile: "More" dropdown */}
-              <div className="md:hidden relative" ref={moreRef}>
+              <div className="lg:hidden relative" ref={moreRef}>
                 <button
                   onClick={() => setMoreOpen((p) => !p)}
                   className="magnetic-btn inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
