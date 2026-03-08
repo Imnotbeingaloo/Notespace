@@ -189,7 +189,7 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* Features */}
+      {/* Animated Feature Cards */}
       <section id="features" className="container mx-auto px-6 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -206,6 +206,15 @@ export default function LandingPage() {
           </p>
         </motion.div>
 
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          <ShufflerCard />
+          <TypewriterCard />
+          <SchedulerCard />
+        </div>
+      </section>
+
+      {/* Additional Features Grid */}
+      <section className="container mx-auto px-6 pb-20">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -217,7 +226,8 @@ export default function LandingPage() {
             <motion.div
               key={f.title}
               variants={fadeUp}
-              className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1"
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
             >
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
                 <f.icon className="h-5 w-5 text-primary" />
