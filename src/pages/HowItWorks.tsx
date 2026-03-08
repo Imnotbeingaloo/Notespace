@@ -53,7 +53,6 @@ function StepReel() {
           // Group 0: steps 0,1,2
           setGroup(0);
           setActiveStep(0);
-          setShowDot(false);
           await animate(slideX, 0, { duration: 0 });
           await new Promise((r) => requestAnimationFrame(r));
           dotX.set(measureCircleX(0));
@@ -61,18 +60,14 @@ function StepReel() {
 
           // 0 → 1
           if (cancelled.current) return;
-          setShowDot(true);
           setActiveStep(1);
           await animate(dotX, measureCircleX(1), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1000));
 
           // 1 → 2
           if (cancelled.current) return;
-          setShowDot(true);
           setActiveStep(2);
           await animate(dotX, measureCircleX(2), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1000));
 
           // Slide to group 1: steps 3,4,5
@@ -87,18 +82,14 @@ function StepReel() {
 
           // 3 → 4
           if (cancelled.current) return;
-          setShowDot(true);
           setActiveStep(4);
           await animate(dotX, measureCircleX(4), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1000));
 
           // 4 → 5
           if (cancelled.current) return;
-          setShowDot(true);
           setActiveStep(5);
           await animate(dotX, measureCircleX(5), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1200));
 
           // Reset
