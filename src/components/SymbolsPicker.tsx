@@ -93,7 +93,7 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
           title="Insert Symbol">
           
           <span className="font-bold text-lg font-sans">Ω</span>
-          <span className="hidden sm:inline">Symbols</span>
+          <span className="hidden sm:inline"></span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end" sideOffset={8}>
