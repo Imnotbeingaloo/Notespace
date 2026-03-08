@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 import {
   CalendarDays, Plus, Check, Flame, Trophy, X, Clock, BookOpen, Bell, BellOff, Trash2, ChevronLeft, ChevronRight,
 } from "lucide-react";
