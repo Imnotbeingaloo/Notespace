@@ -25,13 +25,9 @@ const navLinks = [
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
 ];
 
-/** Reusable gradient separator */
+/** Reusable gradient separator — kept as fallback */
 function SectionDivider() {
-  return (
-    <div className="container mx-auto max-w-3xl px-6">
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-    </div>
-  );
+  return <AnimatedDivider />;
 }
 
 export default function LandingPage() {
