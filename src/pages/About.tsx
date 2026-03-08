@@ -62,27 +62,8 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* Stats */}
-      <section className="container mx-auto px-6 pb-20 max-w-3xl">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          {stats.map((stat) => (
-            <motion.div
-              key={stat.label}
-              variants={fadeUp}
-              className="rounded-[2rem] border border-border bg-card p-6 text-center"
-            >
-              <div className="text-2xl md:text-3xl font-bold text-primary mb-1">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+
+
 
       {/* Philosophy */}
       <section className="bg-foreground/[0.03] py-20">
