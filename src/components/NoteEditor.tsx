@@ -521,7 +521,6 @@ export function NoteEditor() {
             } as React.RefObject<HTMLDivElement>}
           />
           <SymbolsPicker onInsert={handleSymbolInsert} />
-          <div className="pr-4 sm:pr-8" />
         </div>
 
         {/* Content area */}
@@ -534,10 +533,6 @@ export function NoteEditor() {
           />
         </div>
 
-        {/* File upload at bottom */}
-        <div className="shrink-0 px-4 sm:px-8 py-1 border-t border-border">
-          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
-        </div>
       </motion.div>
     </AnimatePresence>
   );
