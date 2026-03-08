@@ -56,7 +56,7 @@ export default function LandingPage() {
       return () => clearTimeout(timeout);
     }
     if (currentCharIndex < currentLine.text.length) {
-      const timeout = setTimeout(() => { setTypingText(currentLine.text.slice(0, currentCharIndex + 1)); setCurrentCharIndex((c) => c + 1); }, 25 + Math.random() * 20);
+      const timeout = setTimeout(() => { setTypingText(currentLine.text.slice(0, currentCharIndex + 1)); setCurrentCharIndex((c) => c + 1); }, 45 + Math.random() * 35);
       return () => clearTimeout(timeout);
     } else {
       // Move to next line — set typingText to full next line's first state to avoid blank flash
