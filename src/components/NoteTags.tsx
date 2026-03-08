@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tag, Loader2, Sparkles } from "lucide-react";
-import { useNotebooks } from "@/context/NotebookContext";
 import { supabase } from "@/integrations/supabase/client";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
@@ -10,14 +9,13 @@ interface NoteTagsProps {
   tags: string[];
   noteId: string;
   notebookId: string;
+  onTagsUpdated: (tags: string[]) => void;
 }
 
-export function NoteTags({ tags, noteId, notebookId }: NoteTagsProps) {
-  const { updateNote } = useNotebooks();
+export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsProps) {
   const [loading, setLoading] = useState(false);
 
   const autoTag = async () => {
-    const { activeNote } = useNotebooks.arguments || {};
     setLoading(true);
 
     try {
@@ -25,7 +23,6 @@ export function NoteTags({ tags, noteId, notebookId }: NoteTagsProps) {
       const token = session?.access_token;
       if (!token) return;
 
-      // Get note data from supabase directly
       const { data: note } = await supabase.from("notes").select("title, content").eq("id", noteId).single();
       if (!note) return;
 
@@ -45,21 +42,18 @@ export function NoteTags({ tags, noteId, notebookId }: NoteTagsProps) {
 
       if (!resp.ok) throw new Error("Failed");
       const data = await resp.json();
-      
+
       let parsedTags: string[] = [];
       try {
         parsedTags = JSON.parse(data.tags);
       } catch {
-        // Try extracting from string
         const match = data.tags.match(/\[.*\]/s);
         if (match) parsedTags = JSON.parse(match[0]);
       }
 
       if (parsedTags.length > 0) {
-        await supabase.from("notes").update({ tags: parsedTags }).eq("id", noteId);
-        await updateNote(notebookId, noteId, {} as any);
-        // Force refresh by re-fetching
-        window.location.reload();
+        await supabase.from("notes").update({ tags: parsedTags } as any).eq("id", noteId);
+        onTagsUpdated(parsedTags);
       }
     } catch (e) {
       console.error("Auto-tag error:", e);

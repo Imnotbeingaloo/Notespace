@@ -107,7 +107,7 @@ export function AIExplainPanel() {
             <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-accent" />
-                <span className="font-serif font-bold text-foreground">AI Explanation</span>
+                <span className="font-sans font-bold text-foreground">AI Explanation</span>
               </div>
               <button onClick={() => setOpen(false)} className="p-1 rounded hover:bg-muted transition-colors">
                 <X className="h-4 w-4 text-muted-foreground" />
