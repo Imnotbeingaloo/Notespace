@@ -113,6 +113,13 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     if (activeNotebookId === id) { setActiveNotebookId(null); setActiveNoteId(null); }
   }, [activeNotebookId]);
 
+  const updateNotebook = useCallback(async (id: string, updates: { name?: string; emoji?: string }) => {
+    await supabase.from("notebooks").update(updates).eq("id", id);
+    setNotebooks((prev) =>
+      prev.map((nb) => nb.id === id ? { ...nb, ...updates } : nb)
+    );
+  }, []);
+
   const createNote = useCallback(async (notebookId: string) => {
     if (!user) return;
     const { data } = await supabase
