@@ -427,11 +427,11 @@ export function NoteEditor() {
     return (
       <div className="flex-1 flex items-center justify-center editor-surface">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
-          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-3">
             <span className="text-4xl">{activeNotebook.emoji}</span>
           </div>
-          <h2 className="font-sans text-2xl font-bold text-foreground mb-3">{activeNotebook.name}</h2>
-          <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+          <h2 className="font-sans text-2xl font-bold text-foreground mb-2">{activeNotebook.name}</h2>
+          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
             {activeNotebook.notes.length === 0
               ? "This notebook is empty. Create your first note!"
               : `${activeNotebook.notes.length} note${activeNotebook.notes.length > 1 ? "s" : ""} — select one to edit.`}
