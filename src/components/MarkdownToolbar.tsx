@@ -14,8 +14,8 @@ type FormatAction = {
   action: () => void;
 };
 
-// Group separators: after Strikethrough (idx 2), after H3 (idx 5), after Checklist (idx 8), after Code (idx 10)
-const separatorAfter = new Set([2, 5, 8, 10]);
+// Group separators: after Highlight (idx 3), after H3 (idx 6), after Checklist (idx 9), after Code (idx 11)
+const separatorAfter = new Set([3, 6, 9, 11]);
 
 function focusEditor(el: HTMLDivElement | null) {
   if (el) el.focus();
