@@ -201,52 +201,14 @@ function PhilosophySection() {
 
           {/* Arrow */}
           <div className="flex-shrink-0 flex items-center justify-center w-16 md:w-24 py-4 md:py-0">
-            <div className="relative flex flex-col md:flex-row items-center gap-2">
-              {/* Trailing particles */}
-              {phase === "transition" && (
-                <>
-                  {[0, 1, 2].map((i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -10, y: 0 }}
-                      animate={{ opacity: [0, 0.6, 0], x: [0, 20, 40], scale: [1, 0.5, 0] }}
-                      transition={{ duration: 1, delay: i * 0.2, repeat: 1 }}
-                      className="absolute w-2 h-2 rounded-full bg-primary"
-                    />
-                  ))}
-                </>
-              )}
-              <motion.div
-                animate={{
-                  x: phase === "transition" ? [0, 12, 0] : 0,
-                  scale: phase === "transition" ? [1, 1.3, 1] : 1,
-                }}
-                transition={{
-                  duration: 0.8,
-                  repeat: phase === "transition" ? Infinity : 0,
-                  ease: "easeInOut",
-                }}
-              >
-                <motion.div
-                  animate={{
-                    color: phase === "new" ? "hsl(var(--primary))" : phase === "transition" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
-                  }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
-                </motion.div>
-              </motion.div>
-              {phase === "transition" && (
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: [0, 1, 0], scale: [0.8, 1, 0.8] }}
-                  transition={{ duration: 1.2, repeat: Infinity }}
-                  className="absolute -bottom-6 md:-bottom-8 text-[9px] font-mono text-primary whitespace-nowrap"
-                >
-                  evolving
-                </motion.span>
-              )}
-            </div>
+            <motion.div
+              animate={{
+                color: phase === "new" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
+              }}
+              transition={{ duration: 0.5 }}
+            >
+              <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
+            </motion.div>
           </div>
 
           {/* New Way Card */}
