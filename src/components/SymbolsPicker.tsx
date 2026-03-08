@@ -10,58 +10,58 @@ interface SymbolEntry {
 
 const SYMBOLS: Record<string, SymbolEntry[]> = {
   Math: [
-    { char: "∑", name: "summation" }, { char: "∫", name: "integral" }, { char: "√", name: "square root" },
-    { char: "∞", name: "infinity" }, { char: "≠", name: "not equal" }, { char: "≈", name: "approximately" },
-    { char: "≤", name: "less than or equal" }, { char: "≥", name: "greater than or equal" },
-    { char: "±", name: "plus minus" }, { char: "×", name: "times" }, { char: "÷", name: "divide" },
-    { char: "∂", name: "partial derivative" }, { char: "∇", name: "nabla gradient" },
-    { char: "∈", name: "element of" }, { char: "∉", name: "not element of" },
-    { char: "⊂", name: "subset" }, { char: "⊃", name: "superset" },
-    { char: "∪", name: "union" }, { char: "∩", name: "intersection" }, { char: "∅", name: "empty set" },
-    { char: "ℝ", name: "real numbers" }, { char: "ℤ", name: "integers" },
-    { char: "ℕ", name: "natural numbers" }, { char: "ℚ", name: "rationals" },
-    { char: "Δ", name: "delta" }, { char: "∝", name: "proportional" },
-    { char: "∀", name: "for all" }, { char: "∃", name: "there exists" },
-  ],
+  { char: "∑", name: "summation" }, { char: "∫", name: "integral" }, { char: "√", name: "square root" },
+  { char: "∞", name: "infinity" }, { char: "≠", name: "not equal" }, { char: "≈", name: "approximately" },
+  { char: "≤", name: "less than or equal" }, { char: "≥", name: "greater than or equal" },
+  { char: "±", name: "plus minus" }, { char: "×", name: "times" }, { char: "÷", name: "divide" },
+  { char: "∂", name: "partial derivative" }, { char: "∇", name: "nabla gradient" },
+  { char: "∈", name: "element of" }, { char: "∉", name: "not element of" },
+  { char: "⊂", name: "subset" }, { char: "⊃", name: "superset" },
+  { char: "∪", name: "union" }, { char: "∩", name: "intersection" }, { char: "∅", name: "empty set" },
+  { char: "ℝ", name: "real numbers" }, { char: "ℤ", name: "integers" },
+  { char: "ℕ", name: "natural numbers" }, { char: "ℚ", name: "rationals" },
+  { char: "Δ", name: "delta" }, { char: "∝", name: "proportional" },
+  { char: "∀", name: "for all" }, { char: "∃", name: "there exists" }],
+
   Greek: [
-    { char: "α", name: "alpha" }, { char: "β", name: "beta" }, { char: "γ", name: "gamma" },
-    { char: "δ", name: "delta" }, { char: "ε", name: "epsilon" }, { char: "ζ", name: "zeta" },
-    { char: "η", name: "eta" }, { char: "θ", name: "theta" }, { char: "ι", name: "iota" },
-    { char: "κ", name: "kappa" }, { char: "λ", name: "lambda" }, { char: "μ", name: "mu" },
-    { char: "ν", name: "nu" }, { char: "ξ", name: "xi" }, { char: "π", name: "pi" },
-    { char: "ρ", name: "rho" }, { char: "σ", name: "sigma" }, { char: "τ", name: "tau" },
-    { char: "υ", name: "upsilon" }, { char: "φ", name: "phi" }, { char: "χ", name: "chi" },
-    { char: "ψ", name: "psi" }, { char: "ω", name: "omega" },
-    { char: "Γ", name: "Gamma" }, { char: "Θ", name: "Theta" }, { char: "Λ", name: "Lambda" },
-    { char: "Σ", name: "Sigma" }, { char: "Φ", name: "Phi" }, { char: "Ψ", name: "Psi" }, { char: "Ω", name: "Omega" },
-  ],
+  { char: "α", name: "alpha" }, { char: "β", name: "beta" }, { char: "γ", name: "gamma" },
+  { char: "δ", name: "delta" }, { char: "ε", name: "epsilon" }, { char: "ζ", name: "zeta" },
+  { char: "η", name: "eta" }, { char: "θ", name: "theta" }, { char: "ι", name: "iota" },
+  { char: "κ", name: "kappa" }, { char: "λ", name: "lambda" }, { char: "μ", name: "mu" },
+  { char: "ν", name: "nu" }, { char: "ξ", name: "xi" }, { char: "π", name: "pi" },
+  { char: "ρ", name: "rho" }, { char: "σ", name: "sigma" }, { char: "τ", name: "tau" },
+  { char: "υ", name: "upsilon" }, { char: "φ", name: "phi" }, { char: "χ", name: "chi" },
+  { char: "ψ", name: "psi" }, { char: "ω", name: "omega" },
+  { char: "Γ", name: "Gamma" }, { char: "Θ", name: "Theta" }, { char: "Λ", name: "Lambda" },
+  { char: "Σ", name: "Sigma" }, { char: "Φ", name: "Phi" }, { char: "Ψ", name: "Psi" }, { char: "Ω", name: "Omega" }],
+
   Arrows: [
-    { char: "→", name: "right arrow" }, { char: "←", name: "left arrow" },
-    { char: "↑", name: "up arrow" }, { char: "↓", name: "down arrow" },
-    { char: "↔", name: "left right arrow" }, { char: "⇒", name: "implies" },
-    { char: "⇐", name: "implied by" }, { char: "⇔", name: "if and only if" },
-    { char: "↦", name: "maps to" },
-  ],
+  { char: "→", name: "right arrow" }, { char: "←", name: "left arrow" },
+  { char: "↑", name: "up arrow" }, { char: "↓", name: "down arrow" },
+  { char: "↔", name: "left right arrow" }, { char: "⇒", name: "implies" },
+  { char: "⇐", name: "implied by" }, { char: "⇔", name: "if and only if" },
+  { char: "↦", name: "maps to" }],
+
   "Super/Sub": [
-    { char: "⁰", name: "superscript 0" }, { char: "¹", name: "superscript 1" },
-    { char: "²", name: "superscript 2" }, { char: "³", name: "superscript 3" },
-    { char: "⁴", name: "superscript 4" }, { char: "ⁿ", name: "superscript n" },
-    { char: "₀", name: "subscript 0" }, { char: "₁", name: "subscript 1" },
-    { char: "₂", name: "subscript 2" }, { char: "₃", name: "subscript 3" },
-    { char: "₄", name: "subscript 4" },
-  ],
+  { char: "⁰", name: "superscript 0" }, { char: "¹", name: "superscript 1" },
+  { char: "²", name: "superscript 2" }, { char: "³", name: "superscript 3" },
+  { char: "⁴", name: "superscript 4" }, { char: "ⁿ", name: "superscript n" },
+  { char: "₀", name: "subscript 0" }, { char: "₁", name: "subscript 1" },
+  { char: "₂", name: "subscript 2" }, { char: "₃", name: "subscript 3" },
+  { char: "₄", name: "subscript 4" }],
+
   Science: [
-    { char: "°", name: "degree" }, { char: "℃", name: "celsius" }, { char: "℉", name: "fahrenheit" },
-    { char: "Å", name: "angstrom" }, { char: "ħ", name: "h-bar planck" },
-    { char: "µ", name: "micro" }, { char: "Ω", name: "ohm" },
-  ],
+  { char: "°", name: "degree" }, { char: "℃", name: "celsius" }, { char: "℉", name: "fahrenheit" },
+  { char: "Å", name: "angstrom" }, { char: "ħ", name: "h-bar planck" },
+  { char: "µ", name: "micro" }, { char: "Ω", name: "ohm" }],
+
   Misc: [
-    { char: "©", name: "copyright" }, { char: "®", name: "registered" }, { char: "™", name: "trademark" },
-    { char: "†", name: "dagger" }, { char: "‡", name: "double dagger" },
-    { char: "§", name: "section" }, { char: "¶", name: "paragraph" },
-    { char: "•", name: "bullet" }, { char: "‰", name: "per mille" },
-    { char: "✓", name: "check mark" }, { char: "✗", name: "cross mark" },
-  ],
+  { char: "©", name: "copyright" }, { char: "®", name: "registered" }, { char: "™", name: "trademark" },
+  { char: "†", name: "dagger" }, { char: "‡", name: "double dagger" },
+  { char: "§", name: "section" }, { char: "¶", name: "paragraph" },
+  { char: "•", name: "bullet" }, { char: "‰", name: "per mille" },
+  { char: "✓", name: "check mark" }, { char: "✗", name: "cross mark" }]
+
 };
 
 interface SymbolsPickerProps {
@@ -89,10 +89,11 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-          title="Insert Symbol"
-        >
-          <span className="text-sm font-bold leading-none h-4 w-4 flex items-center justify-center">Ω</span>
+          className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+          title="Insert Symbol">
+          
+          <span className="font-bold text-lg font-serif">Ω</span>
+          <span className="hidden sm:inline">Symbols</span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end" sideOffset={8}>
@@ -103,33 +104,33 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search symbols..."
-              className="h-8 pl-8 text-xs"
-            />
+              className="h-8 pl-8 text-xs" />
+            
           </div>
         </div>
         <div className="max-h-64 overflow-y-auto p-2 space-y-3">
-          {Object.entries(filtered).map(([cat, entries]) => (
-            <div key={cat}>
+          {Object.entries(filtered).map(([cat, entries]) =>
+          <div key={cat}>
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1 mb-1">{cat}</p>
               <div className="grid grid-cols-8 gap-0.5">
-                {entries.map((e) => (
-                  <button
-                    key={e.char + e.name}
-                    onClick={() => { onInsert(e.char); }}
-                    title={e.name}
-                    className="h-8 w-full flex items-center justify-center text-base rounded-md hover:bg-muted text-foreground transition-colors"
-                  >
+                {entries.map((e) =>
+              <button
+                key={e.char + e.name}
+                onClick={() => {onInsert(e.char);}}
+                title={e.name}
+                className="h-8 w-full flex items-center justify-center text-base rounded-md hover:bg-muted text-foreground transition-colors">
+                
                     {e.char}
                   </button>
-                ))}
+              )}
               </div>
             </div>
-          ))}
-          {Object.keys(filtered).length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-4">No symbols found</p>
           )}
+          {Object.keys(filtered).length === 0 &&
+          <p className="text-xs text-muted-foreground text-center py-4">No symbols found</p>
+          }
         </div>
       </PopoverContent>
-    </Popover>
-  );
+    </Popover>);
+
 }
