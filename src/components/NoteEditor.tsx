@@ -271,7 +271,7 @@ export function NoteEditor() {
           </div>
 
           {/* Meta & actions row */}
-          <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1 sm:gap-1.5 bg-muted/50 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs">
               <Clock className="h-3 w-3" />
               <span className="hidden sm:inline">{formatDate(activeNote.updated_at)}</span>
