@@ -17,6 +17,7 @@ export interface Note {
   attachments: Attachment[];
   created_at: string;
   updated_at: string;
+  deleted_at: string | null;
 }
 
 export interface Notebook {
@@ -25,10 +26,13 @@ export interface Notebook {
   emoji: string;
   notes: Note[];
   created_at: string;
+  deleted_at: string | null;
 }
 
 interface NotebookContextType {
   notebooks: Notebook[];
+  trashedNotebooks: Notebook[];
+  trashedNotes: { note: Note; notebookId: string; notebookName: string }[];
   activeNotebookId: string | null;
   activeNoteId: string | null;
   setActiveNotebookId: (id: string | null) => void;
@@ -40,6 +44,10 @@ interface NotebookContextType {
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
+  restoreNotebook: (id: string) => Promise<void>;
+  restoreNote: (notebookId: string, noteId: string) => Promise<void>;
+  permanentlyDeleteNotebook: (id: string) => Promise<void>;
+  permanentlyDeleteNote: (notebookId: string, noteId: string) => Promise<void>;
   activeNotebook: Notebook | null;
   activeNote: Note | null;
   loading: boolean;
@@ -51,17 +59,33 @@ const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️
 
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const [notebooks, setNotebooks] = useState<Notebook[]>([]);
+  const [allNotebooks, setAllNotebooks] = useState<Notebook[]>([]);
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Active (non-trashed) notebooks with non-trashed notes
+  const notebooks = allNotebooks
+    .filter((nb) => !nb.deleted_at)
+    .map((nb) => ({ ...nb, notes: nb.notes.filter((n) => !n.deleted_at) }));
+
+  // Trashed notebooks
+  const trashedNotebooks = allNotebooks.filter((nb) => nb.deleted_at);
+
+  // Trashed notes (from non-trashed notebooks)
+  const trashedNotes = allNotebooks
+    .filter((nb) => !nb.deleted_at)
+    .flatMap((nb) =>
+      nb.notes
+        .filter((n) => n.deleted_at)
+        .map((note) => ({ note, notebookId: nb.id, notebookName: nb.name }))
+    );
+
   const activeNotebook = notebooks.find((n) => n.id === activeNotebookId) ?? null;
   const activeNote = activeNotebook?.notes.find((n) => n.id === activeNoteId) ?? null;
 
-  // Fetch notebooks and notes
   const fetchData = useCallback(async () => {
-    if (!user) { setNotebooks([]); setLoading(false); return; }
+    if (!user) { setAllNotebooks([]); setLoading(false); return; }
     setLoading(true);
 
     const { data: nbs } = await supabase
@@ -82,10 +106,12 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       })),
     }));
 
-    setNotebooks(merged);
-    if (!activeNotebookId && merged.length > 0) {
-      setActiveNotebookId(merged[0].id);
-      if (merged[0].notes.length > 0) setActiveNoteId(merged[0].notes[0].id);
+    setAllNotebooks(merged);
+    const active = merged.filter((nb) => !nb.deleted_at);
+    if (!activeNotebookId && active.length > 0) {
+      setActiveNotebookId(active[0].id);
+      const activeNotes = active[0].notes.filter((n) => !n.deleted_at);
+      if (activeNotes.length > 0) setActiveNoteId(activeNotes[0].id);
     }
     setLoading(false);
   }, [user]);
@@ -101,22 +127,26 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       .select()
       .single();
     if (data) {
-      const nb: Notebook = { ...data, notes: [] };
-      setNotebooks((prev) => [...prev, nb]);
+      const nb: Notebook = { ...data, notes: [], deleted_at: null };
+      setAllNotebooks((prev) => [...prev, nb]);
       setActiveNotebookId(data.id);
       setActiveNoteId(null);
     }
   }, [user]);
 
+  // Soft delete notebook
   const deleteNotebook = useCallback(async (id: string) => {
-    await supabase.from("notebooks").delete().eq("id", id);
-    setNotebooks((prev) => prev.filter((n) => n.id !== id));
+    const now = new Date().toISOString();
+    await supabase.from("notebooks").update({ deleted_at: now } as any).eq("id", id);
+    setAllNotebooks((prev) =>
+      prev.map((nb) => nb.id === id ? { ...nb, deleted_at: now } : nb)
+    );
     if (activeNotebookId === id) { setActiveNotebookId(null); setActiveNoteId(null); }
   }, [activeNotebookId]);
 
   const updateNotebook = useCallback(async (id: string, updates: { name?: string; emoji?: string }) => {
     await supabase.from("notebooks").update(updates).eq("id", id);
-    setNotebooks((prev) =>
+    setAllNotebooks((prev) =>
       prev.map((nb) => nb.id === id ? { ...nb, ...updates } : nb)
     );
   }, []);
@@ -129,19 +159,23 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       .select()
       .single();
     if (data) {
-      const note: Note = { ...data, attachments: (data.attachments as unknown as Attachment[]) || [] };
-      setNotebooks((prev) =>
+      const note: Note = { ...data, attachments: (data.attachments as unknown as Attachment[]) || [], deleted_at: null };
+      setAllNotebooks((prev) =>
         prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb)
       );
       setActiveNoteId(data.id);
     }
   }, [user]);
 
+  // Soft delete note
   const deleteNote = useCallback(async (notebookId: string, noteId: string) => {
-    await supabase.from("notes").delete().eq("id", noteId);
-    setNotebooks((prev) =>
+    const now = new Date().toISOString();
+    await supabase.from("notes").update({ deleted_at: now } as any).eq("id", noteId);
+    setAllNotebooks((prev) =>
       prev.map((nb) =>
-        nb.id === notebookId ? { ...nb, notes: nb.notes.filter((n) => n.id !== noteId) } : nb
+        nb.id === notebookId
+          ? { ...nb, notes: nb.notes.map((n) => n.id === noteId ? { ...n, deleted_at: now } : n) }
+          : nb
       )
     );
     if (activeNoteId === noteId) setActiveNoteId(null);
@@ -150,7 +184,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const updateNote = useCallback(
     async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => {
       await supabase.from("notes").update(updates as any).eq("id", noteId);
-      setNotebooks((prev) =>
+      setAllNotebooks((prev) =>
         prev.map((nb) =>
           nb.id === notebookId
             ? { ...nb, notes: nb.notes.map((n) => n.id === noteId ? { ...n, ...updates, updated_at: new Date().toISOString() } : n) }
@@ -163,7 +197,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const reorderNotes = useCallback(
     (notebookId: string, fromIndex: number, toIndex: number) => {
-      setNotebooks((prev) =>
+      setAllNotebooks((prev) =>
         prev.map((nb) => {
           if (nb.id !== notebookId) return nb;
           const notes = [...nb.notes];
@@ -176,13 +210,50 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  // Restore notebook from trash
+  const restoreNotebook = useCallback(async (id: string) => {
+    await supabase.from("notebooks").update({ deleted_at: null } as any).eq("id", id);
+    setAllNotebooks((prev) =>
+      prev.map((nb) => nb.id === id ? { ...nb, deleted_at: null } : nb)
+    );
+  }, []);
+
+  // Restore note from trash
+  const restoreNote = useCallback(async (notebookId: string, noteId: string) => {
+    await supabase.from("notes").update({ deleted_at: null } as any).eq("id", noteId);
+    setAllNotebooks((prev) =>
+      prev.map((nb) =>
+        nb.id === notebookId
+          ? { ...nb, notes: nb.notes.map((n) => n.id === noteId ? { ...n, deleted_at: null } : n) }
+          : nb
+      )
+    );
+  }, []);
+
+  // Permanently delete notebook
+  const permanentlyDeleteNotebook = useCallback(async (id: string) => {
+    await supabase.from("notebooks").delete().eq("id", id);
+    setAllNotebooks((prev) => prev.filter((nb) => nb.id !== id));
+  }, []);
+
+  // Permanently delete note
+  const permanentlyDeleteNote = useCallback(async (notebookId: string, noteId: string) => {
+    await supabase.from("notes").delete().eq("id", noteId);
+    setAllNotebooks((prev) =>
+      prev.map((nb) =>
+        nb.id === notebookId ? { ...nb, notes: nb.notes.filter((n) => n.id !== noteId) } : nb
+      )
+    );
+  }, []);
+
   return (
     <NotebookContext.Provider
       value={{
-        notebooks, activeNotebookId, activeNoteId,
+        notebooks, trashedNotebooks, trashedNotes,
+        activeNotebookId, activeNoteId,
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
-        reorderNotes,
+        reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,
         activeNotebook, activeNote, loading,
       }}
     >
