@@ -16,11 +16,6 @@ export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsPr
   const [loading, setLoading] = useState(false);
 
   const autoTag = async () => {
-    if (!isPro) {
-      requirePro("Smart Auto-tagging");
-      return;
-    }
-
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
