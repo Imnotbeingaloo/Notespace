@@ -214,7 +214,7 @@ export default function LandingPage() {
       </section>
 
       {/* Additional Features Grid */}
-      <section className="container mx-auto px-6 pb-20">
+      <section className="container mx-auto px-6 pb-14">
         <motion.div
           variants={stagger}
           initial="hidden"
