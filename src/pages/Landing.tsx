@@ -132,7 +132,7 @@ export default function LandingPage() {
             <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
               Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-accent">understood</span>
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Notebook Archive is the intelligent note-taking app that helps you capture ideas, organize knowledge, and get AI-powered insights — all in one beautiful workspace.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
