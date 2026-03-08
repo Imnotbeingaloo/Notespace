@@ -314,7 +314,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
         reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,
-        activeNotebook, activeNote, loading,
+        activeNotebook, activeNote, loading, refreshData: fetchData,
       }}
     >
       {children}
