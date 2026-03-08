@@ -2,3 +2,6 @@ project_id = "unjvbmgnicldmxwmuepc"
 
 [functions.explain-topic]
 verify_jwt = false
+
+[functions.ai-tools]
+verify_jwt = false
