@@ -59,7 +59,21 @@ export default function LandingPage() {
       const timeout = setTimeout(() => { setTypingText(currentLine.text.slice(0, currentCharIndex + 1)); setCurrentCharIndex((c) => c + 1); }, 25 + Math.random() * 20);
       return () => clearTimeout(timeout);
     } else {
-      const timeout = setTimeout(() => { setVisibleLines((v) => v + 1); setTypingText(""); setCurrentCharIndex(0); }, 400);
+      // Move to next line — set typingText to full next line's first state to avoid blank flash
+      const timeout = setTimeout(() => {
+        setVisibleLines((v) => v + 1);
+        setCurrentCharIndex(0);
+        // Pre-set typingText for the next line to avoid a blank frame
+        const nextLine = editorLines[visibleLines + 1];
+        if (nextLine && nextLine.text === "") {
+          setTypingText("");
+        } else if (nextLine) {
+          setTypingText(nextLine.text.slice(0, 1));
+          setCurrentCharIndex(1);
+        } else {
+          setTypingText("");
+        }
+      }, 400);
       return () => clearTimeout(timeout);
     }
   }, [visibleLines, currentCharIndex]);
