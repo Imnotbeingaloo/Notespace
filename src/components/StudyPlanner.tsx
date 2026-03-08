@@ -99,7 +99,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
   ).length;
 
   const addPlan = async () => {
-    if (!user || !newTitle.trim()) return;
+    if (!user || !newTitle.trim() || !newNotebook) return;
     const { data } = await supabase
       .from("study_plans" as any)
       .insert({
