@@ -43,7 +43,7 @@ const AppPage = () => {
         <div
           className={`${
             isMobile
-              ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
+              ? `fixed inset-0 z-40 transition-transform duration-300 ${
                   sidebarOpen ? "translate-x-0" : "-translate-x-full"
                 }`
               : ""

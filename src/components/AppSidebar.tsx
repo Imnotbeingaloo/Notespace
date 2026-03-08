@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -24,6 +25,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }: AppSidebarProps) {
+  const isMobileSidebar = useIsMobile();
   const { signOut, user } = useAuth();
   const {
     notebooks,
@@ -267,9 +269,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
   return (
     <motion.aside
       initial={false}
-      animate={{ width: collapsed ? 56 : 280 }}
+      animate={{ width: isMobileSidebar ? "100%" : collapsed ? 56 : 280 }}
       transition={{ duration: 0.25, ease: "easeInOut" }}
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
+      className={`h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 scrollbar-thin ${isMobileSidebar ? "w-full" : "w-[280px] max-w-[85vw]"}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-sidebar-border">
@@ -778,7 +780,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
                 <CalendarDays className="h-3 w-3" />
                 Study Schedule
               </p>
-              <p className="text-[11px] text-muted-foreground px-2">No upcoming sessions. Open the Study Planner to create one!</p>
+              <p className="text-[11px] text-muted-foreground px-2">🎉 No upcoming sessions. Open the Study Planner to create one!</p>
             </div>
           )}
         </div>
