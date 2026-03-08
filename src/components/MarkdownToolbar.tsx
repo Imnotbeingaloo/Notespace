@@ -6,6 +6,7 @@ import {
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
+  children?: React.ReactNode;
 }
 
 type FormatAction = {
@@ -25,7 +26,7 @@ function insertHTML(html: string) {
   document.execCommand("insertHTML", false, html);
 }
 
-export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
+export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
   const exec = useCallback((command: string, value?: string) => {
     focusEditor(editorRef.current);
     document.execCommand(command, false, value);
@@ -102,7 +103,7 @@ export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
 
 
   return (
-    <div className="flex items-center gap-0.5 px-4 py-2 overflow-x-auto scrollbar-none sm:px-[4px]">
+    <div className="flex items-center gap-0.5 px-2 py-2 overflow-x-auto scrollbar-none">
       {actions.map((a, i) =>
       <div key={a.label} className="contents">
           <button
@@ -121,6 +122,7 @@ export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
         }
         </div>
       )}
+      {children}
     </div>);
 
 }

@@ -762,15 +762,16 @@ export function NoteEditor() {
         </div>
 
         {/* Toolbar */}
-        <div className="shrink-0 flex items-center border-b border-border bg-muted/30">
+        <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
           <MarkdownToolbar
             editorRef={{
               get current() {
                 return hybridEditorRef.current?.getEditorElement() ?? null;
               },
             } as React.RefObject<HTMLDivElement>}
-          />
-          <SymbolsPicker onInsert={handleSymbolInsert} />
+          >
+            <SymbolsPicker onInsert={handleSymbolInsert} />
+          </MarkdownToolbar>
         </div>
 
         {/* Content area */}
