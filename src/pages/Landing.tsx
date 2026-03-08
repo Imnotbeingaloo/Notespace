@@ -273,6 +273,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* ── Testimonials ── */}
       <section className="relative py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.03] to-transparent pointer-events-none" />
