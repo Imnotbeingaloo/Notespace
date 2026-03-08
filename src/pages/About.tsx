@@ -178,11 +178,11 @@ function PhilosophySection() {
                   <motion.div
                     key={item}
                     animate={{
-                      opacity: phase === "new" ? 0.3 : 1,
-                      x: phase === "new" ? -4 : 0,
-                      textDecoration: phase === "new" ? "line-through" : "none",
+                      opacity: phase !== "old" ? 0.3 : 1,
+                      x: phase !== "old" ? -4 : 0,
+                      textDecoration: phase !== "old" ? "line-through" : "none",
                     }}
-                    transition={{ duration: 0.6, delay: phase === "new" ? i * 0.08 : 0 }}
+                    transition={{ duration: 0.15 }}
                     className="flex items-center gap-2.5"
                   >
                     <motion.span
