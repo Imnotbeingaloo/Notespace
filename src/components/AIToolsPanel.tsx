@@ -19,10 +19,6 @@ export function AIToolsPanel() {
   const [error, setError] = useState("");
 
   const runTool = async (toolMode: ToolMode) => {
-    if (!isPro) {
-      requirePro(toolMode === "summarize" ? "AI Summaries" : "Flashcard Generation");
-      return;
-    }
     if (!activeNote) return;
     setMode(toolMode);
     setOpen(true);
