@@ -584,6 +584,10 @@ export function NoteEditor() {
           />
         </div>
 
+        <div className="shrink-0">
+          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
+        </div>
+
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
           <HybridEditor
@@ -592,10 +596,6 @@ export function NoteEditor() {
             onChange={(content) => debouncedUpdate("content", content)}
             placeholder="Start writing... (drag & drop files here)"
           />
-        </div>
-
-        <div className="shrink-0">
-          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
         </div>
       </motion.div>
     </AnimatePresence>
