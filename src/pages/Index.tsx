@@ -86,7 +86,7 @@ const AppPage = () => {
                 <Button
                   onClick={() => setPlannerOpen(true)}
                   size="icon"
-                  className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-2xl shadow-lg shadow-primary/25"
+                  className="fixed bottom-6 left-6 z-50 h-12 w-12 rounded-2xl shadow-lg shadow-primary/25"
                 >
                   <CalendarDays className="h-5 w-5" />
                 </Button>
