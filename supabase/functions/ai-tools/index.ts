@@ -18,9 +18,10 @@ function getCorsHeaders(req: Request) {
 }
 
 const inputSchema = z.object({
-  action: z.enum(["summarize", "flashcards", "auto-tag"]),
+  action: z.enum(["summarize", "flashcards", "auto-tag", "edit"]),
   noteTitle: z.string().max(500).optional().default(""),
   noteContent: z.string().max(50000).optional().default(""),
+  editInstruction: z.string().max(2000).optional().default(""),
 });
 
 const systemPrompts: Record<string, string> = {
