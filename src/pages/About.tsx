@@ -126,26 +126,46 @@ export default function AboutPage() {
       <AnimatedDivider />
 
       {/* Values */}
-      <section className="container mx-auto px-6 py-28 max-w-4xl">
+      <section className="container mx-auto px-6 py-28 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">What We Believe</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
             These are the principles that guide every decision we make — from pixel-level design choices to how we handle your data.
           </p>
         </motion.div>
-        <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid sm:grid-cols-2 gap-6 mt-10">
-          {values.map((v) => (
-            <motion.div key={v.title} variants={fadeUp} whileHover={{ y: -3, transition: { duration: 0.2 } }} className="flex gap-4 p-7 rounded-[2rem] border border-border bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <v.icon className="h-5 w-5 text-primary" />
-              </div>
-              <div>
+        <div className="relative mt-12">
+          <motion.div
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top"
+          />
+          <div className="space-y-10">
+            {values.map((v, i) => (
+              <motion.div
+                key={v.title}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="relative pl-12"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 + 0.2, type: "spring", stiffness: 200 }}
+                  className="absolute left-1.5 top-1 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center"
+                >
+                  <v.icon className="h-3.5 w-3.5 text-primary" />
+                </motion.div>
                 <h3 className="font-serif text-lg font-bold text-foreground mb-2">{v.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{v.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <AnimatedDivider />
