@@ -74,8 +74,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
       const path = buildStoragePath(user.id, noteId, file.name);
       const { error } = await supabase.storage.from("note-attachments").upload(path, file);
       if (error) { console.error("Upload error:", error); continue; }
-      const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
-      const fileUrl = signedUrlData?.signedUrl || '';
+      const { data: publicUrlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
+      const fileUrl = publicUrlData?.publicUrl || '';
       newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
       if (file.type.startsWith("image/")) {
         contentAppend += `\n![${file.name}](${fileUrl})\n`;
