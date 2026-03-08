@@ -92,7 +92,7 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
           className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
           title="Insert Symbol">
           
-          <span className="font-bold text-lg font-serif">Ω</span>
+          <span className="font-bold text-lg font-sans">Ω</span>
           <span className="hidden sm:inline">Symbols</span>
         </button>
       </PopoverTrigger>
