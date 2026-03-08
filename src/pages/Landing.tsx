@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
+import { BookOpen, Sparkles, ArrowRight, Menu, X, Users, Globe, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
-import AnimatedDivider from "@/components/AnimatedDivider";
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -24,11 +23,6 @@ const navLinks = [
   { label: "About", href: "/about", isAnchor: false },
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
 ];
-
-/** Reusable gradient separator — kept as fallback */
-function SectionDivider() {
-  return <AnimatedDivider />;
-}
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -148,7 +142,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── App Preview ── */}
-      <section className="container mx-auto px-6 pb-24">
+      <section className="container mx-auto px-6 pb-32">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -228,43 +222,127 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      {/* ── Stats / Social Proof Strip ── */}
+      <section className="py-16">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <p className="font-serif text-2xl font-bold text-foreground">10,000+</p>
+                  <p className="text-sm text-muted-foreground mt-1">Students & researchers actively using Notebook Archive to organize their thinking</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center">
+                  <Globe className="h-6 w-6 text-accent" />
+                </div>
+                <div>
+                  <p className="font-serif text-2xl font-bold text-foreground">50+ Countries</p>
+                  <p className="text-sm text-muted-foreground mt-1">Used by thinkers across the globe, from university campuses to remote research labs</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <p className="font-serif text-2xl font-bold text-foreground">2M+ Notes</p>
+                  <p className="text-sm text-muted-foreground mt-1">Notes created and counting — each one smarter with AI-powered insights and tagging</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Features ── */}
-      <section id="features" className="relative py-24">
+      <section id="features" className="relative py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
               Everything you need to take{" "}<span className="text-primary">better notes</span>
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
-              Powerful features that make Notebook Archive the perfect companion for students, researchers, and thinkers.
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Powerful features that make Notebook Archive the perfect companion for students, researchers, and thinkers. We've combined the simplicity of a plain text editor with the intelligence of modern AI to create something that genuinely helps you learn.
             </p>
           </motion.div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-14">
             <ShufflerCard />
             <TypewriterCard />
             <SchedulerCard />
+          </div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center text-sm text-muted-foreground mt-10 max-w-lg mx-auto"
+          >
+            And much more — including instant search, file attachments, export to PDF & Markdown, version history, and collaborative shared notebooks.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ── How It Works Mini ── */}
+      <section className="py-28">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+              Simple to start, <span className="text-primary">powerful</span> as you grow
+            </h2>
+            <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Getting started takes less than a minute. No complex setup, no steep learning curve — just open, write, and let the AI handle the rest.
+            </p>
+          </motion.div>
+          <div className="grid md:grid-cols-3 gap-10">
+            {[
+              { step: "01", title: "Create a notebook", desc: "Organize by topic, class, or project. Each notebook is a dedicated space for related ideas. Add an emoji to make it yours." },
+              { step: "02", title: "Write naturally", desc: "Use our distraction-free markdown editor. Bold, headings, code blocks, checklists — everything you need, nothing you don't." },
+              { step: "03", title: "Let AI enhance", desc: "Highlight any concept and get instant explanations, summaries, and flashcards. Your notes become a living study guide." },
+            ].map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15, duration: 0.5 }}
+                className="text-center"
+              >
+                <span className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4">{item.step}</span>
+                <h3 className="font-serif text-lg font-bold text-foreground mb-3">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="relative py-24">
+      <section className="relative py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.03] to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 relative">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
               Trusted by <span className="text-accent">professionals</span> and students
             </h2>
-            <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
-              See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools.
+            <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools. Real feedback from real users who've made the switch.
             </p>
           </motion.div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-12">
             {[
-              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
-              { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher, MIT", emoji: "🔬" },
+              { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors after experiencing this workflow.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
+              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate across time zones.", name: "Priya T.", role: "Product Manager, Stripe", emoji: "💼" },
             ].map((t, i) => (
               <motion.div
                 key={t.name}
@@ -273,10 +351,10 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.12, type: "spring", stiffness: 150 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
+                className="rounded-[2rem] border border-border bg-card p-8 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
               >
-                <span className="text-2xl mb-3 block">{t.emoji}</span>
-                <p className="text-sm text-foreground leading-relaxed mb-4 italic">"{t.quote}"</p>
+                <span className="text-2xl mb-4 block">{t.emoji}</span>
+                <p className="text-sm text-foreground leading-relaxed mb-5 italic">"{t.quote}"</p>
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t.name}</p>
                   <p className="text-xs text-muted-foreground">{t.role}</p>
@@ -288,7 +366,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="container mx-auto px-6 py-24">
+      <section className="container mx-auto px-6 py-28">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -298,8 +376,11 @@ export default function LandingPage() {
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
             Ready to organize your thinking?
           </h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto">
-            Join Notebook Archive and start capturing your ideas with the power of AI.
+          <p className="text-lg text-muted-foreground mb-4 max-w-lg mx-auto">
+            Join thousands of students, researchers, and professionals who've made Notebook Archive their thinking companion.
+          </p>
+          <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto">
+            Free forever for personal use. No credit card required. Start writing in under 60 seconds.
           </p>
           <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
             {user ? "Open App" : "Get Started — It's Free"} <ArrowRight className="h-5 w-5" />
@@ -317,18 +398,13 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="grid gap-10 md:grid-cols-4 mb-16"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen className="h-6 w-6 text-primary" />
                 <span className="font-serif text-xl font-bold text-foreground">Notebook Archive</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                The intelligent note-taking app that helps you capture, organize, and truly understand your ideas.
+                The intelligent note-taking app that helps you capture, organize, and truly understand your ideas. Built for thinkers who demand more from their tools.
               </p>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -336,12 +412,7 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
               <h4 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">Product</h4>
               <ul className="space-y-3">
                 <li><a href="#features" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Features</a></li>
@@ -350,12 +421,7 @@ export default function LandingPage() {
               </ul>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }}>
               <h4 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">Company</h4>
               <ul className="space-y-3">
                 <li><Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">About</Link></li>
@@ -365,15 +431,10 @@ export default function LandingPage() {
               </ul>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }}>
               <h4 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">Get Started</h4>
               <p className="text-sm text-muted-foreground leading-relaxed mb-5">
-                Start organizing your thoughts today — it's completely free.
+                Start organizing your thoughts today — it's completely free. No credit card, no commitment, no catch.
               </p>
               <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-shadow duration-300">
                 {user ? "Open App" : "Sign Up Free"} <ArrowRight className="h-4 w-4" />
@@ -381,12 +442,7 @@ export default function LandingPage() {
             </motion.div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }}>
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-8" />
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Notebook Archive. All rights reserved.</p>

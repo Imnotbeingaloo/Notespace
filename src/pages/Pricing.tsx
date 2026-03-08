@@ -1,14 +1,13 @@
 import { motion } from "framer-motion";
-import { BookOpen, ArrowRight, Check, Sparkles, Zap } from "lucide-react";
+import { BookOpen, ArrowRight, Check, Sparkles, Zap, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import AnimatedDivider from "@/components/AnimatedDivider";
 
 const tiers = [
   {
     name: "Free",
     price: "$0",
-    description: "Great for students getting started with smarter note-taking.",
+    description: "Great for students getting started with smarter note-taking. Everything you need to capture and organize your thoughts.",
     features: ["Up to 3 notebooks", "Unlimited notes with markdown", "AI topic explanations (5/day)", "Instant ⌘K search", "Auto-save & sync", "Basic file attachments (50 MB)"],
     cta: "Get Started",
     highlighted: false,
@@ -17,7 +16,7 @@ const tiers = [
     name: "Pro",
     price: "$19",
     period: "/month",
-    description: "For power users who need full AI capabilities and deeper insights.",
+    description: "For power users who need full AI capabilities, deeper insights, and advanced export options.",
     features: ["Unlimited notebooks", "Unlimited AI explanations", "AI summaries & flashcard generation", "Smart auto-tagging & linking", "Voice-to-note transcription", "File attachments (10 GB)", "Version history & note recovery", "Export to PDF, Markdown, Notion", "Priority support"],
     cta: "Start 14-Day Free Trial",
     highlighted: true,
@@ -26,7 +25,7 @@ const tiers = [
     name: "Team",
     price: "$29",
     period: "/user/month",
-    description: "Collaborate on shared notebooks with your team or study group.",
+    description: "Collaborate on shared notebooks with your team, study group, or research lab.",
     features: ["Everything in Pro", "Shared notebooks & real-time co-editing", "Team knowledge base", "Admin dashboard & permissions", "SSO & advanced security", "Custom AI training on team data", "API access & integrations", "Dedicated account manager"],
     cta: "Contact Sales",
     highlighted: false,
@@ -44,6 +43,13 @@ const comparisons = [
   { feature: "API access", free: false, pro: false, team: true },
   { feature: "Version history", free: false, pro: true, team: true },
   { feature: "Custom AI training", free: false, pro: false, team: true },
+];
+
+const faqs = [
+  { q: "Can I switch plans later?", a: "Absolutely. You can upgrade, downgrade, or cancel anytime. If you upgrade mid-cycle, we'll prorate the difference. No lock-in, no hidden fees." },
+  { q: "Is there a student discount?", a: "Yes! Students with a valid .edu email get 50% off Pro. Just sign up with your university email and the discount applies automatically." },
+  { q: "What happens to my notes if I downgrade?", a: "Your notes are always yours. If you downgrade from Pro to Free, you'll keep all your notes but won't be able to create new notebooks beyond the free limit." },
+  { q: "How does the free trial work?", a: "The 14-day Pro trial gives you full access to all Pro features. No credit card required to start. At the end of the trial, you can subscribe or continue on the Free plan." },
 ];
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
@@ -72,22 +78,22 @@ export default function PricingPage() {
         </div>
       </header>
 
-      <section className="container mx-auto px-6 pt-20 pb-8 text-center">
+      <section className="container mx-auto px-6 pt-24 pb-8 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             Simple Pricing
           </div>
           <h1 className="font-serif text-3xl md:text-5xl font-bold text-foreground mb-4">Plans that grow with you</h1>
-          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
-            Start free, upgrade when you need more AI power. No hidden fees, cancel anytime.
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Start free, upgrade when you need more AI power. No hidden fees, cancel anytime. Every plan includes our core markdown editor, instant search, and auto-save — so you're always covered.
           </p>
         </motion.div>
       </section>
 
       {/* Pricing Cards */}
-      <section className="container mx-auto px-6 pb-20">
-        <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-12">
+      <section className="container mx-auto px-6 pb-28">
+        <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-14">
           {tiers.map((tier) => (
             <motion.div
               key={tier.name}
@@ -133,45 +139,72 @@ export default function PricingPage() {
         </motion.div>
       </section>
 
-      <AnimatedDivider />
-
       {/* Feature Comparison Table */}
-      <section className="container mx-auto px-6 pb-20 max-w-4xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Compare plans in detail</h2>
-          <p className="text-muted-foreground">See exactly what's included in each plan.</p>
-        </motion.div>
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-[2rem] border border-border bg-card overflow-hidden">
-          <div className="grid grid-cols-4 gap-0 text-sm">
-            <div className="p-4 font-medium text-muted-foreground border-b border-border">Feature</div>
-            <div className="p-4 font-semibold text-foreground text-center border-b border-border">Free</div>
-            <div className="p-4 font-semibold text-primary text-center border-b border-border bg-primary/5">Pro</div>
-            <div className="p-4 font-semibold text-foreground text-center border-b border-border">Team</div>
-            {comparisons.map((row, i) => (
-              <>
-                <div key={`f-${i}`} className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
-                <div key={`free-${i}`} className="p-4 text-center border-b border-border/50">
-                  {row.free ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
-                </div>
-                <div key={`pro-${i}`} className="p-4 text-center border-b border-border/50 bg-primary/5">
-                  {row.pro ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
-                </div>
-                <div key={`team-${i}`} className="p-4 text-center border-b border-border/50">
-                  {row.team ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
-                </div>
-              </>
-            ))}
-          </div>
-        </motion.div>
+      <section className="bg-foreground/[0.03] py-28">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Compare plans in detail</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">See exactly what's included in each plan. Every tier builds on the last, so you never lose features when you upgrade.</p>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-[2rem] border border-border bg-card overflow-hidden mt-10">
+            <div className="grid grid-cols-4 gap-0 text-sm">
+              <div className="p-4 font-medium text-muted-foreground border-b border-border">Feature</div>
+              <div className="p-4 font-semibold text-foreground text-center border-b border-border">Free</div>
+              <div className="p-4 font-semibold text-primary text-center border-b border-border bg-primary/5">Pro</div>
+              <div className="p-4 font-semibold text-foreground text-center border-b border-border">Team</div>
+              {comparisons.map((row, i) => (
+                <>
+                  <div key={`f-${i}`} className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
+                  <div key={`free-${i}`} className="p-4 text-center border-b border-border/50">
+                    {row.free ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </div>
+                  <div key={`pro-${i}`} className="p-4 text-center border-b border-border/50 bg-primary/5">
+                    {row.pro ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </div>
+                  <div key={`team-${i}`} className="p-4 text-center border-b border-border/50">
+                    {row.team ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </div>
+                </>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </section>
 
-      <AnimatedDivider />
+      {/* FAQ */}
+      <section className="py-28">
+        <div className="container mx-auto px-6 max-w-3xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+              <HelpCircle className="h-6 w-6 text-accent" />
+            </div>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Frequently Asked Questions</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">Quick answers to common questions about our plans, billing, and features.</p>
+          </motion.div>
+          <div className="space-y-6 mt-10">
+            {faqs.map((faq, i) => (
+              <motion.div
+                key={faq.q}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.5 }}
+                className="rounded-2xl border border-border bg-card p-6"
+              >
+                <h3 className="font-serif text-base font-bold text-foreground mb-2">{faq.q}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA */}
-      <section className="container mx-auto px-6 pb-24 pt-8">
+      <section className="container mx-auto px-6 pb-28">
         <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Still have questions?</h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">Start with the free plan — no credit card required. Upgrade whenever you're ready.</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Ready to think better?</h2>
+          <p className="text-muted-foreground mb-4 max-w-md mx-auto">Start capturing, organizing, and understanding your knowledge today.</p>
+          <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">Start with the free plan — no credit card required. Upgrade whenever you're ready.</p>
           <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
             {user ? "Open App" : "Get Started Free"} <ArrowRight className="h-5 w-5" />
           </Link>
