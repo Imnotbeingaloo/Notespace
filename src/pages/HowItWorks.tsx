@@ -1,117 +1,160 @@
-import { useEffect } from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput, CheckCircle2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useTransform, animate, AnimatePresence } from "framer-motion";
+import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput } from "lucide-react";
 import { Link } from "react-router-dom";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 
 const steps = [
-  { icon: FolderOpen, title: "Create a Notebook", description: "Organize your notes by topic, class, or project. Each notebook is a dedicated space for related ideas. Pick an emoji, give it a name, and start building your knowledge base." },
-  { icon: PenLine, title: "Write in Markdown", description: "Use the clean, distraction-free editor with full markdown support. Bold, headings, checklists, code blocks, tables — all built in. No formatting toolbar clutter, just pure writing." },
-  { icon: Sparkles, title: "Get AI Insights", description: "Highlight any topic and get AI-powered explanations, summaries, and flashcards to deepen your understanding. It's like having a tutor who's read every textbook." },
-  { icon: Brain, title: "Auto-Tag & Link", description: "Our AI automatically tags concepts and links related notes across notebooks. Your knowledge graph builds itself — connections you'd never find manually surface automatically." },
-  { icon: Search, title: "Find Anything Instantly", description: "Use ⌘K search to find any note across all notebooks in milliseconds. Search by content, tags, or date. Never lose a thought again." },
-  { icon: FileOutput, title: "Export & Share", description: "Export your notes to PDF, Markdown, or sync with Notion. Share notebooks with teammates or study groups with granular permission controls." },
+  { icon: FolderOpen, title: "Create a Notebook", description: "Organize your notes by topic, class, or project. Each notebook is a dedicated space for related ideas." },
+  { icon: PenLine, title: "Write in Markdown", description: "Distraction-free editor with full markdown. Bold, headings, checklists, code blocks — all built in." },
+  { icon: Sparkles, title: "Get AI Insights", description: "Highlight any topic and get AI-powered explanations, summaries, and flashcards instantly." },
+  { icon: Brain, title: "Auto-Tag & Link", description: "AI tags concepts and links related notes across notebooks. Your knowledge graph builds itself." },
+  { icon: Search, title: "Find Anything", description: "⌘K search finds any note across all notebooks in milliseconds. Search by content, tags, or date." },
+  { icon: FileOutput, title: "Export & Share", description: "Export to PDF, Markdown, or Notion. Share notebooks with granular permission controls." },
 ];
 
 const useCases = [
-  { emoji: "🎓", title: "Students", description: "Capture lectures, generate study materials, and ace your exams with AI-powered review. Smart flashcards turn your notes into active recall exercises automatically.", extra: "Used by students at 50+ universities worldwide" },
-  { emoji: "🔬", title: "Researchers", description: "Organize papers, extract key findings, and build a connected knowledge base that grows with your research. Auto-linking surfaces connections across hundreds of notes.", extra: "Supports LaTeX, code blocks, and citation formats" },
-  { emoji: "✍️", title: "Writers", description: "Draft, outline, and refine your writing in a beautiful distraction-free editor. Use AI to brainstorm, restructure, and polish your prose without leaving the app.", extra: "Export to PDF, Markdown, or publish directly" },
-  { emoji: "💼", title: "Professionals", description: "Meeting notes, project briefs, and team knowledge — all searchable and AI-enhanced. Shared notebooks keep everyone on the same page, literally.", extra: "Integrates with your existing workflow tools" },
+  { emoji: "🎓", title: "Students", description: "Capture lectures, generate study materials, and ace your exams with AI-powered review.", extra: "Used by students at 50+ universities worldwide" },
+  { emoji: "🔬", title: "Researchers", description: "Organize papers, extract key findings, and build a connected knowledge base that grows with your research.", extra: "Supports LaTeX, code blocks, and citation formats" },
+  { emoji: "✍️", title: "Writers", description: "Draft, outline, and refine your writing in a beautiful distraction-free editor with AI brainstorming.", extra: "Export to PDF, Markdown, or publish directly" },
+  { emoji: "💼", title: "Professionals", description: "Meeting notes, project briefs, and team knowledge — all searchable and AI-enhanced.", extra: "Integrates with your existing workflow tools" },
 ];
 
-function HorizontalSteps() {
-  const xOffset = useMotionValue(0);
-  const progressWidth = useMotionValue(0);
+/* ─── Cinematic Step Reel ─── */
+function StepReel() {
+  const progress = useMotionValue(0); // 0 to 5 (step index)
+  const [activeStep, setActiveStep] = useState(0);
+  const cancelled = useRef(false);
 
   useEffect(() => {
-    // Seamless looping animation: slide from 0% to -50% (first half to second half)
-    const sequence = async () => {
-      // Start at first group
-      await animate(xOffset, 0, { duration: 0 });
-      await animate(progressWidth, 0, { duration: 0 });
+    cancelled.current = false;
 
-      while (true) {
-        // Hold on first group
-        await new Promise((r) => setTimeout(r, 4000));
-        // Slide to second group
-        animate(progressWidth, 100, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
-        await animate(xOffset, -50, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
-        // Hold on second group
-        await new Promise((r) => setTimeout(r, 4000));
-        // Slide back to first group
-        animate(progressWidth, 0, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
-        await animate(xOffset, 0, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
+    const runSequence = async () => {
+      while (!cancelled.current) {
+        for (let i = 0; i < steps.length; i++) {
+          if (cancelled.current) return;
+          // Animate wheel to this step
+          await animate(progress, i, {
+            duration: i === 0 ? 0 : 0.8,
+            ease: [0.16, 1, 0.3, 1],
+            onUpdate: (v) => setActiveStep(Math.round(v)),
+          });
+          // Hold
+          await new Promise((r) => setTimeout(r, 2200));
+        }
+        // Reset back
+        await animate(progress, 0, { duration: 0 });
+        setActiveStep(0);
+        await new Promise((r) => setTimeout(r, 600));
       }
     };
-    sequence();
+    runSequence();
+    return () => { cancelled.current = true; };
   }, []);
 
-  const xPercent = useTransform(xOffset, (v) => `${v}%`);
-  const progressPercent = useTransform(progressWidth, (v) => `${v}%`);
+  // Wheel position along the track (0% to 100%)
+  const wheelLeft = useTransform(progress, [0, steps.length - 1], ["0%", "100%"]);
+  // Wheel rotation for a rolling effect
+  const wheelRotation = useTransform(progress, [0, steps.length - 1], [0, 720]);
 
   return (
     <div className="relative">
-      {/* Progress bar */}
-      <div className="relative h-1 bg-border rounded-full mb-10 max-w-md mx-auto overflow-hidden">
-        <motion.div
-          className="absolute inset-y-0 left-0 bg-primary rounded-full"
-          style={{ width: progressPercent }}
-        />
-      </div>
+      {/* ── Track with rolling wheel ── */}
+      <div className="relative mb-16">
+        {/* Track line */}
+        <div className="h-px bg-border w-full" />
 
-      {/* Continuous filmstrip */}
-      <div className="overflow-hidden">
+        {/* Step tick marks + numbers */}
+        <div className="relative flex justify-between -mt-[11px]">
+          {steps.map((_, i) => {
+            const isActive = activeStep === i;
+            return (
+              <div key={i} className="flex flex-col items-center">
+                <motion.div
+                  className="w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center text-[9px] font-mono font-bold"
+                  animate={{
+                    borderColor: isActive ? "hsl(var(--primary))" : "hsl(var(--border))",
+                    backgroundColor: isActive ? "hsl(var(--primary))" : "transparent",
+                    color: isActive ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
+                    scale: isActive ? 1.3 : 1,
+                  }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {i + 1}
+                </motion.div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Rolling wheel (travels along the track) */}
         <motion.div
-          className="flex"
-          style={{ x: xPercent, width: "200%" }}
+          className="absolute top-0 -translate-y-1/2 -ml-3 pointer-events-none"
+          style={{ left: wheelLeft }}
         >
-          {steps.map((step, stepIdx) => (
-            <div
-              key={step.title}
-              className="w-[calc(100%/6)] px-4 flex-shrink-0"
-            >
-              {/* Step number + line */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
-                  {stepIdx + 1}
-                </div>
-                <div className="flex-1 h-px bg-border" />
+          <motion.div
+            className="w-6 h-6 rounded-full border-2 border-primary bg-background shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+            style={{ rotate: wheelRotation }}
+          >
+            <div className="w-full h-full relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>
-
-              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                <step.icon className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-[5px] bg-primary/40" />
             </div>
-          ))}
+          </motion.div>
         </motion.div>
       </div>
 
-      {/* Dot indicators */}
-      <div className="flex items-center justify-center gap-3 mt-10">
-        <motion.div
-          className="w-2.5 h-2.5 rounded-full"
-          style={{
-            backgroundColor: useTransform(progressWidth, (v) => v < 50 ? "hsl(var(--primary))" : "hsl(var(--border))"),
-            scale: useTransform(progressWidth, (v) => v < 50 ? 1.25 : 1),
-          }}
-        />
-        <motion.div
-          className="w-2.5 h-2.5 rounded-full"
-          style={{
-            backgroundColor: useTransform(progressWidth, (v) => v >= 50 ? "hsl(var(--primary))" : "hsl(var(--border))"),
-            scale: useTransform(progressWidth, (v) => v >= 50 ? 1.25 : 1),
-          }}
-        />
+      {/* ── Active Step Content ── */}
+      <div className="min-h-[160px] flex items-start">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeStep}
+            initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -12, filter: "blur(4px)" }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full"
+          >
+            <div className="flex items-start gap-6 max-w-2xl mx-auto">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center flex-shrink-0">
+                {(() => { const Icon = steps[activeStep].icon; return <Icon className="h-6 w-6 text-primary" />; })()}
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">Step {activeStep + 1}</span>
+                  <div className="h-px w-8 bg-primary/20" />
+                </div>
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-2">{steps[activeStep].title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-md">{steps[activeStep].description}</p>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* ── Tiny step pills at bottom ── */}
+      <div className="flex items-center justify-center gap-1.5 mt-12">
+        {steps.map((_, i) => (
+          <motion.div
+            key={i}
+            className="h-1 rounded-full"
+            animate={{
+              width: activeStep === i ? 24 : 6,
+              backgroundColor: activeStep === i ? "hsl(var(--primary))" : "hsl(var(--border))",
+            }}
+            transition={{ duration: 0.35 }}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
+/* ─── Page ─── */
 export default function HowItWorksPage() {
   const { user } = useAuth();
 
@@ -146,54 +189,62 @@ export default function HowItWorksPage() {
             How Notebook Archive <span className="text-primary">works</span>
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            From first note to full knowledge base — here's how you go from scattered thoughts to organized understanding. No complex setup, no learning curve.
+            From first note to full knowledge base — here's how you go from scattered thoughts to organized understanding.
           </p>
         </motion.div>
       </section>
 
       <AnimatedDivider />
 
-      {/* Steps - Horizontal Sliding */}
+      {/* Step Reel */}
       <section className="py-28">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+        <div className="container mx-auto px-6 max-w-3xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps to smarter notes</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Each step builds on the last. Navigate through them to see the full workflow.</p>
+            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold — each step builds on the last.</p>
           </motion.div>
-          <HorizontalSteps />
+          <StepReel />
         </div>
       </section>
 
       <AnimatedDivider />
 
-      {/* Why It Matters - numbered list with left accent */}
-      <section className="bg-foreground/[0.03] py-28">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Why it matters</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Traditional note-taking is broken. You write things down, file them away, and never look at them again. Notebook Archive changes that.
+      {/* Why It Matters — staggered split layout */}
+      <section className="py-28 overflow-hidden">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
+            <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">The Problem We Solve</span>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Why it matters</h2>
+            <p className="text-muted-foreground max-w-xl leading-relaxed">
+              Traditional note-taking is broken. You write things down, file them away, and never look at them again.
             </p>
           </motion.div>
-          <div className="space-y-6 max-w-2xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-x-16 gap-y-14">
             {[
-              { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50% compared to re-reading." },
-              { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it automatically connects to your math notes about wave equations." },
-              { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies to maintain. Just write, and the AI handles organization. Your knowledge graph builds itself as you take notes." },
-              { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday, ⌘K gets you there instantly." },
+              { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50%.", accent: "172 50% 36%" },
+              { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it connects to your math notes.", accent: "32 80% 55%" },
+              { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies. Just write, and the AI handles organization. Your knowledge graph builds itself.", accent: "172 50% 36%" },
+              { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday.", accent: "32 80% 55%" },
             ].map((item, i) => (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="flex gap-5 border-l-2 border-primary/30 pl-6 py-2 hover:border-primary transition-colors duration-300"
+                transition={{ delay: i * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="group"
               >
-                <span className="text-2xl font-bold text-primary/20 font-mono flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3 className="font-serif text-base font-bold text-foreground mb-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                <div className="flex items-start gap-4">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg font-bold font-mono"
+                    style={{ background: `hsl(${item.accent} / 0.1)`, color: `hsl(${item.accent})` }}
+                  >
+                    {i + 1}
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-base font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -203,30 +254,31 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
-      {/* Use Cases - horizontal cards with emoji backgrounds */}
-      <section className="py-28">
+      {/* Use Cases — horizontal scroll ticker */}
+      <section className="bg-foreground/[0.02] py-28">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Built for every kind of thinker</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">No matter how you work, Notebook Archive adapts to you.</p>
+            <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who It's For</span>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Built for every kind of thinker</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">No matter how you work, Notebook Archive adapts to you.</p>
           </motion.div>
-          <div className="grid sm:grid-cols-2 gap-6">
+
+          <div className="grid md:grid-cols-4 gap-5">
             {useCases.map((uc, i) => (
               <motion.div
                 key={uc.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative rounded-2xl border border-border bg-card p-6 overflow-hidden group hover:border-primary/30 transition-colors duration-300"
+                transition={{ delay: i * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="group text-center"
               >
-                <span className="absolute -top-4 -right-4 text-[5rem] opacity-[0.06] group-hover:opacity-[0.12] transition-opacity duration-500 select-none pointer-events-none">{uc.emoji}</span>
-                <div className="relative z-10">
-                  <span className="text-2xl mb-3 block">{uc.emoji}</span>
-                  <h3 className="font-serif text-lg font-bold text-foreground mb-2">{uc.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">{uc.description}</p>
-                  <p className="text-xs text-primary font-medium">{uc.extra}</p>
+                <div className="w-16 h-16 rounded-2xl bg-card border border-border mx-auto mb-4 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:shadow-lg transition-all duration-300">
+                  {uc.emoji}
                 </div>
+                <h3 className="font-serif text-sm font-bold text-foreground mb-1.5">{uc.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-2">{uc.description}</p>
+                <p className="text-[10px] text-primary/60 font-medium font-mono">{uc.extra}</p>
               </motion.div>
             ))}
           </div>
