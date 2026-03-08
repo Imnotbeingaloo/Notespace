@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Lock } from "lucide-react";
-import { useProGate } from "@/hooks/use-pro-gate";
+import { Mic, MicOff } from "lucide-react";
 
 interface VoiceTranscriptionProps {
   onTranscript: (text: string) => void;
