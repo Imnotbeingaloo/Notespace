@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -117,26 +117,36 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
   };
 
-  // Study plans - fetch upcoming
-  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; scheduled_time: string | null; completed: boolean }[]>([]);
-  useEffect(() => {
+  // Study plans - fetch upcoming and subscribe to changes
+  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; scheduled_time: string | null; completed: boolean; notebook_id: string | null }[]>([]);
+  
+  const fetchUpcomingPlans = useCallback(async () => {
     if (!user) return;
-    const fetchPlans = async () => {
-      const today = format(new Date(), "yyyy-MM-dd");
-      const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
-      const { data } = await supabase
-        .from("study_plans" as any)
-        .select("id, title, scheduled_date, scheduled_time, completed")
-        .eq("user_id", user.id)
-        .eq("completed", false)
-        .gte("scheduled_date", today)
-        .lte("scheduled_date", threeDaysOut)
-        .order("scheduled_date", { ascending: true })
-        .limit(5);
-      setUpcomingPlans((data as any) ?? []);
-    };
-    fetchPlans();
+    const today = format(new Date(), "yyyy-MM-dd");
+    const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
+    const { data } = await supabase
+      .from("study_plans" as any)
+      .select("id, title, scheduled_date, scheduled_time, completed, notebook_id")
+      .eq("user_id", user.id)
+      .eq("completed", false)
+      .gte("scheduled_date", today)
+      .lte("scheduled_date", threeDaysOut)
+      .order("scheduled_date", { ascending: true })
+      .limit(8);
+    setUpcomingPlans((data as any) ?? []);
   }, [user]);
+
+  useEffect(() => {
+    fetchUpcomingPlans();
+    // Subscribe to study_plans changes for live updates
+    const channel = supabase
+      .channel("sidebar-study-plans")
+      .on("postgres_changes", { event: "*", schema: "public", table: "study_plans" }, () => {
+        fetchUpcomingPlans();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchUpcomingPlans]);
 
   const getDayLabel = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -678,21 +688,40 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             <div>
               <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 mt-2 flex items-center gap-1.5">
                 <CalendarDays className="h-3 w-3" />
-                Study Planner
+                Study Schedule
               </p>
               <div className="space-y-1 px-1">
-                {upcomingPlans.map((plan) => (
-                  <div key={plan.id} className="flex items-center gap-2 py-1.5 px-1.5 rounded-lg text-xs">
-                    <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)}`} />
-                    <div className="flex-1 min-w-0">
-                      <span className="text-foreground truncate block">{plan.title}</span>
-                      <span className="text-[10px] text-muted-foreground">
-                        {getDayLabel(plan.scheduled_date)}
-                        {plan.scheduled_time ? ` · ${plan.scheduled_time.slice(0, 5)}` : ""}
-                      </span>
+                {upcomingPlans.map((plan) => {
+                  const today = isToday(new Date(plan.scheduled_date + "T00:00:00"));
+                  const linkedNotebook = plan.notebook_id ? notebooks.find((nb) => nb.id === plan.notebook_id) : null;
+                  return (
+                    <div
+                      key={plan.id}
+                      className={`flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors ${
+                        today ? "bg-primary/10 border border-primary/20" : ""
+                      }`}
+                    >
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)} ${today ? "animate-pulse" : ""}`} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1">
+                          {today && (
+                            <span className="text-[9px] font-bold uppercase text-primary mr-1">📚 Study time</span>
+                          )}
+                        </div>
+                        <span className="text-foreground truncate block font-medium">{plan.title}</span>
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                          <span>{getDayLabel(plan.scheduled_date)}</span>
+                          {plan.scheduled_time && <span>· {plan.scheduled_time.slice(0, 5)}</span>}
+                          {linkedNotebook && (
+                            <span className="flex items-center gap-0.5">
+                              · {linkedNotebook.emoji} {linkedNotebook.name}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
