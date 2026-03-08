@@ -231,7 +231,7 @@ export default function LandingPage() {
       <SectionDivider />
 
       {/* ── Features ── */}
-      <section id="features" className="container mx-auto px-6 pb-16">
+      <section id="features" className="container mx-auto px-6 py-16">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
             Everything you need to take{" "}<span className="text-primary">better notes</span>
