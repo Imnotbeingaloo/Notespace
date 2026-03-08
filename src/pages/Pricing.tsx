@@ -205,6 +205,8 @@ export default function PricingPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* CTA */}
       <section className="container mx-auto px-6 pb-28">
         <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto">
