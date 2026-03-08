@@ -45,6 +45,77 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [editingNotebook, setEditingNotebook] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmoji, setEditEmoji] = useState("");
+  const [quickNote, setQuickNote] = useState("");
+  const [analyzeOpen, setAnalyzeOpen] = useState(false);
+  const [analyzeResult, setAnalyzeResult] = useState("");
+  const [analyzeLoading, setAnalyzeLoading] = useState(false);
+
+  const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
+
+  const handleQuickNote = async () => {
+    if (!quickNote.trim() || !activeNotebookId) return;
+    await createNote(activeNotebookId);
+    // The createNote sets activeNoteId, then we update content
+    const nb = notebooks.find(n => n.id === activeNotebookId);
+    if (nb && nb.notes.length > 0) {
+      const lastNote = nb.notes[nb.notes.length - 1];
+      await updateNote(activeNotebookId, lastNote.id, { content: quickNote.trim(), title: quickNote.trim().slice(0, 40) });
+    }
+    setQuickNote("");
+  };
+
+  const handleAnalyzeAll = async () => {
+    if (!activeNotebookId) return;
+    const nb = notebooks.find(n => n.id === activeNotebookId);
+    if (!nb || nb.notes.length === 0) return;
+    setAnalyzeOpen(true);
+    setAnalyzeResult("");
+    setAnalyzeLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("Please sign in");
+      const allContent = nb.notes.map(n => `## ${n.title}\n${n.content}`).join("\n\n---\n\n");
+      const resp = await fetch(AI_TOOLS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ action: "analyze", noteTitle: nb.name, noteContent: allContent.slice(0, 50000) }),
+      });
+      if (!resp.ok) throw new Error("Failed");
+      const reader = resp.body?.getReader();
+      if (!reader) throw new Error("No stream");
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let text = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buffer.indexOf("\n")) !== -1) {
+          let line = buffer.slice(0, idx);
+          buffer = buffer.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") break;
+          try {
+            const parsed = JSON.parse(json);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) { text += content; setAnalyzeResult(text); }
+          } catch {}
+        }
+      }
+    } catch {
+      setAnalyzeResult("Failed to analyze. Please try again.");
+    } finally {
+      setAnalyzeLoading(false);
+    }
+  };
 
   const handleSidebarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
