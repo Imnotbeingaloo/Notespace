@@ -1,21 +1,15 @@
 import { motion } from "framer-motion";
-import { BookOpen, ArrowRight, Check, Sparkles, Brain, Mic, FileText, Layers, Users, Shield, Zap, Globe } from "lucide-react";
+import { BookOpen, ArrowRight, Check, Sparkles, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import AnimatedDivider from "@/components/AnimatedDivider";
 
 const tiers = [
   {
     name: "Free",
     price: "$0",
     description: "Great for students getting started with smarter note-taking.",
-    features: [
-      "Up to 3 notebooks",
-      "Unlimited notes with markdown",
-      "AI topic explanations (5/day)",
-      "Instant ⌘K search",
-      "Auto-save & sync",
-      "Basic file attachments (50 MB)",
-    ],
+    features: ["Up to 3 notebooks", "Unlimited notes with markdown", "AI topic explanations (5/day)", "Instant ⌘K search", "Auto-save & sync", "Basic file attachments (50 MB)"],
     cta: "Get Started",
     highlighted: false,
   },
@@ -24,17 +18,7 @@ const tiers = [
     price: "$19",
     period: "/month",
     description: "For power users who need full AI capabilities and deeper insights.",
-    features: [
-      "Unlimited notebooks",
-      "Unlimited AI explanations",
-      "AI summaries & flashcard generation",
-      "Smart auto-tagging & linking",
-      "Voice-to-note transcription",
-      "File attachments (10 GB)",
-      "Version history & note recovery",
-      "Export to PDF, Markdown, Notion",
-      "Priority support",
-    ],
+    features: ["Unlimited notebooks", "Unlimited AI explanations", "AI summaries & flashcard generation", "Smart auto-tagging & linking", "Voice-to-note transcription", "File attachments (10 GB)", "Version history & note recovery", "Export to PDF, Markdown, Notion", "Priority support"],
     cta: "Start 14-Day Free Trial",
     highlighted: true,
   },
@@ -43,16 +27,7 @@ const tiers = [
     price: "$29",
     period: "/user/month",
     description: "Collaborate on shared notebooks with your team or study group.",
-    features: [
-      "Everything in Pro",
-      "Shared notebooks & real-time co-editing",
-      "Team knowledge base",
-      "Admin dashboard & permissions",
-      "SSO & advanced security",
-      "Custom AI training on team data",
-      "API access & integrations",
-      "Dedicated account manager",
-    ],
+    features: ["Everything in Pro", "Shared notebooks & real-time co-editing", "Team knowledge base", "Admin dashboard & permissions", "SSO & advanced security", "Custom AI training on team data", "API access & integrations", "Dedicated account manager"],
     cta: "Contact Sales",
     highlighted: false,
   },
@@ -71,15 +46,8 @@ const comparisons = [
   { feature: "Custom AI training", free: false, pro: false, team: true },
 ];
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
+const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
 
 export default function PricingPage() {
   const { user } = useAuth();
@@ -110,8 +78,8 @@ export default function PricingPage() {
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             Simple Pricing
           </div>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Plans that grow with you</h1>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+          <h1 className="font-serif text-3xl md:text-5xl font-bold text-foreground mb-4">Plans that grow with you</h1>
+          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
             Start free, upgrade when you need more AI power. No hidden fees, cancel anytime.
           </p>
         </motion.div>
@@ -119,12 +87,7 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section className="container mx-auto px-6 pb-20">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-12"
-        >
+        <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-12">
           {tiers.map((tier) => (
             <motion.div
               key={tier.name}
@@ -170,23 +133,15 @@ export default function PricingPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Feature Comparison Table */}
       <section className="container mx-auto px-6 pb-20 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Compare plans in detail</h2>
           <p className="text-muted-foreground">See exactly what's included in each plan.</p>
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="rounded-[2rem] border border-border bg-card overflow-hidden"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-[2rem] border border-border bg-card overflow-hidden">
           <div className="grid grid-cols-4 gap-0 text-sm">
             <div className="p-4 font-medium text-muted-foreground border-b border-border">Feature</div>
             <div className="p-4 font-semibold text-foreground text-center border-b border-border">Free</div>
@@ -210,29 +165,19 @@ export default function PricingPage() {
         </motion.div>
       </section>
 
-      {/* FAQ-like CTA */}
-      <section className="container mx-auto px-6 pb-24">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto"
-        >
+      <AnimatedDivider />
+
+      {/* CTA */}
+      <section className="container mx-auto px-6 pb-24 pt-8">
+        <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Still have questions?</h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            Start with the free plan — no credit card required. Upgrade whenever you're ready.
-          </p>
-          <Link
-            to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
-          >
-            {user ? "Open App" : "Get Started Free"}
-            <ArrowRight className="h-5 w-5" />
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto">Start with the free plan — no credit card required. Upgrade whenever you're ready.</p>
+          <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+            {user ? "Open App" : "Get Started Free"} <ArrowRight className="h-5 w-5" />
           </Link>
         </motion.div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-border py-8">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">

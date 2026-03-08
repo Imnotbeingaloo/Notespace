@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { BookOpen, ArrowRight, Heart, Zap, Shield, Target, Users, Lightbulb } from "lucide-react";
+import { BookOpen, ArrowRight, Heart, Zap, Shield, Lightbulb } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import AnimatedDivider from "@/components/AnimatedDivider";
 
 const values = [
   { icon: Heart, title: "User-First Design", description: "Every feature is designed around how people actually think and write. No bloat, no clutter — just clarity." },
@@ -17,15 +18,8 @@ const timeline = [
   { year: "2025", title: "Teams & Collaboration", description: "Shared notebooks, real-time co-editing, and team knowledge bases for study groups and workplaces." },
 ];
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
+const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
 
 export default function AboutPage() {
   const { user } = useAuth();
@@ -53,45 +47,29 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="container mx-auto px-6 pt-20 pb-16 max-w-4xl text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h1 className="font-serif text-3xl md:text-5xl font-bold text-foreground mb-6">
             We're building the notebook <span className="text-primary">you always wanted</span>
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Notebook Archive was created for thinkers — students, researchers, writers, and anyone who believes better tools lead to better ideas. We combine a beautiful writing experience with AI that actually helps you understand.
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            Notebook Archive was created for thinkers — students, researchers, writers, and anyone who believes better tools lead to better ideas.
           </p>
         </motion.div>
       </section>
 
-
-
+      <AnimatedDivider />
 
       {/* Philosophy */}
       <section className="bg-foreground/[0.03] py-20">
         <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-4"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-4">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-6">Our Philosophy</h2>
           </motion.div>
           <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="rounded-[2rem] border border-border bg-card p-8"
-            >
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="rounded-[2rem] border border-border bg-card p-8">
               <p className="text-muted-foreground text-sm mb-2">Most note apps focus on:</p>
               <p className="font-serif text-xl font-bold text-foreground">Storing information</p>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="rounded-[2rem] border border-primary/30 bg-primary/5 p-8"
-            >
+            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="rounded-[2rem] border border-primary/30 bg-primary/5 p-8">
               <p className="text-muted-foreground text-sm mb-2">We focus on:</p>
               <p className="font-serif text-xl font-bold text-foreground">
                 <span className="text-primary">Understanding</span> information
@@ -101,30 +79,16 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Values */}
       <section className="container mx-auto px-6 py-20 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">What We Believe</h2>
         </motion.div>
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid sm:grid-cols-2 gap-6"
-        >
+        <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid sm:grid-cols-2 gap-6">
           {values.map((v) => (
-            <motion.div
-              key={v.title}
-              variants={fadeUp}
-              whileHover={{ y: -3, transition: { duration: 0.2 } }}
-              className="flex gap-4 p-6 rounded-[2rem] border border-border bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
-            >
+            <motion.div key={v.title} variants={fadeUp} whileHover={{ y: -3, transition: { duration: 0.2 } }} className="flex gap-4 p-6 rounded-[2rem] border border-border bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <v.icon className="h-5 w-5 text-primary" />
               </div>
@@ -137,18 +101,21 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Timeline */}
       <section className="container mx-auto px-6 pb-20 max-w-3xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">Our Journey</h2>
         </motion.div>
         <div className="relative">
-          <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
+          <motion.div
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top"
+          />
           <div className="space-y-8">
             {timeline.map((item, i) => (
               <motion.div
@@ -156,10 +123,16 @@ export default function AboutPage() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.12, duration: 0.5 }}
                 className="relative pl-12"
               >
-                <div className="absolute left-2.5 top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-background" />
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.12 + 0.2, type: "spring", stiffness: 200 }}
+                  className="absolute left-2.5 top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-background"
+                />
                 <span className="text-xs font-mono text-muted-foreground">{item.year}</span>
                 <h3 className="font-serif text-lg font-bold text-foreground">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
@@ -169,24 +142,15 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* CTA */}
-      <section className="container mx-auto px-6 pb-24">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto"
-        >
+      <section className="container mx-auto px-6 pb-24 pt-8">
+        <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Join us on the journey</h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            We're just getting started. Be part of a community that thinks better, together.
-          </p>
-          <Link
-            to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
-          >
-            {user ? "Open App" : "Get Started Free"}
-            <ArrowRight className="h-5 w-5" />
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto">We're just getting started. Be part of a community that thinks better, together.</p>
+          <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+            {user ? "Open App" : "Get Started Free"} <ArrowRight className="h-5 w-5" />
           </Link>
         </motion.div>
       </section>
