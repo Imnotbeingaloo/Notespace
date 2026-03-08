@@ -240,7 +240,7 @@ export default function LandingPage() {
       </section>
 
       {/* Social Proof / Stats */}
-      <section className="container mx-auto px-6 py-16">
+      <section className="container mx-auto px-6 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
