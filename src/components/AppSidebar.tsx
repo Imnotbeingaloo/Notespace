@@ -105,16 +105,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   };
 
   const handleRemoveTag = async (tagToRemove: string) => {
+    // Update local state immediately, then persist to DB
     for (const nb of notebooks) {
       for (const note of (nb.notes || [])) {
         if (note.tags?.includes(tagToRemove)) {
           const newTags = note.tags.filter((t) => t !== tagToRemove);
-          await supabase.from("notes").update({ tags: newTags }).eq("id", note.id);
+          updateNote(nb.id, note.id, { tags: newTags });
         }
       }
     }
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
-    await refreshData();
   };
 
   // Study plans - fetch upcoming
