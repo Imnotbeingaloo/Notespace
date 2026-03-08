@@ -384,7 +384,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                                 setDragNoteId(null);
                                 setDragOverNoteId(null);
                               }}
-                              className={`group/note flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[12px] transition-all duration-200 ${
+                              className={`group/note flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-all duration-200 ${
                                 activeNoteId === note.id
                                   ? "bg-primary/10 text-foreground font-medium"
                                   : "text-muted-foreground notebook-hover"
