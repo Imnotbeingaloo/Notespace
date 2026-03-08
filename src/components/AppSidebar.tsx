@@ -56,11 +56,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [editEmoji, setEditEmoji] = useState("");
   const [quickNote, setQuickNote] = useState("");
 
-  // Smart Tags - collect all unique tags from all notes
+  // Smart Tags
+  const [tagsOpen, setTagsOpen] = useState(false);
+  const [activeFilterTag, setActiveFilterTag] = useState<string | null>(null);
+  const [newTagInput, setNewTagInput] = useState("");
+  const [showAddTag, setShowAddTag] = useState(false);
+
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
     notebooks.forEach((nb) => {
-      nb.notes?.forEach((note: any) => {
+      nb.notes?.forEach((note) => {
         if (note.tags && Array.isArray(note.tags)) {
           note.tags.forEach((t: string) => tagSet.add(t));
         }
@@ -68,6 +73,34 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     });
     return Array.from(tagSet).sort();
   }, [notebooks]);
+
+  // Notes matching the active filter tag
+  const filteredByTag = useMemo(() => {
+    if (!activeFilterTag) return [];
+    const results: { notebookId: string; notebookName: string; notebookEmoji: string; noteId: string; noteTitle: string }[] = [];
+    notebooks.forEach((nb) => {
+      nb.notes?.forEach((note) => {
+        if (note.tags?.includes(activeFilterTag)) {
+          results.push({ notebookId: nb.id, notebookName: nb.name, notebookEmoji: nb.emoji, noteId: note.id, noteTitle: note.title });
+        }
+      });
+    });
+    return results;
+  }, [activeFilterTag, notebooks]);
+
+  const handleAddGlobalTag = async () => {
+    const tag = newTagInput.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!tag || !activeNoteId || !activeNotebookId) return;
+    const nb = notebooks.find((n) => n.id === activeNotebookId);
+    const note = nb?.notes.find((n) => n.id === activeNoteId);
+    if (!note) return;
+    const currentTags = note.tags || [];
+    if (currentTags.includes(tag)) { setNewTagInput(""); return; }
+    await supabase.from("notes").update({ tags: [...currentTags, tag] }).eq("id", activeNoteId);
+    // Refresh will happen via context
+    setNewTagInput("");
+    setShowAddTag(false);
+  };
 
   // Study plans - fetch upcoming
   const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; completed: boolean }[]>([]);
@@ -503,34 +536,118 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
 
       {/* Smart Tags & Study Planner - above footer */}
       {!collapsed && (
-        <div className="px-2 space-y-3 mb-2">
-          {/* Smart Tags */}
-          {allTags.length > 0 && (
-            <div>
-              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 flex items-center gap-1.5">
-                <Tag className="h-3 w-3" />
-                Smart Tags
-              </p>
-              <div className="flex flex-wrap gap-1.5 px-1">
-                {allTags.slice(0, 12).map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors cursor-default"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-                {allTags.length > 12 && (
-                  <span className="text-[10px] text-muted-foreground px-1">+{allTags.length - 12} more</span>
-                )}
-              </div>
-            </div>
-          )}
+        <div className="px-2 space-y-1 mb-2 border-t border-sidebar-border pt-2">
+          {/* Smart Tags - collapsible */}
+          <button
+            onClick={() => { setTagsOpen((p) => !p); if (tagsOpen) setActiveFilterTag(null); }}
+            className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg"
+          >
+            <Tag className="h-3.5 w-3.5" />
+            <span className="flex-1 text-left text-xs font-semibold uppercase tracking-wider">Smart Tags</span>
+            {allTags.length > 0 && (
+              <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{allTags.length}</span>
+            )}
+            <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${tagsOpen ? "rotate-90" : ""}`} />
+          </button>
+
+          <AnimatePresence>
+            {tagsOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="px-1 pb-2 pt-1">
+                  {/* Tag chips */}
+                  {allTags.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {allTags.map((tag) => (
+                        <button
+                          key={tag}
+                          onClick={() => setActiveFilterTag(activeFilterTag === tag ? null : tag)}
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border transition-all duration-150 ${
+                            activeFilterTag === tag
+                              ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                              : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                          }`}
+                        >
+                          #{tag}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-muted-foreground px-1 mb-2">No tags yet. Add tags to your notes!</p>
+                  )}
+
+                  {/* Filtered notes */}
+                  <AnimatePresence>
+                    {activeFilterTag && filteredByTag.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider px-1 mb-1">
+                          Notes with #{activeFilterTag}
+                        </p>
+                        <div className="space-y-0.5">
+                          {filteredByTag.map((item) => (
+                            <button
+                              key={item.noteId}
+                              onClick={() => {
+                                setActiveNotebookId(item.notebookId);
+                                setExpandedNotebook(item.notebookId);
+                                setActiveNoteId(item.noteId);
+                                onSelectNote?.();
+                              }}
+                              className={`w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded-lg transition-colors ${
+                                activeNoteId === item.noteId ? "bg-primary/10 text-primary" : "text-muted-foreground notebook-hover"
+                              }`}
+                            >
+                              <span>{item.notebookEmoji}</span>
+                              <span className="truncate">{item.noteTitle}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Add tag button */}
+                  {!showAddTag ? (
+                    <button
+                      onClick={() => setShowAddTag(true)}
+                      className="w-full flex items-center gap-1.5 px-2 py-1.5 text-[11px] text-muted-foreground hover:text-foreground notebook-hover rounded-lg mt-1"
+                    >
+                      <Plus className="h-3 w-3" />
+                      Add tag to current note
+                    </button>
+                  ) : (
+                    <div className="flex gap-1 mt-1">
+                      <Input
+                        value={newTagInput}
+                        onChange={(e) => setNewTagInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleAddGlobalTag()}
+                        placeholder="tag name..."
+                        className="h-7 text-xs"
+                        autoFocus
+                      />
+                      <Button size="sm" onClick={handleAddGlobalTag} className="h-7 px-2">
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Study Planner Summary */}
           {upcomingPlans.length > 0 && (
             <div>
-              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 flex items-center gap-1.5">
+              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 mt-2 flex items-center gap-1.5">
                 <CalendarDays className="h-3 w-3" />
                 Study Planner
               </p>
