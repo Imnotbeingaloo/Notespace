@@ -466,7 +466,7 @@ export function NoteEditor() {
         </div>
 
         {/* Toolbar */}
-        <div className="shrink-0 w-full flex items-center border-b border-border bg-muted/30">
+        <div className="shrink-0 flex items-center border-b border-border bg-muted/30">
           <MarkdownToolbar
             editorRef={{
               get current() {
