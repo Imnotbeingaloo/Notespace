@@ -39,6 +39,7 @@ interface NotebookContextType {
   createNote: (notebookId: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => Promise<void>;
+  reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
   activeNotebook: Notebook | null;
   activeNote: Note | null;
   loading: boolean;
