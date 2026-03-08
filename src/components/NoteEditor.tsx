@@ -287,6 +287,7 @@ export function NoteEditor() {
               {/* Desktop: show all tools inline */}
               <div className="hidden md:flex items-center gap-1">
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                <AIEditPanel onApplyEdit={handleAIEdit} />
                 <AIToolsPanel />
                 <AIExplainPanel />
               </div>
