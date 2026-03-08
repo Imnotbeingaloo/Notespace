@@ -200,9 +200,9 @@ function PhilosophySection() {
           <div className="flex-shrink-0 flex items-center justify-center w-16 md:w-24 py-4 md:py-0">
             <motion.div
               animate={{
-                color: progress >= 0.5 ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
+                color: phase !== "old" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
               }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.15 }}
             >
               <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
             </motion.div>
