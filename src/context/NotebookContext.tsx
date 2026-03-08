@@ -53,6 +53,7 @@ interface NotebookContextType {
   activeNotebook: Notebook | null;
   activeNote: Note | null;
   loading: boolean;
+  refreshData: () => Promise<void>;
 }
 
 const NotebookContext = createContext<NotebookContextType | null>(null);
