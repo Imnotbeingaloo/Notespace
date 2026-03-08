@@ -23,6 +23,7 @@ export function NoteEditor() {
   const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
+  const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [preview, setPreview] = useState(false);
   const [dragOver, setDragOver] = useState(false);
