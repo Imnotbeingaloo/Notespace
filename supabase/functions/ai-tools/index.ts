@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const inputSchema = z.object({
-  action: z.enum(["summarize", "flashcards", "auto-tag", "edit"]),
+  action: z.enum(["summarize", "flashcards", "auto-tag", "edit", "analyze"]),
   noteTitle: z.string().max(500).optional().default(""),
   noteContent: z.string().max(50000).optional().default(""),
   editInstruction: z.string().max(2000).optional().default(""),
@@ -23,6 +23,8 @@ const systemPrompts: Record<string, string> = {
     "You are a tagging assistant. Given a note, return ONLY a JSON array of 3-6 relevant topic tags (lowercase, no special characters). Example: [\"calculus\", \"derivatives\", \"chain rule\"]. Return ONLY the JSON array, nothing else.",
   edit:
     "You are a document editor. The user will provide a note and an editing instruction. Apply the requested changes to the note content and return ONLY the full updated note content in markdown format. Do not include explanations, just the edited content.",
+  analyze:
+    "You are a study analyst. Given a note, provide a thorough analysis including: 1) **Key Themes** — main topics covered, 2) **Knowledge Gaps** — areas that need more depth, 3) **Study Suggestions** — how to strengthen understanding, 4) **Connections** — links to broader concepts or related fields. Use markdown formatting with clear sections.",
 };
 
 serve(async (req) => {
@@ -64,6 +66,7 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const isStream = action !== "auto-tag";
+    const isAnalyze = action === "analyze";
 
     const userContent = action === "edit"
       ? `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}\n\nEdit instruction: ${editInstruction}`
