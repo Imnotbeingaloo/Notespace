@@ -89,11 +89,11 @@ export function AIExplainPanel() {
     <>
       <button
         onClick={handleExplain}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
-        title="AI Explain"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
+        title="Ask AI"
       >
         <Sparkles className="h-3.5 w-3.5" />
-        Explain
+        Ask AI
       </button>
 
       <AnimatePresence>
