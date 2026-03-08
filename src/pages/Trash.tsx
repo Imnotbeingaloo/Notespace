@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, RotateCcw, BookOpen, FileText, ArrowLeft, Clock, AlertTriangle } from "lucide-react";
+import { Trash2, RotateCcw, BookOpen, FileText, ArrowLeft, Clock, AlertTriangle, CheckSquare, Square } from "lucide-react";
 import { NotebookProvider, useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const TRASH_EXPIRY_DAYS = 30;
@@ -19,6 +20,8 @@ function daysRemaining(deletedAt: string): number {
 function formatDeletedDate(d: string) {
   return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(d));
 }
+
+type TrashItemId = { type: "notebook"; id: string } | { type: "note"; id: string; notebookId: string };
 
 function TrashPageContent() {
   const { user } = useAuth();
@@ -37,6 +40,7 @@ function TrashPageContent() {
   const [confirmDesc, setConfirmDesc] = useState("");
   const [confirmLabel, setConfirmLabel] = useState("Delete");
   const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) navigate("/auth");
@@ -51,6 +55,70 @@ function TrashPageContent() {
   };
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
+
+  // Build unique keys for selection
+  const nbKey = (id: string) => `nb:${id}`;
+  const noteKey = (id: string) => `note:${id}`;
+
+  const allKeys = useMemo(() => {
+    const keys = new Set<string>();
+    trashedNotebooks.forEach((nb) => keys.add(nbKey(nb.id)));
+    trashedNotes.forEach(({ note }) => keys.add(noteKey(note.id)));
+    return keys;
+  }, [trashedNotebooks, trashedNotes]);
+
+  const allSelected = selected.size > 0 && selected.size === allKeys.size;
+  const someSelected = selected.size > 0;
+
+  const toggleItem = (key: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (allSelected) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(allKeys));
+    }
+  };
+
+  const handleBulkRestore = async () => {
+    for (const key of selected) {
+      if (key.startsWith("nb:")) {
+        await restoreNotebook(key.slice(3));
+      } else if (key.startsWith("note:")) {
+        const noteId = key.slice(5);
+        const found = trashedNotes.find(({ note }) => note.id === noteId);
+        if (found) await restoreNote(found.notebookId, noteId);
+      }
+    }
+    setSelected(new Set());
+  };
+
+  const handleBulkDelete = () => {
+    showConfirm(
+      "Delete selected items?",
+      `${selected.size} item${selected.size !== 1 ? "s" : ""} will be permanently deleted. This cannot be undone.`,
+      async () => {
+        for (const key of selected) {
+          if (key.startsWith("nb:")) {
+            await permanentlyDeleteNotebook(key.slice(3));
+          } else if (key.startsWith("note:")) {
+            const noteId = key.slice(5);
+            const found = trashedNotes.find(({ note }) => note.id === noteId);
+            if (found) await permanentlyDeleteNote(found.notebookId, noteId);
+          }
+        }
+        setSelected(new Set());
+      },
+      "Delete Selected"
+    );
+  };
 
   const handleEmptyTrash = () => {
     const parts: string[] = [];
@@ -67,6 +135,7 @@ function TrashPageContent() {
         for (const { note, notebookId } of trashedNotes) {
           await permanentlyDeleteNote(notebookId, note.id);
         }
+        setSelected(new Set());
       },
       "Empty Trash"
     );
@@ -98,6 +167,32 @@ function TrashPageContent() {
           )}
         </div>
 
+        {/* Bulk action bar */}
+        {trashCount > 0 && (
+          <div className="flex items-center gap-3 mb-4 px-1">
+            <button
+              onClick={toggleAll}
+              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {allSelected ? <CheckSquare className="h-4 w-4" /> : <Square className="h-4 w-4" />}
+              {allSelected ? "Deselect all" : "Select all"}
+            </button>
+            {someSelected && (
+              <div className="flex items-center gap-2 ml-auto">
+                <span className="text-xs text-muted-foreground">{selected.size} selected</span>
+                <Button variant="outline" size="sm" onClick={handleBulkRestore} className="text-xs gap-1 h-7">
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Restore
+                </Button>
+                <Button variant="destructive" size="sm" onClick={handleBulkDelete} className="text-xs gap-1 h-7">
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Delete
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Empty state */}
         {trashCount === 0 && (
           <motion.div
@@ -121,14 +216,17 @@ function TrashPageContent() {
               <AnimatePresence>
                 {trashedNotebooks.map((nb) => {
                   const days = daysRemaining(nb.deleted_at!);
+                  const key = nbKey(nb.id);
+                  const isSelected = selected.has(key);
                   return (
                     <motion.div
                       key={nb.id}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-card"
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border bg-card transition-colors ${isSelected ? "border-primary/50 bg-primary/5" : "border-border"}`}
                     >
+                      <Checkbox checked={isSelected} onCheckedChange={() => toggleItem(key)} className="shrink-0" />
                       <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
                       <span className="text-base mr-1">{nb.emoji}</span>
                       <div className="flex-1 min-w-0">
@@ -141,12 +239,7 @@ function TrashPageContent() {
                           </span>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => restoreNotebook(nb.id)}
-                        className="text-xs gap-1"
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => restoreNotebook(nb.id)} className="text-xs gap-1">
                         <RotateCcw className="h-3.5 w-3.5" />
                         Restore
                       </Button>
@@ -181,14 +274,17 @@ function TrashPageContent() {
               <AnimatePresence>
                 {trashedNotes.map(({ note, notebookId, notebookName }) => {
                   const days = daysRemaining(note.deleted_at!);
+                  const key = noteKey(note.id);
+                  const isSelected = selected.has(key);
                   return (
                     <motion.div
                       key={note.id}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-card"
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border bg-card transition-colors ${isSelected ? "border-primary/50 bg-primary/5" : "border-border"}`}
                     >
+                      <Checkbox checked={isSelected} onCheckedChange={() => toggleItem(key)} className="shrink-0" />
                       <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm text-foreground truncate">{note.title}</div>
@@ -201,12 +297,7 @@ function TrashPageContent() {
                           </span>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => restoreNote(notebookId, note.id)}
-                        className="text-xs gap-1"
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => restoreNote(notebookId, note.id)} className="text-xs gap-1">
                         <RotateCcw className="h-3.5 w-3.5" />
                         Restore
                       </Button>
