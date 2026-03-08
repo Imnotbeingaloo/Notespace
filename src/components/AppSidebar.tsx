@@ -43,6 +43,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     restoreNote,
     permanentlyDeleteNotebook,
     permanentlyDeleteNote,
+    refreshData,
   } = useNotebooks();
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
