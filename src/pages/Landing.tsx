@@ -257,7 +257,7 @@ export default function LandingPage() {
             initial="show"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto"
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto items-stretch"
           >
             <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
               <ShufflerCard />
