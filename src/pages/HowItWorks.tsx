@@ -57,9 +57,7 @@ function StepReel() {
     if (cancelled.current) return;
     setActiveStep(idx);
     await animate(dotX, measureCircleX(idx), { duration, ease: [0.16, 1, 0.3, 1] });
-    if (cancelled.current) return;
-    await snapPulse();
-  }, [dotX, measureCircleX, snapPulse]);
+  }, [dotX, measureCircleX]);
 
   useEffect(() => {
     cancelled.current = false;
@@ -75,7 +73,6 @@ function StepReel() {
           await nextFrame();
           dotX.set(measureCircleX(0));
           dotScale.set(1);
-          await snapPulse();
           await wait(900);
 
           if (cancelled.current) return;
@@ -98,8 +95,7 @@ function StepReel() {
           ]);
           await nextFrame();
           await animate(dotX, measureCircleX(3), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
-          await snapPulse();
-          await wait(500);
+          await wait(900);
 
           if (cancelled.current) return;
           await moveToStep(4);
@@ -120,7 +116,6 @@ function StepReel() {
           ]);
           await nextFrame();
           await animate(dotX, measureCircleX(0), { duration: 0.15, ease: [0.16, 1, 0.3, 1] });
-          await snapPulse();
           await wait(600);
         }
       };
