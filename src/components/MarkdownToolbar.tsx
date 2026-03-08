@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import {
   Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
-  Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare, Highlighter
-} from "lucide-react";
+  Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare, Highlighter } from
+"lucide-react";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -84,43 +84,43 @@ export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
   }, [editorRef]);
 
   const actions: FormatAction[] = [
-    { icon: Bold, label: "Bold", action: () => exec("bold") },
-    { icon: Italic, label: "Italic", action: () => exec("italic") },
-    { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
-    { icon: Highlighter, label: "Highlight", action: () => exec("hiliteColor", "#fef08a") },
-    { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "h1") },
-    { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "h2") },
-    { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "h3") },
-    { icon: List, label: "Bullet List", action: () => exec("insertUnorderedList") },
-    { icon: ListOrdered, label: "Numbered List", action: () => exec("insertOrderedList") },
-    { icon: CheckSquare, label: "Checklist", action: insertCheckbox },
-    { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "blockquote") },
-    { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
-    { icon: Link2, label: "Link", action: insertLink },
-    { icon: Image, label: "Image", action: insertImage },
-    { icon: Minus, label: "Divider", action: insertDivider },
-  ];
+  { icon: Bold, label: "Bold", action: () => exec("bold") },
+  { icon: Italic, label: "Italic", action: () => exec("italic") },
+  { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
+  { icon: Highlighter, label: "Highlight", action: () => exec("hiliteColor", "#fef08a") },
+  { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "h1") },
+  { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "h2") },
+  { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "h3") },
+  { icon: List, label: "Bullet List", action: () => exec("insertUnorderedList") },
+  { icon: ListOrdered, label: "Numbered List", action: () => exec("insertOrderedList") },
+  { icon: CheckSquare, label: "Checklist", action: insertCheckbox },
+  { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "blockquote") },
+  { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
+  { icon: Link2, label: "Link", action: insertLink },
+  { icon: Image, label: "Image", action: insertImage },
+  { icon: Minus, label: "Divider", action: insertDivider }];
+
 
   return (
-    <div className="flex items-center gap-0.5 px-4 sm:px-8 py-2 overflow-x-auto scrollbar-none">
-      {actions.map((a, i) => (
-        <div key={a.label} className="contents">
+    <div className="flex items-center gap-0.5 px-4 py-2 overflow-x-auto scrollbar-none sm:px-0">
+      {actions.map((a, i) =>
+      <div key={a.label} className="contents">
           <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              a.action();
-            }}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-            title={a.label}
-          >
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            a.action();
+          }}
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+          title={a.label}>
+          
             <a.icon className="h-4 w-4" />
           </button>
-          {separatorAfter.has(i) && (
-            <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
-          )}
+          {separatorAfter.has(i) &&
+        <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
+        }
         </div>
-      ))}
-    </div>
-  );
+      )}
+    </div>);
+
 }
