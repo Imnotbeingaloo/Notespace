@@ -210,11 +210,6 @@ function PhilosophySection() {
               <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
             </motion.div>
           </div>
-                  evolving
-                </motion.span>
-              )}
-            </div>
-          </div>
 
           {/* New Way Card */}
           <motion.div
