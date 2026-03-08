@@ -132,7 +132,7 @@ export default function LandingPage() {
             >
               <Sparkles className="h-3.5 w-3.5 text-accent" />
             </motion.span>
-            AI-Powered Note Taking
+            AI-Powered Note Taker
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
