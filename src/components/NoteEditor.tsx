@@ -251,7 +251,7 @@ export function NoteEditor() {
         </AnimatePresence>
 
         {/* Title bar */}
-        <div className="px-3 sm:px-8 pt-3 sm:pt-6 pb-2 sm:pb-3">
+        <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-6 pb-2 sm:pb-3">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
@@ -332,7 +332,7 @@ export function NoteEditor() {
         </div>
 
         {/* Toolbar - only in edit mode */}
-        {!preview && <MarkdownToolbar textareaRef={contentRef} onContentChange={handleToolbarChange} />}
+        {!preview && <div className="shrink-0"><MarkdownToolbar textareaRef={contentRef} onContentChange={handleToolbarChange} /></div>}
 
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
@@ -364,21 +364,22 @@ export function NoteEditor() {
               </ReactMarkdown>
             </div>
           ) : (
-            <div className="flex-1 min-h-0 flex flex-col">
+            <>
               <textarea
                 ref={contentRef}
                 defaultValue={activeNote.content}
                 onChange={(e) => debouncedUpdate("content", e.target.value)}
-                className="w-full flex-1 px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
+                className="w-full h-full min-h-[400px] px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
                 placeholder="Start writing in markdown... (drag & drop files here)"
               />
-              {/* Inline image previews in edit mode */}
               <InlineImagePreviews content={activeNote.content} />
-            </div>
+            </>
           )}
         </div>
 
-        <FileUpload onInsertMarkdown={handleInsertMarkdown} />
+        <div className="shrink-0">
+          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
+        </div>
       </motion.div>
     </AnimatePresence>
   );
