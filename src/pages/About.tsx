@@ -68,130 +68,243 @@ function RevealCard({ emoji, label, title, titleHighlight, description, delay = 
 
 function PhilosophySection() {
   const [phase, setPhase] = useState<"old" | "transition" | "new">("old");
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    const TOTAL = 8000;
+    const OLD_END = 3000;
+    const TRANS_END = 4200;
+
     const cycle = () => {
       setPhase("old");
-      const t1 = setTimeout(() => setPhase("transition"), 2500);
-      const t2 = setTimeout(() => setPhase("new"), 3300);
-      const t3 = setTimeout(() => setPhase("old"), 6500);
-      return [t1, t2, t3];
+      setProgress(0);
+      const t1 = setTimeout(() => setPhase("transition"), OLD_END);
+      const t2 = setTimeout(() => setPhase("new"), TRANS_END);
+      return [t1, t2];
     };
+
     let timers = cycle();
     const interval = setInterval(() => {
       timers = cycle();
-    }, 6500);
+    }, TOTAL);
+
+    // Smooth progress bar
+    let raf: number;
+    let start = performance.now();
+    const tick = (now: number) => {
+      const elapsed = (now - start) % TOTAL;
+      setProgress(Math.min(elapsed / TOTAL, 1));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
     return () => {
       clearInterval(interval);
       timers.forEach(clearTimeout);
+      cancelAnimationFrame(raf);
     };
   }, []);
+
+  const oldItems = ["Scattered notes everywhere", "No connections between ideas", "Information gets forgotten", "You do all the organizing"];
+  const newItems = [
+    { text: "AI explains concepts as you write", icon: "✨" },
+    { text: "Ideas connect automatically", icon: "🔗" },
+    { text: "Smart recall & study tools", icon: "🎯" },
+    { text: "Your notes grow smarter with you", icon: "🌱" },
+  ];
 
   return (
     <section className="bg-foreground/[0.03] py-24 overflow-hidden">
       <div className="container mx-auto px-6 max-w-5xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
           <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">Our Philosophy</p>
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">We moved from the old way to something better</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">See how Notebook Archive transforms how you work with notes.</p>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-4 max-w-4xl mx-auto">
+        {/* Progress bar */}
+        <div className="max-w-4xl mx-auto mb-10">
+          <div className="h-1 rounded-full bg-border overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-gradient-to-r from-muted-foreground/40 via-primary to-primary"
+              style={{ width: `${progress * 100}%` }}
+              transition={{ duration: 0.05 }}
+            />
+          </div>
+          <div className="flex justify-between mt-2 px-1">
+            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "old" ? "text-foreground font-semibold" : "text-muted-foreground/50"}`}>
+              Old Way
+            </span>
+            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "transition" ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
+              Evolving
+            </span>
+            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "new" ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
+              Notebook Archive
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-stretch gap-6 md:gap-5 max-w-4xl mx-auto">
           {/* Old Way Card */}
           <motion.div
             animate={{
-              opacity: phase === "new" ? 0.4 : 1,
-              scale: phase === "new" ? 0.95 : 1,
-              filter: phase === "new" ? "grayscale(0.5)" : "grayscale(0)",
+              opacity: phase === "new" ? 0.3 : 1,
+              scale: phase === "new" ? 0.92 : 1,
+              filter: phase === "new" ? "grayscale(0.8) blur(1px)" : "grayscale(0) blur(0px)",
             }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 min-h-[260px]"
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
-            <div className="flex items-center gap-3 mb-5">
-              <span className="text-3xl">📁</span>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">The Old Way</p>
-                <p className="font-serif text-lg font-bold text-foreground">Storing information</p>
-              </div>
-            </div>
-            <div className="space-y-2.5">
-              {["Scattered notes everywhere", "No connections between ideas", "Information gets forgotten", "You do all the organizing"].map((item) => (
-                <div key={item} className="flex items-center gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 shrink-0" />
-                  <span className="text-sm text-muted-foreground">{item}</span>
+            {/* Red tint overlay when in "old" phase */}
+            <motion.div
+              animate={{ opacity: phase === "old" ? 0.06 : 0 }}
+              transition={{ duration: 0.6 }}
+              className="pointer-events-none absolute inset-0 bg-destructive"
+            />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-5">
+                <motion.span
+                  animate={{ scale: phase === "old" ? 1 : 0.8, opacity: phase === "old" ? 1 : 0.5 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-3xl"
+                >📁</motion.span>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest font-mono text-destructive/70">The Old Way</p>
+                  <motion.p
+                    animate={{ opacity: phase === "new" ? 0.5 : 1 }}
+                    className="font-serif text-lg font-bold text-foreground"
+                  >Storing information</motion.p>
                 </div>
-              ))}
+              </div>
+              <div className="space-y-3">
+                {oldItems.map((item, i) => (
+                  <motion.div
+                    key={item}
+                    animate={{
+                      opacity: phase === "new" ? 0.3 : 1,
+                      x: phase === "new" ? -4 : 0,
+                      textDecoration: phase === "new" ? "line-through" : "none",
+                    }}
+                    transition={{ duration: 0.6, delay: phase === "new" ? i * 0.08 : 0 }}
+                    className="flex items-center gap-2.5"
+                  >
+                    <motion.span
+                      animate={{ backgroundColor: phase === "new" ? "hsl(var(--destructive) / 0.4)" : "hsl(var(--muted-foreground) / 0.3)" }}
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                    />
+                    <span className="text-sm text-muted-foreground">{item}</span>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
 
           {/* Arrow */}
-          <div className="flex-shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20">
-            <motion.div
-              animate={{
-                x: phase === "transition" ? [0, 8, 0] : 0,
-                scale: phase === "transition" ? 1.2 : 1,
-                opacity: phase === "transition" ? 1 : 0.5,
-              }}
-              transition={{
-                duration: phase === "transition" ? 0.8 : 0.4,
-                repeat: phase === "transition" ? 2 : 0,
-                ease: "easeInOut",
-              }}
-              className="relative"
-            >
+          <div className="flex-shrink-0 flex items-center justify-center w-16 md:w-24 py-4 md:py-0">
+            <div className="relative flex flex-col md:flex-row items-center gap-2">
+              {/* Trailing particles */}
+              {phase === "transition" && (
+                <>
+                  {[0, 1, 2].map((i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10, y: 0 }}
+                      animate={{ opacity: [0, 0.6, 0], x: [0, 20, 40], scale: [1, 0.5, 0] }}
+                      transition={{ duration: 1, delay: i * 0.2, repeat: 1 }}
+                      className="absolute w-2 h-2 rounded-full bg-primary"
+                    />
+                  ))}
+                </>
+              )}
               <motion.div
                 animate={{
-                  color: phase === "new" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
+                  x: phase === "transition" ? [0, 12, 0] : 0,
+                  scale: phase === "transition" ? [1, 1.3, 1] : 1,
                 }}
-                transition={{ duration: 0.4 }}
+                transition={{
+                  duration: 0.8,
+                  repeat: phase === "transition" ? Infinity : 0,
+                  ease: "easeInOut",
+                }}
               >
-                <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
+                <motion.div
+                  animate={{
+                    color: phase === "new" ? "hsl(var(--primary))" : phase === "transition" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.4)",
+                  }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <ArrowRight className="h-8 w-8 md:h-10 md:w-10 rotate-90 md:rotate-0" />
+                </motion.div>
               </motion.div>
               {phase === "transition" && (
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: [0, 1.5, 0], opacity: [0, 0.3, 0] }}
-                  transition={{ duration: 0.8, repeat: 2 }}
-                  className="absolute inset-0 rounded-full bg-primary"
-                />
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: [0, 1, 0], scale: [0.8, 1, 0.8] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                  className="absolute -bottom-6 md:-bottom-8 text-[9px] font-mono text-primary whitespace-nowrap"
+                >
+                  evolving
+                </motion.span>
               )}
-            </motion.div>
+            </div>
           </div>
 
           {/* New Way Card */}
           <motion.div
             animate={{
-              opacity: phase === "old" ? 0.4 : 1,
-              scale: phase === "old" ? 0.95 : 1,
-              borderColor: phase === "new" ? "hsl(var(--primary) / 0.4)" : "hsl(var(--border))",
+              opacity: phase === "old" ? 0.3 : 1,
+              scale: phase === "old" ? 0.92 : 1,
+              filter: phase === "old" ? "blur(1px)" : "blur(0px)",
             }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1 w-full rounded-[2rem] border-2 bg-card p-7 md:p-8 relative overflow-hidden min-h-[260px]"
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 w-full rounded-[2rem] border-2 border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
+            {/* Primary glow overlay */}
             <motion.div
               animate={{ opacity: phase === "new" ? 1 : 0 }}
-              transition={{ duration: 0.6 }}
-              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"
+              transition={{ duration: 0.8 }}
+              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/8 via-primary/3 to-accent/8"
+            />
+            {/* Animated border glow */}
+            <motion.div
+              animate={{
+                boxShadow: phase === "new"
+                  ? "inset 0 0 30px hsl(var(--primary) / 0.08), 0 0 40px hsl(var(--primary) / 0.06)"
+                  : "inset 0 0 0px transparent, 0 0 0px transparent",
+              }}
+              transition={{ duration: 0.8 }}
+              className="pointer-events-none absolute inset-0 rounded-[2rem]"
             />
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-5">
-                <span className="text-3xl">🧠</span>
+                <motion.span
+                  animate={{ scale: phase === "new" ? [1, 1.15, 1] : 0.8, opacity: phase === "new" ? 1 : 0.5 }}
+                  transition={{ duration: phase === "new" ? 1.5 : 0.5, repeat: phase === "new" ? Infinity : 0, repeatDelay: 2 }}
+                  className="text-3xl"
+                >🧠</motion.span>
                 <div>
                   <p className="text-[10px] uppercase tracking-widest font-mono text-primary">The Notebook Archive Way</p>
                   <p className="font-serif text-lg font-bold text-foreground">Understanding <span className="text-primary">information</span></p>
                 </div>
               </div>
-              <div className="space-y-2.5">
-                {[
-                  { text: "AI explains concepts as you write", icon: "✨" },
-                  { text: "Ideas connect automatically", icon: "🔗" },
-                  { text: "Smart recall & study tools", icon: "🎯" },
-                  { text: "Your notes grow smarter with you", icon: "🌱" },
-                ].map((item) => (
-                  <div key={item.text} className="flex items-center gap-2.5">
-                    <span className="text-sm shrink-0">{item.icon}</span>
+              <div className="space-y-3">
+                {newItems.map((item, i) => (
+                  <motion.div
+                    key={item.text}
+                    animate={{
+                      opacity: phase === "new" ? 1 : 0.4,
+                      x: phase === "new" ? 0 : 4,
+                    }}
+                    transition={{ duration: 0.5, delay: phase === "new" ? i * 0.1 : 0 }}
+                    className="flex items-center gap-2.5"
+                  >
+                    <motion.span
+                      animate={{ scale: phase === "new" ? [1, 1.2, 1] : 0.8 }}
+                      transition={{ duration: 0.4, delay: phase === "new" ? 0.3 + i * 0.1 : 0 }}
+                      className="text-sm shrink-0"
+                    >{item.icon}</motion.span>
                     <span className="text-sm text-foreground font-medium">{item.text}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
