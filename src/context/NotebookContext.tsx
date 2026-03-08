@@ -138,12 +138,38 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   // Soft delete notebook
   const deleteNotebook = useCallback(async (id: string) => {
     const now = new Date().toISOString();
-    await supabase.from("notebooks").update({ deleted_at: now } as any).eq("id", id);
+    const nb = allNotebooks.find((n) => n.id === id);
+    // Optimistically soft-delete
     setAllNotebooks((prev) =>
-      prev.map((nb) => nb.id === id ? { ...nb, deleted_at: now } : nb)
+      prev.map((n) => n.id === id ? { ...n, deleted_at: now } : n)
     );
     if (activeNotebookId === id) { setActiveNotebookId(null); setActiveNoteId(null); }
-  }, [activeNotebookId]);
+
+    let undone = false;
+    toast(`"${nb?.name || "Notebook"}" moved to trash`, {
+      duration: 5000,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          undone = true;
+          setAllNotebooks((prev) =>
+            prev.map((n) => n.id === id ? { ...n, deleted_at: null } : n)
+          );
+          supabase.from("notebooks").update({ deleted_at: null } as any).eq("id", id).then(() => {});
+        },
+      },
+      onAutoClose: () => {
+        if (!undone) {
+          supabase.from("notebooks").update({ deleted_at: now } as any).eq("id", id).then(() => {});
+        }
+      },
+      onDismiss: () => {
+        if (!undone) {
+          supabase.from("notebooks").update({ deleted_at: now } as any).eq("id", id).then(() => {});
+        }
+      },
+    });
+  }, [activeNotebookId, allNotebooks]);
 
   const updateNotebook = useCallback(async (id: string, updates: { name?: string; emoji?: string }) => {
     await supabase.from("notebooks").update(updates).eq("id", id);
