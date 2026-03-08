@@ -39,6 +39,7 @@ interface NotebookContextType {
   createNote: (notebookId: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => Promise<void>;
+  reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
   activeNotebook: Notebook | null;
   activeNote: Note | null;
   loading: boolean;
@@ -160,12 +161,28 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderNotes = useCallback(
+    (notebookId: string, fromIndex: number, toIndex: number) => {
+      setNotebooks((prev) =>
+        prev.map((nb) => {
+          if (nb.id !== notebookId) return nb;
+          const notes = [...nb.notes];
+          const [moved] = notes.splice(fromIndex, 1);
+          notes.splice(toIndex, 0, moved);
+          return { ...nb, notes };
+        })
+      );
+    },
+    []
+  );
+
   return (
     <NotebookContext.Provider
       value={{
         notebooks, activeNotebookId, activeNoteId,
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
+        reorderNotes,
         activeNotebook, activeNote, loading,
       }}
     >
