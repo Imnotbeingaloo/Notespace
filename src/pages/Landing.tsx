@@ -50,32 +50,56 @@ export default function LandingPage() {
       }, 3000);
       return () => clearTimeout(restartTimeout);
     }
+
     const currentLine = editorLines[visibleLines];
+
+    // Empty lines — just pause briefly then advance
     if (currentLine.text === "") {
-      const timeout = setTimeout(() => { setVisibleLines((v) => v + 1); setTypingText(""); setCurrentCharIndex(0); }, 300);
-      return () => clearTimeout(timeout);
-    }
-    if (currentCharIndex < currentLine.text.length) {
-      const timeout = setTimeout(() => { setTypingText(currentLine.text.slice(0, currentCharIndex + 1)); setCurrentCharIndex((c) => c + 1); }, 55);
-      return () => clearTimeout(timeout);
-    } else {
-      // Move to next line — set typingText to full next line's first state to avoid blank flash
       const timeout = setTimeout(() => {
         setVisibleLines((v) => v + 1);
+        setTypingText("");
         setCurrentCharIndex(0);
-        // Pre-set typingText for the next line to avoid a blank frame
-        const nextLine = editorLines[visibleLines + 1];
-        if (nextLine && nextLine.text === "") {
-          setTypingText("");
-        } else if (nextLine) {
-          setTypingText(nextLine.text.slice(0, 1));
-          setCurrentCharIndex(1);
-        } else {
-          setTypingText("");
-        }
-      }, 80);
+      }, 250);
       return () => clearTimeout(timeout);
     }
+
+    // Typing in progress — use rAF for smooth, consistent rendering
+    if (currentCharIndex < currentLine.text.length) {
+      let rafId: number;
+      let lastTime = 0;
+      const charDelay = 40; // ms per character
+
+      const step = (timestamp: number) => {
+        if (!lastTime) lastTime = timestamp;
+        const elapsed = timestamp - lastTime;
+        if (elapsed >= charDelay) {
+          lastTime = timestamp;
+          setCurrentCharIndex((c) => {
+            const next = c + 1;
+            setTypingText(currentLine.text.slice(0, next));
+            return next;
+          });
+        }
+        rafId = requestAnimationFrame(step);
+      };
+
+      rafId = requestAnimationFrame(step);
+      return () => cancelAnimationFrame(rafId);
+    }
+
+    // Line complete — advance immediately to next line
+    const nextLine = editorLines[visibleLines + 1];
+    const timeout = setTimeout(() => {
+      setVisibleLines((v) => v + 1);
+      if (nextLine && nextLine.text !== "") {
+        setTypingText(nextLine.text.slice(0, 1));
+        setCurrentCharIndex(1);
+      } else {
+        setTypingText("");
+        setCurrentCharIndex(0);
+      }
+    }, 60);
+    return () => clearTimeout(timeout);
   }, [visibleLines, currentCharIndex]);
 
   return (
