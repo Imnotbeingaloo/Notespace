@@ -539,6 +539,8 @@ export function NoteEditor() {
                 <FlashcardsButton />
                 <AnalyzeButton />
                 <SymbolsPicker onInsert={handleSymbolInsert} />
+                <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                <ExportButtons />
               </div>
 
               {/* Mobile: "More" dropdown */}
