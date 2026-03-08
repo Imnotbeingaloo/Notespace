@@ -139,7 +139,7 @@ export default function LandingPage() {
       </section>
 
       {/* App Preview */}
-      <section className="container mx-auto px-6 -mt-8 mb-20">
+      <section className="container mx-auto px-6 -mt-8 mb-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -190,7 +190,7 @@ export default function LandingPage() {
       </section>
 
       {/* Animated Feature Cards */}
-      <section id="features" className="container mx-auto px-6 py-20">
+      <section id="features" className="container mx-auto px-6 py-14">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -214,7 +214,7 @@ export default function LandingPage() {
       </section>
 
       {/* Additional Features Grid */}
-      <section className="container mx-auto px-6 pb-20">
+      <section className="container mx-auto px-6 pb-14">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -240,7 +240,7 @@ export default function LandingPage() {
       </section>
 
       {/* Social Proof / Stats */}
-      <section className="container mx-auto px-6 py-16">
+      <section className="container mx-auto px-6 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -272,7 +272,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials / Use Cases */}
-      <section className="container mx-auto px-6 pb-16">
+      <section className="container mx-auto px-6 pb-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -309,7 +309,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="container mx-auto px-6 py-20">
+      <section className="container mx-auto px-6 py-14">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -333,7 +333,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/50 rounded-t-[3rem] mt-8">
+      <footer className="border-t border-border bg-card/50 rounded-t-[3rem]">
         <div className="container mx-auto px-6 py-12 md:py-16">
           <div className="grid gap-8 md:grid-cols-4 mb-12">
             <div>
