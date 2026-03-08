@@ -120,7 +120,7 @@ function StepReel() {
           }}
         >
           <div
-            className="w-full h-full rounded-full border-2 border-primary bg-background"
+            className="w-full h-full rounded-full border-2 border-primary bg-background animate-[pulse-glow_2s_ease-in-out_infinite]"
             style={{ boxShadow: "0 0 12px hsl(var(--primary) / 0.4)" }}
           >
             <div className="w-full h-full flex items-center justify-center">
