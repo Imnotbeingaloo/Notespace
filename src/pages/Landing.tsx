@@ -190,7 +190,7 @@ export default function LandingPage() {
       </section>
 
       {/* Animated Feature Cards */}
-      <section id="features" className="container mx-auto px-6 py-20">
+      <section id="features" className="container mx-auto px-6 py-14">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
