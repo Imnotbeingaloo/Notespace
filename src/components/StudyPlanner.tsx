@@ -100,26 +100,33 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
 
   const addPlan = async () => {
     if (!user || !newTitle.trim()) return;
-    const { data } = await supabase
-      .from("study_plans" as any)
-      .insert({
-        user_id: user.id,
-        title: newTitle.trim(),
-        scheduled_date: selectedDateStr,
-        scheduled_time: newTime || null,
-        notebook_id: newNotebook || null,
-        remind_via_email: newRemind,
-      } as any)
-      .select()
-      .single();
-    if (data) {
-      setPlans((prev) => [...prev, data as any as StudyPlan]);
+    // Create one plan per selected notebook, or one with no notebook
+    const notebookIds = selectedNotebooks.length > 0 ? selectedNotebooks : [null];
+    const newPlans: StudyPlan[] = [];
+    for (const nbId of notebookIds) {
+      const { data } = await supabase
+        .from("study_plans" as any)
+        .insert({
+          user_id: user.id,
+          title: newTitle.trim(),
+          scheduled_date: selectedDateStr,
+          scheduled_time: newTime || null,
+          notebook_id: nbId,
+          remind_via_email: newRemind,
+        } as any)
+        .select()
+        .single();
+      if (data) newPlans.push(data as any as StudyPlan);
+    }
+    if (newPlans.length > 0) {
+      setPlans((prev) => [...prev, ...newPlans]);
       setNewTitle("");
       setNewTime("");
-      setNewNotebook("");
+      setSelectedNotebooks([]);
       setNewRemind(false);
       setShowAdd(false);
-      toast.success("Study session added!");
+      setShowNotebookPicker(false);
+      toast.success(`Study session${newPlans.length > 1 ? "s" : ""} added!`);
     }
   };
 
