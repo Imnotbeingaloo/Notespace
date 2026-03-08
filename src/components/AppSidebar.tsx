@@ -25,6 +25,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }: AppSidebarProps) {
+  const isMobileSidebar = useIsMobile();
   const { signOut, user } = useAuth();
   const {
     notebooks,
