@@ -53,6 +53,7 @@ const AppPage = () => {
             collapsed={!isMobile && sidebarCollapsed}
             onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
             onSelectNote={() => isMobile && setSidebarOpen(false)}
+            onOpenPlanner={() => setPlannerOpen(true)}
           />
         </div>
 

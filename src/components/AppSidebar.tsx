@@ -20,9 +20,10 @@ interface AppSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
   onSelectNote?: () => void;
+  onOpenPlanner?: () => void;
 }
 
-export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }: AppSidebarProps) {
   const { signOut, user } = useAuth();
   const {
     notebooks,
@@ -62,6 +63,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [activeFilterTag, setActiveFilterTag] = useState<string | null>(null);
   const [newTagInput, setNewTagInput] = useState("");
   const [showAddTag, setShowAddTag] = useState(false);
+
+  // Study Schedule
+  const [scheduleOpen, setScheduleOpen] = useState(false);
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -683,48 +687,76 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             )}
           </AnimatePresence>
 
-          {/* Study Schedule */}
-          <div>
-            <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 mt-2 flex items-center gap-1.5">
-              <CalendarDays className="h-3 w-3" />
-              Study Schedule
-            </p>
-            {upcomingPlans.length > 0 ? (
-              <div className="space-y-1 px-1">
-                {upcomingPlans.map((plan) => {
-                  const today = isToday(new Date(plan.scheduled_date + "T00:00:00"));
-                  const linkedNotebook = plan.notebook_id ? notebooks.find((nb) => nb.id === plan.notebook_id) : null;
-                  return (
-                    <div
-                      key={plan.id}
-                      className={`flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors ${
-                        today ? "bg-primary/10 border border-primary/20" : ""
-                      }`}
-                    >
-                      <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)} ${today ? "animate-pulse" : ""}`} />
-                      <div className="flex-1 min-w-0">
-                        {today && (
-                          <span className="text-[9px] font-bold uppercase text-primary">📚 Study time</span>
-                        )}
-                        <span className="text-foreground truncate block font-medium">{plan.title}</span>
-                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                          <span>{getDayLabel(plan.scheduled_date)}</span>
-                          {plan.scheduled_time && <span>· {plan.scheduled_time.slice(0, 5)}</span>}
-                          {linkedNotebook && (
-                            <span className="flex items-center gap-0.5">
-                              · {linkedNotebook.emoji} {linkedNotebook.name}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-[11px] text-muted-foreground px-2">No upcoming sessions. Open the Study Planner to add one!</p>
+          {/* Study Schedule - collapsible */}
+          <button
+            onClick={() => setScheduleOpen((p) => !p)}
+            className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg"
+          >
+            <CalendarDays className="h-3.5 w-3.5" />
+            <span className="flex-1 text-left text-xs font-semibold uppercase tracking-wider">Study Schedule</span>
+            {upcomingPlans.length > 0 && (
+              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">{upcomingPlans.length}</span>
             )}
-          </div>
+            <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${scheduleOpen ? "rotate-90" : ""}`} />
+          </button>
+
+          <AnimatePresence>
+            {scheduleOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="px-1 pb-2 pt-1">
+                  {upcomingPlans.length > 0 ? (
+                    <div className="space-y-1">
+                      {upcomingPlans.map((plan) => {
+                        const today = isToday(new Date(plan.scheduled_date + "T00:00:00"));
+                        const linkedNotebook = plan.notebook_id ? notebooks.find((nb) => nb.id === plan.notebook_id) : null;
+                        return (
+                          <div
+                            key={plan.id}
+                            className={`flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors ${
+                              today ? "bg-primary/10 border border-primary/20" : "hover:bg-muted"
+                            }`}
+                          >
+                            <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)} ${today ? "animate-pulse" : ""}`} />
+                            <div className="flex-1 min-w-0">
+                              {today && (
+                                <span className="text-[9px] font-bold uppercase text-primary">📚 Study time</span>
+                              )}
+                              <span className="text-foreground truncate block font-medium">{plan.title}</span>
+                              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                <span>{getDayLabel(plan.scheduled_date)}</span>
+                                {plan.scheduled_time && <span>· {plan.scheduled_time.slice(0, 5)}</span>}
+                                {linkedNotebook && (
+                                  <span className="flex items-center gap-0.5">
+                                    · {linkedNotebook.emoji} {linkedNotebook.name}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-muted-foreground px-1 mb-1">No upcoming sessions.</p>
+                  )}
+
+                  {/* Create new button */}
+                  <button
+                    onClick={() => onOpenPlanner?.()}
+                    className="w-full flex items-center gap-1.5 px-2 py-1.5 text-[11px] text-muted-foreground hover:text-foreground notebook-hover rounded-lg mt-1"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Create new session
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
 
