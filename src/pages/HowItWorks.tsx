@@ -95,8 +95,7 @@ function StepReel() {
           ]);
           await nextFrame();
           await animate(dotX, measureCircleX(3), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
-          await snapPulse();
-          await wait(500);
+          await wait(900);
 
           if (cancelled.current) return;
           await moveToStep(4);
