@@ -135,9 +135,6 @@ function PhilosophySection() {
             <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "old" ? "text-foreground font-semibold" : "text-muted-foreground/50"}`}>
               Old Way
             </span>
-            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "transition" ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
-              Evolving
-            </span>
             <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "new" ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
               Notebook Archive
             </span>
