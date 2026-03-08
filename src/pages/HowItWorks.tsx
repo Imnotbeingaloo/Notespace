@@ -56,7 +56,9 @@ function StepReel() {
           setActiveStep(0);
           await animate(slideX, 0, { duration: 0 });
           await new Promise((r) => requestAnimationFrame(r));
+          await new Promise((r) => requestAnimationFrame(r));
           dotX.set(measureCircleX(0));
+          setDotVisible(true);
           await new Promise((r) => setTimeout(r, 1000));
 
           // 0 → 1
