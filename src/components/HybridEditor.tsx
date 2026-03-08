@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
+import { useRef, useState, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
 import { X } from "lucide-react";
 
 type Segment =
@@ -23,22 +23,18 @@ function parseContent(content: string): Segment[] {
     segments.push({ type: "text", value: content.slice(lastIndex) });
   }
 
-  // Always have at least one text segment
   if (segments.length === 0) {
     segments.push({ type: "text", value: "" });
   }
 
-  // Ensure first segment is text (for typing before first image)
   if (segments[0].type !== "text") {
     segments.unshift({ type: "text", value: "" });
   }
 
-  // Ensure last segment is text (for typing after last image)
   if (segments[segments.length - 1].type !== "text") {
     segments.push({ type: "text", value: "" });
   }
 
-  // Ensure text segments between consecutive images
   const result: Segment[] = [];
   for (let i = 0; i < segments.length; i++) {
     result.push(segments[i]);
@@ -69,49 +65,45 @@ interface HybridEditorProps {
 export interface HybridEditorHandle {
   insertAtCursor: (text: string) => void;
   getValue: () => string;
+  getActiveTextarea: () => HTMLTextAreaElement | null;
 }
 
 function AutoResizeTextarea({
   value,
   onChange,
   placeholder,
-  autoFocus,
-  onKeyDown,
+  onFocus,
+  textareaRef,
 }: {
   value: string;
   onChange: (val: string) => void;
   placeholder?: string;
-  autoFocus?: boolean;
-  onKeyDown?: (e: React.KeyboardEvent) => void;
+  onFocus?: () => void;
+  textareaRef?: React.RefObject<HTMLTextAreaElement>;
 }) {
-  const ref = useRef<HTMLTextAreaElement>(null);
+  const fallbackRef = useRef<HTMLTextAreaElement>(null);
+  const ref = textareaRef || fallbackRef;
 
   const resize = useCallback(() => {
     const el = ref.current;
     if (!el) return;
     el.style.height = "0";
     el.style.height = Math.max(el.scrollHeight, 28) + "px";
-  }, []);
+  }, [ref]);
 
   useEffect(() => {
     resize();
   }, [value, resize]);
 
-  useEffect(() => {
-    if (autoFocus && ref.current) {
-      ref.current.focus();
-    }
-  }, [autoFocus]);
-
   return (
     <textarea
-      ref={ref}
+      ref={ref as React.RefObject<HTMLTextAreaElement>}
       value={value}
       onChange={(e) => {
         onChange(e.target.value);
         resize();
       }}
-      onKeyDown={onKeyDown}
+      onFocus={onFocus}
       placeholder={placeholder}
       rows={1}
       className="w-full bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono overflow-hidden"
@@ -122,72 +114,98 @@ function AutoResizeTextarea({
 
 export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
   ({ content, onChange, placeholder }, ref) => {
-    const segmentsRef = useRef<Segment[]>(parseContent(content));
-    const activeTextIndex = useRef<number>(0);
+    const [segments, setSegments] = useState<Segment[]>(() => parseContent(content));
+    const lastEmittedRef = useRef(content);
+    const activeTextareaRef = useRef<HTMLTextAreaElement>(null);
+    const textareaRefsMap = useRef<Map<number, React.RefObject<HTMLTextAreaElement>>>(new Map());
 
-    // Re-parse when content changes externally
+    // Only re-parse when content changes externally
     useEffect(() => {
-      segmentsRef.current = parseContent(content);
+      if (content !== lastEmittedRef.current) {
+        setSegments(parseContent(content));
+        lastEmittedRef.current = content;
+      }
     }, [content]);
 
-    const segments = parseContent(content);
+    const getOrCreateRef = (index: number) => {
+      if (!textareaRefsMap.current.has(index)) {
+        textareaRefsMap.current.set(index, { current: null } as React.RefObject<HTMLTextAreaElement>);
+      }
+      return textareaRefsMap.current.get(index)!;
+    };
 
     useImperativeHandle(ref, () => ({
       insertAtCursor: (text: string) => {
-        // Insert at the last active text segment
-        const segs = [...segmentsRef.current];
-        const idx = activeTextIndex.current;
-        const textSegs = segs.filter((s) => s.type === "text");
-        if (textSegs.length > 0) {
-          const targetIdx = Math.min(idx, textSegs.length - 1);
-          let count = 0;
-          for (let i = 0; i < segs.length; i++) {
-            if (segs[i].type === "text") {
-              if (count === targetIdx) {
-                (segs[i] as { type: "text"; value: string }).value += text;
-                break;
-              }
-              count++;
+        setSegments((prev) => {
+          const segs = [...prev];
+          // Find the active textarea's segment index
+          let targetIdx = -1;
+          for (const [idx, taRef] of textareaRefsMap.current.entries()) {
+            if (taRef.current === activeTextareaRef.current) {
+              targetIdx = idx;
+              break;
             }
           }
-        }
-        segmentsRef.current = segs;
-        onChange(reassemble(segs));
+          // Fallback: last text segment
+          if (targetIdx === -1 || segs[targetIdx]?.type !== "text") {
+            for (let i = segs.length - 1; i >= 0; i--) {
+              if (segs[i].type === "text") { targetIdx = i; break; }
+            }
+          }
+          if (targetIdx >= 0 && segs[targetIdx].type === "text") {
+            (segs[targetIdx] as { type: "text"; value: string }).value += text;
+          }
+          const assembled = reassemble(segs);
+          lastEmittedRef.current = assembled;
+          onChange(assembled);
+          return segs;
+        });
       },
-      getValue: () => reassemble(segmentsRef.current),
+      getValue: () => reassemble(segments),
+      getActiveTextarea: () => activeTextareaRef.current,
     }));
 
-    const handleTextChange = (segIndex: number, newValue: string) => {
-      const newSegments = segments.map((seg, i) =>
-        i === segIndex ? { ...seg, value: newValue } : seg
-      ) as Segment[];
-      segmentsRef.current = newSegments;
+    const handleTextChange = useCallback((segIndex: number, newValue: string) => {
+      setSegments((prev) => {
+        const newSegments = prev.map((seg, i) =>
+          i === segIndex ? { ...seg, value: newValue } : seg
+        ) as Segment[];
+        const assembled = reassemble(newSegments);
+        lastEmittedRef.current = assembled;
+        onChange(assembled);
+        return newSegments;
+      });
+    }, [onChange]);
 
-      // Track which text segment is active
-      let textCount = 0;
-      for (let i = 0; i <= segIndex; i++) {
-        if (segments[i].type === "text") textCount++;
+    const handleRemoveImage = useCallback((segIndex: number) => {
+      setSegments((prev) => {
+        const newSegments = prev.filter((_, i) => i !== segIndex);
+        const assembled = reassemble(newSegments);
+        lastEmittedRef.current = assembled;
+        onChange(assembled);
+        return newSegments;
+      });
+    }, [onChange]);
+
+    const handleFocus = useCallback((segIndex: number) => {
+      const taRef = textareaRefsMap.current.get(segIndex);
+      if (taRef?.current) {
+        activeTextareaRef.current = taRef.current;
       }
-      activeTextIndex.current = textCount - 1;
-
-      onChange(reassemble(newSegments));
-    };
-
-    const handleRemoveImage = (segIndex: number) => {
-      const newSegments = segments.filter((_, i) => i !== segIndex);
-      segmentsRef.current = newSegments;
-      onChange(reassemble(newSegments));
-    };
+    }, []);
 
     return (
       <div className="w-full px-3 sm:px-8 py-4 sm:py-6 min-h-[400px]">
         {segments.map((seg, i) => {
           if (seg.type === "text") {
+            const taRef = getOrCreateRef(i);
             return (
               <AutoResizeTextarea
                 key={`text-${i}`}
                 value={seg.value}
                 onChange={(val) => handleTextChange(i, val)}
+                onFocus={() => handleFocus(i)}
+                textareaRef={taRef}
                 placeholder={i === 0 && segments.length <= 1 ? placeholder : undefined}
               />
             );
