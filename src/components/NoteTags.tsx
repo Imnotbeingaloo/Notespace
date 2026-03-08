@@ -89,7 +89,6 @@ export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsPr
           <Sparkles className="h-2.5 w-2.5" />
         )}
         Auto-tag
-        {!isPro && <Lock className="h-2 w-2 ml-0.5 opacity-50" />}
       </button>
     </div>
   );

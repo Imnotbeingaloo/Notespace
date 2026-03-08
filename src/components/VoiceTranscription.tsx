@@ -66,7 +66,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
         )}
       </AnimatePresence>
       {listening ? "Stop" : "Voice"}
-      {!isPro && !listening && <Lock className="h-2.5 w-2.5 ml-0.5 opacity-50" />}
     </button>
   );
 }
