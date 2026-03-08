@@ -9,7 +9,6 @@ interface VoiceTranscriptionProps {
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<any>(null);
-  const { isPro, requirePro } = useProGate();
 
   const isSupported = typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
 
