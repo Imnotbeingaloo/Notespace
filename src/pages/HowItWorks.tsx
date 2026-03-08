@@ -90,11 +90,11 @@ function StepReel() {
           const viewportWidth = viewportRef.current?.offsetWidth ?? 0;
           const dotStartX = dotX.get();
           await Promise.all([
-            animate(slideX, -viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
-            animate(dotX, dotStartX - viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+            animate(slideX, -viewportWidth, { duration: 0.35, ease: [0.16, 1, 0.3, 1] }),
+            animate(dotX, dotStartX - viewportWidth, { duration: 0.35, ease: [0.16, 1, 0.3, 1] }),
           ]);
           await nextFrame();
-          await animate(dotX, measureCircleX(3), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
+          await animate(dotX, measureCircleX(3), { duration: 0.12, ease: [0.16, 1, 0.3, 1] });
           await wait(900);
 
           if (cancelled.current) return;
@@ -154,8 +154,8 @@ function StepReel() {
           className="flex relative"
           style={{ x: slideX, width: "200%" }}
         >
-          {/* Continuous rail line behind all circles */}
-          <div className="absolute top-[18px] left-0 right-0 h-px bg-border z-0" />
+          {/* Continuous rail line connecting circles (starts at first circle center) */}
+          <div className="absolute top-[18px] h-px bg-border z-0" style={{ left: 'calc(100% / 12)', right: 0 }} />
 
           {steps.map((step, idx) => (
             <div key={step.title} className="w-[calc(100%/6)] px-3 md:px-8 flex-shrink-0">
