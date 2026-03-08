@@ -162,6 +162,59 @@ function StepReel() {
     </div>
   );
 }
+
+/* ─── Reveal Card ─── */
+function RevealCard({ uc, index }: { uc: typeof useCases[0]; index: number }) {
+  const [revealed, setRevealed] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      onClick={() => setRevealed(!revealed)}
+      className="relative rounded-2xl border border-border bg-card overflow-hidden cursor-pointer select-none group min-h-[220px]"
+    >
+      {/* Blurred state — emoji + "tap to reveal" */}
+      <motion.div
+        className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
+        animate={{ opacity: revealed ? 0 : 1, filter: revealed ? "blur(8px)" : "blur(0px)" }}
+        transition={{ duration: 0.4 }}
+        style={{ pointerEvents: revealed ? "none" : "auto" }}
+      >
+        <span className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{uc.emoji}</span>
+        <span className="font-serif text-base font-bold text-foreground mb-1">{uc.title}</span>
+        <span className="text-[10px] text-muted-foreground/60 font-mono tracking-wider uppercase mt-2">Tap to reveal</span>
+      </motion.div>
+
+      {/* Revealed state — full content */}
+      <motion.div
+        className="absolute inset-0 flex flex-col justify-between p-6 z-10"
+        animate={{ opacity: revealed ? 1 : 0, filter: revealed ? "blur(0px)" : "blur(6px)" }}
+        transition={{ duration: 0.4 }}
+        style={{ pointerEvents: revealed ? "auto" : "none" }}
+      >
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xl">{uc.emoji}</span>
+            <h3 className="font-serif text-sm font-bold text-foreground">{uc.title}</h3>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">{uc.description}</p>
+        </div>
+        <p className="text-[10px] text-primary font-medium font-mono mt-4">{uc.extra}</p>
+      </motion.div>
+
+      {/* Background glow on reveal */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5"
+        animate={{ opacity: revealed ? 1 : 0 }}
+        transition={{ duration: 0.4 }}
+      />
+    </motion.div>
+  );
+}
+
 /* ─── Page ─── */
 export default function HowItWorksPage() {
   const { user } = useAuth();
