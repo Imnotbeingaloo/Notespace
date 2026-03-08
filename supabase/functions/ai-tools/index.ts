@@ -66,6 +66,7 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const isStream = action !== "auto-tag";
+    const isAnalyze = action === "analyze";
 
     const userContent = action === "edit"
       ? `Note title: ${noteTitle || "Untitled"}\n\nNote content:\n${noteContent || "(empty note)"}\n\nEdit instruction: ${editInstruction}`
