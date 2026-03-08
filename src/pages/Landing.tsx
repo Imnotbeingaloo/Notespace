@@ -333,7 +333,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/50 rounded-t-[3rem] mt-8">
+      <footer className="border-t border-border bg-card/50 rounded-t-[3rem]">
         <div className="container mx-auto px-6 py-12 md:py-16">
           <div className="grid gap-8 md:grid-cols-4 mb-12">
             <div>
