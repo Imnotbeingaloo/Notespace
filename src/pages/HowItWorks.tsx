@@ -25,16 +25,16 @@ const useCases = [
 /* ─── Cinematic 3-at-a-time Filmstrip ─── */
 function StepReel() {
   const slideX = useMotionValue(0);
-  const dotX = useMotionValue(0); // pixel-based position
+  const dotX = useMotionValue(0);
   const cancelled = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
+  const [showDot, setShowDot] = useState(false);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const DOT_SIZE = 32;
 
-  // Measure center-x of a circle ref relative to viewport
   const measureCircleX = useCallback((idx: number): number => {
     const viewport = viewportRef.current;
     const circle = circleRefs.current[idx];
@@ -47,51 +47,58 @@ function StepReel() {
   useEffect(() => {
     cancelled.current = false;
 
-    // Small delay to let layout settle
     const startTimeout = setTimeout(() => {
       const run = async () => {
         while (!cancelled.current) {
           // Group 0: steps 0,1,2
           setGroup(0);
           setActiveStep(0);
+          setShowDot(false);
           await animate(slideX, 0, { duration: 0 });
-          // Wait a frame for layout
           await new Promise((r) => requestAnimationFrame(r));
           dotX.set(measureCircleX(0));
           await new Promise((r) => setTimeout(r, 1000));
 
           // 0 → 1
           if (cancelled.current) return;
+          setShowDot(true);
           setActiveStep(1);
           await animate(dotX, measureCircleX(1), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1000));
 
           // 1 → 2
           if (cancelled.current) return;
+          setShowDot(true);
           setActiveStep(2);
           await animate(dotX, measureCircleX(2), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1000));
 
           // Slide to group 1: steps 3,4,5
           if (cancelled.current) return;
           setGroup(1);
           setActiveStep(3);
-          await animate(slideX, -50, { duration: 0.6, ease: [0.16, 1, 0.3, 1] });
-          // After slide, measure step 3's new position
+          const viewportWidth = viewportRef.current?.offsetWidth ?? 0;
+          await animate(slideX, -viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] });
           await new Promise((r) => requestAnimationFrame(r));
           dotX.set(measureCircleX(3));
           await new Promise((r) => setTimeout(r, 1000));
 
           // 3 → 4
           if (cancelled.current) return;
+          setShowDot(true);
           setActiveStep(4);
           await animate(dotX, measureCircleX(4), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1000));
 
           // 4 → 5
           if (cancelled.current) return;
+          setShowDot(true);
           setActiveStep(5);
           await animate(dotX, measureCircleX(5), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+          setShowDot(false);
           await new Promise((r) => setTimeout(r, 1200));
 
           // Reset
@@ -111,14 +118,15 @@ function StepReel() {
   return (
     <div className="relative">
       <div ref={viewportRef} className="overflow-hidden relative">
-        {/* Sliding dot — no rotation */}
+        {/* Sliding dot — hidden when stationary on a circle */}
         <motion.div
-          className="absolute top-0 z-30 pointer-events-none"
+          className="absolute top-0 z-30 pointer-events-none transition-opacity duration-200"
           style={{
             x: dotX,
             width: DOT_SIZE,
             height: DOT_SIZE,
             marginLeft: -(DOT_SIZE / 2),
+            opacity: showDot ? 1 : 0,
           }}
         >
           <div
@@ -137,8 +145,8 @@ function StepReel() {
           style={{ x: slideX, width: "200%" }}
         >
           {steps.map((step, idx) => (
-            <div key={step.title} className="w-[calc(100%/6)] px-5 flex-shrink-0">
-              <div className="flex items-center gap-3 mb-5 relative">
+            <div key={step.title} className="w-[calc(100%/6)] px-8 flex-shrink-0">
+              <div className="flex items-center gap-3 mb-6 relative">
                 <motion.div
                   ref={(el) => { circleRefs.current[idx] = el; }}
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 flex-shrink-0"
@@ -156,8 +164,8 @@ function StepReel() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <step.icon className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-lg font-bold text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+              <h3 className="font-serif text-xl font-bold text-foreground mb-2">{step.title}</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">{step.description}</p>
             </div>
           ))}
         </motion.div>
