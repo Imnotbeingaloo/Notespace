@@ -251,7 +251,7 @@ export default function LandingPage() {
 
       {/* ── Features ── */}
       <section id="features" className="relative py-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.06] via-foreground/[0.09] to-foreground/[0.06] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <motion.div
             initial="show"
