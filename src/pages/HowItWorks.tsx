@@ -29,7 +29,7 @@ function StepReel() {
   const cancelled = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
-  const [showDot, setShowDot] = useState(false);
+  
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
