@@ -104,20 +104,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   };
 
   const handleRemoveTag = async (tagToRemove: string) => {
-    const updates: Promise<any>[] = [];
-    notebooks.forEach((nb) => {
-      nb.notes?.forEach((note) => {
+    for (const nb of notebooks) {
+      for (const note of (nb.notes || [])) {
         if (note.tags?.includes(tagToRemove)) {
           const newTags = note.tags.filter((t) => t !== tagToRemove);
-          updates.push(
-            supabase.from("notes").update({ tags: newTags }).eq("id", note.id).then(() => {})
-          );
+          await supabase.from("notes").update({ tags: newTags }).eq("id", note.id);
         }
-      });
-    });
-    await Promise.all(updates);
+      }
+    }
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
-    // Re-fetch to update local state
     window.location.reload();
   };
 
