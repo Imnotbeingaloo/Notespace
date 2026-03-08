@@ -174,6 +174,7 @@ export default function PricingPage() {
                 </React.Fragment>
               ))}
             </div>
+            </div>
           </motion.div>
         </div>
       </section>
