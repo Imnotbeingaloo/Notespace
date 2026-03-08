@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Plus, Eye, Edit3, Upload, MoreHorizontal } from "lucide-react";
+import { FileText, Clock, Plus, Eye, Edit3, Upload, MoreHorizontal, Layers, Cloud, Check, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -8,15 +8,133 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
 import { AIEditPanel } from "@/components/AIEditPanel";
-import { AIToolsPanel } from "@/components/AIToolsPanel";
 import { ExportButtons } from "@/components/ExportButtons";
 import { VoiceTranscription } from "@/components/VoiceTranscription";
 import { NoteTags } from "@/components/NoteTags";
 import { FileUpload } from "@/components/FileUpload";
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
+import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
+
+// Flashcards panel (inline, replaces AIToolsPanel)
+import { useState as useStateFC } from "react";
+import { X as XIcon } from "lucide-react";
+
+const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
+
+function FlashcardsButton() {
+  const { activeNote } = useNotebooks();
+  const [open, setOpen] = useState(false);
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const run = async () => {
+    if (!activeNote) return;
+    setOpen(true);
+    setResult("");
+    setError("");
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("Please sign in");
+      const resp = await fetch(AI_TOOLS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ action: "flashcards", noteTitle: activeNote.title, noteContent: activeNote.content }),
+      });
+      if (!resp.ok) {
+        const data = await resp.json().catch(() => ({}));
+        throw new Error(data.error || `Error ${resp.status}`);
+      }
+      const reader = resp.body?.getReader();
+      if (!reader) throw new Error("No stream");
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let text = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buffer.indexOf("\n")) !== -1) {
+          let line = buffer.slice(0, idx);
+          buffer = buffer.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") break;
+          try {
+            const parsed = JSON.parse(json);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) { text += content; setResult(text); }
+          } catch {}
+        }
+      }
+    } catch (e: any) {
+      setError(e.message || "Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!activeNote) return null;
+
+  return (
+    <>
+      <button
+        onClick={run}
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+        title="Generate Flashcards"
+      >
+        <Layers className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">Flashcards</span>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed right-0 top-0 h-full w-96 max-w-[90vw] bg-card border-l border-border shadow-xl z-50 flex flex-col"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <div className="flex items-center gap-2">
+                <Layers className="h-4 w-4 text-primary" />
+                <span className="font-sans font-bold text-foreground">AI Flashcards</span>
+              </div>
+              <button onClick={() => setOpen(false)} className="p-1 rounded hover:bg-muted transition-colors">
+                <XIcon className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
+              {loading && !result && (
+                <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Generating flashcards…
+                </div>
+              )}
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              {result && (
+                <div className="prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
 
 export function NoteEditor() {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
@@ -30,11 +148,14 @@ export function NoteEditor() {
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
     setPreview(false);
+    setSaveStatus("idle");
     if (activeNote) {
       supabase
         .from("notes")
@@ -47,7 +168,6 @@ export function NoteEditor() {
     }
   }, [activeNote?.id]);
 
-  // Close "more" menu on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
@@ -60,8 +180,12 @@ export function NoteEditor() {
     (field: "title" | "content", value: string) => {
       if (!activeNotebookId || !activeNote) return;
       clearTimeout(debounceRef.current);
-      debounceRef.current = setTimeout(() => {
-        updateNote(activeNotebookId, activeNote.id, { [field]: value });
+      setSaveStatus("saving");
+      debounceRef.current = setTimeout(async () => {
+        await updateNote(activeNotebookId, activeNote.id, { [field]: value });
+        setSaveStatus("saved");
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = setTimeout(() => setSaveStatus("idle"), 2000);
       }, 500);
     },
     [activeNotebookId, activeNote?.id, updateNote]
@@ -87,8 +211,6 @@ export function NoteEditor() {
   const handleToolbarChange = useCallback(
     (content: string) => {
       if (!activeNotebookId || !activeNote) return;
-      // Toolbar modifies the textarea value directly, so we need to
-      // update through the parent which will flow back to HybridEditor
       updateNote(activeNotebookId, activeNote.id, { content });
     },
     [activeNotebookId, activeNote?.id, updateNote]
@@ -118,6 +240,13 @@ export function NoteEditor() {
       updateNote(activeNotebookId, activeNote.id, { content: newContent });
     },
     [activeNotebookId, activeNote?.id, updateNote]
+  );
+
+  const handleSymbolInsert = useCallback(
+    (symbol: string) => {
+      hybridEditorRef.current?.insertAtCursor(symbol);
+    },
+    []
   );
 
   const handleDrop = useCallback(
@@ -161,24 +290,14 @@ export function NoteEditor() {
       }
 
       if (hasImages) {
-        toast({
-          title: "Image added",
-          description: "Switch to Preview mode to see it rendered.",
-        });
+        toast({ title: "Image added", description: "Switch to Preview mode to see it rendered." });
       }
     },
     [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote]
   );
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-  };
+  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setDragOver(true); };
+  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setDragOver(false); };
 
   if (!activeNotebook) {
     return (
@@ -266,12 +385,7 @@ export function NoteEditor() {
 
           {/* Tags row */}
           <div className="mt-2">
-            <NoteTags
-              tags={tags}
-              noteId={activeNote.id}
-              notebookId={activeNotebookId!}
-              onTagsUpdated={setTags}
-            />
+            <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
           </div>
 
           {/* Meta & actions row */}
@@ -282,15 +396,38 @@ export function NoteEditor() {
               <span className="sm:hidden">{new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(new Date(activeNote.updated_at))}</span>
             </span>
 
-            <div className="ml-auto flex items-center gap-1 sm:gap-2">
-              {/* Always visible: Download */}
-              <ExportButtons />
+            {/* Auto-save indicator */}
+            <AnimatePresence mode="wait">
+              {saveStatus !== "idle" && (
+                <motion.span
+                  key={saveStatus}
+                  initial={{ opacity: 0, x: -4 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -4 }}
+                  className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground"
+                >
+                  {saveStatus === "saving" ? (
+                    <>
+                      <Cloud className="h-3 w-3 animate-pulse" />
+                      <span>Saving…</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-3 w-3 text-green-500" />
+                      <span className="text-green-500">Saved</span>
+                    </>
+                  )}
+                </motion.span>
+              )}
+            </AnimatePresence>
 
-              {/* Desktop: show all tools inline with Preview next to Summarize */}
+            <div className="ml-auto flex items-center gap-1 sm:gap-2">
+              {/* Desktop: Ask AI | AI Edit | Flashcards | Symbols | Preview */}
               <div className="hidden md:flex items-center gap-1">
-                <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                <AIExplainPanel />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
-                <AIToolsPanel />
+                <FlashcardsButton />
+                <SymbolsPicker onInsert={handleSymbolInsert} />
                 <button
                   onClick={() => setPreview((p) => !p)}
                   className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
@@ -302,10 +439,9 @@ export function NoteEditor() {
                   {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                   {preview ? "Edit" : "Preview"}
                 </button>
-                <AIExplainPanel />
               </div>
 
-              {/* Mobile: "More" dropdown for tools */}
+              {/* Mobile: "More" dropdown */}
               <div className="md:hidden relative" ref={moreRef}>
                 <button
                   onClick={() => setMoreOpen((p) => !p)}
@@ -323,9 +459,11 @@ export function NoteEditor() {
                       className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1"
                       onClick={() => setMoreOpen(false)}
                     >
-                      <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                      <AIExplainPanel />
                       <AIEditPanel onApplyEdit={handleAIEdit} />
-                      <AIToolsPanel />
+                      <FlashcardsButton />
+                      <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                      <ExportButtons />
                       <button
                         onClick={() => setPreview((p) => !p)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 w-full ${
@@ -337,7 +475,6 @@ export function NoteEditor() {
                         {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                         {preview ? "Edit" : "Preview"}
                       </button>
-                      <AIExplainPanel />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -346,7 +483,7 @@ export function NoteEditor() {
           </div>
         </div>
 
-        {/* Toolbar - only in edit mode, wired to HybridEditor's active textarea */}
+        {/* Toolbar */}
         {!preview && (
           <div className="shrink-0">
             <MarkdownToolbar
@@ -368,21 +505,10 @@ export function NoteEditor() {
                 remarkPlugins={[remarkGfm]}
                 components={{
                   img: ({ src, alt }) => (
-                    <img
-                      src={src}
-                      alt={alt || ""}
-                      className="rounded-2xl border border-border shadow-md max-w-full h-auto my-4"
-                      loading="lazy"
-                    />
+                    <img src={src} alt={alt || ""} className="rounded-2xl border border-border shadow-md max-w-full h-auto my-4" loading="lazy" />
                   ),
                   input: ({ checked, ...props }) => (
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      readOnly
-                      className="mr-2 accent-primary rounded"
-                      {...props}
-                    />
+                    <input type="checkbox" checked={checked} readOnly className="mr-2 accent-primary rounded" {...props} />
                   ),
                 }}
               >
@@ -395,6 +521,7 @@ export function NoteEditor() {
               content={activeNote.content || ""}
               onChange={(content) => debouncedUpdate("content", content)}
               placeholder="Start writing in markdown... (drag & drop files here)"
+              onTogglePreview={() => setPreview((p) => !p)}
             />
           )}
         </div>
