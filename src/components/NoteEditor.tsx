@@ -383,3 +383,31 @@ export function NoteEditor() {
     </AnimatePresence>
   );
 }
+
+function InlineImagePreviews({ content }: { content: string }) {
+  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  const images: { alt: string; src: string }[] = [];
+  let match;
+  while ((match = imageRegex.exec(content)) !== null) {
+    images.push({ alt: match[1], src: match[2] });
+  }
+  if (images.length === 0) return null;
+
+  return (
+    <div className="px-3 sm:px-8 pb-3 flex flex-wrap gap-2">
+      {images.map((img, i) => (
+        <div key={i} className="relative group">
+          <img
+            src={img.src}
+            alt={img.alt}
+            className="h-20 w-auto rounded-lg border border-border shadow-sm object-cover"
+            loading="lazy"
+          />
+          <span className="absolute bottom-0 left-0 right-0 bg-background/80 text-[9px] text-muted-foreground px-1 py-0.5 rounded-b-lg truncate opacity-0 group-hover:opacity-100 transition-opacity">
+            {img.alt || "image"}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
