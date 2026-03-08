@@ -314,6 +314,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* ── CTA ── */}
       <section className="container mx-auto px-6 py-28">
         <motion.div
