@@ -258,7 +258,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                 >
                   {/* Notebook Item */}
                   <div
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-all duration-200 ${
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-[13px] transition-all duration-200 ${
                       activeNotebookId === nb.id
                         ? "bg-primary/10 text-foreground font-medium"
                         : "text-sidebar-foreground notebook-hover"
