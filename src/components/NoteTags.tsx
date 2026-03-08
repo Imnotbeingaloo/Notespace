@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tag, Loader2, Sparkles } from "lucide-react";
+import { Tag, Loader2, Sparkles, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
@@ -61,6 +61,12 @@ export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsPr
     }
   };
 
+  const removeTag = async (tagToRemove: string) => {
+    const newTags = tags.filter((t) => t !== tagToRemove);
+    await supabase.from("notes").update({ tags: newTags } as any).eq("id", noteId);
+    onTagsUpdated(newTags);
+  };
+
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
       <AnimatePresence>
@@ -70,10 +76,17 @@ export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsPr
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-full bg-primary/10 text-primary"
+            className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 text-[10px] font-medium rounded-full bg-primary/10 text-primary"
           >
             <Tag className="h-2.5 w-2.5" />
             {tag}
+            <button
+              onClick={() => removeTag(tag)}
+              className="ml-0.5 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive transition-colors"
+              title={`Remove #${tag}`}
+            >
+              <X className="h-2.5 w-2.5" />
+            </button>
           </motion.span>
         ))}
       </AnimatePresence>
