@@ -14,6 +14,7 @@ import { VoiceTranscription } from "@/components/VoiceTranscription";
 import { NoteTags } from "@/components/NoteTags";
 import { FileUpload } from "@/components/FileUpload";
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
+import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 
@@ -22,6 +23,7 @@ export function NoteEditor() {
   const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
+  const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [preview, setPreview] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -279,25 +281,25 @@ export function NoteEditor() {
             </span>
 
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
-              {/* Always visible: Download + Preview */}
+              {/* Always visible: Download */}
               <ExportButtons />
-              <button
-                onClick={() => setPreview((p) => !p)}
-                className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
-                  preview
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                {preview ? "Edit" : "Preview"}
-              </button>
 
-              {/* Desktop: show all tools inline */}
+              {/* Desktop: show all tools inline with Preview next to Summarize */}
               <div className="hidden md:flex items-center gap-1">
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
                 <AIToolsPanel />
+                <button
+                  onClick={() => setPreview((p) => !p)}
+                  className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
+                    preview
+                      ? "bg-primary/10 text-primary shadow-sm"
+                      : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  {preview ? "Edit" : "Preview"}
+                </button>
                 <AIExplainPanel />
               </div>
 
@@ -322,6 +324,17 @@ export function NoteEditor() {
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <AIEditPanel onApplyEdit={handleAIEdit} />
                       <AIToolsPanel />
+                      <button
+                        onClick={() => setPreview((p) => !p)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 w-full ${
+                          preview
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                        {preview ? "Edit" : "Preview"}
+                      </button>
                       <AIExplainPanel />
                     </motion.div>
                   )}
@@ -364,16 +377,12 @@ export function NoteEditor() {
               </ReactMarkdown>
             </div>
           ) : (
-            <>
-              <textarea
-                ref={contentRef}
-                defaultValue={activeNote.content}
-                onChange={(e) => debouncedUpdate("content", e.target.value)}
-                className="w-full h-full min-h-[400px] px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
-                placeholder="Start writing in markdown... (drag & drop files here)"
-              />
-              <InlineImagePreviews content={activeNote.content} />
-            </>
+            <HybridEditor
+              ref={hybridEditorRef}
+              content={activeNote.content || ""}
+              onChange={(content) => debouncedUpdate("content", content)}
+              placeholder="Start writing in markdown... (drag & drop files here)"
+            />
           )}
         </div>
 
@@ -382,33 +391,5 @@ export function NoteEditor() {
         </div>
       </motion.div>
     </AnimatePresence>
-  );
-}
-
-function InlineImagePreviews({ content }: { content: string }) {
-  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
-  const images: { alt: string; src: string }[] = [];
-  let match;
-  while ((match = imageRegex.exec(content)) !== null) {
-    images.push({ alt: match[1], src: match[2] });
-  }
-  if (images.length === 0) return null;
-
-  return (
-    <div className="px-3 sm:px-8 pb-3 flex flex-wrap gap-2">
-      {images.map((img, i) => (
-        <div key={i} className="relative group">
-          <img
-            src={img.src}
-            alt={img.alt}
-            className="h-20 w-auto rounded-lg border border-border shadow-sm object-cover"
-            loading="lazy"
-          />
-          <span className="absolute bottom-0 left-0 right-0 bg-background/80 text-[9px] text-muted-foreground px-1 py-0.5 rounded-b-lg truncate opacity-0 group-hover:opacity-100 transition-opacity">
-            {img.alt || "image"}
-          </span>
-        </div>
-      ))}
-    </div>
   );
 }
