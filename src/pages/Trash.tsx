@@ -53,9 +53,13 @@ function TrashPageContent() {
   const trashCount = trashedNotebooks.length + trashedNotes.length;
 
   const handleEmptyTrash = () => {
+    const parts: string[] = [];
+    if (trashedNotebooks.length > 0) parts.push(`${trashedNotebooks.length} notebook${trashedNotebooks.length !== 1 ? "s" : ""}`);
+    if (trashedNotes.length > 0) parts.push(`${trashedNotes.length} note${trashedNotes.length !== 1 ? "s" : ""}`);
+    const summary = parts.join(" and ");
     showConfirm(
       "Empty Trash?",
-      `All ${trashCount} item${trashCount !== 1 ? "s" : ""} will be permanently deleted. This cannot be undone.`,
+      `${summary} will be permanently deleted. This cannot be undone.`,
       async () => {
         for (const nb of trashedNotebooks) {
           await permanentlyDeleteNotebook(nb.id);

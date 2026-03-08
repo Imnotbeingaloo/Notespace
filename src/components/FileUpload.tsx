@@ -118,15 +118,16 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
   };
 
   return (
-    <div className="flex items-center gap-2 px-2 py-0">
+    <div className="flex items-center gap-2 px-3 py-2">
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-        title={uploading ? "Uploading..." : "Add to note"}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 text-xs"
+        title={uploading ? "Uploading..." : "Attach files or drag & drop"}
       >
         {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />}
+        <span>{uploading ? "Uploading..." : "Attach files or drag & drop"}</span>
       </button>
       <input ref={inputRef} type="file" multiple className="hidden" onChange={handleUpload} />
 
