@@ -148,6 +148,8 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Timeline */}
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-3xl">
