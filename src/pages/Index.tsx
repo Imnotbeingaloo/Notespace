@@ -68,7 +68,7 @@ const AppPage = () => {
             </button>
           )}
           <div className="flex-1 flex min-h-0">
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 flex flex-col">
               <NoteEditor />
             </div>
             {/* Study Planner panel */}
