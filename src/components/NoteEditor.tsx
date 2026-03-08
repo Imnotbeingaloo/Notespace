@@ -384,8 +384,6 @@ function FlashcardsButton() {
     </>
   );
 }
-  );
-}
 
 function PreviewButton() {
   const { activeNote } = useNotebooks();
