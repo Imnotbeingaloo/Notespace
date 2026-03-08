@@ -152,7 +152,7 @@ export default function PricingPage() {
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Compare plans in detail</h2>
             <p className="text-muted-foreground max-w-lg mx-auto">See exactly what's included in each plan. Every tier builds on the last, so you never lose features when you upgrade.</p>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-[2rem] border border-border bg-card overflow-hidden mt-10">
+          <motion.div initial={{ opacity: 0, y: 30, scale: 0.98 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="rounded-[2rem] border border-border bg-card overflow-hidden mt-10">
             <div className="grid grid-cols-4 gap-0 text-sm">
               <div className="p-4 font-medium text-muted-foreground border-b border-border">Feature</div>
               <div className="p-4 font-semibold text-foreground text-center border-b border-border">Free</div>

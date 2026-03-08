@@ -62,13 +62,13 @@ export default function AboutPage() {
       {/* Mission Statement */}
       <section className="py-20">
         <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 gap-12 items-center"
-          >
-            <div>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30, y: 20 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                 <Target className="h-6 w-6 text-primary" />
               </div>
@@ -79,8 +79,13 @@ export default function AboutPage() {
               <p className="text-muted-foreground leading-relaxed">
                 Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world. One that helps you not just store information, but truly learn from it.
               </p>
-            </div>
-            <div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 30, y: 20 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
               <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                 <Layers className="h-6 w-6 text-accent" />
               </div>
@@ -91,8 +96,8 @@ export default function AboutPage() {
               <p className="text-muted-foreground leading-relaxed">
                 We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers who shape the product's direction.
               </p>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

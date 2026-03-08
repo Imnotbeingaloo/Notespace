@@ -116,38 +116,20 @@ function StepReel() {
           await moveToStep(5);
           await wait(1100);
 
-          // ── Reverse: travel back from 5 → 3 ──
-          if (cancelled.current) return;
-          await moveToStep(4, 0.5);
-          await wait(300);
-          if (cancelled.current) return;
-          await moveToStep(3, 0.5);
-          await wait(300);
-
-          // ── Slide back to Group 0 ──
+          // ── Fast return: slide back to group 0 and land on step 0 in 0.5s ──
           if (cancelled.current) return;
           setGroup(0);
-          setActiveStep(2);
+          setActiveStep(0);
           const dotPos = dotX.get();
           await Promise.all([
-            animate(slideX, 0, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
-            animate(dotX, dotPos + viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+            animate(slideX, 0, { duration: 0.5, ease: [0.16, 1, 0.3, 1] }),
+            animate(dotX, dotPos + viewportWidth, { duration: 0.5, ease: [0.16, 1, 0.3, 1] }),
           ]);
           await nextFrame();
-          // Snap to step 2
-          await animate(dotX, measureCircleX(2), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
+          // Snap dot to step 0 with arrival pulse
+          await animate(dotX, measureCircleX(0), { duration: 0.15, ease: [0.16, 1, 0.3, 1] });
           await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
           await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
-          await wait(300);
-
-          // 2 → 1
-          if (cancelled.current) return;
-          await moveToStep(1, 0.5);
-          await wait(300);
-
-          // 1 → 0
-          if (cancelled.current) return;
-          await moveToStep(0, 0.5);
           await wait(600);
         }
       };
