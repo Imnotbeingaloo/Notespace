@@ -33,7 +33,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [showAdd, setShowAdd] = useState(false);
-
+  const [notebookPickerOpen, setNotebookPickerOpen] = useState(false);
   // New plan form
   const [newTitle, setNewTitle] = useState("");
   const [newTime, setNewTime] = useState("");
