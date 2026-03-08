@@ -153,7 +153,7 @@ function StepReel() {
                   animate={{
                     backgroundColor: activeStep === idx ? "hsl(var(--primary))" : "hsl(var(--muted))",
                     color: activeStep === idx ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
-                    scale: activeStep === idx ? 1.15 : 1,
+                    boxShadow: activeStep === idx ? "0 0 0 3px hsl(var(--primary) / 0.3)" : "0 0 0 0px transparent",
                   }}
                   transition={{ duration: 0.3 }}
                 >
