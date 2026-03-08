@@ -231,7 +231,7 @@ export default function LandingPage() {
       {/* ── Features ── */}
       <section id="features" className="relative py-24">
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+        <div className="container mx-auto px-6 relative">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
             Everything you need to take{" "}<span className="text-primary">better notes</span>
           </h2>
