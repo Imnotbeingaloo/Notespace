@@ -199,18 +199,18 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
           </div>
 
           {/* Actions */}
-          <div className="flex gap-1 mb-2">
+          <div className="flex flex-col gap-0.5 mb-2">
             <button
               onClick={() => sidebarUploadRef.current?.click()}
               disabled={sidebarUploading}
-              className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
               <Upload className="h-3.5 w-3.5" />
               {sidebarUploading ? "..." : "Upload"}
             </button>
             <button
               onClick={() => setShowNewNotebook(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
               <Plus className="h-3.5 w-3.5" />
               New Notebook
