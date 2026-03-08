@@ -96,7 +96,7 @@ function PhilosophySection() {
   );
 }
 
-
+export default function AboutPage() {
   const { user } = useAuth();
 
   return (
