@@ -116,7 +116,6 @@ function StepReel() {
           ]);
           await nextFrame();
           await animate(dotX, measureCircleX(0), { duration: 0.15, ease: [0.16, 1, 0.3, 1] });
-          await snapPulse();
           await wait(600);
         }
       };
