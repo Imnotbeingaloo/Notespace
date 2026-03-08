@@ -175,6 +175,8 @@ export default function PricingPage() {
         </div>
       </section>
 
+      <AnimatedDivider />
+
       {/* FAQ */}
       <section className="py-28">
         <div className="container mx-auto px-6 max-w-3xl">
