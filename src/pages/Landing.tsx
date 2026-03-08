@@ -119,25 +119,48 @@ export default function LandingPage() {
       <section className="relative overflow-hidden pt-28 pb-16">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-transparent to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6"
+          >
+            <motion.span
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+            >
               <Sparkles className="h-3.5 w-3.5 text-accent" />
-              AI-Powered Note Taking
-            </div>
-            <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
-              Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-accent">understood</span>
-            </h1>
-            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Notebook Archive is the intelligent note-taking app that helps you capture ideas, organize knowledge, and get AI-powered insights — all in one beautiful workspace.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-                {user ? "Open App" : "Start for Free"} <ArrowRight className="h-5 w-5" />
-              </Link>
-              <a href="#features" className="magnetic-btn inline-flex items-center gap-2 rounded-2xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors">
-                See Features
-              </a>
-            </div>
+            </motion.span>
+            AI-Powered Note Taking
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto"
+          >
+            Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-accent">understood</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+          >
+            Notebook Archive is the intelligent note-taking app that helps you capture ideas, organize knowledge, and get AI-powered insights — all in one beautiful workspace.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+              {user ? "Open App" : "Start for Free"} <ArrowRight className="h-5 w-5" />
+            </Link>
+            <a href="#features" className="magnetic-btn inline-flex items-center gap-2 rounded-2xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors">
+              See Features
+            </a>
           </motion.div>
         </div>
       </section>
@@ -229,11 +252,23 @@ export default function LandingPage() {
       <section id="features" className="relative py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-            <ShufflerCard />
-            <TypewriterCard />
-            <SchedulerCard />
-          </div>
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto"
+          >
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
+              <ShufflerCard />
+            </motion.div>
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
+              <TypewriterCard />
+            </motion.div>
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
+              <SchedulerCard />
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -264,7 +299,15 @@ export default function LandingPage() {
                 transition={{ delay: i * 0.15, duration: 0.5 }}
                 className="text-center"
               >
-                <span className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4">{item.step}</span>
+                <motion.span
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+                  className="inline-block font-mono text-4xl font-bold text-primary/20 mb-4"
+                >
+                  {item.step}
+                </motion.span>
                 <h3 className="font-serif text-lg font-bold text-foreground mb-3">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
@@ -349,17 +392,29 @@ export default function LandingPage() {
             className="grid gap-10 md:grid-cols-4 mb-16"
           >
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
-              <div className="flex items-center gap-2 mb-4">
+              <motion.div
+                className="flex items-center gap-2 mb-4"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+              >
                 <BookOpen className="h-6 w-6 text-primary" />
                 <span className="font-serif text-xl font-bold text-foreground">Notebook Archive</span>
-              </div>
+              </motion.div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 The intelligent note-taking app that helps you capture, organize, and truly understand your ideas. Built for thinkers who demand more from their tools.
               </p>
-              <div className="flex items-center gap-2">
+              <motion.div
+                className="flex items-center gap-2"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                 <span className="text-xs font-mono text-muted-foreground">All Systems Operational</span>
-              </div>
+              </motion.div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
