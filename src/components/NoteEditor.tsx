@@ -7,6 +7,7 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
+import { AIEditPanel } from "@/components/AIEditPanel";
 import { AIToolsPanel } from "@/components/AIToolsPanel";
 import { ExportButtons } from "@/components/ExportButtons";
 import { VoiceTranscription } from "@/components/VoiceTranscription";
