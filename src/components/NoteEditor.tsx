@@ -328,7 +328,7 @@ function FlashcardsButton() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed right-0 top-0 h-full w-[420px] max-w-[95vw] bg-card border-l border-border shadow-2xl z-50 flex flex-col"
+            className="fixed right-0 top-0 h-full w-[520px] max-w-[95vw] bg-card border-l border-border shadow-2xl z-50 flex flex-col"
           >
             <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
