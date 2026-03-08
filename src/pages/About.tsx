@@ -80,10 +80,9 @@ function PhilosophySection() {
       setPhase("old");
       setBlurry(false);
       setProgress(0);
-      const t1 = setTimeout(() => setPhase("transition"), OLD_END);
-      const t1b = setTimeout(() => setBlurry(true), OLD_END + 350);
+      const t1 = setTimeout(() => { setPhase("transition"); setBlurry(true); }, OLD_END);
       const t2 = setTimeout(() => setPhase("new"), TRANS_END);
-      return [t1, t1b, t2];
+      return [t1, t2];
     };
 
     let timers = cycle();
