@@ -11,6 +11,7 @@ import AuthPage from "./pages/Auth";
 import PricingPage from "./pages/Pricing";
 import AboutPage from "./pages/About";
 import HowItWorksPage from "./pages/HowItWorks";
+import TrashPage from "./pages/Trash";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
+              <Route path="/trash" element={<TrashPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

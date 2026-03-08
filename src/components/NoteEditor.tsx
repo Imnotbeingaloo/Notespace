@@ -411,7 +411,7 @@ export function NoteEditor() {
 
   if (!activeNotebook) {
     return (
-      <div className="flex-1 flex items-center justify-center editor-surface">
+      <div className="flex-1 flex flex-col items-center pt-[15vh] editor-surface">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
           <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-6">
             <FileText className="h-9 w-9 text-muted-foreground" />
@@ -425,7 +425,7 @@ export function NoteEditor() {
 
   if (!activeNote) {
     return (
-      <div className="flex-1 flex items-center justify-center editor-surface">
+      <div className="flex-1 flex flex-col items-center pt-[15vh] editor-surface">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
           <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-3">
             <span className="text-4xl">{activeNotebook.emoji}</span>
