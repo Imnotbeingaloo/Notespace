@@ -685,10 +685,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
 
           {/* Study Schedule */}
           <div>
-              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 mt-2 flex items-center gap-1.5">
-                <CalendarDays className="h-3 w-3" />
-                Study Schedule
-              </p>
+            <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 mt-2 flex items-center gap-1.5">
+              <CalendarDays className="h-3 w-3" />
+              Study Schedule
+            </p>
+            {upcomingPlans.length > 0 ? (
               <div className="space-y-1 px-1">
                 {upcomingPlans.map((plan) => {
                   const today = isToday(new Date(plan.scheduled_date + "T00:00:00"));
@@ -702,11 +703,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                     >
                       <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)} ${today ? "animate-pulse" : ""}`} />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1">
-                          {today && (
-                            <span className="text-[9px] font-bold uppercase text-primary mr-1">📚 Study time</span>
-                          )}
-                        </div>
+                        {today && (
+                          <span className="text-[9px] font-bold uppercase text-primary">📚 Study time</span>
+                        )}
                         <span className="text-foreground truncate block font-medium">{plan.title}</span>
                         <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                           <span>{getDayLabel(plan.scheduled_date)}</span>
@@ -722,9 +721,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                   );
                 })}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-[11px] text-muted-foreground px-2">No upcoming sessions. Open the Study Planner to add one!</p>
+            )}
+          </div>
         </div>
+      )}
       )}
 
       {/* Footer */}
