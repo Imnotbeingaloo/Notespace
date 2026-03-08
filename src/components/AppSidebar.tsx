@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { format, isToday, isTomorrow, addDays, isSameDay } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
@@ -55,6 +56,53 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [editEmoji, setEditEmoji] = useState("");
   const [quickNote, setQuickNote] = useState("");
 
+  // Smart Tags - collect all unique tags from all notes
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    notebooks.forEach((nb) => {
+      nb.notes?.forEach((note: any) => {
+        if (note.tags && Array.isArray(note.tags)) {
+          note.tags.forEach((t: string) => tagSet.add(t));
+        }
+      });
+    });
+    return Array.from(tagSet).sort();
+  }, [notebooks]);
+
+  // Study plans - fetch upcoming
+  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; completed: boolean }[]>([]);
+  useEffect(() => {
+    if (!user) return;
+    const fetchPlans = async () => {
+      const today = format(new Date(), "yyyy-MM-dd");
+      const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
+      const { data } = await supabase
+        .from("study_plans" as any)
+        .select("id, title, scheduled_date, completed")
+        .eq("user_id", user.id)
+        .eq("completed", false)
+        .gte("scheduled_date", today)
+        .lte("scheduled_date", threeDaysOut)
+        .order("scheduled_date", { ascending: true })
+        .limit(5);
+      setUpcomingPlans((data as any) ?? []);
+    };
+    fetchPlans();
+  }, [user]);
+
+  const getDayLabel = (dateStr: string) => {
+    const d = new Date(dateStr + "T00:00:00");
+    if (isToday(d)) return "Today";
+    if (isTomorrow(d)) return "Tomorrow";
+    return format(d, "EEE");
+  };
+
+  const getDayColor = (dateStr: string) => {
+    const d = new Date(dateStr + "T00:00:00");
+    if (isToday(d)) return "bg-primary";
+    if (isTomorrow(d)) return "bg-amber-500";
+    return "bg-muted-foreground/40";
+  };
 
   const [dragNoteId, setDragNoteId] = useState<string | null>(null);
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
@@ -450,6 +498,53 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
               {nb.emoji}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Smart Tags & Study Planner - above footer */}
+      {!collapsed && (
+        <div className="px-2 space-y-3 mb-2">
+          {/* Smart Tags */}
+          {allTags.length > 0 && (
+            <div>
+              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 flex items-center gap-1.5">
+                <Tag className="h-3 w-3" />
+                Smart Tags
+              </p>
+              <div className="flex flex-wrap gap-1.5 px-1">
+                {allTags.slice(0, 12).map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors cursor-default"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+                {allTags.length > 12 && (
+                  <span className="text-[10px] text-muted-foreground px-1">+{allTags.length - 12} more</span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Study Planner Summary */}
+          {upcomingPlans.length > 0 && (
+            <div>
+              <p className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground font-semibold px-2 mb-2 flex items-center gap-1.5">
+                <CalendarDays className="h-3 w-3" />
+                Study Planner
+              </p>
+              <div className="space-y-1 px-1">
+                {upcomingPlans.map((plan) => (
+                  <div key={plan.id} className="flex items-center gap-2 py-1 px-1.5 rounded-lg text-xs">
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)}`} />
+                    <span className="text-muted-foreground font-medium min-w-[52px]">{getDayLabel(plan.scheduled_date)}:</span>
+                    <span className="text-foreground truncate">{plan.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
