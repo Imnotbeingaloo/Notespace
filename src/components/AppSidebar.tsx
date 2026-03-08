@@ -126,7 +126,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
       const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
       const { data } = await supabase
         .from("study_plans" as any)
-        .select("id, title, scheduled_date, completed")
+        .select("id, title, scheduled_date, scheduled_time, completed")
         .eq("user_id", user.id)
         .eq("completed", false)
         .gte("scheduled_date", today)
