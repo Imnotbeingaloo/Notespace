@@ -129,7 +129,7 @@ export default function LandingPage() {
               <Sparkles className="h-3.5 w-3.5 text-accent" />
               AI-Powered Note Taking
             </div>
-            <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+            <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
               Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-accent">understood</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
