@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const inputSchema = z.object({
-  action: z.enum(["summarize", "flashcards", "auto-tag", "edit"]),
+  action: z.enum(["summarize", "flashcards", "auto-tag", "edit", "analyze"]),
   noteTitle: z.string().max(500).optional().default(""),
   noteContent: z.string().max(50000).optional().default(""),
   editInstruction: z.string().max(2000).optional().default(""),
