@@ -105,6 +105,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       notes: (nts ?? []).filter((n: any) => n.notebook_id === nb.id).map((n: any) => ({
         ...n,
         attachments: (n.attachments as Attachment[]) || [],
+        tags: (n.tags as string[]) || [],
       })),
     }));
 
