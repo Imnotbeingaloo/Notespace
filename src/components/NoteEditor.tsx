@@ -315,10 +315,11 @@ function FlashcardsButton() {
     <>
       <button
         onClick={run}
-        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
         title="Generate Flashcards"
       >
-        <Layers className="h-4 w-4" />
+        <Layers className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">Flashcards</span>
       </button>
       <AnimatePresence>
         {open && (
