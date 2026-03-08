@@ -251,3 +251,11 @@ function TrashPageContent() {
     </div>
   );
 }
+
+export default function TrashPage() {
+  return (
+    <NotebookProvider>
+      <TrashPageContent />
+    </NotebookProvider>
+  );
+}
