@@ -43,6 +43,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     restoreNote,
     permanentlyDeleteNotebook,
     permanentlyDeleteNote,
+    refreshData,
   } = useNotebooks();
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
@@ -113,11 +114,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
       }
     }
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
-    window.location.reload();
+    await refreshData();
   };
 
   // Study plans - fetch upcoming
-  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; completed: boolean }[]>([]);
+  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; scheduled_time: string | null; completed: boolean }[]>([]);
   useEffect(() => {
     if (!user) return;
     const fetchPlans = async () => {
@@ -125,7 +126,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
       const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
       const { data } = await supabase
         .from("study_plans" as any)
-        .select("id, title, scheduled_date, completed")
+        .select("id, title, scheduled_date, scheduled_time, completed")
         .eq("user_id", user.id)
         .eq("completed", false)
         .gte("scheduled_date", today)
@@ -681,10 +682,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
               </p>
               <div className="space-y-1 px-1">
                 {upcomingPlans.map((plan) => (
-                  <div key={plan.id} className="flex items-center gap-2 py-1 px-1.5 rounded-lg text-xs">
+                  <div key={plan.id} className="flex items-center gap-2 py-1.5 px-1.5 rounded-lg text-xs">
                     <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)}`} />
-                    <span className="text-muted-foreground font-medium min-w-[52px]">{getDayLabel(plan.scheduled_date)}:</span>
-                    <span className="text-foreground truncate">{plan.title}</span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-foreground truncate block">{plan.title}</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {getDayLabel(plan.scheduled_date)}
+                        {plan.scheduled_time ? ` · ${plan.scheduled_time.slice(0, 5)}` : ""}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

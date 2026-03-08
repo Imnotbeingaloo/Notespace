@@ -44,7 +44,7 @@ interface NotebookContextType {
   updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<void>;
   createNote: (notebookId: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
-  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => Promise<void>;
+  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
   restoreNotebook: (id: string) => Promise<void>;
   restoreNote: (notebookId: string, noteId: string) => Promise<void>;
@@ -53,6 +53,7 @@ interface NotebookContextType {
   activeNotebook: Notebook | null;
   activeNote: Note | null;
   loading: boolean;
+  refreshData: () => Promise<void>;
 }
 
 const NotebookContext = createContext<NotebookContextType | null>(null);
@@ -241,7 +242,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [activeNoteId, allNotebooks]);
 
   const updateNote = useCallback(
-    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments">>) => {
+    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => {
       await supabase.from("notes").update(updates as any).eq("id", noteId);
       setAllNotebooks((prev) =>
         prev.map((nb) =>
@@ -313,7 +314,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
         reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,
-        activeNotebook, activeNote, loading,
+        activeNotebook, activeNote, loading, refreshData: fetchData,
       }}
     >
       {children}

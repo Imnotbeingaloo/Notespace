@@ -36,8 +36,9 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
   // New plan form
   const [newTitle, setNewTitle] = useState("");
   const [newTime, setNewTime] = useState("");
-  const [newNotebook, setNewNotebook] = useState("");
+  const [selectedNotebooks, setSelectedNotebooks] = useState<string[]>([]);
   const [newRemind, setNewRemind] = useState(false);
+  const [showNotebookPicker, setShowNotebookPicker] = useState(false);
 
   const fetchPlans = useCallback(async () => {
     if (!user) return;
@@ -99,26 +100,33 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
 
   const addPlan = async () => {
     if (!user || !newTitle.trim()) return;
-    const { data } = await supabase
-      .from("study_plans" as any)
-      .insert({
-        user_id: user.id,
-        title: newTitle.trim(),
-        scheduled_date: selectedDateStr,
-        scheduled_time: newTime || null,
-        notebook_id: newNotebook || null,
-        remind_via_email: newRemind,
-      } as any)
-      .select()
-      .single();
-    if (data) {
-      setPlans((prev) => [...prev, data as any as StudyPlan]);
+    // Create one plan per selected notebook, or one with no notebook
+    const notebookIds = selectedNotebooks.length > 0 ? selectedNotebooks : [null];
+    const newPlans: StudyPlan[] = [];
+    for (const nbId of notebookIds) {
+      const { data } = await supabase
+        .from("study_plans" as any)
+        .insert({
+          user_id: user.id,
+          title: newTitle.trim(),
+          scheduled_date: selectedDateStr,
+          scheduled_time: newTime || null,
+          notebook_id: nbId,
+          remind_via_email: newRemind,
+        } as any)
+        .select()
+        .single();
+      if (data) newPlans.push(data as any as StudyPlan);
+    }
+    if (newPlans.length > 0) {
+      setPlans((prev) => [...prev, ...newPlans]);
       setNewTitle("");
       setNewTime("");
-      setNewNotebook("");
+      setSelectedNotebooks([]);
       setNewRemind(false);
       setShowAdd(false);
-      toast.success("Study session added!");
+      setShowNotebookPicker(false);
+      toast.success(`Study session${newPlans.length > 1 ? "s" : ""} added!`);
     }
   };
 
@@ -264,26 +272,63 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
                 autoFocus
               />
               <div className="flex gap-2">
-                <Input
-                  type="time"
-                  value={newTime}
-                  onChange={(e) => setNewTime(e.target.value)}
-                  className="h-8 text-xs flex-1"
-                  placeholder="Time"
-                />
-                <select
-                  value={newNotebook}
-                  onChange={(e) => setNewNotebook(e.target.value)}
-                  className="h-8 text-xs rounded-md border border-border bg-background px-2 flex-1"
+                <div className="flex-1">
+                  <Input
+                    type="time"
+                    value={newTime}
+                    onChange={(e) => setNewTime(e.target.value)}
+                    className="h-8 text-xs"
+                    placeholder="Time (optional)"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowNotebookPicker((p) => !p)}
+                  className="h-8 text-xs rounded-md border border-border bg-background px-3 flex-1 text-left truncate flex items-center gap-1.5 hover:bg-muted transition-colors"
                 >
-                  <option value="">No notebook</option>
-                  {notebooks.map((nb) => (
-                    <option key={nb.id} value={nb.id}>
-                      {nb.emoji} {nb.name}
-                    </option>
-                  ))}
-                </select>
+                  <BookOpen className="h-3 w-3 shrink-0" />
+                  {selectedNotebooks.length === 0
+                    ? "Link notebook(s)"
+                    : `${selectedNotebooks.length} selected`}
+                </button>
               </div>
+
+              {/* Notebook checkboxes */}
+              <AnimatePresence>
+                {showNotebookPicker && notebooks.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="rounded-lg border border-border bg-muted/30 p-2 space-y-1 max-h-32 overflow-y-auto scrollbar-thin">
+                      {notebooks.map((nb) => {
+                        const checked = selectedNotebooks.includes(nb.id);
+                        return (
+                          <label
+                            key={nb.id}
+                            className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted cursor-pointer text-xs"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => {
+                                setSelectedNotebooks((prev) =>
+                                  checked ? prev.filter((id) => id !== nb.id) : [...prev, nb.id]
+                                );
+                              }}
+                              className="rounded border-border accent-primary h-3.5 w-3.5"
+                            />
+                            <span>{nb.emoji}</span>
+                            <span className="truncate text-foreground">{nb.name}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div className="flex items-center justify-between">
                 <button
                   onClick={() => setNewRemind(!newRemind)}
