@@ -38,12 +38,12 @@ export function ShufflerCard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
+      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col h-full"
     >
       <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
         <Brain className="h-5 w-5 text-primary" />
       </div>
-      <h3 className="font-serif text-lg font-bold text-foreground mb-2">AI-Powered Analysis</h3>
+      <h3 className="text-lg font-bold text-foreground mb-2">AI-Powered Analysis</h3>
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Automatically analyze, summarize, and extract insights from your notes.
       </p>
@@ -112,12 +112,12 @@ export function TypewriterCard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1 }}
-      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
+      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col h-full"
     >
       <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
         <ScanText className="h-5 w-5 text-accent" />
       </div>
-      <h3 className="font-serif text-lg font-bold text-foreground mb-2">Smart Tagging & Linking</h3>
+      <h3 className="text-lg font-bold text-foreground mb-2">Smart Tagging & Linking</h3>
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Real-time intelligence that tags, links, and organizes as you write.
       </p>
@@ -173,12 +173,12 @@ export function SchedulerCard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
+      className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col h-full"
     >
       <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
         <Mic className="h-5 w-5 text-primary" />
       </div>
-      <h3 className="font-serif text-lg font-bold text-foreground mb-2">Study Planner</h3>
+      <h3 className="text-lg font-bold text-foreground mb-2">Study Planner</h3>
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Plan your study sessions and track progress with smart scheduling.
       </p>

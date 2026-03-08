@@ -251,13 +251,13 @@ export default function LandingPage() {
 
       {/* ── Features ── */}
       <section id="features" className="relative py-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.06] via-foreground/[0.09] to-foreground/[0.06] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <motion.div
             initial="show"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto"
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto items-stretch"
           >
             <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
               <ShufflerCard />
