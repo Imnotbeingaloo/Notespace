@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useTransform, animate, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput } from "lucide-react";
 import { Link } from "react-router-dom";
 import AnimatedDivider from "@/components/AnimatedDivider";
@@ -22,81 +22,94 @@ const useCases = [
   { emoji: "💼", title: "Professionals", description: "Meeting notes, project briefs, and team knowledge — all searchable and AI-enhanced.", extra: "Integrates with your existing workflow tools" },
 ];
 
-/* ─── Cinematic Step Reel ─── */
+/* ─── Cinematic 3-at-a-time Filmstrip ─── */
 function StepReel() {
-  const progress = useMotionValue(0); // 0 to 5 (step index)
-  const [activeStep, setActiveStep] = useState(0);
+  const slideX = useMotionValue(0);
+  const dotProgress = useMotionValue(0); // 0 = group 1, 1 = group 2
   const cancelled = useRef(false);
+  const [group, setGroup] = useState(0);
 
   useEffect(() => {
     cancelled.current = false;
-
-    const runSequence = async () => {
+    const run = async () => {
       while (!cancelled.current) {
-        for (let i = 0; i < steps.length; i++) {
-          if (cancelled.current) return;
-          // Animate wheel to this step
-          await animate(progress, i, {
-            duration: i === 0 ? 0 : 0.8,
-            ease: [0.16, 1, 0.3, 1],
-            onUpdate: (v) => setActiveStep(Math.round(v)),
-          });
-          // Hold
-          await new Promise((r) => setTimeout(r, 2200));
-        }
-        // Reset back
-        await animate(progress, 0, { duration: 0 });
-        setActiveStep(0);
-        await new Promise((r) => setTimeout(r, 600));
+        // Show group 1 (steps 1-3)
+        setGroup(0);
+        await animate(slideX, 0, { duration: 0 });
+        await animate(dotProgress, 0, { duration: 0 });
+        await new Promise((r) => setTimeout(r, 1800));
+        if (cancelled.current) return;
+
+        // Slide to group 2 (steps 4-6)
+        setGroup(1);
+        animate(dotProgress, 1, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+        await animate(slideX, -50, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+        await new Promise((r) => setTimeout(r, 1800));
+        if (cancelled.current) return;
+
+        // Slide back to group 1
+        setGroup(0);
+        animate(dotProgress, 0, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+        await animate(slideX, 0, { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
+        await new Promise((r) => setTimeout(r, 400));
       }
     };
-    runSequence();
+    run();
     return () => { cancelled.current = true; };
   }, []);
 
-  // Wheel position along the track (0% to 100%)
-  const wheelLeft = useTransform(progress, [0, steps.length - 1], ["0%", "100%"]);
-  // Wheel rotation for a rolling effect
-  const wheelRotation = useTransform(progress, [0, steps.length - 1], [0, 720]);
+  const translateX = useTransform(slideX, (v) => `${v}%`);
+
+  // Dot travels between two positions on the track line
+  const dotLeft = useTransform(dotProgress, [0, 1], ["25%", "75%"]);
+  const dotRotation = useTransform(dotProgress, [0, 1], [0, 360]);
+
+  const DOT_SIZE = 22; // same as step circles
 
   return (
     <div className="relative">
-      {/* ── Track with rolling wheel ── */}
-      <div className="relative mb-16">
-        {/* Track line */}
-        <div className="h-px bg-border w-full" />
+      {/* ── Track line with dot indicators ── */}
+      <div className="relative mb-12 mx-auto max-w-xs">
+        {/* Line */}
+        <div className="h-px bg-border w-full absolute top-1/2 -translate-y-1/2" />
 
-        {/* Step tick marks + numbers */}
-        <div className="relative flex justify-between -mt-[11px]">
-          {steps.map((_, i) => {
-            const isActive = activeStep === i;
-            return (
-              <div key={i} className="flex flex-col items-center">
-                <motion.div
-                  className="w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center text-[9px] font-mono font-bold"
-                  animate={{
-                    borderColor: isActive ? "hsl(var(--primary))" : "hsl(var(--border))",
-                    backgroundColor: isActive ? "hsl(var(--primary))" : "transparent",
-                    color: isActive ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
-                    scale: isActive ? 1.3 : 1,
-                  }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {i + 1}
-                </motion.div>
-              </div>
-            );
-          })}
+        {/* Two group circles at fixed positions */}
+        <div className="relative flex justify-between items-center" style={{ height: DOT_SIZE }}>
+          {[0, 1].map((g) => (
+            <div key={g} className="flex-1 flex justify-center">
+              <motion.div
+                className="rounded-full border-2 flex items-center justify-center font-mono text-[9px] font-bold z-10"
+                style={{ width: DOT_SIZE, height: DOT_SIZE }}
+                animate={{
+                  borderColor: group === g ? "hsl(var(--primary))" : "hsl(var(--border))",
+                  backgroundColor: group === g ? "hsl(var(--primary))" : "hsl(var(--background))",
+                  color: group === g ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                {g === 0 ? "1–3" : "4–6"}
+              </motion.div>
+            </div>
+          ))}
         </div>
 
-        {/* Rolling wheel (travels along the track) */}
+        {/* Rolling dot */}
         <motion.div
-          className="absolute top-0 -translate-y-1/2 -ml-3 pointer-events-none"
-          style={{ left: wheelLeft }}
+          className="absolute top-1/2 z-20 pointer-events-none"
+          style={{
+            left: dotLeft,
+            width: DOT_SIZE,
+            height: DOT_SIZE,
+            marginLeft: -(DOT_SIZE / 2),
+            marginTop: -(DOT_SIZE / 2),
+          }}
         >
           <motion.div
-            className="w-6 h-6 rounded-full border-2 border-primary bg-background shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
-            style={{ rotate: wheelRotation }}
+            className="w-full h-full rounded-full border-2 border-primary bg-background"
+            style={{
+              rotate: dotRotation,
+              boxShadow: "0 0 10px hsl(var(--primary) / 0.35)",
+            }}
           >
             <div className="w-full h-full relative">
               <div className="absolute inset-0 flex items-center justify-center">
@@ -108,52 +121,47 @@ function StepReel() {
         </motion.div>
       </div>
 
-      {/* ── Active Step Content ── */}
-      <div className="min-h-[160px] flex items-start">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeStep}
-            initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -12, filter: "blur(4px)" }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full"
-          >
-            <div className="flex items-start gap-6 max-w-2xl mx-auto">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center flex-shrink-0">
-                {(() => { const Icon = steps[activeStep].icon; return <Icon className="h-6 w-6 text-primary" />; })()}
-              </div>
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">Step {activeStep + 1}</span>
-                  <div className="h-px w-8 bg-primary/20" />
+      {/* ── Filmstrip: 6 cards, show 3 at a time ── */}
+      <div className="overflow-hidden">
+        <motion.div
+          className="flex"
+          style={{ x: translateX, width: "200%" }}
+        >
+          {steps.map((step, idx) => (
+            <div key={step.title} className="w-[calc(100%/6)] px-4 flex-shrink-0">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+                  {idx + 1}
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-2">{steps[activeStep].title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed max-w-md">{steps[activeStep].description}</p>
+                <div className="flex-1 h-px bg-border" />
               </div>
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <step.icon className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-foreground mb-2">{step.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
             </div>
-          </motion.div>
-        </AnimatePresence>
+          ))}
+        </motion.div>
       </div>
 
-      {/* ── Tiny step pills at bottom ── */}
-      <div className="flex items-center justify-center gap-1.5 mt-12">
-        {steps.map((_, i) => (
+      {/* ── Bottom pills ── */}
+      <div className="flex items-center justify-center gap-2 mt-10">
+        {[0, 1].map((g) => (
           <motion.div
-            key={i}
-            className="h-1 rounded-full"
+            key={g}
+            className="h-1.5 rounded-full"
             animate={{
-              width: activeStep === i ? 24 : 6,
-              backgroundColor: activeStep === i ? "hsl(var(--primary))" : "hsl(var(--border))",
+              width: group === g ? 28 : 8,
+              backgroundColor: group === g ? "hsl(var(--primary))" : "hsl(var(--border))",
             }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.3 }}
           />
         ))}
       </div>
     </div>
   );
 }
-
 /* ─── Page ─── */
 export default function HowItWorksPage() {
   const { user } = useAuth();
