@@ -268,27 +268,11 @@ export default function LandingPage() {
       <section id="features" className="relative py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.02] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Everything you need to take{" "}<span className="text-primary">better notes</span>
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Powerful features that make Notebook Archive the perfect companion for students, researchers, and thinkers. We've combined the simplicity of a plain text editor with the intelligence of modern AI to create something that genuinely helps you learn.
-            </p>
-          </motion.div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-14">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
             <ShufflerCard />
             <TypewriterCard />
             <SchedulerCard />
           </div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center text-sm text-muted-foreground mt-10 max-w-lg mx-auto"
-          >
-            And much more — including instant search, file attachments, export to PDF & Markdown, version history, and collaborative shared notebooks.
-          </motion.p>
         </div>
       </section>
 
