@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Plus, Eye, Edit3, Upload } from "lucide-react";
+import { FileText, Clock, Plus, Eye, Edit3, Upload, MoreHorizontal } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -14,6 +14,7 @@ import { NoteTags } from "@/components/NoteTags";
 import { FileUpload } from "@/components/FileUpload";
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
+import { toast } from "@/hooks/use-toast";
 
 export function NoteEditor() {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
@@ -24,12 +25,13 @@ export function NoteEditor() {
   const [preview, setPreview] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
     setPreview(false);
-    // Fetch tags for this note
     if (activeNote) {
       supabase
         .from("notes")
@@ -41,6 +43,15 @@ export function NoteEditor() {
         });
     }
   }, [activeNote?.id]);
+
+  // Close "more" menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const debouncedUpdate = useCallback(
     (field: "title" | "content", value: string) => {
@@ -107,6 +118,7 @@ export function NoteEditor() {
       const currentAttachments = activeNote.attachments || [];
       const newAttachments = [...currentAttachments];
       let markdownInserts: string[] = [];
+      let hasImages = false;
 
       for (const file of files) {
         if (!validateFile(file)) continue;
@@ -118,6 +130,7 @@ export function NoteEditor() {
         newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
         if (file.type.startsWith("image/")) {
           markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
+          hasImages = true;
         }
       }
 
@@ -131,6 +144,13 @@ export function NoteEditor() {
 
       if (newContent && contentRef.current) {
         contentRef.current.value = newContent;
+      }
+
+      if (hasImages) {
+        toast({
+          title: "Image added",
+          description: "Switch to Preview mode to see it rendered.",
+        });
       }
     },
     [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote]
@@ -221,12 +241,12 @@ export function NoteEditor() {
         </AnimatePresence>
 
         {/* Title bar */}
-        <div className="px-4 sm:px-8 pt-4 sm:pt-6 pb-3">
+        <div className="px-3 sm:px-8 pt-3 sm:pt-6 pb-2 sm:pb-3">
           <input
             ref={titleRef}
             defaultValue={activeNote.title}
             onChange={(e) => debouncedUpdate("title", e.target.value)}
-            className="w-full text-2xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
+            className="w-full text-xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
             placeholder="Note title..."
           />
 
@@ -241,20 +261,19 @@ export function NoteEditor() {
           </div>
 
           {/* Meta & actions row */}
-          <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground flex-wrap">
-            <span className="flex items-center gap-1.5 bg-muted/50 px-2.5 py-1 rounded-full">
+          <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1 sm:gap-1.5 bg-muted/50 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs">
               <Clock className="h-3 w-3" />
-              {formatDate(activeNote.updated_at)}
+              <span className="hidden sm:inline">{formatDate(activeNote.updated_at)}</span>
+              <span className="sm:hidden">{new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(new Date(activeNote.updated_at))}</span>
             </span>
 
-            <div className="ml-auto flex items-center gap-2 flex-wrap">
-              <VoiceTranscription onTranscript={handleVoiceTranscript} />
+            <div className="ml-auto flex items-center gap-1 sm:gap-2">
+              {/* Always visible: Download + Preview */}
               <ExportButtons />
-              <AIToolsPanel />
-              <AIExplainPanel />
               <button
                 onClick={() => setPreview((p) => !p)}
-                className={`magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
+                className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
                   preview
                     ? "bg-primary/10 text-primary shadow-sm"
                     : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -263,6 +282,39 @@ export function NoteEditor() {
                 {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                 {preview ? "Edit" : "Preview"}
               </button>
+
+              {/* Desktop: show all tools inline */}
+              <div className="hidden md:flex items-center gap-1">
+                <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                <AIToolsPanel />
+                <AIExplainPanel />
+              </div>
+
+              {/* Mobile: "More" dropdown for tools */}
+              <div className="md:hidden relative" ref={moreRef}>
+                <button
+                  onClick={() => setMoreOpen((p) => !p)}
+                  className="magnetic-btn inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                >
+                  <MoreHorizontal className="h-3.5 w-3.5" />
+                </button>
+                <AnimatePresence>
+                  {moreOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1"
+                      onClick={() => setMoreOpen(false)}
+                    >
+                      <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                      <AIToolsPanel />
+                      <AIExplainPanel />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>
@@ -273,7 +325,7 @@ export function NoteEditor() {
         {/* Content area */}
         <div className="flex-1 overflow-y-auto">
           {preview ? (
-            <div className="px-4 sm:px-8 py-6 prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border">
+            <div className="px-3 sm:px-8 py-4 sm:py-6 prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -304,7 +356,7 @@ export function NoteEditor() {
               ref={contentRef}
               defaultValue={activeNote.content}
               onChange={(e) => debouncedUpdate("content", e.target.value)}
-              className="w-full h-full px-4 sm:px-8 py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-[15px] font-mono"
+              className="w-full h-full px-3 sm:px-8 py-4 sm:py-6 bg-transparent border-none outline-none resize-none text-foreground leading-relaxed placeholder:text-muted-foreground/40 text-sm sm:text-[15px] font-mono"
               placeholder="Start writing in markdown... (drag & drop files here)"
             />
           )}

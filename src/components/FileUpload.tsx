@@ -60,6 +60,13 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     // Insert image markdown into content
     if (markdownInserts.length > 0 && onInsertMarkdown) {
       onInsertMarkdown(markdownInserts.join("\n"));
+      toast({
+        title: "Image added",
+        description: "Switch to Preview mode to see it rendered.",
+      });
+    }
+
+    setUploading(false);
     }
 
     setUploading(false);
