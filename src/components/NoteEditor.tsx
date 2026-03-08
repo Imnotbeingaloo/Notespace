@@ -487,7 +487,7 @@ export function NoteEditor() {
         </div>
 
         {/* File upload at bottom */}
-        <div className="shrink-0 w-full max-w-4xl mx-auto px-4 sm:px-8 py-0 border-t border-border">
+        <div className="shrink-0 px-4 sm:px-8 py-0 border-t border-border">
           <FileUpload onInsertMarkdown={handleInsertMarkdown} />
         </div>
       </motion.div>
