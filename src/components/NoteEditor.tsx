@@ -7,6 +7,10 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
+import { AIToolsPanel } from "@/components/AIToolsPanel";
+import { ExportButtons } from "@/components/ExportButtons";
+import { VoiceTranscription } from "@/components/VoiceTranscription";
+import { NoteTags } from "@/components/NoteTags";
 import { FileUpload } from "@/components/FileUpload";
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
@@ -19,11 +23,23 @@ export function NoteEditor() {
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [preview, setPreview] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
     setPreview(false);
+    // Fetch tags for this note
+    if (activeNote) {
+      supabase
+        .from("notes")
+        .select("tags")
+        .eq("id", activeNote.id)
+        .single()
+        .then(({ data }) => {
+          setTags((data as any)?.tags || []);
+        });
+    }
   }, [activeNote?.id]);
 
   const debouncedUpdate = useCallback(
@@ -60,6 +76,23 @@ export function NoteEditor() {
       debouncedUpdate("content", content);
     },
     [activeNotebookId, activeNote?.id, debouncedUpdate]
+  );
+
+  const handleVoiceTranscript = useCallback(
+    (text: string) => {
+      if (!contentRef.current || !activeNotebookId || !activeNote) return;
+      const textarea = contentRef.current;
+      const pos = textarea.selectionStart;
+      const current = textarea.value;
+      const insert = (pos > 0 && current[pos - 1] !== " " ? " " : "") + text;
+      const newContent = current.substring(0, pos) + insert + current.substring(pos);
+      textarea.value = newContent;
+      const newPos = pos + insert.length;
+      textarea.setSelectionRange(newPos, newPos);
+      textarea.focus();
+      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+    },
+    [activeNotebookId, activeNote?.id, updateNote]
   );
 
   const handleDrop = useCallback(
@@ -120,7 +153,7 @@ export function NoteEditor() {
           <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-6">
             <FileText className="h-9 w-9 text-muted-foreground" />
           </div>
-          <h2 className="font-serif text-2xl text-foreground mb-3">No notebook selected</h2>
+          <h2 className="font-sans text-2xl font-bold text-foreground mb-3">No notebook selected</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">Select a notebook from the sidebar or create a new one to get started.</p>
         </motion.div>
       </div>
@@ -134,7 +167,7 @@ export function NoteEditor() {
           <div className="w-20 h-20 rounded-[2rem] bg-muted flex items-center justify-center mx-auto mb-6">
             <span className="text-4xl">{activeNotebook.emoji}</span>
           </div>
-          <h2 className="font-serif text-2xl text-foreground mb-3">{activeNotebook.name}</h2>
+          <h2 className="font-sans text-2xl font-bold text-foreground mb-3">{activeNotebook.name}</h2>
           <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
             {activeNotebook.notes.length === 0
               ? "This notebook is empty. Create your first note!"
@@ -196,12 +229,28 @@ export function NoteEditor() {
             className="w-full text-2xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
             placeholder="Note title..."
           />
-          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+
+          {/* Tags row */}
+          <div className="mt-2">
+            <NoteTags
+              tags={tags}
+              noteId={activeNote.id}
+              notebookId={activeNotebookId!}
+              onTagsUpdated={setTags}
+            />
+          </div>
+
+          {/* Meta & actions row */}
+          <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground flex-wrap">
             <span className="flex items-center gap-1.5 bg-muted/50 px-2.5 py-1 rounded-full">
               <Clock className="h-3 w-3" />
               {formatDate(activeNote.updated_at)}
             </span>
-            <div className="ml-auto flex items-center gap-2">
+
+            <div className="ml-auto flex items-center gap-2 flex-wrap">
+              <VoiceTranscription onTranscript={handleVoiceTranscript} />
+              <ExportButtons />
+              <AIToolsPanel />
               <AIExplainPanel />
               <button
                 onClick={() => setPreview((p) => !p)}
