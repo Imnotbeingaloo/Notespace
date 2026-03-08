@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight, Check, Sparkles, Zap, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -153,18 +154,18 @@ export default function PricingPage() {
               <div className="p-4 font-semibold text-primary text-center border-b border-border bg-primary/5">Pro</div>
               <div className="p-4 font-semibold text-foreground text-center border-b border-border">Team</div>
               {comparisons.map((row, i) => (
-                <>
-                  <div key={`f-${i}`} className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
-                  <div key={`free-${i}`} className="p-4 text-center border-b border-border/50">
+                <React.Fragment key={i}>
+                  <div className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
+                  <div className="p-4 text-center border-b border-border/50">
                     {row.free ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
                   </div>
-                  <div key={`pro-${i}`} className="p-4 text-center border-b border-border/50 bg-primary/5">
+                  <div className="p-4 text-center border-b border-border/50 bg-primary/5">
                     {row.pro ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
                   </div>
-                  <div key={`team-${i}`} className="p-4 text-center border-b border-border/50">
+                  <div className="p-4 text-center border-b border-border/50">
                     {row.team ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">—</span>}
                   </div>
-                </>
+                </React.Fragment>
               ))}
             </div>
           </motion.div>
