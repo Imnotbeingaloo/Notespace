@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { format, isToday, isTomorrow, addDays, isSameDay } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
