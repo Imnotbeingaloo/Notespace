@@ -520,6 +520,7 @@ export function NoteEditor() {
               },
             } as React.RefObject<HTMLDivElement>}
           />
+          <SymbolsPicker onInsert={handleSymbolInsert} />
         </div>
 
         {/* Content area */}
