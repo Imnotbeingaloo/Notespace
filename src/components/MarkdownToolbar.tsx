@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import {
   Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
-  Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare
+  Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare, Highlighter
 } from "lucide-react";
 
 interface MarkdownToolbarProps {
@@ -14,8 +14,8 @@ type FormatAction = {
   action: () => void;
 };
 
-// Group separators: after Strikethrough (idx 2), after H3 (idx 5), after Checklist (idx 8), after Code (idx 10)
-const separatorAfter = new Set([2, 5, 8, 10]);
+// Group separators: after Highlight (idx 3), after H3 (idx 6), after Checklist (idx 9), after Code (idx 11)
+const separatorAfter = new Set([3, 6, 9, 11]);
 
 function focusEditor(el: HTMLDivElement | null) {
   if (el) el.focus();
@@ -87,6 +87,7 @@ export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
     { icon: Bold, label: "Bold", action: () => exec("bold") },
     { icon: Italic, label: "Italic", action: () => exec("italic") },
     { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
+    { icon: Highlighter, label: "Highlight", action: () => exec("hiliteColor", "#fef08a") },
     { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "h1") },
     { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "h2") },
     { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "h3") },
@@ -101,7 +102,7 @@ export function MarkdownToolbar({ editorRef }: MarkdownToolbarProps) {
   ];
 
   return (
-    <div className="flex items-center gap-0.5 px-4 sm:px-8 py-2 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-0.5 px-4 sm:px-8 py-2 overflow-x-auto scrollbar-none">
       {actions.map((a, i) => (
         <div key={a.label} className="contents">
           <button

@@ -574,7 +574,7 @@ export function NoteEditor() {
         </div>
 
         {/* Toolbar */}
-        <div className="shrink-0">
+        <div className="shrink-0 flex items-center border-b border-border bg-muted/30">
           <MarkdownToolbar
             editorRef={{
               get current() {
@@ -582,9 +582,6 @@ export function NoteEditor() {
               },
             } as React.RefObject<HTMLDivElement>}
           />
-        </div>
-
-        <div className="shrink-0">
           <FileUpload onInsertMarkdown={handleInsertMarkdown} />
         </div>
 
