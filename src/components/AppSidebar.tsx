@@ -537,11 +537,38 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             </AnimatePresence>
           </div>
 
-          {/* Trash Section */}
-          <div className="mt-3 pt-3 border-t border-sidebar-border">
+        </div>
+      )}
+
+      {collapsed && (
+        <div className="flex-1 flex flex-col items-center py-3 gap-2">
+          {notebooks.map((nb) => (
+            <button
+              key={nb.id}
+              onClick={() => {
+                setActiveNotebookId(nb.id);
+                setExpandedNotebook(nb.id);
+                onToggle();
+              }}
+              className={`p-2 rounded-lg transition-all duration-200 text-base ${
+                activeNotebookId === nb.id ? "bg-primary/10" : "notebook-hover"
+              }`}
+              title={nb.name}
+            >
+              {nb.emoji}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Footer */}
+      <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
+        {/* Trash Section */}
+        {!collapsed && (
+          <div className="mb-1">
             <button
               onClick={() => setTrashExpanded((prev) => !prev)}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl"
             >
               <motion.div
                 animate={{ rotate: trashExpanded ? 90 : 0 }}
@@ -565,12 +592,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
-                  <div className="ml-3 pl-3 border-l-2 border-sidebar-border space-y-0.5 py-1">
+                  <div className="ml-3 pl-3 border-l-2 border-sidebar-border space-y-0.5 py-1 max-h-40 overflow-y-auto scrollbar-thin">
                     {trashCount === 0 && (
                       <div className="text-xs text-muted-foreground px-2 py-2">Trash is empty</div>
                     )}
 
-                    {/* Trashed Notebooks */}
                     {trashedNotebooks.map((nb) => (
                       <div
                         key={nb.id}
@@ -602,7 +628,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
                       </div>
                     ))}
 
-                    {/* Trashed Notes */}
                     {trashedNotes.map(({ note, notebookId, notebookName }) => (
                       <div
                         key={note.id}
@@ -641,32 +666,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
               )}
             </AnimatePresence>
           </div>
-        </div>
-      )}
+        )}
 
-      {collapsed && (
-        <div className="flex-1 flex flex-col items-center py-3 gap-2">
-          {notebooks.map((nb) => (
-            <button
-              key={nb.id}
-              onClick={() => {
-                setActiveNotebookId(nb.id);
-                setExpandedNotebook(nb.id);
-                onToggle();
-              }}
-              className={`p-2 rounded-lg transition-all duration-200 text-base ${
-                activeNotebookId === nb.id ? "bg-primary/10" : "notebook-hover"
-              }`}
-              title={nb.name}
-            >
-              {nb.emoji}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Footer */}
-      <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
         <div className={`flex items-center ${collapsed ? "justify-center" : "px-1"}`}>
           <ThemeToggle />
           {!collapsed && <span className="text-xs text-muted-foreground ml-1">Theme</span>}
