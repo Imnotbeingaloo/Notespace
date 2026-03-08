@@ -1,23 +1,22 @@
 import { motion } from "framer-motion";
-import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput } from "lucide-react";
+import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import AnimatedDivider from "@/components/AnimatedDivider";
 
 const steps = [
-  { icon: FolderOpen, title: "Create a Notebook", description: "Organize your notes by topic, class, or project. Each notebook is a dedicated space for related ideas." },
-  { icon: PenLine, title: "Write in Markdown", description: "Use the clean, distraction-free editor with full markdown support. Bold, headings, checklists, code blocks — all built in." },
-  { icon: Sparkles, title: "Get AI Insights", description: "Highlight any topic and get AI-powered explanations, summaries, and flashcards to deepen your understanding." },
-  { icon: Brain, title: "Auto-Tag & Link", description: "Our AI automatically tags concepts and links related notes across notebooks. Your knowledge graph builds itself." },
-  { icon: Search, title: "Find Anything Instantly", description: "Use ⌘K search to find any note across all notebooks in milliseconds. Never lose a thought again." },
-  { icon: FileOutput, title: "Export & Share", description: "Export your notes to PDF, Markdown, or sync with Notion. Share notebooks with teammates or study groups." },
+  { icon: FolderOpen, title: "Create a Notebook", description: "Organize your notes by topic, class, or project. Each notebook is a dedicated space for related ideas. Pick an emoji, give it a name, and start building your knowledge base." },
+  { icon: PenLine, title: "Write in Markdown", description: "Use the clean, distraction-free editor with full markdown support. Bold, headings, checklists, code blocks, tables — all built in. No formatting toolbar clutter, just pure writing." },
+  { icon: Sparkles, title: "Get AI Insights", description: "Highlight any topic and get AI-powered explanations, summaries, and flashcards to deepen your understanding. It's like having a tutor who's read every textbook." },
+  { icon: Brain, title: "Auto-Tag & Link", description: "Our AI automatically tags concepts and links related notes across notebooks. Your knowledge graph builds itself — connections you'd never find manually surface automatically." },
+  { icon: Search, title: "Find Anything Instantly", description: "Use ⌘K search to find any note across all notebooks in milliseconds. Search by content, tags, or date. Never lose a thought again." },
+  { icon: FileOutput, title: "Export & Share", description: "Export your notes to PDF, Markdown, or sync with Notion. Share notebooks with teammates or study groups with granular permission controls." },
 ];
 
 const useCases = [
-  { emoji: "🎓", title: "Students", description: "Capture lectures, generate study materials, and ace your exams with AI-powered review." },
-  { emoji: "🔬", title: "Researchers", description: "Organize papers, extract key findings, and build a connected knowledge base." },
-  { emoji: "✍️", title: "Writers", description: "Draft, outline, and refine your writing in a beautiful distraction-free editor." },
-  { emoji: "💼", title: "Professionals", description: "Meeting notes, project briefs, and team knowledge — all searchable and AI-enhanced." },
+  { emoji: "🎓", title: "Students", description: "Capture lectures, generate study materials, and ace your exams with AI-powered review. Smart flashcards turn your notes into active recall exercises automatically.", extra: "Used by students at 50+ universities worldwide" },
+  { emoji: "🔬", title: "Researchers", description: "Organize papers, extract key findings, and build a connected knowledge base that grows with your research. Auto-linking surfaces connections across hundreds of notes.", extra: "Supports LaTeX, code blocks, and citation formats" },
+  { emoji: "✍️", title: "Writers", description: "Draft, outline, and refine your writing in a beautiful distraction-free editor. Use AI to brainstorm, restructure, and polish your prose without leaving the app.", extra: "Export to PDF, Markdown, or publish directly" },
+  { emoji: "💼", title: "Professionals", description: "Meeting notes, project briefs, and team knowledge — all searchable and AI-enhanced. Shared notebooks keep everyone on the same page, literally.", extra: "Integrates with your existing workflow tools" },
 ];
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
@@ -47,7 +46,7 @@ export default function HowItWorksPage() {
       </header>
 
       {/* Hero */}
-      <section className="container mx-auto px-6 pt-20 pb-16 max-w-4xl text-center">
+      <section className="container mx-auto px-6 pt-24 pb-20 max-w-4xl text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
@@ -56,16 +55,18 @@ export default function HowItWorksPage() {
           <h1 className="font-serif text-3xl md:text-5xl font-bold text-foreground mb-4">
             How Notebook Archive <span className="text-primary">works</span>
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            From first note to full knowledge base — here's how you go from scattered thoughts to organized understanding.
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            From first note to full knowledge base — here's how you go from scattered thoughts to organized understanding. No complex setup, no learning curve. Just start writing and let the AI do the heavy lifting.
           </p>
         </motion.div>
       </section>
 
-      <AnimatedDivider />
-
       {/* Steps */}
-      <section className="container mx-auto px-6 pb-20 max-w-3xl">
+      <section className="container mx-auto px-6 pb-28 max-w-3xl">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps to smarter notes</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">Each step builds on the last. By the end, you'll have an intelligent, searchable knowledge base that grows with you.</p>
+        </motion.div>
         <div className="relative">
           <motion.div
             initial={{ scaleY: 0 }}
@@ -74,20 +75,20 @@ export default function HowItWorksPage() {
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
             className="absolute left-6 top-0 bottom-0 w-px bg-border hidden md:block origin-top"
           />
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="space-y-6">
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="space-y-8">
             {steps.map((step, i) => (
               <motion.div
                 key={step.title}
                 variants={fadeUp}
                 whileHover={{ x: 4, transition: { duration: 0.2 } }}
-                className="relative flex gap-5 p-6 rounded-[2rem] border border-border bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 md:ml-12"
+                className="relative flex gap-5 p-7 rounded-[2rem] border border-border bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 md:ml-12"
               >
                 <motion.div
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 + 0.2, type: "spring", stiffness: 200 }}
-                  className="absolute -left-[3.25rem] top-7 w-7 h-7 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold hidden md:flex"
+                  className="absolute -left-[3.25rem] top-8 w-7 h-7 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold hidden md:flex"
                 >
                   {i + 1}
                 </motion.div>
@@ -104,34 +105,67 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <AnimatedDivider />
+      {/* Why It Matters */}
+      <section className="bg-foreground/[0.03] py-28">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Why it matters</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Traditional note-taking is broken. You write things down, file them away, and never look at them again. Notebook Archive changes that by making your notes active participants in your learning process.
+            </p>
+          </motion.div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {[
+              { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50% compared to re-reading." },
+              { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it automatically connects to your math notes about wave equations." },
+              { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies to maintain. Just write, and the AI handles organization. Your knowledge graph builds itself as you take notes." },
+              { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday, ⌘K gets you there instantly." },
+            ].map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="flex gap-4"
+              >
+                <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-serif text-base font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Use Cases */}
-      <section className="bg-foreground/[0.03] py-20">
+      <section className="py-28">
         <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Built for every kind of thinker</h2>
-            <p className="text-muted-foreground">No matter how you work, Notebook Archive adapts to you.</p>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">No matter how you work, Notebook Archive adapts to you. Here's how different professionals use the platform to think, create, and collaborate better.</p>
           </motion.div>
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid sm:grid-cols-2 gap-6">
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid sm:grid-cols-2 gap-6 mt-12">
             {useCases.map((uc) => (
-              <motion.div key={uc.title} variants={fadeUp} whileHover={{ y: -3, transition: { duration: 0.2 } }} className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-                <span className="text-3xl mb-3 block">{uc.emoji}</span>
+              <motion.div key={uc.title} variants={fadeUp} whileHover={{ y: -3, transition: { duration: 0.2 } }} className="rounded-[2rem] border border-border bg-card p-7 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+                <span className="text-3xl mb-4 block">{uc.emoji}</span>
                 <h3 className="font-serif text-lg font-bold text-foreground mb-2">{uc.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{uc.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">{uc.description}</p>
+                <p className="text-xs text-primary/70 font-medium">{uc.extra}</p>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      <AnimatedDivider />
-
       {/* CTA */}
-      <section className="container mx-auto px-6 py-24">
+      <section className="container mx-auto px-6 py-28">
         <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Ready to think better?</h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">Start capturing, organizing, and understanding your knowledge today.</p>
+          <p className="text-muted-foreground mb-4 max-w-md mx-auto">Start capturing, organizing, and understanding your knowledge today.</p>
+          <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">Free to start, no credit card required. Your first notebook is just a click away.</p>
           <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
             {user ? "Go to Dashboard" : "Get Started Free"} <ArrowRight className="h-5 w-5" />
           </Link>
