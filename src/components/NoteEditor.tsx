@@ -565,17 +565,6 @@ export function NoteEditor() {
                       <AnalyzeButton />
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <ExportButtons />
-                      <button
-                        onClick={() => setPreview((p) => !p)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 w-full ${
-                          preview
-                            ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                        }`}
-                      >
-                        {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                        {preview ? "Edit" : "Preview"}
-                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
