@@ -52,7 +52,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
           ? "bg-destructive/10 text-destructive border border-destructive/30 animate-pulse-glow"
           : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
       }`}
-      title={listening ? "Stop recording" : "Voice to text (Pro)"}
+      title={listening ? "Stop recording" : "Voice to text"}
     >
       <AnimatePresence mode="wait">
         {listening ? (
