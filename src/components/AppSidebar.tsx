@@ -778,7 +778,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
                 <CalendarDays className="h-3 w-3" />
                 Study Schedule
               </p>
-              <p className="text-[11px] text-muted-foreground px-2">No upcoming sessions. Open the Study Planner to create one!</p>
+              <p className="text-[11px] text-muted-foreground px-2">🎉 No upcoming sessions. Open the Study Planner to create one!</p>
             </div>
           )}
         </div>
