@@ -118,7 +118,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
   };
 
   return (
-    <div className="px-4 sm:px-8 py-3 border-t border-border">
+    <div className="flex items-center gap-2 px-2 py-0">
       <div className="flex items-center gap-2 mb-2">
         <button
           onClick={() => inputRef.current?.click()}
