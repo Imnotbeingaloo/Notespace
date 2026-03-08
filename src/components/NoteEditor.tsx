@@ -87,9 +87,11 @@ export function NoteEditor() {
   const handleToolbarChange = useCallback(
     (content: string) => {
       if (!activeNotebookId || !activeNote) return;
-      debouncedUpdate("content", content);
+      // Toolbar modifies the textarea value directly, so we need to
+      // update through the parent which will flow back to HybridEditor
+      updateNote(activeNotebookId, activeNote.id, { content });
     },
-    [activeNotebookId, activeNote?.id, debouncedUpdate]
+    [activeNotebookId, activeNote?.id, updateNote]
   );
 
   const handleVoiceTranscript = useCallback(
@@ -344,8 +346,19 @@ export function NoteEditor() {
           </div>
         </div>
 
-        {/* Toolbar - only in edit mode */}
-        {!preview && <div className="shrink-0"><MarkdownToolbar textareaRef={contentRef} onContentChange={handleToolbarChange} /></div>}
+        {/* Toolbar - only in edit mode, wired to HybridEditor's active textarea */}
+        {!preview && (
+          <div className="shrink-0">
+            <MarkdownToolbar
+              textareaRef={{
+                get current() {
+                  return hybridEditorRef.current?.getActiveTextarea() ?? null;
+                },
+              } as React.RefObject<HTMLTextAreaElement>}
+              onContentChange={handleToolbarChange}
+            />
+          </div>
+        )}
 
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
