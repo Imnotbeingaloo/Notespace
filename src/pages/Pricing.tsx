@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight, Check, Sparkles, Zap, HelpCircle } from "lucide-react";
 import AnimatedDivider from "@/components/AnimatedDivider";
+import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -219,15 +220,7 @@ export default function PricingPage() {
         </motion.div>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-primary" />
-            <span className="font-serif text-sm font-bold text-foreground">Notebook Archive</span>
-          </div>
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Notebook Archive. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
