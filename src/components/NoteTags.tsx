@@ -14,7 +14,6 @@ interface NoteTagsProps {
 
 export function NoteTags({ tags, noteId, notebookId, onTagsUpdated }: NoteTagsProps) {
   const [loading, setLoading] = useState(false);
-  const { isPro, requirePro } = useProGate();
 
   const autoTag = async () => {
     if (!isPro) {
