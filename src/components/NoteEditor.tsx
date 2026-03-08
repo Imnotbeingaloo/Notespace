@@ -107,7 +107,15 @@ export function NoteEditor() {
     [activeNotebookId, activeNote?.id, updateNote]
   );
 
-  const handleDrop = useCallback(
+  const handleAIEdit = useCallback(
+    (newContent: string) => {
+      if (!activeNotebookId || !activeNote) return;
+      if (contentRef.current) contentRef.current.value = newContent;
+      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+    },
+    [activeNotebookId, activeNote?.id, updateNote]
+  );
+
     async (e: React.DragEvent) => {
       e.preventDefault();
       setDragOver(false);
