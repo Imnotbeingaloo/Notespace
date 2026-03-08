@@ -123,7 +123,7 @@ export default function LandingPage() {
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pt-24">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-        <div className="container mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 text-center relative">
+        <div className="container mx-auto px-6 pt-12 pb-16 md:pt-20 md:pb-24 text-center relative">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
               <Sparkles className="h-3.5 w-3.5 text-accent" />
