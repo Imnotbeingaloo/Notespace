@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Plus, Eye, Edit3, Upload, MoreHorizontal, Layers, Cloud, Check, Loader2, Search as SearchIcon } from "lucide-react";
+import { FileText, Clock, Plus, Upload, MoreHorizontal, Layers, Cloud, Check, Loader2, Search as SearchIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -255,7 +255,6 @@ export function NoteEditor() {
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  const [preview, setPreview] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -266,7 +265,6 @@ export function NoteEditor() {
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
-    setPreview(false);
     setSaveStatus("idle");
     if (activeNote) {
       supabase
@@ -402,7 +400,7 @@ export function NoteEditor() {
       }
 
       if (hasImages) {
-        toast({ title: "Image added", description: "Switch to Preview mode to see it rendered." });
+        toast({ title: "Image added", description: "Image inserted into note." });
       }
     },
     [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote]
@@ -541,17 +539,6 @@ export function NoteEditor() {
                 <FlashcardsButton />
                 <AnalyzeButton />
                 <SymbolsPicker onInsert={handleSymbolInsert} />
-                <button
-                  onClick={() => setPreview((p) => !p)}
-                  className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
-                    preview
-                      ? "bg-primary/10 text-primary shadow-sm"
-                      : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                  {preview ? "Edit" : "Preview"}
-                </button>
               </div>
 
               {/* Mobile: "More" dropdown */}
@@ -578,17 +565,6 @@ export function NoteEditor() {
                       <AnalyzeButton />
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <ExportButtons />
-                      <button
-                        onClick={() => setPreview((p) => !p)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 w-full ${
-                          preview
-                            ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                        }`}
-                      >
-                        {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                        {preview ? "Edit" : "Preview"}
-                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -598,46 +574,24 @@ export function NoteEditor() {
         </div>
 
         {/* Toolbar */}
-        {!preview && (
-          <div className="shrink-0">
-            <MarkdownToolbar
-              textareaRef={{
-                get current() {
-                  return hybridEditorRef.current?.getActiveTextarea() ?? null;
-                },
-              } as React.RefObject<HTMLTextAreaElement>}
-              onContentChange={handleToolbarChange}
-            />
-          </div>
-        )}
+        <div className="shrink-0">
+          <MarkdownToolbar
+            editorRef={{
+              get current() {
+                return hybridEditorRef.current?.getEditorElement() ?? null;
+              },
+            } as React.RefObject<HTMLDivElement>}
+          />
+        </div>
 
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
-          {preview ? (
-            <div className="px-3 sm:px-8 py-4 sm:py-6 prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  img: ({ src, alt }) => (
-                    <img src={src} alt={alt || ""} className="rounded-2xl border border-border shadow-md max-w-full h-auto my-4" loading="lazy" />
-                  ),
-                  input: ({ checked, ...props }) => (
-                    <input type="checkbox" checked={checked} readOnly className="mr-2 accent-primary rounded" {...props} />
-                  ),
-                }}
-              >
-                {activeNote.content || "*No content yet…*"}
-              </ReactMarkdown>
-            </div>
-          ) : (
-            <HybridEditor
-              ref={hybridEditorRef}
-              content={activeNote.content || ""}
-              onChange={(content) => debouncedUpdate("content", content)}
-              placeholder="Start writing in markdown... (drag & drop files here)"
-              onTogglePreview={() => setPreview((p) => !p)}
-            />
-          )}
+          <HybridEditor
+            ref={hybridEditorRef}
+            content={activeNote.content || ""}
+            onChange={(content) => debouncedUpdate("content", content)}
+            placeholder="Start writing... (drag & drop files here)"
+          />
         </div>
 
         <div className="shrink-0">
