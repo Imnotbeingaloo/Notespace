@@ -426,7 +426,8 @@ export function NoteEditor() {
                 <AIExplainPanel />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
                 <FlashcardsButton />
-                <AnalyzeButton />
+
+
                 <SymbolsPicker onInsert={handleSymbolInsert} />
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
