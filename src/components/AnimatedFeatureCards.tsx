@@ -185,7 +185,7 @@ export function SchedulerCard() {
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
         Plan your study sessions and track progress with smart scheduling.
       </p>
-      <div className="relative rounded-xl border border-border bg-background p-4" ref={gridRef}>
+      <div className="relative rounded-xl border border-border bg-background p-4 mt-auto" ref={gridRef}>
         <div className="grid grid-cols-7 gap-1 mb-3">
           {days.map((day, i) => (
             <motion.div
