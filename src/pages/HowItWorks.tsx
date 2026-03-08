@@ -345,11 +345,6 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </section>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <AnimatedDivider />
 
