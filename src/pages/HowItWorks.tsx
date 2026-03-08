@@ -90,11 +90,11 @@ function StepReel() {
           const viewportWidth = viewportRef.current?.offsetWidth ?? 0;
           const dotStartX = dotX.get();
           await Promise.all([
-            animate(slideX, -viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
-            animate(dotX, dotStartX - viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+            animate(slideX, -viewportWidth, { duration: 0.35, ease: [0.16, 1, 0.3, 1] }),
+            animate(dotX, dotStartX - viewportWidth, { duration: 0.35, ease: [0.16, 1, 0.3, 1] }),
           ]);
           await nextFrame();
-          await animate(dotX, measureCircleX(3), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
+          await animate(dotX, measureCircleX(3), { duration: 0.12, ease: [0.16, 1, 0.3, 1] });
           await wait(900);
 
           if (cancelled.current) return;
