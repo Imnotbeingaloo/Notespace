@@ -249,46 +249,46 @@ export default function LandingPage() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-            Trusted by <span className="text-accent">professionals</span> and students
-          </h2>
-          <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
-            See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools.
-          </p>
-        </motion.div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-          {[
-            { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
-            { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-            { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
-          ].map((t, i) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 30, rotate: -1 }}
-              whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.12, type: "spring", stiffness: 150 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
-            >
-              <span className="text-2xl mb-3 block">{t.emoji}</span>
-              <p className="text-sm text-foreground leading-relaxed mb-4 italic">"{t.quote}"</p>
-              <div>
-                <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                <p className="text-xs text-muted-foreground">{t.role}</p>
-              </div>
-            </motion.div>
-          ))}
+      <section className="relative py-24">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.03] to-transparent pointer-events-none" />
+        <div className="container mx-auto px-6 relative">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+              Trusted by <span className="text-accent">professionals</span> and students
+            </h2>
+            <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
+              See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools.
+            </p>
+          </motion.div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+            {[
+              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
+              { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
+              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+            ].map((t, i) => (
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 30, rotate: -1 }}
+                whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12, type: "spring", stiffness: 150 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="rounded-[2rem] border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
+              >
+                <span className="text-2xl mb-3 block">{t.emoji}</span>
+                <p className="text-sm text-foreground leading-relaxed mb-4 italic">"{t.quote}"</p>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <SectionDivider />
-
       {/* ── CTA ── */}
-      <section className="container mx-auto px-6 py-16">
+      <section className="container mx-auto px-6 py-24">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
