@@ -29,6 +29,7 @@ function StepReel() {
   const cancelled = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
+  const [dotVisible, setDotVisible] = useState(true);
   
 
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -55,7 +56,9 @@ function StepReel() {
           setActiveStep(0);
           await animate(slideX, 0, { duration: 0 });
           await new Promise((r) => requestAnimationFrame(r));
+          await new Promise((r) => requestAnimationFrame(r));
           dotX.set(measureCircleX(0));
+          setDotVisible(true);
           await new Promise((r) => setTimeout(r, 1000));
 
           // 0 → 1
@@ -72,12 +75,15 @@ function StepReel() {
 
           // Slide to group 1: steps 3,4,5
           if (cancelled.current) return;
+          setDotVisible(false);
           setGroup(1);
           setActiveStep(3);
           const viewportWidth = viewportRef.current?.offsetWidth ?? 0;
           await animate(slideX, -viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] });
           await new Promise((r) => requestAnimationFrame(r));
+          await new Promise((r) => requestAnimationFrame(r));
           dotX.set(measureCircleX(3));
+          setDotVisible(true);
           await new Promise((r) => setTimeout(r, 1000));
 
           // 3 → 4
@@ -94,6 +100,7 @@ function StepReel() {
 
           // Reset
           if (cancelled.current) return;
+          setDotVisible(false);
           await new Promise((r) => setTimeout(r, 400));
         }
       };
@@ -111,12 +118,13 @@ function StepReel() {
       <div ref={viewportRef} className="overflow-hidden relative pt-2">
         {/* Sliding dot — always visible, travels along the line */}
         <motion.div
-          className="absolute top-2 z-30 pointer-events-none"
+          className="absolute top-2 z-30 pointer-events-none transition-opacity duration-150"
           style={{
             x: dotX,
             width: DOT_SIZE,
             height: DOT_SIZE,
             marginLeft: -(DOT_SIZE / 2),
+            opacity: dotVisible ? 1 : 0,
           }}
         >
           <div
