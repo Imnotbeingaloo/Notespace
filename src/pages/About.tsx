@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
-import { BookOpen, ArrowRight, Heart, Zap, Shield, Lightbulb, Target, Layers } from "lucide-react";
+import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight } from "lucide-react";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { PageHeader } from "@/components/PageHeader";
 
 const values = [
   { icon: Heart, title: "User-First Design", description: "Every feature is designed around how people actually think and write. No bloat, no clutter — just clarity. We obsess over every interaction to make sure it feels natural." },
@@ -27,23 +28,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
-        <div className="container mx-auto flex items-center justify-between py-4 px-6">
-          <Link to="/" className="flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-primary" />
-            <span className="font-serif text-xl font-bold text-foreground">Notebook Archive</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link to="/#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</Link>
-            <Link to="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-            <Link to="/about" className="text-sm font-medium text-foreground transition-colors">About</Link>
-            <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">How It Works</Link>
-          </nav>
-          <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20">
-            {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </header>
+      <PageHeader activePage="about" />
 
       {/* Hero */}
       <section className="container mx-auto px-6 pt-24 pb-20 max-w-4xl text-center">
@@ -63,39 +48,21 @@ export default function AboutPage() {
       <section className="py-20">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            >
+            <motion.div initial={{ opacity: 0, x: -30, y: 20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                 <Target className="h-6 w-6 text-primary" />
               </div>
               <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Mission</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge that can be searched, connected, and understood.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world. One that helps you not just store information, but truly learn from it.
-              </p>
+              <p className="text-muted-foreground leading-relaxed mb-4">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge that can be searched, connected, and understood.</p>
+              <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 30, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            >
+            <motion.div initial={{ opacity: 0, x: 30, y: 20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}>
               <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                 <Layers className="h-6 w-6 text-accent" />
               </div>
               <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Approach</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                We don't chase features for the sake of features. Every capability in Notebook Archive exists because real users asked for it, and because we validated that it genuinely improves how people work.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers who shape the product's direction.
-              </p>
+              <p className="text-muted-foreground leading-relaxed mb-4">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
+              <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
             </motion.div>
           </div>
         </div>
@@ -108,9 +75,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Philosophy</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">
-              We rethought what a note-taking app should be from the ground up. The difference is in how we treat your knowledge.
-            </p>
+            <p className="text-muted-foreground max-w-lg mx-auto">We rethought what a note-taking app should be from the ground up.</p>
           </motion.div>
           <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto mt-10">
             <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="rounded-[2rem] border border-border bg-card p-8">
@@ -120,9 +85,7 @@ export default function AboutPage() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="rounded-[2rem] border border-primary/30 bg-primary/5 p-8">
               <p className="text-muted-foreground text-sm mb-2">We focus on:</p>
-              <p className="font-serif text-xl font-bold text-foreground mb-3">
-                <span className="text-primary">Understanding</span> information
-              </p>
+              <p className="font-serif text-xl font-bold text-foreground mb-3"><span className="text-primary">Understanding</span> information</p>
               <p className="text-sm text-muted-foreground leading-relaxed">We use AI to explain concepts, connect ideas, and help you actually learn from what you write.</p>
             </motion.div>
           </div>
@@ -135,35 +98,14 @@ export default function AboutPage() {
       <section className="container mx-auto px-6 py-28 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">What We Believe</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">
-            These are the principles that guide every decision we make — from pixel-level design choices to how we handle your data.
-          </p>
+          <p className="text-muted-foreground max-w-lg mx-auto">These are the principles that guide every decision we make.</p>
         </motion.div>
         <div className="relative mt-12">
-          <motion.div
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top"
-          />
+          <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
           <div className="space-y-10">
             {values.map((v, i) => (
-              <motion.div
-                key={v.title}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative pl-12"
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 + 0.2, type: "spring", stiffness: 200 }}
-                  className="absolute left-1.5 top-1 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center"
-                >
+              <motion.div key={v.title} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }} className="relative pl-12">
+                <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 + 0.2, type: "spring", stiffness: 200 }} className="absolute left-1.5 top-1 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                   <v.icon className="h-3.5 w-3.5 text-primary" />
                 </motion.div>
                 <h3 className="font-serif text-lg font-bold text-foreground mb-2">{v.title}</h3>
@@ -181,35 +123,14 @@ export default function AboutPage() {
         <div className="container mx-auto px-6 max-w-3xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Journey</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">
-              From a late-night idea to a platform used by thousands — here's how we got here, and where we're headed next.
-            </p>
+            <p className="text-muted-foreground max-w-lg mx-auto">From a late-night idea to a platform used by thousands.</p>
           </motion.div>
           <div className="relative mt-12">
-            <motion.div
-              initial={{ scaleY: 0 }}
-              whileInView={{ scaleY: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top"
-            />
+            <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
             <div className="space-y-10">
               {timeline.map((item, i) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12, duration: 0.5 }}
-                  className="relative pl-12"
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.12 + 0.2, type: "spring", stiffness: 200 }}
-                    className="absolute left-2.5 top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-background"
-                  />
+                <motion.div key={item.title} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.5 }} className="relative pl-12">
+                  <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.12 + 0.2, type: "spring", stiffness: 200 }} className="absolute left-2.5 top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-background" />
                   <span className="text-xs font-mono text-primary/70 font-semibold">{item.year}</span>
                   <h3 className="font-serif text-lg font-bold text-foreground mt-1">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed mt-1">{item.description}</p>
@@ -227,7 +148,7 @@ export default function AboutPage() {
         <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Join us on the journey</h2>
           <p className="text-muted-foreground mb-4 max-w-md mx-auto">We're just getting started. Be part of a community that thinks better, together.</p>
-          <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">Free to use, open to feedback, and always improving based on what you need.</p>
+          <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">Free to use, open to feedback, and always improving.</p>
           <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
             {user ? "Open App" : "Get Started Free"} <ArrowRight className="h-5 w-5" />
           </Link>

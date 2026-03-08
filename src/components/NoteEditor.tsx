@@ -271,7 +271,7 @@ export function NoteEditor() {
           </div>
 
           {/* Meta & actions row */}
-          <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1 sm:gap-1.5 bg-muted/50 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs">
               <Clock className="h-3 w-3" />
               <span className="hidden sm:inline">{formatDate(activeNote.updated_at)}</span>
@@ -335,7 +335,7 @@ export function NoteEditor() {
         {!preview && <MarkdownToolbar textareaRef={contentRef} onContentChange={handleToolbarChange} />}
 
         {/* Content area */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           {preview ? (
             <div className="px-3 sm:px-8 py-4 sm:py-6 prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border">
               <ReactMarkdown
@@ -364,7 +364,7 @@ export function NoteEditor() {
               </ReactMarkdown>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 min-h-0 flex flex-col">
               <textarea
                 ref={contentRef}
                 defaultValue={activeNote.content}
