@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tag, Loader2, Sparkles, Lock } from "lucide-react";
+import { Tag, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useProGate } from "@/hooks/use-pro-gate";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
