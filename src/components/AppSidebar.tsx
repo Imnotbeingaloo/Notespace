@@ -117,26 +117,36 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
     if (activeFilterTag === tagToRemove) setActiveFilterTag(null);
   };
 
-  // Study plans - fetch upcoming
-  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; scheduled_time: string | null; completed: boolean }[]>([]);
-  useEffect(() => {
+  // Study plans - fetch upcoming and subscribe to changes
+  const [upcomingPlans, setUpcomingPlans] = useState<{ id: string; title: string; scheduled_date: string; scheduled_time: string | null; completed: boolean; notebook_id: string | null }[]>([]);
+  
+  const fetchUpcomingPlans = useCallback(async () => {
     if (!user) return;
-    const fetchPlans = async () => {
-      const today = format(new Date(), "yyyy-MM-dd");
-      const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
-      const { data } = await supabase
-        .from("study_plans" as any)
-        .select("id, title, scheduled_date, scheduled_time, completed")
-        .eq("user_id", user.id)
-        .eq("completed", false)
-        .gte("scheduled_date", today)
-        .lte("scheduled_date", threeDaysOut)
-        .order("scheduled_date", { ascending: true })
-        .limit(5);
-      setUpcomingPlans((data as any) ?? []);
-    };
-    fetchPlans();
+    const today = format(new Date(), "yyyy-MM-dd");
+    const threeDaysOut = format(addDays(new Date(), 2), "yyyy-MM-dd");
+    const { data } = await supabase
+      .from("study_plans" as any)
+      .select("id, title, scheduled_date, scheduled_time, completed, notebook_id")
+      .eq("user_id", user.id)
+      .eq("completed", false)
+      .gte("scheduled_date", today)
+      .lte("scheduled_date", threeDaysOut)
+      .order("scheduled_date", { ascending: true })
+      .limit(8);
+    setUpcomingPlans((data as any) ?? []);
   }, [user]);
+
+  useEffect(() => {
+    fetchUpcomingPlans();
+    // Subscribe to study_plans changes for live updates
+    const channel = supabase
+      .channel("sidebar-study-plans")
+      .on("postgres_changes", { event: "*", schema: "public", table: "study_plans" }, () => {
+        fetchUpcomingPlans();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchUpcomingPlans]);
 
   const getDayLabel = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
