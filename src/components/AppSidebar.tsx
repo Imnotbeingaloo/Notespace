@@ -54,9 +54,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
   const [editName, setEditName] = useState("");
   const [editEmoji, setEditEmoji] = useState("");
   const [quickNote, setQuickNote] = useState("");
-  const [analyzeOpen, setAnalyzeOpen] = useState(false);
-  const [analyzeResult, setAnalyzeResult] = useState("");
-  const [analyzeLoading, setAnalyzeLoading] = useState(false);
+
+
   const [dragNoteId, setDragNoteId] = useState<string | null>(null);
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
   const [trashExpanded, setTrashExpanded] = useState(false);
