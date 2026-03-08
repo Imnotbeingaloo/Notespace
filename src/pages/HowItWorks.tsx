@@ -75,16 +75,17 @@ function StepReel() {
 
           // Slide to group 1: steps 3,4,5
           if (cancelled.current) return;
-          setDotVisible(false);
           setGroup(1);
           setActiveStep(3);
           const viewportWidth = viewportRef.current?.offsetWidth ?? 0;
-          await animate(slideX, -viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] });
+          const dotStartX = dotX.get();
+          await Promise.all([
+            animate(slideX, -viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+            animate(dotX, dotStartX - viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+          ]);
           await new Promise((r) => requestAnimationFrame(r));
-          await new Promise((r) => requestAnimationFrame(r));
-          dotX.set(measureCircleX(3));
-          setDotVisible(true);
-          await new Promise((r) => setTimeout(r, 1000));
+          await animate(dotX, measureCircleX(3), { duration: 0.24, ease: [0.16, 1, 0.3, 1] });
+          await new Promise((r) => setTimeout(r, 500));
 
           // 3 → 4
           if (cancelled.current) return;
