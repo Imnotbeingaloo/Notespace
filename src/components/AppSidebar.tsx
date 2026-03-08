@@ -209,47 +209,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote }: AppSidebarProp
             </div>
           </div>
 
-          {/* Analyze All Notes */}
-          <button
-            onClick={handleAnalyzeAll}
-            disabled={!activeNotebookId || analyzeLoading}
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1 magnetic-btn disabled:opacity-50"
-          >
-            {analyzeLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-            Analyze Notebook
-          </button>
 
-          {/* Analyze Result Panel */}
-          <AnimatePresence>
-            {analyzeOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-2 overflow-hidden"
-              >
-                <div className="rounded-xl border border-border bg-card p-3 max-h-60 overflow-y-auto scrollbar-thin">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-foreground">Notebook Analysis</span>
-                    <button onClick={() => setAnalyzeOpen(false)} className="text-muted-foreground hover:text-foreground">
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
-                  {analyzeLoading && !analyzeResult && (
-                    <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      Analyzing…
-                    </div>
-                  )}
-                  {analyzeResult && (
-                    <div className="prose prose-xs max-w-none text-foreground text-xs">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{analyzeResult}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+
 
           {/* Search */}
           <div className="mb-2">
