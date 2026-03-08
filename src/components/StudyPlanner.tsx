@@ -182,7 +182,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 40 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="h-full border-l border-border bg-card flex flex-col w-[360px] max-w-full"
+      className="h-full border-l border-border bg-card flex flex-col w-full lg:w-[360px] max-w-full"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
