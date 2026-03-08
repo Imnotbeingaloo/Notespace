@@ -333,11 +333,60 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-primary" />
-            <span className="font-serif text-sm font-bold text-foreground">Notebook Archive</span>
+      <footer className="border-t border-border bg-card/50 rounded-t-[3rem] mt-8">
+        <div className="container mx-auto px-6 py-12 md:py-16">
+          <div className="grid gap-8 md:grid-cols-4 mb-12">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen className="h-5 w-5 text-primary" />
+                <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                The intelligent note-taking app that helps you think better.
+              </p>
+              <div className="flex items-center gap-2 mt-4">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-xs font-mono text-muted-foreground">All Systems Operational</span>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-foreground mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li><a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a></li>
+                <li><Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
+                <li><Link to="/how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How It Works</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-foreground mb-4">Company</h4>
+              <ul className="space-y-2">
+                <li><Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link></li>
+                <li><a href="mailto:support@notebookarchive.com" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-foreground mb-4">Get Started</h4>
+              <Link
+                to={user ? "/app" : "/auth"}
+                className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
+              >
+                {user ? "Open App" : "Sign Up Free"}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+          <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Notebook Archive. All rights reserved.</p>
+            <div className="flex gap-4">
+              <span className="text-xs text-muted-foreground">Privacy</span>
+              <span className="text-xs text-muted-foreground">Terms</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
           </div>
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Notebook Archive. All rights reserved.
