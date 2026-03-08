@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useMotionValue, animate } from "framer-motion";
+import { motion, useMotionValue, animate, useTransform } from "framer-motion";
 import { BookOpen, ArrowRight, PenLine, FolderOpen, Sparkles, Search, Brain, FileOutput } from "lucide-react";
 import { Link } from "react-router-dom";
 import AnimatedDivider from "@/components/AnimatedDivider";
@@ -22,15 +22,18 @@ const useCases = [
   { emoji: "💼", title: "Professionals", description: "Meeting notes, project briefs, and team knowledge — all searchable and AI-enhanced.", extra: "Integrates with your existing workflow tools" },
 ];
 
-/* ─── Cinematic 3-at-a-time Filmstrip ─── */
+/* ─── Animation helpers ─── */
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const nextFrame = () => new Promise((r) => requestAnimationFrame(r));
+
+/* ─── Cinematic Step Reel ─── */
 function StepReel() {
   const slideX = useMotionValue(0);
   const dotX = useMotionValue(0);
+  const dotScale = useMotionValue(1);
   const cancelled = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [group, setGroup] = useState(0);
-  const [dotVisible, setDotVisible] = useState(true);
-  
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -45,35 +48,48 @@ function StepReel() {
     return cRect.left + cRect.width / 2 - vRect.left;
   }, []);
 
+  /* Two-phase arrival: travel along line → snap into circle with scale pulse */
+  const moveToStep = useCallback(async (idx: number, duration = 0.7) => {
+    if (cancelled.current) return;
+    setActiveStep(idx);
+    // Phase A: travel to circle position
+    await animate(dotX, measureCircleX(idx), { duration, ease: [0.16, 1, 0.3, 1] });
+    // Phase B: snap-into-circle micro-animation (scale pulse)
+    if (cancelled.current) return;
+    await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
+    await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+  }, [dotX, dotScale, measureCircleX]);
+
   useEffect(() => {
     cancelled.current = false;
 
     const startTimeout = setTimeout(() => {
       const run = async () => {
         while (!cancelled.current) {
-          // Group 0: steps 0,1,2
+          // ── Forward: Group 0 (steps 0,1,2) ──
           setGroup(0);
           setActiveStep(0);
           await animate(slideX, 0, { duration: 0 });
-          await new Promise((r) => requestAnimationFrame(r));
-          await new Promise((r) => requestAnimationFrame(r));
+          await nextFrame();
+          await nextFrame();
           dotX.set(measureCircleX(0));
-          setDotVisible(true);
-          await new Promise((r) => setTimeout(r, 1000));
+          dotScale.set(1);
+          // Arrival pulse on step 0
+          await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
+          await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+          await wait(900);
 
           // 0 → 1
           if (cancelled.current) return;
-          setActiveStep(1);
-          await animate(dotX, measureCircleX(1), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          await new Promise((r) => setTimeout(r, 1000));
+          await moveToStep(1);
+          await wait(900);
 
           // 1 → 2
           if (cancelled.current) return;
-          setActiveStep(2);
-          await animate(dotX, measureCircleX(2), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          await new Promise((r) => setTimeout(r, 1000));
+          await moveToStep(2);
+          await wait(900);
 
-          // Slide to group 1: steps 3,4,5
+          // ── Slide to Group 1 (steps 3,4,5) ──
           if (cancelled.current) return;
           setGroup(1);
           setActiveStep(3);
@@ -83,26 +99,56 @@ function StepReel() {
             animate(slideX, -viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
             animate(dotX, dotStartX - viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
           ]);
-          await new Promise((r) => requestAnimationFrame(r));
-          await animate(dotX, measureCircleX(3), { duration: 0.24, ease: [0.16, 1, 0.3, 1] });
-          await new Promise((r) => setTimeout(r, 500));
+          await nextFrame();
+          // Snap dot to step 3 circle + arrival pulse
+          await animate(dotX, measureCircleX(3), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
+          await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
+          await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+          await wait(500);
 
           // 3 → 4
           if (cancelled.current) return;
-          setActiveStep(4);
-          await animate(dotX, measureCircleX(4), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          await new Promise((r) => setTimeout(r, 1000));
+          await moveToStep(4);
+          await wait(900);
 
           // 4 → 5
           if (cancelled.current) return;
-          setActiveStep(5);
-          await animate(dotX, measureCircleX(5), { duration: 0.7, ease: [0.16, 1, 0.3, 1] });
-          await new Promise((r) => setTimeout(r, 1200));
+          await moveToStep(5);
+          await wait(1100);
 
-          // Reset
+          // ── Reverse: travel back from 5 → 3 ──
           if (cancelled.current) return;
-          setDotVisible(false);
-          await new Promise((r) => setTimeout(r, 400));
+          await moveToStep(4, 0.5);
+          await wait(300);
+          if (cancelled.current) return;
+          await moveToStep(3, 0.5);
+          await wait(300);
+
+          // ── Slide back to Group 0 ──
+          if (cancelled.current) return;
+          setGroup(0);
+          setActiveStep(2);
+          const dotPos = dotX.get();
+          await Promise.all([
+            animate(slideX, 0, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+            animate(dotX, dotPos + viewportWidth, { duration: 0.6, ease: [0.16, 1, 0.3, 1] }),
+          ]);
+          await nextFrame();
+          // Snap to step 2
+          await animate(dotX, measureCircleX(2), { duration: 0.2, ease: [0.16, 1, 0.3, 1] });
+          await animate(dotScale, 1.35, { duration: 0.12, ease: "easeOut" });
+          await animate(dotScale, 1, { duration: 0.18, ease: "easeInOut" });
+          await wait(300);
+
+          // 2 → 1
+          if (cancelled.current) return;
+          await moveToStep(1, 0.5);
+          await wait(300);
+
+          // 1 → 0
+          if (cancelled.current) return;
+          await moveToStep(0, 0.5);
+          await wait(600);
         }
       };
       run();
@@ -117,15 +163,15 @@ function StepReel() {
   return (
     <div className="relative">
       <div ref={viewportRef} className="overflow-hidden relative pt-2">
-        {/* Sliding dot — always visible, travels along the line */}
+        {/* Sliding dot */}
         <motion.div
-          className="absolute top-2 z-30 pointer-events-none transition-opacity duration-150"
+          className="absolute top-2 z-30 pointer-events-none"
           style={{
             x: dotX,
+            scale: dotScale,
             width: DOT_SIZE,
             height: DOT_SIZE,
             marginLeft: -(DOT_SIZE / 2),
-            opacity: dotVisible ? 1 : 0,
           }}
         >
           <div className="w-full h-full rounded-full border-2 border-primary bg-background animate-pulse-glow">
@@ -135,7 +181,7 @@ function StepReel() {
           </div>
         </motion.div>
 
-        {/* Actual filmstrip */}
+        {/* Filmstrip */}
         <motion.div
           className="flex"
           style={{ x: slideX, width: "200%" }}
@@ -149,9 +195,9 @@ function StepReel() {
                   animate={{
                     backgroundColor: activeStep === idx ? "hsl(var(--primary))" : "hsl(var(--muted))",
                     color: activeStep === idx ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
-                    boxShadow: activeStep === idx ? "0 0 0 3px hsl(var(--primary) / 0.3)" : "0 0 0 0px transparent",
+                    scale: activeStep === idx ? 1.1 : 1,
                   }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.25 }}
                 >
                   {idx + 1}
                 </motion.div>
@@ -197,7 +243,6 @@ function RevealCard({ uc, index }: { uc: typeof useCases[0]; index: number }) {
       onClick={() => setRevealed(!revealed)}
       className="relative rounded-2xl border border-border bg-card overflow-hidden cursor-pointer select-none group min-h-[220px]"
     >
-      {/* Blurred state — emoji + "tap to reveal" */}
       <motion.div
         className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
         animate={{ opacity: revealed ? 0 : 1, filter: revealed ? "blur(8px)" : "blur(0px)" }}
@@ -209,7 +254,6 @@ function RevealCard({ uc, index }: { uc: typeof useCases[0]; index: number }) {
         <span className="text-[10px] text-muted-foreground/60 font-mono tracking-wider uppercase mt-2">Tap to reveal</span>
       </motion.div>
 
-      {/* Revealed state — full content */}
       <motion.div
         className="absolute inset-0 flex flex-col justify-between p-6 z-10"
         animate={{ opacity: revealed ? 1 : 0, filter: revealed ? "blur(0px)" : "blur(6px)" }}
@@ -226,12 +270,61 @@ function RevealCard({ uc, index }: { uc: typeof useCases[0]; index: number }) {
         <p className="text-[10px] text-primary font-medium font-mono mt-4">{uc.extra}</p>
       </motion.div>
 
-      {/* Background glow on reveal */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5"
         animate={{ opacity: revealed ? 1 : 0 }}
         transition={{ duration: 0.4 }}
       />
+    </motion.div>
+  );
+}
+
+/* ─── Zigzag Item ─── */
+const zigzagItems = [
+  { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50%.", icon: Brain },
+  { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it connects to your math notes.", icon: Sparkles },
+  { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies. Just write, and the AI handles organization. Your knowledge graph builds itself.", icon: PenLine },
+  { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday.", icon: Search },
+];
+
+function ZigzagCard({ item, index }: { item: typeof zigzagItems[0]; index: number }) {
+  const isLeft = index % 2 === 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: isLeft ? -50 : 50, y: 20 }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      className={`relative flex flex-col md:flex-row items-center gap-6 md:gap-12 mb-20 last:mb-0 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"}`}
+    >
+      {/* Content card */}
+      <div className={`flex-1 ${isLeft ? "md:text-right" : "md:text-left"}`}>
+        <motion.div
+          className="relative rounded-2xl border border-border bg-card p-6 md:p-8 group overflow-hidden transition-all duration-300 hover:border-primary/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
+          whileHover={{ scale: 1.015 }}
+          transition={{ duration: 0.25 }}
+        >
+          {/* Hover glow overlay */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06)_0%,transparent_70%)] pointer-events-none" />
+          <h3 className="relative font-serif text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
+          <p className="relative text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+        </motion.div>
+      </div>
+
+      {/* Center icon dot */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: index * 0.1 + 0.3, ease: "backOut" }}
+        className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center"
+      >
+        <item.icon className="h-5 w-5 text-primary" />
+      </motion.div>
+
+      {/* Spacer */}
+      <div className="flex-1 hidden md:block" />
     </motion.div>
   );
 }
@@ -291,7 +384,7 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
-      {/* Why It Matters — alternating zigzag */}
+      {/* Why It Matters — zigzag */}
       <section className="py-28 overflow-hidden">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
@@ -303,50 +396,17 @@ export default function HowItWorksPage() {
           </motion.div>
 
           <div className="relative">
-            {/* Vertical connector line */}
             <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2 hidden md:block" />
-
-            {[
-              { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50%.", icon: Brain },
-              { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it connects to your math notes.", icon: Sparkles },
-              { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies. Just write, and the AI handles organization. Your knowledge graph builds itself.", icon: PenLine },
-              { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday.", icon: Search },
-            ].map((item, i) => {
-              const isLeft = i % 2 === 0;
-              return (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, x: isLeft ? -40 : 40 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className={`relative flex flex-col md:flex-row items-center gap-6 md:gap-12 mb-20 last:mb-0 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"}`}
-                >
-                  {/* Content card */}
-                  <div className={`flex-1 ${isLeft ? "md:text-right" : "md:text-left"}`}>
-                    <div className={`rounded-2xl border border-border bg-card p-6 md:p-8 group hover:border-primary/30 transition-colors duration-300`}>
-                      <h3 className="font-serif text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-
-                  {/* Center dot on the line */}
-                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
-                    <item.icon className="h-5 w-5 text-primary" />
-                  </div>
-
-                  {/* Spacer for the other side */}
-                  <div className="flex-1 hidden md:block" />
-                </motion.div>
-              );
-            })}
+            {zigzagItems.map((item, i) => (
+              <ZigzagCard key={item.title} item={item} index={i} />
+            ))}
           </div>
         </div>
       </section>
 
       <AnimatedDivider />
 
-      {/* Use Cases — reveal cards */}
+      {/* Use Cases */}
       <section className="bg-foreground/[0.02] py-28">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
