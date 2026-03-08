@@ -317,26 +317,25 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── CTA ── */}
-      <section className="container mx-auto px-6 py-28">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto"
-        >
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Ready to organize your thinking?
-          </h2>
-          <p className="text-lg text-muted-foreground mb-4 max-w-lg mx-auto">
-            Join thousands of students, researchers, and professionals who've made Notebook Archive their thinking companion.
-          </p>
-          <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto">
-            Free forever for personal use. No credit card required. Start writing in under 60 seconds.
-          </p>
-          <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-            {user ? "Open App" : "Get Started — It's Free"} <ArrowRight className="h-5 w-5" />
-          </Link>
-        </motion.div>
+      <section className="bg-foreground/[0.04] py-20">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
+          >
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
+              Ready to organize your thinking?
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
+              Join thousands who've made Notebook Archive their thinking companion. Free forever — no credit card required.
+            </p>
+            <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+              {user ? "Open App" : "Get Started — It's Free"} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </div>
       </section>
 
       {/* ── Footer ── */}
