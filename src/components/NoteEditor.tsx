@@ -281,25 +281,25 @@ export function NoteEditor() {
             </span>
 
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
-              {/* Always visible: Download + Preview */}
+              {/* Always visible: Download */}
               <ExportButtons />
-              <button
-                onClick={() => setPreview((p) => !p)}
-                className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
-                  preview
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                {preview ? "Edit" : "Preview"}
-              </button>
 
-              {/* Desktop: show all tools inline */}
+              {/* Desktop: show all tools inline with Preview next to Summarize */}
               <div className="hidden md:flex items-center gap-1">
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <AIEditPanel onApplyEdit={handleAIEdit} />
                 <AIToolsPanel />
+                <button
+                  onClick={() => setPreview((p) => !p)}
+                  className={`magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 ${
+                    preview
+                      ? "bg-primary/10 text-primary shadow-sm"
+                      : "border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {preview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  {preview ? "Edit" : "Preview"}
+                </button>
                 <AIExplainPanel />
               </div>
 
