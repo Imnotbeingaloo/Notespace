@@ -56,6 +56,8 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
+      <AnimatedDivider />
+
       {/* Mission Statement */}
       <section className="py-20">
         <div className="container mx-auto px-6 max-w-4xl">
