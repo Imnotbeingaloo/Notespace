@@ -1,4 +1,5 @@
-import { useCallback } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
   Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare, Highlighter } from
