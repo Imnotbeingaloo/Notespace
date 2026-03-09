@@ -505,8 +505,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
                                 onSelectNote?.();
                               }}
                             >
-                              <FileText className="h-3 w-3 flex-shrink-0" />
-                              <span className="truncate flex-1">{note.title}</span>
+                              <FileText className="h-3.5 w-3.5 flex-shrink-0" />
+                              <span className="truncate flex-1 text-sm">{note.title}</span>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
