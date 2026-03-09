@@ -282,7 +282,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
               className="flex items-center gap-2"
             >
               <BookOpen className="h-5 w-5 text-primary" />
-              <span className="font-serif font-bold text-foreground text-lg">Notebook Archive</span>
+              <span className="font-serif font-bold text-foreground text-lg whitespace-nowrap">Notebook Archive</span>
               <Link
                 to="/"
                 className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-1"
