@@ -279,7 +279,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 min-w-0 overflow-hidden"
             >
               <BookOpen className="h-5 w-5 text-primary" />
               <span className="font-serif font-bold text-foreground text-lg whitespace-nowrap">Notebook Archive</span>
