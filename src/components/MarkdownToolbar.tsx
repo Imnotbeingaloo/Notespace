@@ -135,8 +135,7 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
         <button
           type="button"
           onClick={() => scroll("left")}
-          className="absolute left-0 z-10 p-1.5 rounded-r-xl bg-primary/10 border border-l-0 border-primary/30 text-primary hover:bg-primary/20 hover:text-primary transition-colors lg:hidden shadow-sm"
-          aria-label="Scroll toolbar left"
+          className="absolute left-0 z-10 p-1 rounded-r-lg bg-background/90 border-r border-border text-muted-foreground hover:text-foreground transition-colors lg:hidden toolbar left"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -169,8 +168,7 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
         <button
           type="button"
           onClick={() => scroll("right")}
-          className="absolute right-0 z-10 p-1.5 rounded-l-xl bg-primary/10 border border-r-0 border-primary/30 text-primary hover:bg-primary/20 hover:text-primary transition-colors lg:hidden shadow-sm"
-          aria-label="Scroll toolbar right"
+          className="absolute right-0 z-10 p-1.5 rounded-l-xl bg-primary/10  rounded-l-lg bg-background/90 border-l border-border text-muted-foreground hover:text-foreground transition-colors lg:hidden toolbar right"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
