@@ -32,22 +32,6 @@ const AuthPage = () => {
     setLoading(false);
   };
 
-  const handleGoogleSignIn = async () => {
-    setError("");
-    setGoogleLoading(true);
-    try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-      });
-      if (result.error) {
-        setError(result.error.message || "Google sign-in failed");
-      }
-    } catch (err: any) {
-      setError(err?.message || "Google sign-in failed");
-    }
-    setGoogleLoading(false);
-  };
-
   if (checkEmail) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
