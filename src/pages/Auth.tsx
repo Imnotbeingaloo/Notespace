@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Mail, Lock, User, ArrowRight, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { lovable } from "@/integrations/lovable/index";
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "signup">("login");
