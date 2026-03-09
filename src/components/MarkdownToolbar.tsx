@@ -103,27 +103,78 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
   { icon: Minus, label: "Divider", action: insertDivider }];
 
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    const ro = new ResizeObserver(checkScroll);
+    ro.observe(el);
+    return () => { el.removeEventListener("scroll", checkScroll); ro.disconnect(); };
+  }, [checkScroll]);
+
+  const scroll = (dir: "left" | "right") => {
+    scrollRef.current?.scrollBy({ left: dir === "left" ? -120 : 120, behavior: "smooth" });
+  };
+
   return (
-    <div className="flex items-center gap-0.5 px-2 py-2 overflow-x-auto scrollbar-none">
-      {actions.map((a, i) =>
-      <div key={a.label} className="contents">
-          <button
+    <div className="relative flex items-center">
+      {/* Left arrow - mobile/tablet only */}
+      {canScrollLeft && (
+        <button
           type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            a.action();
-          }}
-          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-          title={a.label}>
-          
-            <a.icon className="h-4 w-4" />
-          </button>
-          {separatorAfter.has(i) &&
-        <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
-        }
-        </div>
+          onClick={() => scroll("left")}
+          className="absolute left-0 z-10 p-1 rounded-r-lg bg-background/90 border-r border-border text-muted-foreground hover:text-foreground transition-colors md:hidden"
+          aria-label="Scroll toolbar left"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
       )}
-      {children}
+
+      <div ref={scrollRef} className="flex items-center gap-0.5 px-2 py-2 overflow-x-auto scrollbar-none">
+        {actions.map((a, i) =>
+        <div key={a.label} className="contents">
+            <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              a.action();
+            }}
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+            title={a.label}>
+            
+              <a.icon className="h-4 w-4" />
+            </button>
+            {separatorAfter.has(i) &&
+          <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
+          }
+          </div>
+        )}
+        {children}
+      </div>
+
+      {/* Right arrow - mobile/tablet only */}
+      {canScrollRight && (
+        <button
+          type="button"
+          onClick={() => scroll("right")}
+          className="absolute right-0 z-10 p-1 rounded-l-lg bg-background/90 border-l border-border text-muted-foreground hover:text-foreground transition-colors md:hidden"
+          aria-label="Scroll toolbar right"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      )}
     </div>);
 
 }
