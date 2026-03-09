@@ -11,7 +11,6 @@ const AuthPage = () => {
   const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
