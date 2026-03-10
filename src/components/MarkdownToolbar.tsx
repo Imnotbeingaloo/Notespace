@@ -1,9 +1,11 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
-  Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
-  Quote, Code, Link2, Image, Strikethrough, Minus, CheckSquare, Highlighter } from
+  Bold, Italic, Heading1, Heading2, Heading3,
+  Quote, Code, Link2, Image, Strikethrough, Minus, Highlighter } from
 "lucide-react";
+import { ListStylePicker } from "@/components/ListStylePicker";
+import { AlignmentPicker } from "@/components/AlignmentPicker";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -16,15 +18,11 @@ type FormatAction = {
   action: () => void;
 };
 
-// Group separators: after Highlight (idx 3), after H3 (idx 6), after Checklist (idx 9), after Code (idx 11)
-const separatorAfter = new Set([3, 6, 9, 11]);
+// Group separators: after Highlight (idx 3), after H3 (idx 6), after Code (idx 7)
+const separatorAfter = new Set([3, 6, 7]);
 
 function focusEditor(el: HTMLDivElement | null) {
   if (el) el.focus();
-}
-
-function insertHTML(html: string) {
-  document.execCommand("insertHTML", false, html);
 }
 
 export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
@@ -43,19 +41,10 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
     el.textContent = selected || "code";
     range.deleteContents();
     range.insertNode(el);
-    // Move cursor after
     range.setStartAfter(el);
     range.collapse(true);
     sel.removeAllRanges();
     sel.addRange(range);
-    // Trigger input event
-    editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
-  }, [editorRef]);
-
-  const insertCheckbox = useCallback(() => {
-    focusEditor(editorRef.current);
-    const html = '<div><input type="checkbox" class="mr-2 accent-primary rounded"> Task item</div>';
-    insertHTML(html);
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
@@ -86,22 +75,19 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
   }, [editorRef]);
 
   const actions: FormatAction[] = [
-  { icon: Bold, label: "Bold", action: () => exec("bold") },
-  { icon: Italic, label: "Italic", action: () => exec("italic") },
-  { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
-  { icon: Highlighter, label: "Highlight", action: () => exec("hiliteColor", "#fef08a") },
-  { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "h1") },
-  { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "h2") },
-  { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "h3") },
-  { icon: List, label: "Bullet List", action: () => exec("insertUnorderedList") },
-  { icon: ListOrdered, label: "Numbered List", action: () => exec("insertOrderedList") },
-  { icon: CheckSquare, label: "Checklist", action: insertCheckbox },
-  { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "blockquote") },
-  { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
-  { icon: Link2, label: "Link", action: insertLink },
-  { icon: Image, label: "Image", action: insertImage },
-  { icon: Minus, label: "Divider", action: insertDivider }];
-
+    { icon: Bold, label: "Bold", action: () => exec("bold") },
+    { icon: Italic, label: "Italic", action: () => exec("italic") },
+    { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
+    { icon: Highlighter, label: "Highlight", action: () => exec("hiliteColor", "#fef08a") },
+    { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "h1") },
+    { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "h2") },
+    { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "h3") },
+    { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "blockquote") },
+    { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
+    { icon: Link2, label: "Link", action: insertLink },
+    { icon: Image, label: "Image", action: insertImage },
+    { icon: Minus, label: "Divider", action: insertDivider },
+  ];
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -130,12 +116,11 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
 
   return (
     <div className="relative flex items-center">
-      {/* Left arrow - mobile/tablet only */}
       {canScrollLeft && (
         <button
           type="button"
           onClick={() => scroll("left")}
-          className="absolute left-0 z-10 p-1 rounded-r-lg bg-background/90 border-r border-border text-muted-foreground hover:text-foreground transition-colors lg:hidden toolbar left"
+          className="absolute left-0 z-10 p-1 rounded-r-lg bg-background/90 border-r border-border text-muted-foreground hover:text-foreground transition-colors lg:hidden"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -152,7 +137,6 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
             }}
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
             title={a.label}>
-            
               <a.icon className="h-4 w-4" />
             </button>
             {separatorAfter.has(i) &&
@@ -160,19 +144,23 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
           }
           </div>
         )}
+        {/* List styles dropdown */}
+        <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
+        <ListStylePicker editorRef={editorRef} />
+        {/* Alignment dropdown */}
+        <AlignmentPicker editorRef={editorRef} />
+        <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         {children}
       </div>
 
-      {/* Right arrow - mobile/tablet only */}
       {canScrollRight && (
         <button
           type="button"
           onClick={() => scroll("right")}
-          className="absolute right-0 z-10 p-1.5 rounded-l-xl bg-primary/10  rounded-l-lg bg-background/90 border-l border-border text-muted-foreground hover:text-foreground transition-colors lg:hidden toolbar right"
+          className="absolute right-0 z-10 p-1 rounded-l-lg bg-background/90 border-l border-border text-muted-foreground hover:text-foreground transition-colors lg:hidden"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
       )}
     </div>);
-
 }

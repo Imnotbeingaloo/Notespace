@@ -246,6 +246,18 @@
   position: absolute;
 }
 
+/* Prevent double-click from selecting entire line/block */
+.wysiwyg-editor p,
+.wysiwyg-editor div,
+.wysiwyg-editor h1,
+.wysiwyg-editor h2,
+.wysiwyg-editor h3,
+.wysiwyg-editor li,
+.wysiwyg-editor blockquote {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 .wysiwyg-editor img {
   border-radius: 1rem;
   border: 1px solid hsl(var(--border));
