@@ -10,6 +10,7 @@ const alignOptions = [
   { icon: AlignLeft, label: "Align Left", command: "justifyLeft" },
   { icon: AlignCenter, label: "Align Center", command: "justifyCenter" },
   { icon: AlignRight, label: "Align Right", command: "justifyRight" },
+  { icon: AlignJustify, label: "Justify", command: "justifyFull" },
 ];
 
 export function AlignmentPicker({ editorRef }: AlignmentPickerProps) {
