@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
@@ -66,11 +66,71 @@ const SYMBOLS: Record<string, SymbolEntry[]> = {
 
 interface SymbolsPickerProps {
   onInsert: (symbol: string) => void;
+  editorRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
+// Save and restore selection for contenteditable
+function saveSelection(): Range | null {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    return sel.getRangeAt(0).cloneRange();
+  }
+  return null;
+}
+
+function restoreSelection(range: Range | null) {
+  if (!range) return;
+  const sel = window.getSelection();
+  if (sel) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
+
+export function SymbolsPicker({ onInsert, editorRef }: SymbolsPickerProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [savedRange, setSavedRange] = useState<Range | null>(null);
+
+  const isMac = typeof navigator !== "undefined" && /Mac/.test(navigator.platform);
+  const shortcutLabel = isMac ? "⌘⇧S" : "Ctrl+Shift+S";
+
+  // Save cursor position when popover opens
+  const handleOpenChange = useCallback((nextOpen: boolean) => {
+    if (nextOpen) {
+      setSavedRange(saveSelection());
+    }
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setSearch("");
+    }
+  }, []);
+
+  const handleInsert = useCallback((char: string) => {
+    // Restore selection, then insert
+    if (savedRange && editorRef?.current) {
+      editorRef.current.focus();
+      restoreSelection(savedRange);
+      document.execCommand("insertText", false, char);
+      editorRef.current.dispatchEvent(new Event("input", { bubbles: true }));
+      // Update saved range to new position
+      setSavedRange(saveSelection());
+    } else {
+      onInsert(char);
+    }
+  }, [savedRange, editorRef, onInsert]);
+
+  // Keyboard shortcut: Ctrl+Shift+S / Cmd+Shift+S
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        handleOpenChange(!open);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open, handleOpenChange]);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return SYMBOLS;
@@ -86,11 +146,11 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
   }, [search]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <button
           className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-          title="Insert Symbol">
+          title={`Insert Symbol (${shortcutLabel})`}>
           <span className="flex items-center justify-center h-4 w-4 text-[16px] font-medium leading-none">Ω</span>
         </button>
       </PopoverTrigger>
@@ -103,7 +163,6 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search symbols..."
               className="h-8 pl-8 text-xs" />
-            
           </div>
         </div>
         <div className="max-h-64 overflow-y-auto p-2 space-y-3">
@@ -114,10 +173,9 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
                 {entries.map((e) =>
               <button
                 key={e.char + e.name}
-                onClick={() => {onInsert(e.char);}}
+                onMouseDown={(ev) => { ev.preventDefault(); handleInsert(e.char); }}
                 title={e.name}
                 className="h-8 w-full flex items-center justify-center text-base rounded-md hover:bg-muted text-foreground transition-colors">
-                
                     {e.char}
                   </button>
               )}
@@ -128,7 +186,11 @@ export function SymbolsPicker({ onInsert }: SymbolsPickerProps) {
           <p className="text-xs text-muted-foreground text-center py-4">No symbols found</p>
           }
         </div>
+        <div className="px-3 py-2 border-t border-border">
+          <p className="text-[10px] text-muted-foreground text-center">
+            Shortcut: <kbd className="px-1 py-0.5 rounded bg-muted text-[10px] font-mono">{shortcutLabel}</kbd>
+          </p>
+        </div>
       </PopoverContent>
     </Popover>);
-
 }
