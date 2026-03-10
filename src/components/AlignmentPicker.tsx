@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { AlignLeft, AlignCenter, AlignRight, ChevronDown } from "lucide-react";
+import { AlignLeft, AlignCenter, AlignRight, AlignJustify, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AlignmentPickerProps {
