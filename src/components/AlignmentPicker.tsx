@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { AlignLeft, AlignCenter, AlignRight, ChevronDown } from "lucide-react";
+import { AlignLeft, AlignCenter, AlignRight, AlignJustify, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AlignmentPickerProps {
@@ -10,6 +10,7 @@ const alignOptions = [
   { icon: AlignLeft, label: "Align Left", command: "justifyLeft" },
   { icon: AlignCenter, label: "Align Center", command: "justifyCenter" },
   { icon: AlignRight, label: "Align Right", command: "justifyRight" },
+  { icon: AlignJustify, label: "Justify", command: "justifyFull" },
 ];
 
 export function AlignmentPicker({ editorRef }: AlignmentPickerProps) {
