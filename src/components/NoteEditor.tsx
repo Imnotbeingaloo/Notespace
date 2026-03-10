@@ -770,7 +770,11 @@ export function NoteEditor() {
               },
             } as React.RefObject<HTMLDivElement>}
           >
-            <SymbolsPicker onInsert={handleSymbolInsert} />
+            <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
+              get current() {
+                return hybridEditorRef.current?.getEditorElement() ?? null;
+              },
+            } as React.RefObject<HTMLDivElement>} />
           </MarkdownToolbar>
         </div>
 
