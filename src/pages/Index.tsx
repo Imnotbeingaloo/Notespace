@@ -130,24 +130,6 @@ const AppPage = () => {
                 </TooltipContent>
               </Tooltip>
             </div>
-            </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => setPlannerOpen((p) => !p)}
-                    variant={plannerOpen ? "default" : "ghost"}
-                    size="icon"
-                    className="h-8 w-8 rounded-xl shrink-0"
-                  >
-                    <CalendarDays className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </div>
           <div className="flex-1 flex min-h-0 relative">
             <div className="flex-1 min-w-0 flex flex-col">
