@@ -16,6 +16,7 @@ const AppPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
   const isMobile = useIsMobile();
 
   if (authLoading) {
