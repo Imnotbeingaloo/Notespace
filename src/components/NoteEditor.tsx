@@ -789,6 +789,11 @@ export function NoteEditor() {
           />
         </div>
 
+        {/* Word count & reading time */}
+        <div className="shrink-0 border-t border-border">
+          <WordCount content={activeNote?.content || ""} />
+        </div>
+
         {/* File upload */}
         <div className="shrink-0 border-t border-border">
           <FileUpload onInsertMarkdown={handleInsertMarkdown} />
