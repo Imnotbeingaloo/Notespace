@@ -435,7 +435,7 @@ function PreviewButton() {
 }
 
 
-export function NoteEditor() {
+export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
   const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
