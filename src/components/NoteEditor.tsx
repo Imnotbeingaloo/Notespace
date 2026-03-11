@@ -681,11 +681,14 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
           />
 
           {/* Tags row */}
-          <div className="mt-2">
-            <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
-          </div>
+          {!focusMode && (
+            <div className="mt-2">
+              <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
+            </div>
+          )}
 
           {/* Meta & actions row */}
+          {!focusMode && (
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-xs sm:text-sm text-muted-foreground">
               <span className="flex items-center gap-1 sm:gap-1.5 bg-muted/50 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs">
               <Clock className="h-3 w-3" />
@@ -760,6 +763,7 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
               </div>
             </div>
           </div>
+          )}
         </div>
 
         {/* Toolbar */}
