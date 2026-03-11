@@ -40,23 +40,31 @@ const AppPage = () => {
           />
         )}
 
-        {/* Sidebar: overlay on mobile, inline on desktop */}
-        <div
-          className={`${
-            isMobile
-              ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
-                  sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                }`
-              : ""
-          }`}
-        >
-          <AppSidebar
-            collapsed={!isMobile && sidebarCollapsed}
-            onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
-            onSelectNote={() => isMobile && setSidebarOpen(false)}
-            onOpenPlanner={() => setPlannerOpen(true)}
-          />
-        </div>
+        {/* Sidebar: overlay on mobile, inline on desktop, hidden in focus mode */}
+        <AnimatePresence>
+          {!focusMode && (
+            <motion.div
+              initial={false}
+              animate={{ width: "auto", opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className={`overflow-hidden ${
+                isMobile
+                  ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
+                      sidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    }`
+                  : ""
+              }`}
+            >
+              <AppSidebar
+                collapsed={!isMobile && sidebarCollapsed}
+                onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
+                onSelectNote={() => isMobile && setSidebarOpen(false)}
+                onOpenPlanner={() => setPlannerOpen(true)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Editor */}
         <div className="flex-1 flex flex-col min-w-0">
