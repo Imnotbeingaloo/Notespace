@@ -6,6 +6,7 @@ import {
 "lucide-react";
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
+import { TableInsert } from "@/components/TableInsert";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
