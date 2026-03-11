@@ -767,21 +767,23 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
         </div>
 
         {/* Toolbar */}
-        <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
-          <MarkdownToolbar
-            editorRef={{
-              get current() {
-                return hybridEditorRef.current?.getEditorElement() ?? null;
-              },
-            } as React.RefObject<HTMLDivElement>}
-          >
-            <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
-              get current() {
-                return hybridEditorRef.current?.getEditorElement() ?? null;
-              },
-            } as React.RefObject<HTMLDivElement>} />
-          </MarkdownToolbar>
-        </div>
+        {!focusMode && (
+          <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
+            <MarkdownToolbar
+              editorRef={{
+                get current() {
+                  return hybridEditorRef.current?.getEditorElement() ?? null;
+                },
+              } as React.RefObject<HTMLDivElement>}
+            >
+              <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
+                get current() {
+                  return hybridEditorRef.current?.getEditorElement() ?? null;
+                },
+              } as React.RefObject<HTMLDivElement>} />
+            </MarkdownToolbar>
+          </div>
+        )}
 
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
@@ -789,7 +791,7 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
             ref={hybridEditorRef}
             content={activeNote.content || ""}
             onChange={(content) => debouncedUpdate("content", content)}
-            placeholder="Start writing... (drag & drop files here)"
+            placeholder={focusMode ? "Just write..." : "Start writing... (drag & drop files here)"}
           />
         </div>
 
@@ -799,9 +801,11 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
         </div>
 
         {/* File upload */}
-        <div className="shrink-0 border-t border-border">
-          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
-        </div>
+        {!focusMode && (
+          <div className="shrink-0 border-t border-border">
+            <FileUpload onInsertMarkdown={handleInsertMarkdown} />
+          </div>
+        )}
 
       </motion.div>
     </AnimatePresence>
