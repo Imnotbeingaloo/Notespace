@@ -7,6 +7,7 @@ import {
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
 import { TableInsert } from "@/components/TableInsert";
+import { TableEditToolbar } from "@/components/TableEditToolbar";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -150,8 +151,9 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
         <ListStylePicker editorRef={editorRef} />
         {/* Alignment dropdown */}
         <AlignmentPicker editorRef={editorRef} />
-        {/* Table insertion */}
+        {/* Table insertion & editing */}
         <TableInsert editorRef={editorRef} />
+        <TableEditToolbar editorRef={editorRef} />
         <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         {children}
       </div>

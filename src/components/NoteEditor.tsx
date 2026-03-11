@@ -435,7 +435,7 @@ function PreviewButton() {
 }
 
 
-export function NoteEditor() {
+export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
   const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
@@ -681,11 +681,14 @@ export function NoteEditor() {
           />
 
           {/* Tags row */}
-          <div className="mt-2">
-            <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
-          </div>
+          {!focusMode && (
+            <div className="mt-2">
+              <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
+            </div>
+          )}
 
           {/* Meta & actions row */}
+          {!focusMode && (
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-xs sm:text-sm text-muted-foreground">
               <span className="flex items-center gap-1 sm:gap-1.5 bg-muted/50 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs">
               <Clock className="h-3 w-3" />
@@ -760,24 +763,27 @@ export function NoteEditor() {
               </div>
             </div>
           </div>
+          )}
         </div>
 
         {/* Toolbar */}
-        <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
-          <MarkdownToolbar
-            editorRef={{
-              get current() {
-                return hybridEditorRef.current?.getEditorElement() ?? null;
-              },
-            } as React.RefObject<HTMLDivElement>}
-          >
-            <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
-              get current() {
-                return hybridEditorRef.current?.getEditorElement() ?? null;
-              },
-            } as React.RefObject<HTMLDivElement>} />
-          </MarkdownToolbar>
-        </div>
+        {!focusMode && (
+          <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
+            <MarkdownToolbar
+              editorRef={{
+                get current() {
+                  return hybridEditorRef.current?.getEditorElement() ?? null;
+                },
+              } as React.RefObject<HTMLDivElement>}
+            >
+              <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
+                get current() {
+                  return hybridEditorRef.current?.getEditorElement() ?? null;
+                },
+              } as React.RefObject<HTMLDivElement>} />
+            </MarkdownToolbar>
+          </div>
+        )}
 
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
@@ -785,7 +791,7 @@ export function NoteEditor() {
             ref={hybridEditorRef}
             content={activeNote.content || ""}
             onChange={(content) => debouncedUpdate("content", content)}
-            placeholder="Start writing... (drag & drop files here)"
+            placeholder={focusMode ? "Just write..." : "Start writing... (drag & drop files here)"}
           />
         </div>
 
@@ -795,9 +801,11 @@ export function NoteEditor() {
         </div>
 
         {/* File upload */}
-        <div className="shrink-0 border-t border-border">
-          <FileUpload onInsertMarkdown={handleInsertMarkdown} />
-        </div>
+        {!focusMode && (
+          <div className="shrink-0 border-t border-border">
+            <FileUpload onInsertMarkdown={handleInsertMarkdown} />
+          </div>
+        )}
 
       </motion.div>
     </AnimatePresence>

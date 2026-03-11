@@ -5,9 +5,9 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { CalendarDays, Loader2 } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -16,6 +16,7 @@ const AppPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
   const isMobile = useIsMobile();
 
   if (authLoading) {
@@ -39,60 +40,104 @@ const AppPage = () => {
           />
         )}
 
-        {/* Sidebar: overlay on mobile, inline on desktop */}
-        <div
-          className={`${
-            isMobile
-              ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
-                  sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                }`
-              : ""
-          }`}
-        >
-          <AppSidebar
-            collapsed={!isMobile && sidebarCollapsed}
-            onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
-            onSelectNote={() => isMobile && setSidebarOpen(false)}
-            onOpenPlanner={() => setPlannerOpen(true)}
-          />
-        </div>
+        {/* Sidebar: overlay on mobile, inline on desktop, hidden in focus mode */}
+        <AnimatePresence>
+          {!focusMode && (
+            <motion.div
+              initial={false}
+              animate={{ width: "auto", opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className={`overflow-hidden ${
+                isMobile
+                  ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
+                      sidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    }`
+                  : ""
+              }`}
+            >
+              <AppSidebar
+                collapsed={!isMobile && sidebarCollapsed}
+                onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
+                onSelectNote={() => isMobile && setSidebarOpen(false)}
+                onOpenPlanner={() => setPlannerOpen(true)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Editor */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Top bar */}
-          <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
-            <div>
-              {isMobile && !sidebarOpen && (
-                <button
-                  onClick={() => setSidebarOpen(true)}
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                  Open Sidebar
-                </button>
-              )}
-            </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => setPlannerOpen((p) => !p)}
-                    variant={plannerOpen ? "default" : "ghost"}
-                    size="icon"
-                    className="h-8 w-8 rounded-xl shrink-0"
+          <TooltipProvider>
+            <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
+              <div className="flex items-center gap-2">
+                {focusMode && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => setFocusMode(false)}
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-xl shrink-0"
+                      >
+                        <Minimize2 className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>Exit Focus Mode</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                {!focusMode && isMobile && !sidebarOpen && (
+                  <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    <CalendarDays className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    Open Sidebar
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => setFocusMode((p) => !p)}
+                      variant={focusMode ? "default" : "ghost"}
+                      size="icon"
+                      className="h-8 w-8 rounded-xl shrink-0"
+                    >
+                      {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
+                  </TooltipContent>
+                </Tooltip>
+                {!focusMode && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => setPlannerOpen((p) => !p)}
+                        variant={plannerOpen ? "default" : "ghost"}
+                        size="icon"
+                        className="h-8 w-8 rounded-xl shrink-0"
+                      >
+                        <CalendarDays className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+            </div>
+          </TooltipProvider>
           <div className="flex-1 flex min-h-0 relative">
             <div className="flex-1 min-w-0 flex flex-col">
-              <NoteEditor />
+              <NoteEditor focusMode={focusMode} />
             </div>
             {/* Study Planner panel — overlays on top so editor layout never resizes */}
             <AnimatePresence>
