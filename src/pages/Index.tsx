@@ -70,8 +70,25 @@ const AppPage = () => {
         <div className="flex-1 flex flex-col min-w-0">
           {/* Top bar */}
           <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
-            <div>
-              {isMobile && !sidebarOpen && (
+            <div className="flex items-center gap-2">
+              {focusMode && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => setFocusMode(false)}
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-xl shrink-0"
+                    >
+                      <Minimize2 className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Exit Focus Mode</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {!focusMode && isMobile && !sidebarOpen && (
                 <button
                   onClick={() => setSidebarOpen(true)}
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -80,6 +97,39 @@ const AppPage = () => {
                   Open Sidebar
                 </button>
               )}
+            </div>
+            <div className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setFocusMode((p) => !p)}
+                    variant={focusMode ? "default" : "ghost"}
+                    size="icon"
+                    className="h-8 w-8 rounded-xl shrink-0"
+                  >
+                    {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setPlannerOpen((p) => !p)}
+                    variant={plannerOpen ? "default" : "ghost"}
+                    size="icon"
+                    className="h-8 w-8 rounded-xl shrink-0"
+                  >
+                    <CalendarDays className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             </div>
             <TooltipProvider>
               <Tooltip>
