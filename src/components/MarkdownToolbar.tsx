@@ -7,6 +7,7 @@ import {
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
 import { TableInsert } from "@/components/TableInsert";
+import { TableEditToolbar } from "@/components/TableEditToolbar";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
