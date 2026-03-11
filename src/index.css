@@ -268,3 +268,31 @@
   object-fit: contain;
   margin: 0.75rem 0;
 }
+
+.wysiwyg-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.wysiwyg-editor th,
+.wysiwyg-editor td {
+  border: 1px solid hsl(var(--border));
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.wysiwyg-editor th {
+  background: hsl(var(--muted));
+  font-weight: 600;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: hsl(var(--muted-foreground));
+}
+
+.wysiwyg-editor td {
+  font-size: 0.9em;
+}

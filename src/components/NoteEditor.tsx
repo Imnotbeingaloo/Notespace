@@ -15,6 +15,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
 import { SymbolsPicker } from "@/components/SymbolsPicker";
+import { WordCount } from "@/components/WordCount";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 
@@ -786,6 +787,11 @@ export function NoteEditor() {
             onChange={(content) => debouncedUpdate("content", content)}
             placeholder="Start writing... (drag & drop files here)"
           />
+        </div>
+
+        {/* Word count & reading time */}
+        <div className="shrink-0 border-t border-border">
+          <WordCount content={activeNote?.content || ""} />
         </div>
 
         {/* File upload */}

@@ -6,6 +6,7 @@ import {
 "lucide-react";
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
+import { TableInsert } from "@/components/TableInsert";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -149,6 +150,8 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
         <ListStylePicker editorRef={editorRef} />
         {/* Alignment dropdown */}
         <AlignmentPicker editorRef={editorRef} />
+        {/* Table insertion */}
+        <TableInsert editorRef={editorRef} />
         <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         {children}
       </div>
