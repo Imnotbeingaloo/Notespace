@@ -114,6 +114,7 @@ const AppPage = () => {
                     <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
                   </TooltipContent>
                 </Tooltip>
+                <KeyboardShortcuts />
               </div>
             </div>
           </TooltipProvider>
