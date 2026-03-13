@@ -797,6 +797,17 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
           </MarkdownToolbar>
         </div>
 
+        {/* Find and Replace */}
+        <FindReplace
+          editorRef={{
+            get current() {
+              return hybridEditorRef.current?.getEditorElement() ?? null;
+            },
+          } as React.RefObject<HTMLDivElement>}
+          open={findReplaceOpen}
+          onClose={() => setFindReplaceOpen(false)}
+        />
+
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
           <HybridEditor
