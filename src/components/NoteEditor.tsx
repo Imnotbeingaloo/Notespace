@@ -16,6 +16,7 @@ import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
 import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { WordCount } from "@/components/WordCount";
+import { FindReplace } from "@/components/FindReplace";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 
@@ -448,6 +449,19 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const [findReplaceOpen, setFindReplaceOpen] = useState(false);
+
+  // Ctrl+F for find and replace
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+        e.preventDefault();
+        setFindReplaceOpen((p) => !p);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
@@ -767,23 +781,32 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
         </div>
 
         {/* Toolbar */}
-        {!focusMode && (
-          <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
-            <MarkdownToolbar
-              editorRef={{
-                get current() {
-                  return hybridEditorRef.current?.getEditorElement() ?? null;
-                },
-              } as React.RefObject<HTMLDivElement>}
-            >
-              <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
-                get current() {
-                  return hybridEditorRef.current?.getEditorElement() ?? null;
-                },
-              } as React.RefObject<HTMLDivElement>} />
-            </MarkdownToolbar>
-          </div>
-        )}
+        <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
+          <MarkdownToolbar
+            editorRef={{
+              get current() {
+                return hybridEditorRef.current?.getEditorElement() ?? null;
+              },
+            } as React.RefObject<HTMLDivElement>}
+          >
+            <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
+              get current() {
+                return hybridEditorRef.current?.getEditorElement() ?? null;
+              },
+            } as React.RefObject<HTMLDivElement>} />
+          </MarkdownToolbar>
+        </div>
+
+        {/* Find and Replace */}
+        <FindReplace
+          editorRef={{
+            get current() {
+              return hybridEditorRef.current?.getEditorElement() ?? null;
+            },
+          } as React.RefObject<HTMLDivElement>}
+          open={findReplaceOpen}
+          onClose={() => setFindReplaceOpen(false)}
+        />
 
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
