@@ -449,6 +449,19 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const [findReplaceOpen, setFindReplaceOpen] = useState(false);
+
+  // Ctrl+F for find and replace
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+        e.preventDefault();
+        setFindReplaceOpen((p) => !p);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
