@@ -10,6 +10,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -113,6 +114,7 @@ const AppPage = () => {
                     <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
                   </TooltipContent>
                 </Tooltip>
+                <KeyboardShortcuts />
               </div>
             </div>
           </TooltipProvider>
