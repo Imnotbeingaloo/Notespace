@@ -767,23 +767,21 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
         </div>
 
         {/* Toolbar */}
-        {!focusMode && (
-          <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
-            <MarkdownToolbar
-              editorRef={{
-                get current() {
-                  return hybridEditorRef.current?.getEditorElement() ?? null;
-                },
-              } as React.RefObject<HTMLDivElement>}
-            >
-              <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
-                get current() {
-                  return hybridEditorRef.current?.getEditorElement() ?? null;
-                },
-              } as React.RefObject<HTMLDivElement>} />
-            </MarkdownToolbar>
-          </div>
-        )}
+        <div className="shrink-0 border-b border-border bg-muted/30 overflow-x-auto scrollbar-none">
+          <MarkdownToolbar
+            editorRef={{
+              get current() {
+                return hybridEditorRef.current?.getEditorElement() ?? null;
+              },
+            } as React.RefObject<HTMLDivElement>}
+          >
+            <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
+              get current() {
+                return hybridEditorRef.current?.getEditorElement() ?? null;
+              },
+            } as React.RefObject<HTMLDivElement>} />
+          </MarkdownToolbar>
+        </div>
 
         {/* Content area */}
         <div className="flex-1 min-h-0 overflow-y-auto">
