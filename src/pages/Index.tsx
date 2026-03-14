@@ -5,12 +5,13 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2 } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Search } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -18,6 +19,7 @@ const AppPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const [findReplaceOpen, setFindReplaceOpen] = useState(false);
   const isMobile = useIsMobile();
 
   if (authLoading) {
@@ -87,6 +89,21 @@ const AppPage = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      onClick={() => setFindReplaceOpen((p) => !p)}
+                      variant={findReplaceOpen ? "default" : "ghost"}
+                      size="icon"
+                      className="h-8 w-8 rounded-xl shrink-0"
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Find & Replace (Ctrl+F)</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
                       onClick={() => setFocusMode((p) => !p)}
                       variant={focusMode ? "default" : "ghost"}
                       size="icon"
@@ -115,12 +132,13 @@ const AppPage = () => {
                   </TooltipContent>
                 </Tooltip>
                 <KeyboardShortcuts />
+                <ThemeToggle />
               </div>
             </div>
           </TooltipProvider>
           <div className="flex-1 flex min-h-0 relative">
             <div className="flex-1 min-w-0 flex flex-col">
-              <NoteEditor focusMode={focusMode} />
+              <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
             </div>
             {/* Study Planner panel — overlays on top so editor layout never resizes */}
             <AnimatePresence>
