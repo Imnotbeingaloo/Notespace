@@ -89,6 +89,21 @@ const AppPage = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      onClick={() => setFindReplaceOpen((p) => !p)}
+                      variant={findReplaceOpen ? "default" : "ghost"}
+                      size="icon"
+                      className="h-8 w-8 rounded-xl shrink-0"
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Find & Replace (Ctrl+F)</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
                       onClick={() => setFocusMode((p) => !p)}
                       variant={focusMode ? "default" : "ghost"}
                       size="icon"
@@ -117,6 +132,7 @@ const AppPage = () => {
                   </TooltipContent>
                 </Tooltip>
                 <KeyboardShortcuts />
+                <ThemeToggle />
               </div>
             </div>
           </TooltipProvider>
