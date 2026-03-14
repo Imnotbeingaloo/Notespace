@@ -436,7 +436,7 @@ function PreviewButton() {
 }
 
 
-export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
+export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindReplaceChange }: { focusMode?: boolean; findReplaceOpen?: boolean; onFindReplaceChange?: (open: boolean) => void }) {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
   const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
@@ -449,19 +449,18 @@ export function NoteEditor({ focusMode = false }: { focusMode?: boolean }) {
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  const [findReplaceOpen, setFindReplaceOpen] = useState(false);
 
   // Ctrl+F for find and replace
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "f") {
         e.preventDefault();
-        setFindReplaceOpen((p) => !p);
+        onFindReplaceChange?.(!findReplaceOpen);
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
+  }, [findReplaceOpen, onFindReplaceChange]);
 
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
