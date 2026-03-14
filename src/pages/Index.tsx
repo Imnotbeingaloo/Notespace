@@ -5,12 +5,13 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2 } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Search } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
