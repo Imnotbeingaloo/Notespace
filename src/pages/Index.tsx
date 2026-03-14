@@ -138,7 +138,7 @@ const AppPage = () => {
           </TooltipProvider>
           <div className="flex-1 flex min-h-0 relative">
             <div className="flex-1 min-w-0 flex flex-col">
-              <NoteEditor focusMode={focusMode} />
+              <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
             </div>
             {/* Study Planner panel — overlays on top so editor layout never resizes */}
             <AnimatePresence>
