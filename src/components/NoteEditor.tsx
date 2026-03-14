@@ -804,7 +804,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             },
           } as React.RefObject<HTMLDivElement>}
           open={findReplaceOpen}
-          onClose={() => setFindReplaceOpen(false)}
+          onClose={() => onFindReplaceChange?.(false)}
         />
 
         {/* Content area */}
