@@ -12,6 +12,7 @@ import { Search } from "lucide-react";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
+  onFindReplace?: () => void;
   children?: React.ReactNode;
 }
 
