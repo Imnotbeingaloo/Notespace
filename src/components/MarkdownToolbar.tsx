@@ -29,7 +29,7 @@ function focusEditor(el: HTMLDivElement | null) {
   if (el) el.focus();
 }
 
-export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
+export function MarkdownToolbar({ editorRef, onFindReplace, children }: MarkdownToolbarProps) {
   const exec = useCallback((command: string, value?: string) => {
     focusEditor(editorRef.current);
     document.execCommand(command, false, value);
