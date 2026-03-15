@@ -5,13 +5,12 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Search } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -43,7 +42,7 @@ const AppPage = () => {
           />
         )}
 
-        {/* Sidebar: overlay on mobile, inline on desktop, hidden in focus mode */}
+        {/* Sidebar */}
         <AnimatePresence>
           {!focusMode && (
             <motion.div
@@ -71,7 +70,7 @@ const AppPage = () => {
 
         {/* Editor */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Top bar */}
+          {/* Top bar — minimal, only essential actions */}
           <TooltipProvider>
             <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
               <div className="flex items-center gap-2">
@@ -86,21 +85,6 @@ const AppPage = () => {
                 )}
               </div>
               <div className="flex items-center gap-1">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      onClick={() => setFindReplaceOpen((p) => !p)}
-                      variant={findReplaceOpen ? "default" : "ghost"}
-                      size="icon"
-                      className="h-8 w-8 rounded-xl shrink-0"
-                    >
-                      <Search className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>Find & Replace (Ctrl+F)</p>
-                  </TooltipContent>
-                </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -132,7 +116,6 @@ const AppPage = () => {
                   </TooltipContent>
                 </Tooltip>
                 <KeyboardShortcuts />
-                <ThemeToggle />
               </div>
             </div>
           </TooltipProvider>
@@ -140,7 +123,6 @@ const AppPage = () => {
             <div className="flex-1 min-w-0 flex flex-col">
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
             </div>
-            {/* Study Planner panel — overlays on top so editor layout never resizes */}
             <AnimatePresence>
               {plannerOpen && (
                 <div className="fixed inset-0 z-50 flex justify-end max-lg:bg-card lg:pointer-events-none">
