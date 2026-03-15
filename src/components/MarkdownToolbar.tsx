@@ -158,7 +158,19 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         <TableEditToolbar editorRef={editorRef} />
         <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         {children}
-      </div>
+        {onFindReplace && (
+          <>
+            <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
+            <button
+              type="button"
+              onClick={onFindReplace}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+              title="Find & Replace (Ctrl+F)"
+            >
+              <Search className="h-4 w-4" />
+            </button>
+          </>
+        )}
 
       {canScrollRight && (
         <button
