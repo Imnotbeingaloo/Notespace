@@ -788,6 +788,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                 return hybridEditorRef.current?.getEditorElement() ?? null;
               },
             } as React.RefObject<HTMLDivElement>}
+            onFindReplace={() => onFindReplaceChange?.(!findReplaceOpen)}
           >
             <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
               get current() {
