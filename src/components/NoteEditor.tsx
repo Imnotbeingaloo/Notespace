@@ -819,9 +819,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
         </div>
 
-        {/* Word count & reading time */}
-        <div className="shrink-0 border-t border-border">
+        {/* Word count, goal & reading time */}
+        <div className="shrink-0 border-t border-border flex items-center justify-between">
           <WordCount content={activeNote?.content || ""} />
+          <WordCountGoal content={activeNote?.content || ""} />
         </div>
 
         {/* File upload */}
