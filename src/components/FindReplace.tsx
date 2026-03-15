@@ -51,8 +51,6 @@ export function FindReplace({ editorRef, open, onClose }: FindReplaceProps) {
     }
 
     let count = 0;
-
-    // Build search function based on mode
     let getMatches: (text: string) => { start: number; length: number }[];
 
     if (useRegex) {
@@ -105,9 +103,10 @@ export function FindReplace({ editorRef, open, onClose }: FindReplaceProps) {
         const mark = document.createElement("mark");
         mark.setAttribute("data-find-highlight", "true");
         mark.setAttribute("data-match-index", String(count));
-        mark.style.backgroundColor = "hsl(var(--primary) / 0.3)";
-        mark.style.borderRadius = "2px";
-        mark.style.padding = "0 1px";
+        mark.style.backgroundColor = "hsl(var(--primary) / 0.25)";
+        mark.style.borderRadius = "3px";
+        mark.style.padding = "1px 2px";
+        mark.style.boxShadow = "0 0 0 1px hsl(var(--primary) / 0.15)";
         mark.textContent = text.slice(match.start, match.start + match.length);
         fragment.appendChild(mark);
         lastIdx = match.start + match.length;
@@ -126,7 +125,8 @@ export function FindReplace({ editorRef, open, onClose }: FindReplaceProps) {
     if (count > 0) {
       const firstMark = editor.querySelector('mark[data-match-index="1"]');
       if (firstMark) {
-        (firstMark as HTMLElement).style.backgroundColor = "hsl(var(--primary) / 0.6)";
+        (firstMark as HTMLElement).style.backgroundColor = "hsl(var(--primary) / 0.5)";
+        (firstMark as HTMLElement).style.boxShadow = "0 0 0 2px hsl(var(--primary) / 0.3)";
         firstMark.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
@@ -138,7 +138,8 @@ export function FindReplace({ editorRef, open, onClose }: FindReplaceProps) {
 
     const currentMark = editor.querySelector(`mark[data-match-index="${currentMatch}"]`);
     if (currentMark) {
-      (currentMark as HTMLElement).style.backgroundColor = "hsl(var(--primary) / 0.3)";
+      (currentMark as HTMLElement).style.backgroundColor = "hsl(var(--primary) / 0.25)";
+      (currentMark as HTMLElement).style.boxShadow = "0 0 0 1px hsl(var(--primary) / 0.15)";
     }
 
     let next = direction === "next" ? currentMatch + 1 : currentMatch - 1;
@@ -148,7 +149,8 @@ export function FindReplace({ editorRef, open, onClose }: FindReplaceProps) {
 
     const nextMark = editor.querySelector(`mark[data-match-index="${next}"]`);
     if (nextMark) {
-      (nextMark as HTMLElement).style.backgroundColor = "hsl(var(--primary) / 0.6)";
+      (nextMark as HTMLElement).style.backgroundColor = "hsl(var(--primary) / 0.5)";
+      (nextMark as HTMLElement).style.boxShadow = "0 0 0 2px hsl(var(--primary) / 0.3)";
       nextMark.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [currentMatch, matchCount, editorRef]);
@@ -203,85 +205,107 @@ export function FindReplace({ editorRef, open, onClose }: FindReplaceProps) {
 
   return (
     <TooltipProvider>
-      <div className="shrink-0 border-b border-border bg-muted/30 px-3 py-2 flex flex-col gap-2 animate-in slide-in-from-top-2 duration-200">
-        {/* Find row */}
-        <div className="flex items-center gap-1.5">
-          <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <Input
-            ref={findInputRef}
-            value={findText}
-            onChange={(e) => setFindText(e.target.value)}
-            placeholder={useRegex ? "Regex pattern..." : "Find..."}
-            className={`h-7 text-xs flex-1 min-w-0 ${regexError ? "border-destructive" : ""}`}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") navigateMatch(e.shiftKey ? "prev" : "next");
-              if (e.key === "Escape") onClose();
-            }}
-          />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={caseSensitive ? "default" : "ghost"}
-                size="icon"
-                className="h-6 w-6 shrink-0"
-                onClick={() => setCaseSensitive((p) => !p)}
-              >
-                <CaseSensitive className="h-3.5 w-3.5" />
+      <div className="shrink-0 border-b border-border bg-card/80 backdrop-blur-sm px-4 py-3 animate-in slide-in-from-top-2 duration-200 shadow-sm">
+        <div className="flex flex-col gap-2.5 max-w-2xl">
+          {/* Find row */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 text-muted-foreground shrink-0">
+              <Search className="h-4 w-4" />
+              <span className="text-xs font-medium hidden sm:inline">Find</span>
+            </div>
+            <div className="flex-1 relative">
+              <Input
+                ref={findInputRef}
+                value={findText}
+                onChange={(e) => setFindText(e.target.value)}
+                placeholder={useRegex ? "Regex pattern..." : "Search in note..."}
+                className={`h-8 text-sm pr-20 ${regexError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") navigateMatch(e.shiftKey ? "prev" : "next");
+                  if (e.key === "Escape") onClose();
+                }}
+              />
+              {/* Match count badge inside input */}
+              <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                <span className="text-[11px] font-medium tabular-nums text-muted-foreground">
+                  {regexError ? (
+                    <span className="text-destructive">Invalid regex</span>
+                  ) : matchCount > 0 ? (
+                    `${currentMatch} of ${matchCount}`
+                  ) : findText ? (
+                    "No results"
+                  ) : null}
+                </span>
+              </div>
+            </div>
+            {/* Options */}
+            <div className="flex items-center gap-0.5">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={caseSensitive ? "default" : "ghost"}
+                    size="icon"
+                    className="h-7 w-7 shrink-0"
+                    onClick={() => setCaseSensitive((p) => !p)}
+                  >
+                    <CaseSensitive className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom"><p>Match Case</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={useRegex ? "default" : "ghost"}
+                    size="icon"
+                    className="h-7 w-7 shrink-0"
+                    onClick={() => setUseRegex((p) => !p)}
+                  >
+                    <Regex className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom"><p>Use Regex</p></TooltipContent>
+              </Tooltip>
+            </div>
+            {/* Nav */}
+            <div className="flex items-center gap-0.5 border-l border-border pl-2">
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => navigateMatch("prev")} disabled={matchCount === 0}>
+                <ChevronUp className="h-3.5 w-3.5" />
               </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom"><p>Case Sensitive</p></TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={useRegex ? "default" : "ghost"}
-                size="icon"
-                className="h-6 w-6 shrink-0"
-                onClick={() => setUseRegex((p) => !p)}
-              >
-                <Regex className="h-3.5 w-3.5" />
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => navigateMatch("next")} disabled={matchCount === 0}>
+                <ChevronDown className="h-3.5 w-3.5" />
               </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom"><p>Use Regex</p></TooltipContent>
-          </Tooltip>
-          <span className="text-[10px] text-muted-foreground tabular-nums whitespace-nowrap min-w-[48px] text-center">
-            {regexError ? (
-              <span className="text-destructive">Invalid</span>
-            ) : matchCount > 0 ? (
-              `${currentMatch}/${matchCount}`
-            ) : (
-              "0 results"
-            )}
-          </span>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => navigateMatch("prev")} disabled={matchCount === 0}>
-            <ChevronUp className="h-3 w-3" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => navigateMatch("next")} disabled={matchCount === 0}>
-            <ChevronDown className="h-3 w-3" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
-            <X className="h-3 w-3" />
-          </Button>
-        </div>
-        {/* Replace row */}
-        <div className="flex items-center gap-1.5">
-          <Replace className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <Input
-            value={replaceText}
-            onChange={(e) => setReplaceText(e.target.value)}
-            placeholder="Replace..."
-            className="h-7 text-xs flex-1 min-w-0"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleReplace();
-              if (e.key === "Escape") onClose();
-            }}
-          />
-          <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2" onClick={handleReplace} disabled={matchCount === 0}>
-            Replace
-          </Button>
-          <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2" onClick={handleReplaceAll} disabled={matchCount === 0}>
-            All
-          </Button>
+            </div>
+            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onClose}>
+              <X className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+
+          {/* Replace row */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 text-muted-foreground shrink-0">
+              <Replace className="h-4 w-4" />
+              <span className="text-xs font-medium hidden sm:inline">Replace</span>
+            </div>
+            <Input
+              value={replaceText}
+              onChange={(e) => setReplaceText(e.target.value)}
+              placeholder="Replace with..."
+              className="h-8 text-sm flex-1"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleReplace();
+                if (e.key === "Escape") onClose();
+              }}
+            />
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="sm" className="h-7 text-xs px-3" onClick={handleReplace} disabled={matchCount === 0}>
+                Replace
+              </Button>
+              <Button variant="outline" size="sm" className="h-7 text-xs px-3" onClick={handleReplaceAll} disabled={matchCount === 0}>
+                Replace All
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </TooltipProvider>

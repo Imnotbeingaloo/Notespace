@@ -8,9 +8,11 @@ import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
 import { TableInsert } from "@/components/TableInsert";
 import { TableEditToolbar } from "@/components/TableEditToolbar";
+import { Search } from "lucide-react";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
+  onFindReplace?: () => void;
   children?: React.ReactNode;
 }
 
@@ -27,7 +29,7 @@ function focusEditor(el: HTMLDivElement | null) {
   if (el) el.focus();
 }
 
-export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
+export function MarkdownToolbar({ editorRef, onFindReplace, children }: MarkdownToolbarProps) {
   const exec = useCallback((command: string, value?: string) => {
     focusEditor(editorRef.current);
     document.execCommand(command, false, value);
@@ -156,6 +158,19 @@ export function MarkdownToolbar({ editorRef, children }: MarkdownToolbarProps) {
         <TableEditToolbar editorRef={editorRef} />
         <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         {children}
+        {onFindReplace && (
+          <>
+            <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
+            <button
+              type="button"
+              onClick={onFindReplace}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+              title="Find & Replace (Ctrl+F)"
+            >
+              <Search className="h-4 w-4" />
+            </button>
+          </>
+        )}
       </div>
 
       {canScrollRight && (

@@ -16,6 +16,7 @@ import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
 import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { WordCount } from "@/components/WordCount";
+import { WordCountGoal } from "@/components/WordCountGoal";
 import { FindReplace } from "@/components/FindReplace";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
@@ -787,6 +788,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                 return hybridEditorRef.current?.getEditorElement() ?? null;
               },
             } as React.RefObject<HTMLDivElement>}
+            onFindReplace={() => onFindReplaceChange?.(!findReplaceOpen)}
           >
             <SymbolsPicker onInsert={handleSymbolInsert} editorRef={{
               get current() {
@@ -817,9 +819,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
         </div>
 
-        {/* Word count & reading time */}
-        <div className="shrink-0 border-t border-border">
+        {/* Word count, goal & reading time */}
+        <div className="shrink-0 border-t border-border flex items-center justify-between">
           <WordCount content={activeNote?.content || ""} />
+          <WordCountGoal content={activeNote?.content || ""} />
         </div>
 
         {/* File upload */}
