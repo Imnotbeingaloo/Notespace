@@ -171,8 +171,8 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
             </button>
           </>
         )}
+      </div>
 
-      {canScrollRight && (
         <button
           type="button"
           onClick={() => scroll("right")}
