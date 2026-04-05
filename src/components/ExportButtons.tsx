@@ -97,11 +97,11 @@ export function ExportButtons() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 w-full"
       >
         <Download className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Download</span>
-        <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <span>Download</span>
+        <ChevronDown className={`h-3 w-3 transition-transform duration-200 ml-auto ${open ? "rotate-180" : ""}`} />
       </button>
 
       <AnimatePresence>
