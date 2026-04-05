@@ -281,7 +281,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
               exit={{ opacity: 0 }}
               className="flex items-center gap-2 min-w-0 overflow-hidden"
             >
-              <BookOpen className="h-5 w-5 text-primary flex-shrink-0" />
+              <img src="/favicon.png" alt="Notebook Archive" className="h-5 w-5 object-contain flex-shrink-0" />
               <span className="font-serif font-bold text-foreground text-lg whitespace-nowrap overflow-hidden text-ellipsis">Notebook Archive</span>
               <Link
                 to="/"
