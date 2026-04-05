@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpen, ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { AnimatePresence, motion } from "framer-motion";
@@ -23,7 +23,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
         <Link to="/" className="flex items-center gap-2">
-          <BookOpen className="h-6 w-6 text-primary" />
+          <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 object-contain" />
           <span className="font-serif text-xl font-bold text-foreground">Notebook Archive</span>
         </Link>
 

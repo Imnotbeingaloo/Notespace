@@ -7,12 +7,18 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
 
+  const toggle = () => {
+    const next = isDark ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("app-theme", next);
+  };
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
           variant="ghost"
-          onClick={() => setTheme(isDark ? "light" : "dark")}
+          onClick={toggle}
           className="h-8 gap-2 rounded-xl px-3 text-xs font-medium"
         >
           <div className="relative h-4 w-4">

@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Target, Check, Pencil } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import confetti from "canvas-confetti";
 
 interface WordCountGoalProps {
   content: string;
@@ -11,6 +12,7 @@ interface WordCountGoalProps {
 
 const GOAL_KEY = "daily-word-goal";
 const COUNT_KEY = "daily-word-count-date";
+const CELEBRATED_KEY = "daily-goal-celebrated";
 
 function getToday() {
   return new Date().toISOString().slice(0, 10);
@@ -23,6 +25,7 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   });
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const hasCelebrated = useRef(false);
 
   // Track daily baseline
   const [baseline, setBaseline] = useState(() => {
@@ -33,6 +36,12 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
     }
     return 0;
   });
+
+  // Check if already celebrated today
+  useEffect(() => {
+    const celebrated = localStorage.getItem(CELEBRATED_KEY);
+    if (celebrated === getToday()) hasCelebrated.current = true;
+  }, []);
 
   const wordCount = useMemo(() => {
     const text = content.replace(/[#*_~`>\-\[\]()!|]/g, "").trim();
@@ -47,7 +56,6 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
       const parsed = JSON.parse(saved);
       if (parsed.date === getToday()) return;
     }
-    // New day - set current word count as baseline
     const newBaseline = wordCount;
     setBaseline(newBaseline);
     localStorage.setItem(COUNT_KEY, JSON.stringify({ date: getToday(), baseline: newBaseline }));
@@ -57,11 +65,41 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   const progress = goal > 0 ? Math.min(100, Math.round((wordsToday / goal) * 100)) : 0;
   const isComplete = goal > 0 && wordsToday >= goal;
 
+  // Fire confetti when goal is completed
+  useEffect(() => {
+    if (isComplete && !hasCelebrated.current) {
+      hasCelebrated.current = true;
+      localStorage.setItem(CELEBRATED_KEY, getToday());
+      const duration = 2000;
+      const end = Date.now() + duration;
+      const frame = () => {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.8 },
+          colors: ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b"],
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.8 },
+          colors: ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b"],
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      };
+      frame();
+    }
+  }, [isComplete]);
+
   const saveGoal = () => {
     const val = parseInt(inputValue, 10);
     if (val > 0) {
       setGoal(val);
       localStorage.setItem(GOAL_KEY, String(val));
+      hasCelebrated.current = false;
+      localStorage.removeItem(CELEBRATED_KEY);
     }
     setEditing(false);
   };
@@ -73,10 +111,10 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
           <TooltipTrigger asChild>
             <button
               onClick={() => { setEditing(true); setInputValue("500"); }}
-              className="inline-flex items-center gap-1 px-2 py-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors rounded-lg hover:bg-primary/10 border border-primary/20"
             >
-              <Target className="h-3 w-3" />
-              <span>Set goal</span>
+              <Target className="h-3.5 w-3.5" />
+              <span>Set Daily Goal</span>
             </button>
           </TooltipTrigger>
           <TooltipContent side="top"><p>Set a daily writing goal</p></TooltipContent>
@@ -88,7 +126,7 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   if (editing) {
     return (
       <div className="inline-flex items-center gap-1.5 px-2 py-1">
-        <Target className="h-3 w-3 text-muted-foreground shrink-0" />
+        <Target className="h-3.5 w-3.5 text-primary shrink-0" />
         <Input
           autoFocus
           type="number"
@@ -96,12 +134,12 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") saveGoal(); if (e.key === "Escape") setEditing(false); }}
-          className="h-6 w-20 text-[11px] px-2"
+          className="h-7 w-20 text-xs px-2"
           placeholder="Words"
         />
-        <span className="text-[10px] text-muted-foreground">words/day</span>
-        <Button size="icon" variant="ghost" className="h-5 w-5" onClick={saveGoal}>
-          <Check className="h-3 w-3" />
+        <span className="text-[11px] text-muted-foreground">words/day</span>
+        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={saveGoal}>
+          <Check className="h-3.5 w-3.5" />
         </Button>
       </div>
     );
@@ -112,25 +150,25 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
       <div className="inline-flex items-center gap-2 px-2 py-1">
         <div className="flex items-center gap-1.5">
           {isComplete ? (
-            <Check className="h-3 w-3 text-green-500" />
+            <Check className="h-3.5 w-3.5 text-green-500" />
           ) : (
-            <Target className="h-3 w-3 text-muted-foreground" />
+            <Target className="h-3.5 w-3.5 text-primary" />
           )}
-          <span className={`text-[10px] sm:text-[11px] tabular-nums font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}>
+          <span className={`text-[11px] sm:text-xs tabular-nums font-semibold ${isComplete ? "text-green-500" : "text-foreground"}`}>
             {wordsToday.toLocaleString()}/{goal.toLocaleString()}
           </span>
         </div>
-        <Progress value={progress} className="h-1.5 w-16 sm:w-24" />
-        <span className={`text-[10px] tabular-nums ${isComplete ? "text-green-500 font-medium" : "text-muted-foreground"}`}>
+        <Progress value={progress} className="h-2 w-20 sm:w-28" />
+        <span className={`text-[11px] tabular-nums font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}>
           {progress}%
         </span>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
               onClick={() => { setEditing(true); setInputValue(String(goal)); }}
-              className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              className="p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Pencil className="h-2.5 w-2.5" />
+              <Pencil className="h-3 w-3" />
             </button>
           </TooltipTrigger>
           <TooltipContent side="top"><p>Edit daily goal</p></TooltipContent>

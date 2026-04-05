@@ -90,7 +90,6 @@ function PhilosophySection() {
       timers = cycle();
     }, TOTAL);
 
-    // Smooth progress bar
     let raf: number;
     let start = performance.now();
     const tick = (now: number) => {
@@ -154,7 +153,6 @@ function PhilosophySection() {
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
-            {/* Red tint overlay when in "old" phase */}
             <motion.div
               animate={{ opacity: phase === "old" ? 0.06 : 0 }}
               transition={{ duration: 0.6 }}
@@ -176,12 +174,11 @@ function PhilosophySection() {
                 </div>
               </div>
               <div className="space-y-3">
-                {oldItems.map((item, i) => (
+                {oldItems.map((item) => (
                   <motion.div
                     key={item}
                     animate={{
                       opacity: phase !== "old" ? 0.5 : 1,
-                      x: 0,
                       textDecoration: phase !== "old" ? "line-through" : "none",
                     }}
                     transition={{ duration: 0.15 }}
@@ -220,13 +217,11 @@ function PhilosophySection() {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 w-full rounded-[2rem] border-2 border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
-            {/* Primary glow overlay */}
             <motion.div
               animate={{ opacity: phase === "new" ? 1 : 0 }}
               transition={{ duration: 0.8 }}
               className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/8 via-primary/3 to-accent/8"
             />
-            {/* Animated border glow */}
             <motion.div
               animate={{
                 boxShadow: phase === "new"
@@ -297,74 +292,28 @@ export default function AboutPage() {
 
       <AnimatedDivider />
 
-      {/* Mission & Approach — Zigzag */}
+      {/* Mission & Approach — Simple text cards, no animations */}
       <section className="py-24">
         <div className="container mx-auto px-6 max-w-4xl">
-          <div className="relative">
-            {/* Vertical connector line */}
-            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
-              <motion.div
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                className="h-full w-full bg-border origin-top"
-              />
+          <div className="flex flex-col gap-16 md:grid md:grid-cols-2 md:gap-12">
+            {/* Mission */}
+            <div className="rounded-[2rem] border border-border bg-card p-8">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <Target className="h-6 w-6 text-primary" />
+              </div>
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Mission</h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge.</p>
+              <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
             </div>
 
-            <div className="flex flex-col gap-20">
-              {/* Mission — left */}
-              <div className="md:grid md:grid-cols-2 md:gap-16 items-center">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-                >
-                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(600px_circle_at_50%_50%,hsl(var(--primary)/0.06),transparent_70%)]" />
-                  <div className="relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
-                      <Target className="h-6 w-6 text-primary" />
-                    </div>
-                    <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Mission</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-3">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge.</p>
-                    <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
-                  </div>
-                </motion.div>
-                <div className="hidden md:flex items-center justify-start relative">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-                    className="absolute left-1/2 -translate-x-[calc(50%+50%)] w-4 h-4 rounded-full bg-primary border-4 border-background shadow-lg shadow-primary/25"
-                    style={{ left: 0, transform: "translateX(-200%)" }}
-                  />
-                </div>
+            {/* Approach */}
+            <div className="rounded-[2rem] border border-border bg-card p-8">
+              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
+                <Layers className="h-6 w-6 text-accent" />
               </div>
-
-              {/* Approach — right */}
-              <div className="md:grid md:grid-cols-2 md:gap-16 items-center">
-                <div className="hidden md:block" />
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-accent/30 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-                >
-                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(600px_circle_at_50%_50%,hsl(var(--accent)/0.06),transparent_70%)]" />
-                  <div className="relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                      <Layers className="h-6 w-6 text-accent" />
-                    </div>
-                    <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Approach</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-3">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
-                    <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
-                  </div>
-                </motion.div>
-              </div>
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Approach</h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
+              <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
             </div>
           </div>
         </div>
