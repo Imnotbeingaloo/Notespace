@@ -17,8 +17,26 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
+// Wrapper that forces light theme for marketing/public pages
+function LightThemeWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light" enableSystem={false}>
+      {children}
+    </ThemeProvider>
+  );
+}
+
+// Wrapper for the app that respects user's theme preference
+function AppThemeWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem storageKey="app-theme">
+      {children}
+    </ThemeProvider>
+  );
+}
+
 const App = () => (
-  <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+  <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
@@ -28,12 +46,12 @@ const App = () => (
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/app" element={<AppPage />} />
+              <Route path="/app" element={<AppThemeWrapper><AppPage /></AppThemeWrapper>} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
-              <Route path="/trash" element={<TrashPage />} />
+              <Route path="/trash" element={<AppThemeWrapper><TrashPage /></AppThemeWrapper>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
