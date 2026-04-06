@@ -200,7 +200,7 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
 
   return (
     <TooltipProvider>
-      <div className="inline-flex items-center gap-2 px-2 py-1">
+      <div className="inline-flex items-center gap-1.5 sm:gap-2 px-1 sm:px-2 py-1 max-w-full overflow-hidden">
         <div className="flex items-center gap-1.5">
           {isComplete ? (
             <Check className="h-3.5 w-3.5 text-green-500" />
@@ -211,7 +211,7 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
             {wordsToday.toLocaleString()}/{goal.toLocaleString()}
           </span>
         </div>
-        <Progress value={progress} className="h-2 w-20 sm:w-28" />
+        <Progress value={progress} className="h-2 w-14 sm:w-28" />
         <span className={`text-[11px] tabular-nums font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}>
           {progress}%
         </span>
