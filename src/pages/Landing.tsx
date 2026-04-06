@@ -115,7 +115,7 @@ export default function LandingPage() {
       >
         <div className="flex items-center justify-between px-5 py-3">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 object-contain" />
+            <img src="/favicon.png" alt="Notebook Archive" className="h-6 w-6 object-contain" />
             <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
           </Link>
           <nav className="hidden md:flex items-center gap-1">

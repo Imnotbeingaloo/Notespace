@@ -279,10 +279,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-2 min-w-0 overflow-hidden"
+              className="flex items-center gap-2 min-w-0"
             >
-              <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 object-contain flex-shrink-0" />
-              <span className="font-serif font-bold text-foreground text-lg whitespace-nowrap overflow-hidden text-ellipsis">Notebook Archive</span>
+              <img src="/favicon.png" alt="Notebook Archive" className="h-6 w-6 object-contain flex-shrink-0" />
+              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap">Notebook Archive</span>
               <Link
                 to="/"
                 className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-1"
