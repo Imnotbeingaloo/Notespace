@@ -211,7 +211,7 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
             {wordsToday.toLocaleString()}/{goal.toLocaleString()}
           </span>
         </div>
-        <Progress value={progress} className="h-2 w-20 sm:w-28" />
+        <Progress value={progress} className="h-2 w-14 sm:w-28" />
         <span className={`text-[11px] tabular-nums font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}>
           {progress}%
         </span>
