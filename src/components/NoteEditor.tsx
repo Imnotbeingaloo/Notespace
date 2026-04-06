@@ -762,7 +762,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -4, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1"
+                      className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1 mobile-dropdown"
                       onClick={() => setMoreOpen(false)}
                     >
                       <AIExplainPanel />
