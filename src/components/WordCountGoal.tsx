@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Target, Check, Pencil } from "lucide-react";
+import { Target, Check, Pencil, Flame } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +13,33 @@ interface WordCountGoalProps {
 const GOAL_KEY = "daily-word-goal";
 const COUNT_KEY = "daily-word-count-date";
 const CELEBRATED_KEY = "daily-goal-celebrated";
+const STREAK_KEY = "writing-streak";
 
 function getToday() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function getYesterday() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+interface StreakData {
+  count: number;
+  lastCompletedDate: string;
+}
+
+function loadStreak(): StreakData {
+  try {
+    const saved = localStorage.getItem(STREAK_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return { count: 0, lastCompletedDate: "" };
+}
+
+function saveStreak(data: StreakData) {
+  localStorage.setItem(STREAK_KEY, JSON.stringify(data));
 }
 
 export function WordCountGoal({ content }: WordCountGoalProps) {
@@ -26,6 +50,7 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const hasCelebrated = useRef(false);
+  const [streak, setStreak] = useState<StreakData>(loadStreak);
 
   // Track daily baseline
   const [baseline, setBaseline] = useState(() => {
@@ -41,6 +66,19 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   useEffect(() => {
     const celebrated = localStorage.getItem(CELEBRATED_KEY);
     if (celebrated === getToday()) hasCelebrated.current = true;
+  }, []);
+
+  // Reset streak if user missed yesterday
+  useEffect(() => {
+    const s = loadStreak();
+    const today = getToday();
+    const yesterday = getYesterday();
+    if (s.lastCompletedDate && s.lastCompletedDate !== today && s.lastCompletedDate !== yesterday) {
+      // Streak broken
+      const reset = { count: 0, lastCompletedDate: "" };
+      saveStreak(reset);
+      setStreak(reset);
+    }
   }, []);
 
   const wordCount = useMemo(() => {
@@ -65,11 +103,26 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   const progress = goal > 0 ? Math.min(100, Math.round((wordsToday / goal) * 100)) : 0;
   const isComplete = goal > 0 && wordsToday >= goal;
 
-  // Fire confetti when goal is completed
+  // Fire confetti and update streak when goal is completed
   useEffect(() => {
     if (isComplete && !hasCelebrated.current) {
       hasCelebrated.current = true;
       localStorage.setItem(CELEBRATED_KEY, getToday());
+
+      // Update streak
+      const s = loadStreak();
+      const today = getToday();
+      const yesterday = getYesterday();
+      let newCount = 1;
+      if (s.lastCompletedDate === yesterday) {
+        newCount = s.count + 1;
+      } else if (s.lastCompletedDate === today) {
+        newCount = s.count; // Already counted today
+      }
+      const newStreak = { count: newCount, lastCompletedDate: today };
+      saveStreak(newStreak);
+      setStreak(newStreak);
+
       const duration = 2000;
       const end = Date.now() + duration;
       const frame = () => {
@@ -162,6 +215,22 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
         <span className={`text-[11px] tabular-nums font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}>
           {progress}%
         </span>
+
+        {/* Streak indicator */}
+        {streak.count > 0 && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-accent/10 border border-accent/20">
+                <Flame className="h-3 w-3 text-accent" />
+                <span className="text-[11px] font-bold tabular-nums text-accent">{streak.count}</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <p>{streak.count} day{streak.count !== 1 ? "s" : ""} writing streak!</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+
         <Tooltip>
           <TooltipTrigger asChild>
             <button

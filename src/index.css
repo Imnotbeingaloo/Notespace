@@ -301,3 +301,8 @@
 .wysiwyg-editor td {
   font-size: 0.9em;
 }
+
+/* Force hidden labels to show inside mobile dropdown */
+.mobile-dropdown .hidden.sm\:inline {
+  display: inline !important;
+}
