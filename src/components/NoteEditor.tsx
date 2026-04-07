@@ -504,19 +504,11 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   const handleInsertMarkdown = useCallback(
     (markdown: string) => {
-      if (!contentRef.current || !activeNotebookId || !activeNote) return;
-      const textarea = contentRef.current;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const current = textarea.value;
-      const newContent = current.substring(0, start) + markdown + current.substring(end);
-      textarea.value = newContent;
-      const newPos = start + markdown.length;
-      textarea.setSelectionRange(newPos, newPos);
-      textarea.focus();
-      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+      if (!markdown) return;
+      // Insert at cursor position in the hybrid editor
+      hybridEditorRef.current?.insertAtCursor(markdown);
     },
-    [activeNotebookId, activeNote?.id, updateNote]
+    []
   );
 
   const handleToolbarChange = useCallback(
