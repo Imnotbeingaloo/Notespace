@@ -18,6 +18,7 @@ import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { WordCount } from "@/components/WordCount";
 import { WordCountGoal } from "@/components/WordCountGoal";
 import { FindReplace } from "@/components/FindReplace";
+import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 
