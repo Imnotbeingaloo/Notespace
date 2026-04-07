@@ -553,6 +553,13 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     []
   );
 
+  const handleImportNotes = useCallback(
+    (text: string) => {
+      hybridEditorRef.current?.insertAtCursor(text);
+    },
+    []
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
