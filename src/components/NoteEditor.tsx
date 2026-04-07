@@ -735,20 +735,15 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             </AnimatePresence>
 
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
-              {/* Desktop: Ask AI | AI Edit | Flashcards | Symbols | Preview */}
+              {/* Core actions always visible on desktop */}
               <div className="hidden lg:flex items-center gap-1">
                 <AIExplainPanel />
-                <AIEditPanel onApplyEdit={handleAIEdit} />
-                <FlashcardsButton />
-                
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
-                <PreviewButton />
-                <ImportNotesButton onInsert={handleImportNotes} />
                 <ExportButtons />
               </div>
 
-              {/* Mobile: "More" dropdown */}
-              <div className="lg:hidden relative" ref={moreRef}>
+              {/* Three-dots menu for secondary actions (all sizes) */}
+              <div className="relative" ref={moreRef}>
                 <button
                   onClick={() => setMoreOpen((p) => !p)}
                   className="magnetic-btn inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
@@ -765,13 +760,17 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1 mobile-dropdown"
                       onClick={() => setMoreOpen(false)}
                     >
-                      <AIExplainPanel />
+                      {/* Show these only in mobile dropdown (hidden on desktop) */}
+                      <div className="lg:hidden flex flex-col gap-1">
+                        <AIExplainPanel />
+                        <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                        <ExportButtons />
+                      </div>
+                      {/* Secondary actions always in dropdown */}
                       <AIEditPanel onApplyEdit={handleAIEdit} />
                       <FlashcardsButton />
-                      <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <PreviewButton />
                       <ImportNotesButton onInsert={handleImportNotes} />
-                      <ExportButtons />
                     </motion.div>
                   )}
                 </AnimatePresence>
