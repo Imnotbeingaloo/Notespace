@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Target, Check, Pencil, Flame } from "lucide-react";
+import { Target, Check, Pencil, Flame, BarChart3 } from "lucide-react";
+import { recordDailyWords, WeeklyWritingChart } from "@/components/WeeklyWritingChart";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

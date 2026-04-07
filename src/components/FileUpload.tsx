@@ -73,9 +73,9 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
       };
       newAttachments.push(att);
 
-      // For images, insert markdown inline into the note content
+      // For images, insert at cursor position via onInsertMarkdown
       if (file.type.startsWith("image/")) {
-        markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
+        markdownInserts.push(`![${file.name}](${fileUrl})`);
       }
     }
 
