@@ -743,6 +743,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                 
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <PreviewButton />
+                <ImportNotesButton onInsert={handleImportNotes} />
                 <ExportButtons />
               </div>
 
