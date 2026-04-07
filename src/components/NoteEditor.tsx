@@ -575,21 +575,20 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         const fileUrl = signedUrlData?.signedUrl || '';
         newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
         if (file.type.startsWith("image/")) {
-          markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
+          markdownInserts.push(`![${file.name}](${fileUrl})`);
           hasImages = true;
         }
       }
 
-      const contentAppend = markdownInserts.length > 0 ? markdownInserts.join("\n") : "";
-      const newContent = contentAppend ? (activeNote.content || "") + contentAppend : undefined;
-
       await updateNote(activeNotebookId, activeNote.id, {
         attachments: newAttachments,
-        ...(newContent ? { content: newContent } : {}),
       });
 
-      if (newContent && contentRef.current) {
-        contentRef.current.value = newContent;
+      // Insert images at cursor position
+      if (markdownInserts.length > 0) {
+        for (const md of markdownInserts) {
+          hybridEditorRef.current?.insertAtCursor(md);
+        }
       }
 
       if (hasImages) {
