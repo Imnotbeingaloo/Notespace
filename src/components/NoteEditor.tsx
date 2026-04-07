@@ -19,6 +19,7 @@ import { WordCount } from "@/components/WordCount";
 import { WordCountGoal } from "@/components/WordCountGoal";
 import { FindReplace } from "@/components/FindReplace";
 import { ImportNotesButton } from "@/components/ImportNotesButton";
+import { NewNotePrompt } from "@/components/NewNotePrompt";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 
@@ -625,26 +626,20 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   if (!activeNote) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-5 text-center -mt-16">
-          <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center">
-            <span className="text-4xl">{activeNotebook.emoji}</span>
-          </div>
-          <h2 className="font-sans text-2xl font-bold text-foreground">{activeNotebook.name}</h2>
-          <p className="text-base text-muted-foreground leading-relaxed max-w-sm">
-            {activeNotebook.notes.length === 0
-              ? "This notebook is empty. Create your first note!"
-              : `${activeNotebook.notes.length} note${activeNotebook.notes.length > 1 ? "s" : ""} — select one to edit.`}
-          </p>
-          <button
-            onClick={() => activeNotebookId && createNote(activeNotebookId)}
-            className="magnetic-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
-          >
-            <Plus className="h-4 w-4" />
-            New Note
-          </button>
-        </motion.div>
-      </div>
+      <NewNotePrompt
+        notebookName={activeNotebook.name}
+        notebookEmoji={activeNotebook.emoji}
+        noteCount={activeNotebook.notes.length}
+        onCreateNew={() => activeNotebookId && createNote(activeNotebookId)}
+        onImportAndCreate={async (content: string, fileName: string) => {
+          if (!activeNotebookId) return;
+          await createNote(activeNotebookId);
+          // We'll insert content after creation via a slight delay
+          setTimeout(() => {
+            hybridEditorRef.current?.insertAtCursor(`## Imported: ${fileName}\n\n${content}`);
+          }, 500);
+        }}
+      />
     );
   }
 
@@ -735,20 +730,15 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             </AnimatePresence>
 
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
-              {/* Desktop: Ask AI | AI Edit | Flashcards | Symbols | Preview */}
+              {/* Core actions always visible on desktop */}
               <div className="hidden lg:flex items-center gap-1">
                 <AIExplainPanel />
-                <AIEditPanel onApplyEdit={handleAIEdit} />
-                <FlashcardsButton />
-                
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
-                <PreviewButton />
-                <ImportNotesButton onInsert={handleImportNotes} />
                 <ExportButtons />
               </div>
 
-              {/* Mobile: "More" dropdown */}
-              <div className="lg:hidden relative" ref={moreRef}>
+              {/* Three-dots menu for secondary actions (all sizes) */}
+              <div className="relative" ref={moreRef}>
                 <button
                   onClick={() => setMoreOpen((p) => !p)}
                   className="magnetic-btn inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
@@ -765,13 +755,17 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1 mobile-dropdown"
                       onClick={() => setMoreOpen(false)}
                     >
-                      <AIExplainPanel />
+                      {/* Show these only in mobile dropdown (hidden on desktop) */}
+                      <div className="lg:hidden flex flex-col gap-1">
+                        <AIExplainPanel />
+                        <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                        <ExportButtons />
+                      </div>
+                      {/* Secondary actions always in dropdown */}
                       <AIEditPanel onApplyEdit={handleAIEdit} />
                       <FlashcardsButton />
-                      <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <PreviewButton />
                       <ImportNotesButton onInsert={handleImportNotes} />
-                      <ExportButtons />
                     </motion.div>
                   )}
                 </AnimatePresence>
