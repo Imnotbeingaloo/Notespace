@@ -105,6 +105,13 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   const progress = goal > 0 ? Math.min(100, Math.round((wordsToday / goal) * 100)) : 0;
   const isComplete = goal > 0 && wordsToday >= goal;
 
+  // Record daily words for weekly chart
+  useEffect(() => {
+    if (wordsToday > 0) {
+      recordDailyWords(getToday(), wordsToday);
+    }
+  }, [wordsToday]);
+
   // Fire confetti and update streak when goal is completed
   useEffect(() => {
     if (isComplete && !hasCelebrated.current) {
