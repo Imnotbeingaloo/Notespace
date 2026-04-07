@@ -625,26 +625,20 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   if (!activeNote) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-5 text-center -mt-16">
-          <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center">
-            <span className="text-4xl">{activeNotebook.emoji}</span>
-          </div>
-          <h2 className="font-sans text-2xl font-bold text-foreground">{activeNotebook.name}</h2>
-          <p className="text-base text-muted-foreground leading-relaxed max-w-sm">
-            {activeNotebook.notes.length === 0
-              ? "This notebook is empty. Create your first note!"
-              : `${activeNotebook.notes.length} note${activeNotebook.notes.length > 1 ? "s" : ""} — select one to edit.`}
-          </p>
-          <button
-            onClick={() => activeNotebookId && createNote(activeNotebookId)}
-            className="magnetic-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
-          >
-            <Plus className="h-4 w-4" />
-            New Note
-          </button>
-        </motion.div>
-      </div>
+      <NewNotePrompt
+        notebookName={activeNotebook.name}
+        notebookEmoji={activeNotebook.emoji}
+        noteCount={activeNotebook.notes.length}
+        onCreateNew={() => activeNotebookId && createNote(activeNotebookId)}
+        onImportAndCreate={async (content: string, fileName: string) => {
+          if (!activeNotebookId) return;
+          await createNote(activeNotebookId);
+          // We'll insert content after creation via a slight delay
+          setTimeout(() => {
+            hybridEditorRef.current?.insertAtCursor(`## Imported: ${fileName}\n\n${content}`);
+          }, 500);
+        }}
+      />
     );
   }
 
