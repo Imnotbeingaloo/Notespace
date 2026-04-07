@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Target, Check, Pencil, Flame } from "lucide-react";
+import { Target, Check, Pencil, Flame, BarChart3 } from "lucide-react";
+import { recordDailyWords, WeeklyWritingChart } from "@/components/WeeklyWritingChart";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,6 +104,13 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   const wordsToday = Math.max(0, wordCount - baseline);
   const progress = goal > 0 ? Math.min(100, Math.round((wordsToday / goal) * 100)) : 0;
   const isComplete = goal > 0 && wordsToday >= goal;
+
+  // Record daily words for weekly chart
+  useEffect(() => {
+    if (wordsToday > 0) {
+      recordDailyWords(getToday(), wordsToday);
+    }
+  }, [wordsToday]);
 
   // Fire confetti and update streak when goal is completed
   useEffect(() => {
@@ -242,6 +251,17 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
           </TooltipTrigger>
           <TooltipContent side="top"><p>Edit daily goal</p></TooltipContent>
         </Tooltip>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
+              <BarChart3 className="h-3 w-3" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent side="top" align="end" className="w-64 p-3">
+            <WeeklyWritingChart />
+          </PopoverContent>
+        </Popover>
       </div>
     </TooltipProvider>
   );

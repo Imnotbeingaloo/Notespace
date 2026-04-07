@@ -62,8 +62,8 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
         console.error("Upload error:", error);
         continue;
       }
-      const { data: publicUrlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
-      const fileUrl = publicUrlData?.publicUrl || '';
+      const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
+      const fileUrl = signedUrlData?.signedUrl || '';
       const att = {
         name: file.name,
         url: fileUrl,
@@ -73,9 +73,9 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
       };
       newAttachments.push(att);
 
-      // For images, insert markdown inline into the note content
+      // For images, insert at cursor position via onInsertMarkdown
       if (file.type.startsWith("image/")) {
-        markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
+        markdownInserts.push(`![${file.name}](${fileUrl})`);
       }
     }
 

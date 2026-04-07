@@ -18,6 +18,7 @@ import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { WordCount } from "@/components/WordCount";
 import { WordCountGoal } from "@/components/WordCountGoal";
 import { FindReplace } from "@/components/FindReplace";
+import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 
@@ -504,19 +505,11 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   const handleInsertMarkdown = useCallback(
     (markdown: string) => {
-      if (!contentRef.current || !activeNotebookId || !activeNote) return;
-      const textarea = contentRef.current;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const current = textarea.value;
-      const newContent = current.substring(0, start) + markdown + current.substring(end);
-      textarea.value = newContent;
-      const newPos = start + markdown.length;
-      textarea.setSelectionRange(newPos, newPos);
-      textarea.focus();
-      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+      if (!markdown) return;
+      // Insert at cursor position in the hybrid editor
+      hybridEditorRef.current?.insertAtCursor(markdown);
     },
-    [activeNotebookId, activeNote?.id, updateNote]
+    []
   );
 
   const handleToolbarChange = useCallback(
@@ -560,6 +553,13 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     []
   );
 
+  const handleImportNotes = useCallback(
+    (text: string) => {
+      hybridEditorRef.current?.insertAtCursor(text);
+    },
+    []
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
@@ -579,25 +579,24 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         const path = buildStoragePath(user.id, activeNote.id, file.name);
         const { error } = await supabase.storage.from("note-attachments").upload(path, file);
         if (error) { console.error("Drop upload error:", error); continue; }
-        const { data: publicUrlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
-        const fileUrl = publicUrlData?.publicUrl || '';
+        const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
+        const fileUrl = signedUrlData?.signedUrl || '';
         newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
         if (file.type.startsWith("image/")) {
-          markdownInserts.push(`\n![${file.name}](${fileUrl})\n`);
+          markdownInserts.push(`![${file.name}](${fileUrl})`);
           hasImages = true;
         }
       }
 
-      const contentAppend = markdownInserts.length > 0 ? markdownInserts.join("\n") : "";
-      const newContent = contentAppend ? (activeNote.content || "") + contentAppend : undefined;
-
       await updateNote(activeNotebookId, activeNote.id, {
         attachments: newAttachments,
-        ...(newContent ? { content: newContent } : {}),
       });
 
-      if (newContent && contentRef.current) {
-        contentRef.current.value = newContent;
+      // Insert images at cursor position
+      if (markdownInserts.length > 0) {
+        for (const md of markdownInserts) {
+          hybridEditorRef.current?.insertAtCursor(md);
+        }
       }
 
       if (hasImages) {
@@ -744,6 +743,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                 
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <PreviewButton />
+                <ImportNotesButton onInsert={handleImportNotes} />
                 <ExportButtons />
               </div>
 
@@ -770,6 +770,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       <FlashcardsButton />
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <PreviewButton />
+                      <ImportNotesButton onInsert={handleImportNotes} />
                       <ExportButtons />
                     </motion.div>
                   )}
