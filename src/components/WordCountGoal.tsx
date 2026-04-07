@@ -251,6 +251,17 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
           </TooltipTrigger>
           <TooltipContent side="top"><p>Edit daily goal</p></TooltipContent>
         </Tooltip>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
+              <BarChart3 className="h-3 w-3" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent side="top" align="end" className="w-64 p-3">
+            <WeeklyWritingChart />
+          </PopoverContent>
+        </Popover>
       </div>
     </TooltipProvider>
   );
