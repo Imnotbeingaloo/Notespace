@@ -770,6 +770,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       <FlashcardsButton />
                       <VoiceTranscription onTranscript={handleVoiceTranscript} />
                       <PreviewButton />
+                      <ImportNotesButton onInsert={handleImportNotes} />
                       <ExportButtons />
                     </motion.div>
                   )}
