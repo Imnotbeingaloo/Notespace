@@ -12,14 +12,30 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Verify this is called by the service role (cron) not a regular user
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader) {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+      const checkClient = createClient(supabaseUrl, anonKey, {
+        global: { headers: { Authorization: authHeader } },
+      });
+      const token = authHeader.replace("Bearer ", "");
+      const { data: claimsData } = await checkClient.auth.getClaims(token);
+      if (claimsData?.claims?.role !== "service_role") {
+        return new Response(
+          JSON.stringify({ error: "Forbidden" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Get today's date in UTC
     const today = new Date().toISOString().split("T")[0];
 
-    // Fetch incomplete study plans for today that have email reminders enabled
     const { data: plans, error } = await supabase
       .from("study_plans")
       .select("id, title, scheduled_time, user_id")
@@ -35,14 +51,12 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Group by user
     const userPlans: Record<string, typeof plans> = {};
     for (const plan of plans) {
       if (!userPlans[plan.user_id]) userPlans[plan.user_id] = [];
       userPlans[plan.user_id].push(plan);
     }
 
-    // Send emails using Supabase Auth admin to get user emails
     let sentCount = 0;
     for (const [userId, sessions] of Object.entries(userPlans)) {
       const { data: userData } = await supabase.auth.admin.getUserById(userId);
@@ -56,8 +70,6 @@ Deno.serve(async (req) => {
         )
         .join("\n");
 
-      // Use Supabase's built-in email via auth.admin or a simple log
-      // For production, integrate with an email provider. For now, log it.
       console.log(
         `📧 Reminder for ${email}:\n` +
           `You have ${sessions.length} study session(s) today:\n${sessionList}`
@@ -69,10 +81,10 @@ Deno.serve(async (req) => {
       JSON.stringify({ message: `Processed reminders for ${sentCount} user(s)` }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (err) {
-    console.error("Error sending study reminders:", err);
+  } catch (error) {
+    console.error("study-reminders error:", error);
     return new Response(
-      JSON.stringify({ error: err.message }),
+      JSON.stringify({ error: "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
