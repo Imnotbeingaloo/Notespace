@@ -1,6 +1,12 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, FileUp, Loader2, X } from "lucide-react";
+import { Plus, FileUp, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface NewNotePromptProps {
   notebookName: string;
@@ -18,7 +24,7 @@ function stripHtml(html: string): string {
 }
 
 export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreateNew, onImportAndCreate }: NewNotePromptProps) {
-  const [showImport, setShowImport] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +43,6 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
     setImporting(true);
     setImportStatus("Reading document...");
 
-    // Simulate realistic loading (at least 5 seconds)
     const startTime = Date.now();
 
     try {
@@ -47,20 +52,19 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
         content = stripHtml(text);
       }
 
-      // Progress stages
       setImportStatus("Parsing content...");
       await new Promise(r => setTimeout(r, 1500));
       setImportStatus("Formatting text...");
       await new Promise(r => setTimeout(r, 1500));
       setImportStatus("Preparing document...");
 
-      // Ensure at least 5 seconds total
       const elapsed = Date.now() - startTime;
       if (elapsed < 5000) {
         await new Promise(r => setTimeout(r, 5000 - elapsed));
       }
 
       if (content.trim()) {
+        setUploadDialogOpen(false);
         onImportAndCreate(content, file.name);
       } else {
         setImportStatus("File appears to be empty.");
@@ -73,6 +77,12 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
 
     if (inputRef.current) inputRef.current.value = "";
   }, [onImportAndCreate]);
+
+  const handleOpenUploadDialog = () => {
+    setImporting(false);
+    setImportStatus("");
+    setUploadDialogOpen(true);
+  };
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background">
@@ -91,82 +101,77 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
             : `${noteCount} note${noteCount > 1 ? "s" : ""} — select one to edit.`}
         </p>
 
-        <AnimatePresence mode="wait">
-          {!showImport ? (
-            <motion.div
-              key="buttons"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex flex-col gap-3 w-full"
-            >
-              <button
-                onClick={() => setShowImport(true)}
-                className="magnetic-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
-              >
-                <Plus className="h-4 w-4" />
-                New Note
-              </button>
-            </motion.div>
-          ) : importing ? (
-            <motion.div
-              key="importing"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex flex-col items-center gap-3 w-full"
-            >
-              <Loader2 className="h-8 w-8 text-primary animate-spin" />
-              <p className="text-sm text-muted-foreground">{importStatus}</p>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="import-options"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex flex-col gap-3 w-full"
-            >
-              <p className="text-sm text-muted-foreground">
-                Do you have an existing document you'd like to import?
-              </p>
-              <button
-                onClick={() => inputRef.current?.click()}
-                className="magnetic-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
-              >
-                <FileUp className="h-4 w-4" />
-                Upload Document
-              </button>
-              <button
-                onClick={onCreateNew}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                No, Create Empty Note
-              </button>
-              <button
-                onClick={() => setShowImport(false)}
-                className="inline-flex items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="h-3 w-3" />
-                Cancel
-              </button>
-
-              {importStatus && (
-                <p className="text-xs text-destructive">{importStatus}</p>
-              )}
-
-              <input
-                ref={inputRef}
-                type="file"
-                accept=".txt,.md,.markdown,.html,.htm,.csv,.json"
-                className="hidden"
-                onChange={handleFile}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex flex-col gap-3 w-full">
+          <button
+            onClick={handleOpenUploadDialog}
+            className="magnetic-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
+          >
+            <FileUp className="h-4 w-4" />
+            Upload a Document
+          </button>
+          <button
+            onClick={onCreateNew}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            Create a New Note
+          </button>
+        </div>
       </motion.div>
+
+      {/* Upload Dialog */}
+      <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upload a Document</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4 py-4">
+            <AnimatePresence mode="wait">
+              {importing ? (
+                <motion.div
+                  key="importing"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="flex flex-col items-center gap-3 w-full"
+                >
+                  <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                  <p className="text-sm text-muted-foreground">{importStatus}</p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="upload-form"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="flex flex-col items-center gap-4 w-full"
+                >
+                  <p className="text-sm text-muted-foreground text-center">
+                    Choose a file to import into your new note. Supported formats: .txt, .md, .html, .csv, .json
+                  </p>
+                  <button
+                    onClick={() => inputRef.current?.click()}
+                    className="magnetic-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20 w-full"
+                  >
+                    <FileUp className="h-4 w-4" />
+                    Choose File
+                  </button>
+                  {importStatus && (
+                    <p className="text-xs text-destructive">{importStatus}</p>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".txt,.md,.markdown,.html,.htm,.csv,.json"
+              className="hidden"
+              onChange={handleFile}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
