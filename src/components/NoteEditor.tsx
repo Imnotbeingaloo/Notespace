@@ -735,6 +735,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                 <AIExplainPanel />
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
+                <FlashcardsButton />
               </div>
 
               {/* Three-dots menu for secondary actions (all sizes) */}
@@ -760,10 +761,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                         <AIExplainPanel />
                         <VoiceTranscription onTranscript={handleVoiceTranscript} />
                         <ExportButtons />
+                        <FlashcardsButton />
                       </div>
                       {/* Secondary actions always in dropdown */}
                       <AIEditPanel onApplyEdit={handleAIEdit} />
-                      <FlashcardsButton />
                       <PreviewButton />
                       <ImportNotesButton onInsert={handleImportNotes} />
                     </motion.div>

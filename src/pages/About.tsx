@@ -292,28 +292,73 @@ export default function AboutPage() {
 
       <AnimatedDivider />
 
-      {/* Mission & Approach — Simple text cards, no animations */}
+      {/* Mission & Approach — Zigzag layout */}
       <section className="py-24">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="flex flex-col gap-16 md:grid md:grid-cols-2 md:gap-12">
-            {/* Mission */}
-            <div className="rounded-[2rem] border border-border bg-card p-8">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
-                <Target className="h-6 w-6 text-primary" />
+        <div className="container mx-auto px-6 max-w-4xl relative">
+          {/* Center connector line — hidden on mobile */}
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
+
+          <div className="flex flex-col gap-16">
+            {/* Mission — left */}
+            <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.06),transparent_70%)]" />
+                <div className="relative z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                    <Target className="h-6 w-6 text-primary" />
+                  </div>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Mission</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge.</p>
+                  <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
+                </div>
+              </motion.div>
+              {/* Dot on the center line */}
+              <div className="hidden md:flex items-center justify-start">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                  className="w-3 h-3 rounded-full bg-primary border-2 border-background -ml-[18px]"
+                />
               </div>
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Mission</h2>
-              <p className="text-muted-foreground leading-relaxed mb-3">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge.</p>
-              <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
             </div>
 
-            {/* Approach */}
-            <div className="rounded-[2rem] border border-border bg-card p-8">
-              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                <Layers className="h-6 w-6 text-accent" />
+            {/* Approach — right */}
+            <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
+              {/* Dot on the center line */}
+              <div className="hidden md:flex items-center justify-end">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                  className="w-3 h-3 rounded-full bg-accent border-2 border-background -mr-[18px]"
+                />
               </div>
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Approach</h2>
-              <p className="text-muted-foreground leading-relaxed mb-3">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
-              <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-accent/30 transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--accent)/0.06),transparent_70%)]" />
+                <div className="relative z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
+                    <Layers className="h-6 w-6 text-accent" />
+                  </div>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Approach</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
+                  <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
