@@ -22,7 +22,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 pt-1">
           <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
           <span className="font-serif text-xl font-bold text-foreground translate-y-[1px]">Notebook Archive</span>
         </Link>
