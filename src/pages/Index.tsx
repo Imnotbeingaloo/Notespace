@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { NotebookProvider } from "@/context/NotebookContext";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { SplashScreen } from "@/components/SplashScreen";
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -19,7 +20,9 @@ const AppPage = () => {
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
   const isMobile = useIsMobile();
+  const handleSplashComplete = useCallback(() => setSplashDone(true), []);
 
   if (authLoading) {
     return (
@@ -33,6 +36,7 @@ const AppPage = () => {
 
   return (
     <NotebookProvider>
+      {!splashDone && <SplashScreen onComplete={handleSplashComplete} />}
       <div className="flex h-screen w-full overflow-hidden bg-background relative">
         {/* Mobile overlay backdrop */}
         {isMobile && sidebarOpen && (

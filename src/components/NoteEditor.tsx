@@ -732,10 +732,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
               {/* Core actions always visible on desktop */}
               <div className="hidden lg:flex items-center gap-1">
+                <FlashcardsButton />
                 <AIExplainPanel />
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
-                <FlashcardsButton />
               </div>
 
               {/* Three-dots menu for secondary actions (all sizes) */}
@@ -758,10 +758,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                     >
                       {/* Show these only in mobile dropdown (hidden on desktop) */}
                       <div className="lg:hidden flex flex-col gap-1">
+                        <FlashcardsButton />
                         <AIExplainPanel />
                         <VoiceTranscription onTranscript={handleVoiceTranscript} />
                         <ExportButtons />
-                        <FlashcardsButton />
                       </div>
                       {/* Secondary actions always in dropdown */}
                       <AIEditPanel onApplyEdit={handleAIEdit} />

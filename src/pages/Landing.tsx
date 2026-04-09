@@ -114,7 +114,7 @@ export default function LandingPage() {
         }`}
       >
         <div className="flex items-center justify-between px-5 py-3">
-           <Link to="/" className="flex items-center gap-2">
+           <Link to="/" className="flex items-center gap-2 pb-1">
               <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
               <span className="font-serif text-lg font-bold text-foreground translate-y-[1px]">Notebook Archive</span>
            </Link>
