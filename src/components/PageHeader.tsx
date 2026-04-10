@@ -22,9 +22,9 @@ export function PageHeader({ activePage }: PageHeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        <Link to="/" className="flex items-center gap-2 pt-1">
-          <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
-          <span className="font-serif text-xl font-bold text-foreground translate-y-[1px]">Notebook Archive</span>
+        <Link to="/" className="flex items-center gap-2 pt-2">
+          <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 md:h-8 md:w-8 object-contain" />
+          <span className="font-serif text-base md:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
         </Link>
 
         {/* Desktop nav */}
@@ -45,9 +45,9 @@ export function PageHeader({ activePage }: PageHeaderProps) {
         <div className="flex items-center gap-2">
           <Link
             to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
+            className="magnetic-btn inline-flex items-center gap-1.5 rounded-2xl bg-primary px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 whitespace-nowrap"
           >
-            {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
+            {user ? "Open App" : "Get Started"} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
 
           {/* Mobile hamburger */}

@@ -116,7 +116,7 @@ export default function LandingPage() {
         <div className="flex items-center justify-between px-5 py-3">
            <Link to="/" className="flex items-center gap-2 pb-1">
               <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
-              <span className="font-serif text-lg font-bold text-foreground translate-y-[1px]">Notebook Archive</span>
+              <span className="font-serif text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
            </Link>
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) =>
@@ -129,14 +129,14 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-2">
             {user ? (
-              <Link to="/app" className="magnetic-btn inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/20">
-                Open App <ArrowRight className="h-3.5 w-3.5" />
+              <Link to="/app" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+                Open App <ArrowRight className="h-3 w-3" />
               </Link>
             ) : (
               <>
                 <Link to="/auth" className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">Sign In</Link>
-                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/20">
-                  Get Started <ArrowRight className="h-3.5 w-3.5" />
+                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+                  Get Started <ArrowRight className="h-3 w-3" />
                 </Link>
               </>
             )}
@@ -303,7 +303,7 @@ export default function LandingPage() {
             initial="show"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto items-stretch"
+            className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto items-stretch"
           >
             <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
               <ShufflerCard />
@@ -368,7 +368,7 @@ export default function LandingPage() {
               See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools. Real feedback from real users who've made the switch.
             </p>
           </motion.div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-12">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12">
             {[
               { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher, MIT", emoji: "🔬" },
               { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors after experiencing this workflow.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
@@ -381,7 +381,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.12, type: "spring", stiffness: 150 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="rounded-[2rem] border border-border bg-card p-8 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
+                className="rounded-[1.5rem] md:rounded-[2rem] border border-border bg-card p-5 md:p-8 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
               >
                 <span className="text-2xl mb-4 block">{t.emoji}</span>
                 <p className="text-sm text-foreground leading-relaxed mb-5 italic">"{t.quote}"</p>
