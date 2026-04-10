@@ -45,9 +45,9 @@ export function PageHeader({ activePage }: PageHeaderProps) {
         <div className="flex items-center gap-2">
           <Link
             to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
+            className="magnetic-btn inline-flex items-center gap-1.5 rounded-2xl bg-primary px-4 py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20"
           >
-            {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
+            {user ? "Open App" : "Get Started"} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
 
           {/* Mobile hamburger */}
