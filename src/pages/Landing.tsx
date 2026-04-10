@@ -391,24 +391,6 @@ export default function LandingPage() {
                 </div>
               </motion.div>
             ))}
-            ].map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 30, rotate: -1 }}
-                whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.12, type: "spring", stiffness: 150 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="rounded-[1.5rem] md:rounded-[2rem] border border-border bg-card p-5 md:p-8 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
-              >
-                <span className="text-2xl mb-4 block">{t.emoji}</span>
-                <p className="text-sm text-foreground leading-relaxed mb-5 italic">"{t.quote}"</p>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
-                </div>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
