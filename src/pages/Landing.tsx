@@ -116,7 +116,7 @@ export default function LandingPage() {
         <div className="flex items-center justify-between px-5 py-3">
            <Link to="/" className="flex items-center gap-2 pb-1">
               <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
-              <span className="font-serif text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
+              <span className="font-serif text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
            </Link>
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) =>
@@ -129,14 +129,14 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-2">
             {user ? (
-              <Link to="/app" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20">
-                Open App <ArrowRight className="h-3 w-3 md:h-3.5 md:w-3.5" />
+              <Link to="/app" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+                Open App <ArrowRight className="h-3 w-3" />
               </Link>
             ) : (
               <>
                 <Link to="/auth" className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">Sign In</Link>
-                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20">
-                  Get Started <ArrowRight className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+                  Get Started <ArrowRight className="h-3 w-3" />
                 </Link>
               </>
             )}
