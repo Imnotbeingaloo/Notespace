@@ -25,7 +25,7 @@ export default function Footer() {
               transition={{ duration: 0.5, delay: 0.15 }}
             >
               <BookOpen className="h-6 w-6 text-primary" />
-              <span className="font-serif text-xl font-bold text-foreground">Notebook Archive</span>
+              <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap">Notebook Archive</span>
             </motion.div>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
               The intelligent note-taking app that helps you capture, organize, and truly understand your ideas. Built for thinkers who demand more from their tools.

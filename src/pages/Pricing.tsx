@@ -82,7 +82,7 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section className="container mx-auto px-6 pb-28">
-        <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-14">
+        <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-8 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-14">
           {tiers.map((tier) => (
             <motion.div
               key={tier.name}

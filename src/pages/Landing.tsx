@@ -116,7 +116,7 @@ export default function LandingPage() {
         <div className="flex items-center justify-between px-5 py-3">
            <Link to="/" className="flex items-center gap-2 pb-1">
               <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
-              <span className="font-serif text-lg font-bold text-foreground translate-y-[1px]">Notebook Archive</span>
+              <span className="font-serif text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
            </Link>
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) =>
@@ -303,7 +303,7 @@ export default function LandingPage() {
             initial="show"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto items-stretch"
+            className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto items-stretch"
           >
             <motion.div variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
               <ShufflerCard />
@@ -368,7 +368,7 @@ export default function LandingPage() {
               See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools. Real feedback from real users who've made the switch.
             </p>
           </motion.div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mt-12">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12">
             {[
               { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher, MIT", emoji: "🔬" },
               { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors after experiencing this workflow.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },

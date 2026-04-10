@@ -208,7 +208,7 @@ function RevealCard({ uc, index }: { uc: typeof useCases[0]; index: number }) {
       viewport={{ once: true }}
       transition={{ delay: index * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       onClick={() => setRevealed(!revealed)}
-      className="relative rounded-2xl border border-border bg-card overflow-hidden cursor-pointer select-none group min-h-[220px]"
+      className="relative rounded-2xl border border-border bg-card overflow-hidden cursor-pointer select-none group min-h-[180px] md:min-h-[200px]"
     >
       <motion.div
         className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
@@ -370,7 +370,7 @@ export default function HowItWorksPage() {
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Click to reveal who it's built for.</p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {useCases.map((uc, i) => (
               <RevealCard key={uc.title} uc={uc} index={i} />
             ))}
