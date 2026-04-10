@@ -333,9 +333,9 @@ export default function LandingPage() {
           </motion.div>
           <div className="grid md:grid-cols-3 gap-10">
             {[
-              { step: "1", title: "Create a notebook", desc: "Organize by topic, class, or project. Each notebook is a dedicated space for related ideas. Add an emoji to make it yours." },
-              { step: "2", title: "Write naturally", desc: "Use our distraction-free markdown editor. Bold, headings, code blocks, checklists — everything you need, nothing you don't." },
-              { step: "3", title: "Let AI enhance", desc: "Highlight any concept and get instant explanations, summaries, and flashcards. Your notes become a living study guide." },
+              { step: "1", title: "Tag filtering", desc: "Organize your knowledge with a powerful tagging system. Find exactly what you need in seconds with smart filters and search." },
+              { step: "2", title: "Note templates", desc: "Jumpstart your thinking with pre-built structures for lectures, meetings, and research. Standardize your note-taking effortlessly." },
+              { step: "3", title: "Pomodoro timer", desc: "Stay focused and productive with a built-in focus timer. Balance deep work sessions with scheduled breaks to maximize learning." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -370,9 +370,9 @@ export default function LandingPage() {
           </motion.div>
           <div className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12">
             {[
-              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher, MIT", emoji: "🔬" },
+              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
               { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors after experiencing this workflow.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate across time zones.", name: "Priya T.", role: "Product Manager, Stripe", emoji: "💼" },
+              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate across time zones.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
             ].map((t, i) => (
               <motion.div
                 key={t.name}
