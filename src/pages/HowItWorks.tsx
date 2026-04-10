@@ -216,8 +216,8 @@ function RevealCard({ uc, index }: { uc: typeof useCases[0]; index: number }) {
         transition={{ duration: 0.4 }}
         style={{ pointerEvents: revealed ? "none" : "auto" }}
       >
-        <span className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{uc.emoji}</span>
-        <span className="font-serif text-base font-bold text-foreground mb-1">{uc.title}</span>
+        <span className="text-3xl md:text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">{uc.emoji}</span>
+        <span className="font-serif text-sm md:text-base font-bold text-foreground mb-1">{uc.title}</span>
         <span className="text-[10px] text-muted-foreground/60 font-mono tracking-wider uppercase mt-2">Tap to reveal</span>
       </motion.div>
 
