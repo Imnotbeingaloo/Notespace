@@ -333,46 +333,16 @@ export default function LandingPage() {
           </motion.div>
           <div className="grid md:grid-cols-3 gap-10">
             {[
-              { step: "1", title: "Create a notebook", desc: "Organize by topic, class, or project. Each notebook is a dedicated space for related ideas. Add an emoji to make it yours." },
-              { step: "2", title: "Write naturally", desc: "Use our distraction-free markdown editor. Bold, headings, code blocks, checklists — everything you need, nothing you don't." },
-              { step: "3", title: "Let AI enhance", desc: "Highlight any concept and get instant explanations, summaries, and flashcards. Your notes become a living study guide." },
+              { step: "1", title: "Tag filtering", desc: "Organize your knowledge with a powerful tagging system. Find exactly what you need in seconds with smart filters and search." },
+              { step: "2", title: "Note templates", desc: "Jumpstart your thinking with pre-built structures for lectures, meetings, and research. Standardize your note-taking effortlessly." },
+              { step: "3", title: "Pomodoro timer", desc: "Stay focused and productive with a built-in focus timer. Balance deep work sessions with scheduled breaks to maximize learning." },
             ].map((item, i) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center"
-              >
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold text-sm mb-4">{item.step}</div>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-3">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <AnimatedDivider />
-
-      {/* ── Testimonials ── */}
-      <section className="relative py-28">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.03] to-transparent pointer-events-none" />
-        <div className="container mx-auto px-6 relative">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Trusted by <span className="text-accent">professionals</span> and students
-            </h2>
-            <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools. Real feedback from real users who've made the switch.
-            </p>
-          </motion.div>
+// ... keep existing code
           <div className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12">
             {[
-              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher, MIT", emoji: "🔬" },
+              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
               { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors after experiencing this workflow.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate across time zones.", name: "Priya T.", role: "Product Manager, Stripe", emoji: "💼" },
+              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate across time zones.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
             ].map((t, i) => (
               <motion.div
                 key={t.name}
