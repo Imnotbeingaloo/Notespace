@@ -1,18 +1,19 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, FileUp, Loader2 } from "lucide-react";
+import { Plus, FileUp, Loader2, LayoutTemplate } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { NoteTemplatePicker, NoteTemplate } from "@/components/NoteTemplatePicker";
 
 interface NewNotePromptProps {
   notebookName: string;
   notebookEmoji: string;
   noteCount: number;
-  onCreateNew: () => void;
+  onCreateNew: (title?: string, content?: string) => void;
   onImportAndCreate: (content: string, fileName: string) => void;
 }
 
@@ -27,6 +28,7 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState("");
+  const [showTemplates, setShowTemplates] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,40 +86,64 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
     setUploadDialogOpen(true);
   };
 
+  const handleTemplateSelect = (template: NoteTemplate) => {
+    setShowTemplates(false);
+    onCreateNew(template.title, template.content);
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center gap-5 text-center -mt-16 max-w-sm px-4"
-      >
-        <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center">
-          <span className="text-4xl">{notebookEmoji}</span>
-        </div>
-        <h2 className="font-sans text-2xl font-bold text-foreground">{notebookName}</h2>
-        <p className="text-base text-muted-foreground leading-relaxed">
-          {noteCount === 0
-            ? "This notebook is empty. Create your first note!"
-            : `${noteCount} note${noteCount > 1 ? "s" : ""} — select one to edit.`}
-        </p>
+      <AnimatePresence mode="wait">
+        {showTemplates ? (
+          <NoteTemplatePicker
+            key="templates"
+            onSelect={handleTemplateSelect}
+            onBack={() => setShowTemplates(false)}
+          />
+        ) : (
+          <motion.div
+            key="main"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="flex flex-col items-center gap-5 text-center -mt-16 max-w-sm px-4"
+          >
+            <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center">
+              <span className="text-4xl">{notebookEmoji}</span>
+            </div>
+            <h2 className="font-sans text-2xl font-bold text-foreground">{notebookName}</h2>
+            <p className="text-base text-muted-foreground leading-relaxed">
+              {noteCount === 0
+                ? "This notebook is empty. Create your first note!"
+                : `${noteCount} note${noteCount > 1 ? "s" : ""} — select one to edit.`}
+            </p>
 
-        <div className="flex flex-col gap-3 w-full">
-          <button
-            onClick={handleOpenUploadDialog}
-            className="magnetic-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
-          >
-            <FileUp className="h-4 w-4" />
-            Upload a Document
-          </button>
-          <button
-            onClick={onCreateNew}
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          >
-            <Plus className="h-4 w-4" />
-            Create a New Note
-          </button>
-        </div>
-      </motion.div>
+            <div className="flex flex-col gap-3 w-full">
+              <button
+                onClick={handleOpenUploadDialog}
+                className="magnetic-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-primary/20"
+              >
+                <FileUp className="h-4 w-4" />
+                Upload a Document
+              </button>
+              <button
+                onClick={() => onCreateNew()}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                Create a New Note
+              </button>
+              <button
+                onClick={() => setShowTemplates(true)}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl border border-dashed border-primary/30 text-sm font-medium text-primary/70 hover:text-primary hover:bg-primary/5 transition-colors"
+              >
+                <LayoutTemplate className="h-4 w-4" />
+                Use a Template
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Upload Dialog */}
       <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
