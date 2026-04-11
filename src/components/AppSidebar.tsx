@@ -142,14 +142,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
 
   useEffect(() => {
     fetchUpcomingPlans();
-    // Subscribe to study_plans changes for live updates
-    const channel = supabase
-      .channel("sidebar-study-plans")
-      .on("postgres_changes", { event: "*", schema: "public", table: "study_plans" }, () => {
-        fetchUpcomingPlans();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    // Poll for study plan updates every 30 seconds
+    const interval = setInterval(fetchUpcomingPlans, 30000);
+    return () => clearInterval(interval);
   }, [fetchUpcomingPlans]);
 
   const getDayLabel = (dateStr: string) => {
