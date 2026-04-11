@@ -109,6 +109,21 @@ const AppPage = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      onClick={() => setPomodoroOpen((p) => !p)}
+                      variant={pomodoroOpen ? "default" : "ghost"}
+                      size="icon"
+                      className="h-8 w-8 rounded-xl shrink-0"
+                    >
+                      <Timer className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{pomodoroOpen ? "Close Pomodoro" : "Pomodoro Timer"}</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
                       onClick={() => setPlannerOpen((p) => !p)}
                       variant={plannerOpen ? "default" : "ghost"}
                       size="icon"
@@ -136,6 +151,11 @@ const AppPage = () => {
                     <StudyPlanner onClose={() => setPlannerOpen(false)} />
                   </div>
                 </div>
+              )}
+            </AnimatePresence>
+            <AnimatePresence>
+              {pomodoroOpen && (
+                <PomodoroTimer onClose={() => setPomodoroOpen(false)} />
               )}
             </AnimatePresence>
           </div>
