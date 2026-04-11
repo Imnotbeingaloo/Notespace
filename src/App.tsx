@@ -14,6 +14,8 @@ import AboutPage from "./pages/About";
 import HowItWorksPage from "./pages/HowItWorks";
 import TrashPage from "./pages/Trash";
 import NotFound from "./pages/NotFound";
+import { lazy, Suspense } from "react";
+const SharedNotePage = lazy(() => import("./pages/SharedNote"));
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -56,6 +58,7 @@ const App = () => (
               <Route path="/about" element={<AboutPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="/trash" element={<TrashPage />} />
+              <Route path="/shared/:token" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><SharedNotePage /></Suspense>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

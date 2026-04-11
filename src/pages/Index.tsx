@@ -3,9 +3,10 @@ import { NotebookProvider } from "@/context/NotebookContext";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
+import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2 } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const AppPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const [pomodoroOpen, setPomodoroOpen] = useState(false);
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
   const isMobile = useIsMobile();
@@ -107,6 +109,21 @@ const AppPage = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      onClick={() => setPomodoroOpen((p) => !p)}
+                      variant={pomodoroOpen ? "default" : "ghost"}
+                      size="icon"
+                      className="h-8 w-8 rounded-xl shrink-0"
+                    >
+                      <Timer className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{pomodoroOpen ? "Close Pomodoro" : "Pomodoro Timer"}</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
                       onClick={() => setPlannerOpen((p) => !p)}
                       variant={plannerOpen ? "default" : "ghost"}
                       size="icon"
@@ -134,6 +151,11 @@ const AppPage = () => {
                     <StudyPlanner onClose={() => setPlannerOpen(false)} />
                   </div>
                 </div>
+              )}
+            </AnimatePresence>
+            <AnimatePresence>
+              {pomodoroOpen && (
+                <PomodoroTimer onClose={() => setPomodoroOpen(false)} />
               )}
             </AnimatePresence>
           </div>

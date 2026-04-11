@@ -42,7 +42,7 @@ interface NotebookContextType {
   createNotebook: (name: string, emoji?: string) => Promise<void>;
   deleteNotebook: (id: string) => Promise<void>;
   updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<void>;
-  createNote: (notebookId: string) => Promise<void>;
+  createNote: (notebookId: string, title?: string, content?: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
@@ -181,11 +181,11 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
-  const createNote = useCallback(async (notebookId: string) => {
+  const createNote = useCallback(async (notebookId: string, title?: string, content?: string) => {
     if (!user) return;
     const { data } = await supabase
       .from("notes")
-      .insert({ notebook_id: notebookId, user_id: user.id, title: "Untitled Note", content: "" })
+      .insert({ notebook_id: notebookId, user_id: user.id, title: title || "Untitled Note", content: content || "" })
       .select()
       .single();
     if (data) {

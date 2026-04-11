@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -18,23 +18,37 @@ const navLinks = [
 export function PageHeader({ activePage }: PageHeaderProps) {
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+    <motion.header
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className={`fixed top-4 inset-x-0 mx-auto z-50 w-[92%] max-w-5xl transition-all duration-500 rounded-2xl ${
+        scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
+      }`}
+    >
+      <div className="flex items-center justify-between px-5 py-3">
         <Link to="/" className="flex items-center gap-2 pt-2">
           <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 md:h-8 md:w-8 object-contain" />
           <span className="font-serif text-base md:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.key}
               to={link.to}
-              className={`text-sm font-medium transition-colors ${
-                activePage === link.key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+              className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                activePage === link.key ? "text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
               {link.label}
@@ -45,15 +59,15 @@ export function PageHeader({ activePage }: PageHeaderProps) {
         <div className="flex items-center gap-2">
           <Link
             to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-1.5 rounded-2xl bg-primary px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 whitespace-nowrap"
+            className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
           >
-            {user ? "Open App" : "Get Started"} <ArrowRight className="h-3.5 w-3.5" />
+            {user ? "Open App" : "Get Started"} <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
           </Link>
 
           {/* Mobile hamburger */}
           <button
             onClick={() => setMenuOpen((p) => !p)}
-            className="md:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="md:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -63,29 +77,29 @@ export function PageHeader({ activePage }: PageHeaderProps) {
       {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.nav
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border bg-background overflow-hidden"
+            className="md:hidden border-t border-border/50 overflow-hidden"
           >
-            <div className="flex flex-col px-6 py-4 gap-3">
+            <nav className="flex flex-col gap-1 p-3">
               {navLinks.map((link) => (
                 <Link
                   key={link.key}
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
-                  className={`text-sm font-medium py-2 transition-colors ${
-                    activePage === link.key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                    activePage === link.key ? "text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
-            </div>
-          </motion.nav>
+            </nav>
+          </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }

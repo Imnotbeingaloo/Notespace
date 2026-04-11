@@ -129,14 +129,14 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-2">
             {user ? (
-              <Link to="/app" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
-                Open App <ArrowRight className="h-3 w-3" />
+              <Link to="/app" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+                Open App <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
               </Link>
             ) : (
               <>
                 <Link to="/auth" className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">Sign In</Link>
-                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
-                  Get Started <ArrowRight className="h-3 w-3" />
+                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+                  Get Started <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
                 </Link>
               </>
             )}
