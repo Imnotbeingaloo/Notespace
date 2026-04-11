@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AIExplainPanel } from "@/components/AIExplainPanel";
 import { AIEditPanel } from "@/components/AIEditPanel";
 import { ExportButtons } from "@/components/ExportButtons";
+import { ShareNoteDialog } from "@/components/ShareNoteDialog";
 import { VoiceTranscription } from "@/components/VoiceTranscription";
 import { NoteTags } from "@/components/NoteTags";
 import { FileUpload } from "@/components/FileUpload";
@@ -736,6 +737,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                 <AIExplainPanel />
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
+                {activeNote && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} />}
               </div>
 
               {/* Three-dots menu for secondary actions (all sizes) */}
