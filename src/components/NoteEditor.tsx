@@ -630,7 +630,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         notebookName={activeNotebook.name}
         notebookEmoji={activeNotebook.emoji}
         noteCount={activeNotebook.notes.length}
-        onCreateNew={() => activeNotebookId && createNote(activeNotebookId)}
+        onCreateNew={(title?: string, content?: string) => activeNotebookId && createNote(activeNotebookId, title, content)}
         onImportAndCreate={async (content: string, fileName: string) => {
           if (!activeNotebookId) return;
           await createNote(activeNotebookId);
