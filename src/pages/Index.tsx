@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
+import { HomeView } from "@/components/HomeView";
+import { useNotebooks } from "@/context/NotebookContext";
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
