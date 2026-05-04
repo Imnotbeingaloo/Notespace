@@ -21,9 +21,10 @@ interface AppSidebarProps {
   onToggle: () => void;
   onSelectNote?: () => void;
   onOpenPlanner?: () => void;
+  onOpenHome?: () => void;
 }
 
-export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome }: AppSidebarProps) {
   const { signOut, user } = useAuth();
   const {
     notebooks,
@@ -278,13 +279,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner }:
             >
               <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0 mt-1" />
               <span className="font-serif font-bold text-foreground text-base whitespace-nowrap translate-y-[1px] mt-1">Notebook Archive</span>
-              <Link
-                to="/"
+              <button
+                type="button"
+                onClick={() => onOpenHome?.()}
                 className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-1"
-                title="Back to Home"
+                title="Home — All documents"
               >
                 <Home className="h-4 w-4" />
-              </Link>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
