@@ -332,7 +332,7 @@ function TrashPageContent() {
                           : "border-border hover:border-muted-foreground/20"
                       }`}
                     >
-                      <div className="flex items-start gap-4">
+                      <div className="flex flex-wrap items-start gap-3 sm:gap-4">
                         <div className="pt-0.5">
                           <Checkbox checked={isSelected} onCheckedChange={() => toggleItem(key)} className="shrink-0" />
                         </div>
@@ -348,7 +348,7 @@ function TrashPageContent() {
                             Deleted {formatDeletedDate(nb.deleted_at!)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
+                        <div className="flex items-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0 ml-auto">
                           <Button
                             variant="outline"
                             size="sm"
@@ -413,7 +413,7 @@ function TrashPageContent() {
                           : "border-border hover:border-muted-foreground/20"
                       }`}
                     >
-                      <div className="flex items-start gap-4">
+                      <div className="flex flex-wrap items-start gap-3 sm:gap-4">
                         <div className="pt-0.5">
                           <Checkbox checked={isSelected} onCheckedChange={() => toggleItem(key)} className="shrink-0" />
                         </div>
@@ -429,7 +429,7 @@ function TrashPageContent() {
                             from <span className="font-medium text-foreground/70">{notebookName}</span> · Deleted {formatDeletedDate(note.deleted_at!)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
+                        <div className="flex items-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0 ml-auto">
                           <Button
                             variant="outline"
                             size="sm"
