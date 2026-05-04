@@ -110,9 +110,12 @@ export function ShareNoteDialog({ noteId, noteTitle }: ShareNoteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5">
-          <Share2 className="h-3 w-3" /> Share
-        </Button>
+        <button
+          type="button"
+          className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+        >
+          <Share2 className="h-3.5 w-3.5" /> Share
+        </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
