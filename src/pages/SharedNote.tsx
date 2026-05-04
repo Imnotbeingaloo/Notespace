@@ -16,40 +16,23 @@ export default function SharedNote() {
     const fetchSharedNote = async () => {
       if (!token) { setError("Invalid link"); setLoading(false); return; }
 
-      // Look up the share record
-      const { data: share, error: shareErr } = await supabase
-        .from("shared_notes" as any)
-        .select("note_id, is_public, expires_at")
-        .eq("share_token", token)
-        .single();
+      const { data, error: rpcErr } = await supabase
+        .rpc("get_shared_note" as any, { _token: token });
 
-      if (shareErr || !share) {
-        setError("This shared note doesn't exist or has been removed.");
+      if (rpcErr) {
+        setError("Unable to load this shared note.");
         setLoading(false);
         return;
       }
 
-      const s = share as any;
-      if (s.expires_at && new Date(s.expires_at) < new Date()) {
-        setError("This shared link has expired.");
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) {
+        setError("This shared note doesn't exist, has expired, or has been removed.");
         setLoading(false);
         return;
       }
 
-      // Fetch the note
-      const { data: noteData, error: noteErr } = await supabase
-        .from("notes")
-        .select("title, content")
-        .eq("id", s.note_id)
-        .single();
-
-      if (noteErr || !noteData) {
-        setError("Note not found.");
-        setLoading(false);
-        return;
-      }
-
-      setNote(noteData);
+      setNote({ title: (row as any).title, content: (row as any).content });
       setLoading(false);
     };
 
