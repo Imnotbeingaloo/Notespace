@@ -211,7 +211,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_shared_note: {
+        Args: { _token: string }
+        Returns: {
+          content: string
+          title: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
