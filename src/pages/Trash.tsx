@@ -215,8 +215,8 @@ function TrashPageContent() {
 
           {/* Stats bar */}
           {trashCount > 0 && (
-            <div className="flex items-center gap-4 ml-[52px]">
-              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-3 sm:ml-[52px]">
+              <div className="flex items-center gap-4 sm:gap-6 text-sm text-muted-foreground flex-wrap">
                 {trashedNotebooks.length > 0 && (
                   <span className="flex items-center gap-1.5">
                     <BookOpen className="h-4 w-4" />
