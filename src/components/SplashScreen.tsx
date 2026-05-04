@@ -7,7 +7,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("text"), 800);
     const t2 = setTimeout(() => setPhase("done"), 4200);
-    const t3 = setTimeout(onComplete, 5000);
+    const t3 = setTimeout(onComplete, 5400);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -21,8 +21,8 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
         <motion.div
           key="splash"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          exit={{ opacity: 0, scale: 1.05, filter: "blur(8px)" }}
+          transition={{ duration: 1.2, ease: [0.65, 0, 0.35, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background"
         >
           {/* Subtle radial glow behind logo */}
