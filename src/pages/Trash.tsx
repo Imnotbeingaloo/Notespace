@@ -348,7 +348,7 @@ function TrashPageContent() {
                             Deleted {formatDeletedDate(nb.deleted_at!)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <div className="flex items-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
                           <Button
                             variant="outline"
                             size="sm"
@@ -429,7 +429,7 @@ function TrashPageContent() {
                             from <span className="font-medium text-foreground/70">{notebookName}</span> · Deleted {formatDeletedDate(note.deleted_at!)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <div className="flex items-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
                           <Button
                             variant="outline"
                             size="sm"
