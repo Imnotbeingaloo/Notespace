@@ -35,19 +35,19 @@ export function PageHeader({ activePage }: PageHeaderProps) {
         scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
       }`}
     >
-      <div className="flex items-center justify-between gap-2 px-3 sm:px-5 py-3">
-        <Link to="/" className="flex items-center gap-1.5 sm:gap-2 pt-2 min-w-0 flex-shrink">
-          <img src="/favicon.png" alt="Notebook Archive" className="h-6 w-6 md:h-8 md:w-8 object-contain shrink-0" />
-          <span className="font-serif text-sm sm:text-base md:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate">Notebook Archive</span>
+      <div className="flex items-center justify-between gap-2 sm:gap-3 lg:gap-4 px-3 sm:px-5 py-3">
+        <Link to="/" className="flex items-center gap-2 pt-2 min-w-0 flex-shrink mr-1 lg:mr-3">
+          <img src="/favicon.png" alt="Notebook Archive" className="h-6 w-6 lg:h-8 lg:w-8 object-contain shrink-0" />
+          <span className="font-serif text-base lg:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate hidden sm:inline">Notebook Archive</span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        {/* Desktop/Tablet nav */}
+        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.key}
               to={link.to}
-              className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`px-2.5 lg:px-3 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                 activePage === link.key ? "text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
@@ -56,12 +56,12 @@ export function PageHeader({ activePage }: PageHeaderProps) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-1 sm:gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-5 md:py-2 text-[11px] sm:text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
+            className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
           >
-            {user ? "Open App" : "Get Started"} <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
+            {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
           </Link>
 
           {/* Mobile hamburger */}
