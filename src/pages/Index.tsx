@@ -14,6 +14,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { Link } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
@@ -23,22 +25,28 @@ function AppContent() {
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
-  const [showHome, setShowHome] = useState(false);
+  // Default to Home view
+  const [showHome, setShowHome] = useState(true);
+  const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
-  const { setActiveNotebookId, setActiveNoteId } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks } = useNotebooks();
 
   const openHome = useCallback(() => {
     setShowHome(true);
     if (isMobile) setSidebarOpen(false);
   }, [isMobile]);
 
-  const openNoteFromHome = useCallback(
-    (notebookId: string, noteId: string) => {
+  const openNotebookFromHome = useCallback(
+    (notebookId: string) => {
+      setOpening(true);
       setActiveNotebookId(notebookId);
-      setActiveNoteId(noteId);
+      const nb = notebooks.find((n) => n.id === notebookId);
+      const firstNoteId = nb?.notes?.[0]?.id ?? null;
+      setActiveNoteId(firstNoteId);
       setShowHome(false);
+      window.setTimeout(() => setOpening(false), 700);
     },
-    [setActiveNotebookId, setActiveNoteId]
+    [setActiveNotebookId, setActiveNoteId, notebooks]
   );
 
   return (
