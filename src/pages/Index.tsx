@@ -6,7 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Home as HomeIcon, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { Link } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
@@ -23,22 +25,28 @@ function AppContent() {
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
-  const [showHome, setShowHome] = useState(false);
+  // Default to Home view
+  const [showHome, setShowHome] = useState(true);
+  const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
-  const { setActiveNotebookId, setActiveNoteId } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks } = useNotebooks();
 
   const openHome = useCallback(() => {
     setShowHome(true);
     if (isMobile) setSidebarOpen(false);
   }, [isMobile]);
 
-  const openNoteFromHome = useCallback(
-    (notebookId: string, noteId: string) => {
+  const openNotebookFromHome = useCallback(
+    (notebookId: string) => {
+      setOpening(true);
       setActiveNotebookId(notebookId);
-      setActiveNoteId(noteId);
+      const nb = notebooks.find((n) => n.id === notebookId);
+      const firstNoteId = nb?.notes?.[0]?.id ?? null;
+      setActiveNoteId(firstNoteId);
       setShowHome(false);
+      window.setTimeout(() => setOpening(false), 700);
     },
-    [setActiveNotebookId, setActiveNoteId]
+    [setActiveNotebookId, setActiveNoteId, notebooks]
   );
 
   return (
@@ -93,6 +101,27 @@ function AppContent() {
                   Open Sidebar
                 </button>
               )}
+              {!focusMode && (
+                showHome ? (
+                  <Link
+                    to="/"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                    title="Visit website"
+                  >
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Visit Website</span>
+                  </Link>
+                ) : (
+                  <button
+                    onClick={openHome}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                    title="Home"
+                  >
+                    <HomeIcon className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Home</span>
+                  </button>
+                )
+              )}
             </div>
             <div className="flex items-center gap-1">
               <Tooltip>
@@ -146,8 +175,10 @@ function AppContent() {
         </TooltipProvider>
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
-            {showHome ? (
-              <HomeView onOpenNote={openNoteFromHome} />
+            {opening ? (
+              <LoadingScreen label="Opening notebook…" />
+            ) : showHome ? (
+              <HomeView onOpenNotebook={openNotebookFromHome} />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
             )}

@@ -31,24 +31,32 @@ export function PageHeader({ activePage }: PageHeaderProps) {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-4 inset-x-0 mx-auto z-50 w-[92%] max-w-5xl transition-all duration-500 rounded-2xl ${
+      className={`fixed top-4 inset-x-0 mx-auto z-50 w-[94%] max-w-5xl transition-all duration-500 rounded-2xl ${
         scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
       }`}
     >
-      <div className="flex items-center justify-between gap-2 sm:gap-3 lg:gap-4 px-3 sm:px-5 py-3">
-        <Link to="/" className="flex items-center gap-2 pt-2 min-w-0 flex-shrink mr-1 lg:mr-3">
-          <img src="/favicon.png" alt="Notebook Archive" className="h-6 w-6 lg:h-8 lg:w-8 object-contain shrink-0" />
-          <span className="font-serif text-base lg:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate hidden sm:inline">Notebook Archive</span>
+      <div className="flex items-center justify-between gap-3 lg:gap-6 px-3 sm:px-5 lg:px-6 py-3 lg:py-4">
+        <Link to="/" className="flex items-center gap-2 lg:gap-2.5 min-w-0 flex-shrink lg:pt-1">
+          <img
+            src="/favicon.png"
+            alt="Notebook Archive"
+            className="h-7 w-7 lg:h-10 lg:w-10 object-contain shrink-0"
+          />
+          <span className="font-serif text-base lg:text-2xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate hidden sm:inline">
+            Notebook Archive
+          </span>
         </Link>
 
         {/* Desktop/Tablet nav */}
-        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1">
+        <nav className="hidden md:flex items-center gap-1 lg:gap-2">
           {navLinks.map((link) => (
             <Link
               key={link.key}
               to={link.to}
-              className={`px-2.5 lg:px-3 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium whitespace-nowrap transition-all duration-200 ${
-                activePage === link.key ? "text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              className={`px-2.5 lg:px-3.5 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                activePage === link.key
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
               {link.label}
@@ -56,10 +64,10 @@ export function PageHeader({ activePage }: PageHeaderProps) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <Link
             to={user ? "/app" : "/auth"}
-            className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
+            className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 sm:px-4 py-1.5 sm:py-2 text-[13px] sm:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
           >
             {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
           </Link>
