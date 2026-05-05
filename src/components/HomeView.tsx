@@ -1,25 +1,77 @@
 import { motion } from "framer-motion";
-import { BookOpen, FileText } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
 }
 
+type SortKey = "newest" | "oldest" | "title";
+
+const PAGE_SIZE = 9;
+
 export function HomeView({ onOpenNotebook }: HomeViewProps) {
   const { notebooks } = useNotebooks();
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<SortKey>("newest");
+  const [visible, setVisible] = useState(PAGE_SIZE);
+  const [focusedIdx, setFocusedIdx] = useState(0);
+  const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  const filtered = useMemo(() => {
-    if (!query.trim()) return notebooks;
-    const q = query.toLowerCase();
-    return notebooks.filter(
-      (nb) =>
-        nb.name.toLowerCase().includes(q) ||
-        nb.notes.some((n) => n.title.toLowerCase().includes(q) || n.content?.toLowerCase().includes(q))
+  const lastUpdated = useCallback((nb: any) => {
+    if (!nb.notes?.length) return nb.updated_at || nb.created_at;
+    return nb.notes.reduce(
+      (latest: string, n: any) => (new Date(n.updated_at) > new Date(latest) ? n.updated_at : latest),
+      nb.notes[0].updated_at
     );
-  }, [notebooks, query]);
+  }, []);
+
+  const allFiltered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const filtered = !q
+      ? [...notebooks]
+      : notebooks.filter(
+          (nb) =>
+            nb.name.toLowerCase().includes(q) ||
+            nb.notes.some(
+              (n) => n.title.toLowerCase().includes(q) || n.content?.toLowerCase().includes(q)
+            )
+        );
+
+    filtered.sort((a, b) => {
+      if (sort === "title") return a.name.localeCompare(b.name);
+      const aT = new Date(lastUpdated(a)).getTime();
+      const bT = new Date(lastUpdated(b)).getTime();
+      return sort === "newest" ? bT - aT : aT - bT;
+    });
+    return filtered;
+  }, [notebooks, query, sort, lastUpdated]);
+
+  const paged = useMemo(() => allFiltered.slice(0, visible), [allFiltered, visible]);
+  const hasMore = visible < allFiltered.length;
+
+  // Reset paging on query/sort change
+  useEffect(() => {
+    setVisible(PAGE_SIZE);
+    setFocusedIdx(0);
+  }, [query, sort]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (!hasMore || !sentinelRef.current) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    obs.observe(sentinelRef.current);
+    return () => obs.disconnect();
+  }, [hasMore, allFiltered.length]);
 
   const totalNotes = useMemo(
     () => notebooks.reduce((acc, nb) => acc + (nb.notes?.length ?? 0), 0),
@@ -29,13 +81,54 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
   const formatDate = (d: string) =>
     new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(d));
 
-  const lastUpdated = (nb: any) => {
-    if (!nb.notes?.length) return nb.updated_at || nb.created_at;
-    return nb.notes.reduce((latest: string, n: any) => (new Date(n.updated_at) > new Date(latest) ? n.updated_at : latest), nb.notes[0].updated_at);
+  // Determine grid columns to compute up/down navigation step
+  const getCols = () => {
+    if (typeof window === "undefined") return 3;
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 640) return 2;
+    return 1;
   };
 
+  const onCardKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>, idx: number) => {
+      const cols = getCols();
+      let next = idx;
+      switch (e.key) {
+        case "Enter":
+        case " ":
+          e.preventDefault();
+          onOpenNotebook(paged[idx].id);
+          return;
+        case "ArrowRight":
+          next = Math.min(idx + 1, paged.length - 1);
+          break;
+        case "ArrowLeft":
+          next = Math.max(idx - 1, 0);
+          break;
+        case "ArrowDown":
+          next = Math.min(idx + cols, paged.length - 1);
+          break;
+        case "ArrowUp":
+          next = Math.max(idx - cols, 0);
+          break;
+        case "Home":
+          next = 0;
+          break;
+        case "End":
+          next = paged.length - 1;
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+      setFocusedIdx(next);
+      cardRefs.current[next]?.focus();
+    },
+    [paged, onOpenNotebook]
+  );
+
   return (
-    <div className="flex-1 overflow-y-auto bg-background">
+    <div className="flex-1 overflow-y-auto bg-background" data-testid="home-view">
       {/* Hero */}
       <div className="relative border-b border-border overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-primary/[0.04] pointer-events-none" />
@@ -59,19 +152,52 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
             {totalNotes === 1 ? "note" : "notes"}. Pick one up where you left off.
           </p>
 
-          <div className="relative mt-7 max-w-md">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search notebooks…"
-              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card/80 backdrop-blur text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all"
-            />
+          <div className="flex flex-col sm:flex-row gap-3 mt-7 sm:items-center">
+            <div className="relative flex-1 max-w-md">
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search notebooks…"
+                aria-label="Search notebooks"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card/80 backdrop-blur text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all"
+              />
+            </div>
+
+            {/* Sort tabs */}
+            <div
+              role="tablist"
+              aria-label="Sort notebooks"
+              className="inline-flex items-center gap-1 p-1 rounded-xl border border-border bg-card/80 backdrop-blur"
+            >
+              {(
+                [
+                  { key: "newest", label: "Newest", Icon: Clock },
+                  { key: "oldest", label: "Oldest", Icon: ArrowUpAZ },
+                  { key: "title", label: "Title", Icon: ArrowDownAZ },
+                ] as { key: SortKey; label: string; Icon: typeof Clock }[]
+              ).map(({ key, label, Icon }) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={sort === key}
+                  onClick={() => setSort(key)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    sort === key
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
-        {filtered.length === 0 ? (
+        {paged.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
               <BookOpen className="h-7 w-7 text-muted-foreground" />
@@ -84,66 +210,91 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filtered.map((nb, idx) => {
-              const noteCount = nb.notes?.length ?? 0;
-              const preview = nb.notes?.slice(0, 3) ?? [];
-              return (
-                <motion.button
-                  key={nb.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: Math.min(idx * 0.04, 0.4), ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ y: -4 }}
-                  onClick={() => onOpenNotebook(nb.id)}
-                  className="group relative text-left rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
-                >
-                  {/* Book spine accent */}
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/20 opacity-70 group-hover:opacity-100 transition-opacity" />
-
-                  <div className="p-6">
-                    <div className="flex items-start justify-between gap-3 mb-4">
-                      <div className="text-4xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
-                        {nb.emoji}
+          <>
+            <div
+              role="grid"
+              aria-label="Notebooks"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+            >
+              {paged.map((nb, idx) => {
+                const noteCount = nb.notes?.length ?? 0;
+                const preview = nb.notes?.slice(0, 3) ?? [];
+                return (
+                  <motion.button
+                    key={nb.id}
+                    ref={(el) => (cardRefs.current[idx] = el)}
+                    role="gridcell"
+                    tabIndex={focusedIdx === idx ? 0 : -1}
+                    onFocus={() => setFocusedIdx(idx)}
+                    onKeyDown={(e) => onCardKeyDown(e, idx)}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: Math.min(idx * 0.03, 0.3), ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -4 }}
+                    onClick={() => onOpenNotebook(nb.id)}
+                    className="group relative text-left rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/20 opacity-70 group-hover:opacity-100 transition-opacity" />
+                    <div className="p-6">
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div className="text-4xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
+                          {nb.emoji}
+                        </div>
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
+                          {noteCount} {noteCount === 1 ? "note" : "notes"}
+                        </span>
                       </div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
-                        {noteCount} {noteCount === 1 ? "note" : "notes"}
-                      </span>
+
+                      <h3 className="font-serif font-bold text-xl text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-1">
+                        {nb.name}
+                      </h3>
+
+                      {preview.length > 0 ? (
+                        <ul className="space-y-1.5 mb-4">
+                          {preview.map((n) => (
+                            <li
+                              key={n.id}
+                              className="flex items-center gap-2 text-xs text-muted-foreground truncate"
+                            >
+                              <FileText className="h-3 w-3 shrink-0 opacity-60" />
+                              <span className="truncate">{n.title || "Untitled"}</span>
+                            </li>
+                          ))}
+                          {noteCount > 3 && (
+                            <li className="text-[11px] text-muted-foreground/70 pl-5">
+                              +{noteCount - 3} more
+                            </li>
+                          )}
+                        </ul>
+                      ) : (
+                        <p className="text-xs text-muted-foreground italic mb-4">Empty notebook</p>
+                      )}
+
+                      <div className="text-[11px] text-muted-foreground/70 font-mono pt-3 border-t border-border/60">
+                        Updated {formatDate(lastUpdated(nb))}
+                      </div>
                     </div>
+                  </motion.button>
+                );
+              })}
+            </div>
 
-                    <h3 className="font-serif font-bold text-xl text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-1">
-                      {nb.name}
-                    </h3>
+            {/* Infinite scroll sentinel + manual load more */}
+            {hasMore && (
+              <div ref={sentinelRef} className="flex justify-center mt-8">
+                <button
+                  onClick={() => setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length))}
+                  className="px-4 py-2 rounded-xl border border-border bg-card text-sm text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                >
+                  Load more ({allFiltered.length - visible} remaining)
+                </button>
+              </div>
+            )}
 
-                    {preview.length > 0 ? (
-                      <ul className="space-y-1.5 mb-4">
-                        {preview.map((n) => (
-                          <li
-                            key={n.id}
-                            className="flex items-center gap-2 text-xs text-muted-foreground truncate"
-                          >
-                            <FileText className="h-3 w-3 shrink-0 opacity-60" />
-                            <span className="truncate">{n.title || "Untitled"}</span>
-                          </li>
-                        ))}
-                        {noteCount > 3 && (
-                          <li className="text-[11px] text-muted-foreground/70 pl-5">
-                            +{noteCount - 3} more
-                          </li>
-                        )}
-                      </ul>
-                    ) : (
-                      <p className="text-xs text-muted-foreground italic mb-4">Empty notebook</p>
-                    )}
-
-                    <div className="text-[11px] text-muted-foreground/70 font-mono pt-3 border-t border-border/60">
-                      Updated {formatDate(lastUpdated(nb))}
-                    </div>
-                  </div>
-                </motion.button>
-              );
-            })}
-          </div>
+            <p className="text-center text-[11px] text-muted-foreground/60 mt-6 font-mono">
+              Showing {paged.length} of {allFiltered.length}
+            </p>
+          </>
         )}
       </div>
     </div>
