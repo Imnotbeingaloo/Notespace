@@ -6,7 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Home as HomeIcon, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
