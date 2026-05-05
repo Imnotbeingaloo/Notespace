@@ -101,6 +101,27 @@ function AppContent() {
                   Open Sidebar
                 </button>
               )}
+              {!focusMode && (
+                showHome ? (
+                  <Link
+                    to="/"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                    title="Visit website"
+                  >
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Visit Website</span>
+                  </Link>
+                ) : (
+                  <button
+                    onClick={openHome}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                    title="Home"
+                  >
+                    <HomeIcon className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Home</span>
+                  </button>
+                )
+              )}
             </div>
             <div className="flex items-center gap-1">
               <Tooltip>
