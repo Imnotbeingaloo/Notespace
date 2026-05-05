@@ -1,11 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { NotebookProvider } from "@/context/NotebookContext";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { ArrowUpRight, CalendarDays, Home as HomeIcon, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
@@ -25,16 +25,50 @@ function AppContent() {
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
-  // Default to Home view
-  const [showHome, setShowHome] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlNotebook = searchParams.get("notebook");
+  const urlNote = searchParams.get("note");
+  // Default to Home view unless a deep link is present
+  const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
-  const { setActiveNotebookId, setActiveNoteId, notebooks } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId } = useNotebooks();
+
+  // Hydrate selection from URL once notebooks load
+  useEffect(() => {
+    if (!urlNotebook) return;
+    const nb = notebooks.find((n) => n.id === urlNotebook);
+    if (!nb) return;
+    setActiveNotebookId(urlNotebook);
+    const target = urlNote && nb.notes.find((x) => x.id === urlNote) ? urlNote : nb.notes[0]?.id ?? null;
+    setActiveNoteId(target);
+    setShowHome(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlNotebook, urlNote, notebooks.length]);
+
+  // Keep URL in sync when active selection changes (editor mode)
+  useEffect(() => {
+    if (showHome) return;
+    if (!activeNotebookId) return;
+    const next = new URLSearchParams(searchParams);
+    next.set("notebook", activeNotebookId);
+    if (activeNoteId) next.set("note", activeNoteId);
+    else next.delete("note");
+    if (next.toString() !== searchParams.toString()) {
+      setSearchParams(next, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeNotebookId, activeNoteId, showHome]);
 
   const openHome = useCallback(() => {
     setShowHome(true);
     if (isMobile) setSidebarOpen(false);
-  }, [isMobile]);
+    // Clear deep-link params
+    const next = new URLSearchParams(searchParams);
+    next.delete("notebook");
+    next.delete("note");
+    setSearchParams(next, { replace: true });
+  }, [isMobile, searchParams, setSearchParams]);
 
   const openNotebookFromHome = useCallback(
     (notebookId: string) => {
@@ -44,9 +78,14 @@ function AppContent() {
       const firstNoteId = nb?.notes?.[0]?.id ?? null;
       setActiveNoteId(firstNoteId);
       setShowHome(false);
+      const next = new URLSearchParams(searchParams);
+      next.set("notebook", notebookId);
+      if (firstNoteId) next.set("note", firstNoteId);
+      else next.delete("note");
+      setSearchParams(next, { replace: true });
       window.setTimeout(() => setOpening(false), 700);
     },
-    [setActiveNotebookId, setActiveNoteId, notebooks]
+    [setActiveNotebookId, setActiveNoteId, notebooks, searchParams, setSearchParams]
   );
 
   return (
