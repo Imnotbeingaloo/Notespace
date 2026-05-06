@@ -12,9 +12,15 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify this is called by the service role (cron) not a regular user
+    // Verify this is called by the service role (cron) - require auth unconditionally
     const authHeader = req.headers.get("Authorization");
-    if (authHeader) {
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
       const checkClient = createClient(supabaseUrl, anonKey, {

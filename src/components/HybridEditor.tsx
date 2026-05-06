@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle, useState } from "react";
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 import TurndownService from "turndown";
 import { FloatingToolbar } from "@/components/FloatingToolbar";
 
@@ -52,7 +53,8 @@ const turndown = createTurndown();
 
 function markdownToHtml(md: string): string {
   if (!md) return "";
-  return marked.parse(md, { async: false }) as string;
+  const raw = marked.parse(md, { async: false }) as string;
+  return DOMPurify.sanitize(raw, { ADD_ATTR: ["target"] });
 }
 
 function htmlToMarkdown(html: string): string {
