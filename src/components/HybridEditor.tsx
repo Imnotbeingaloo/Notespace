@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle, useState } from "react";
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 import TurndownService from "turndown";
 import { FloatingToolbar } from "@/components/FloatingToolbar";
 
