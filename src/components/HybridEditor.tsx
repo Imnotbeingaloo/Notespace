@@ -53,7 +53,8 @@ const turndown = createTurndown();
 
 function markdownToHtml(md: string): string {
   if (!md) return "";
-  return marked.parse(md, { async: false }) as string;
+  const raw = marked.parse(md, { async: false }) as string;
+  return DOMPurify.sanitize(raw, { ADD_ATTR: ["target"] });
 }
 
 function htmlToMarkdown(html: string): string {
