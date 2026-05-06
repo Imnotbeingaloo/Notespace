@@ -202,7 +202,34 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
-        {paged.length === 0 ? (
+        {loading && notebooks.length === 0 ? (
+          <div
+            data-testid="home-skeleton"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+            aria-busy="true"
+            aria-label="Loading notebooks"
+          >
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-border bg-card p-6 overflow-hidden relative"
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-muted/60" />
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-lg bg-muted/60 animate-pulse" />
+                  <div className="h-5 w-14 rounded-full bg-muted/60 animate-pulse" />
+                </div>
+                <div className="h-6 w-2/3 rounded bg-muted/60 animate-pulse mb-4" />
+                <div className="space-y-2 mb-4">
+                  <div className="h-3 w-full rounded bg-muted/50 animate-pulse" />
+                  <div className="h-3 w-5/6 rounded bg-muted/50 animate-pulse" />
+                  <div className="h-3 w-3/4 rounded bg-muted/50 animate-pulse" />
+                </div>
+                <div className="h-3 w-1/3 rounded bg-muted/40 animate-pulse pt-3 border-t border-border/60" />
+              </div>
+            ))}
+          </div>
+        ) : paged.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
               <BookOpen className="h-7 w-7 text-muted-foreground" />
