@@ -2,16 +2,24 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { HomeView } from "@/components/HomeView";
 
-// Mock framer-motion to render plain elements with full props
+// Mock framer-motion: cache component per tag so identity is stable across renders
 vi.mock("framer-motion", async () => {
   const React = await import("react");
-  const passthrough = (tag: string) =>
-    React.forwardRef((props: any, ref: any) => React.createElement(tag, { ref, ...props }));
+  const cache = new Map<string, any>();
+  const passthrough = (tag: string) => {
+    if (!cache.has(tag)) {
+      cache.set(
+        tag,
+        React.forwardRef((props: any, ref: any) => {
+          const { whileHover, initial, animate, exit, transition, ...rest } = props || {};
+          return React.createElement(tag, { ref, ...rest });
+        })
+      );
+    }
+    return cache.get(tag);
+  };
   return {
-    motion: new Proxy(
-      {},
-      { get: (_t, key: string) => passthrough(key) }
-    ),
+    motion: new Proxy({}, { get: (_t, key: string) => passthrough(String(key)) }),
     AnimatePresence: ({ children }: any) => children,
   };
 });
