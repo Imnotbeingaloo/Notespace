@@ -6,7 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useSearchParams } from "react-router-dom";
-import { ArrowUpRight, CalendarDays, Home as HomeIcon, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
+import { ArrowLeft, CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -141,25 +141,14 @@ function AppContent() {
                 </button>
               )}
               {!focusMode && (
-                showHome ? (
-                  <Link
-                    to="/"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                    title="Visit website"
-                  >
-                    <ArrowUpRight className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">Visit Website</span>
-                  </Link>
-                ) : (
-                  <button
-                    onClick={openHome}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                    title="Home"
-                  >
-                    <HomeIcon className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">Home</span>
-                  </button>
-                )
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                  title="Back to website"
+                  aria-label="Back to website"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Link>
               )}
             </div>
             <div className="flex items-center gap-1">

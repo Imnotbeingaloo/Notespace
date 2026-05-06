@@ -35,20 +35,20 @@ export function PageHeader({ activePage }: PageHeaderProps) {
         scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
       }`}
     >
-      <div className="flex items-center justify-between gap-3 lg:gap-6 px-3 sm:px-5 lg:px-6 py-3 lg:py-4">
-        <Link to="/" className="flex items-center gap-2 lg:gap-2.5 min-w-0 flex-shrink lg:pt-1">
+      <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-5 lg:gap-6 px-3 sm:px-5 lg:px-6 py-3 lg:py-4">
+        <Link to="/" className="flex items-center gap-2 lg:gap-2.5 min-w-0 shrink lg:pt-1">
           <img
             src="/favicon.png"
             alt="Notebook Archive"
             className="h-7 w-7 lg:h-10 lg:w-10 object-contain shrink-0"
           />
-          <span className="font-serif text-base lg:text-2xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate hidden sm:inline">
+          <span className="hidden sm:inline font-serif text-base lg:text-2xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate">
             Notebook Archive
           </span>
         </Link>
 
         {/* Desktop/Tablet nav */}
-        <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2">
           {navLinks.map((link) => (
             <Link
               key={link.key}

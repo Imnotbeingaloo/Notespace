@@ -113,34 +113,34 @@ export default function LandingPage() {
           scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
         }`}
       >
-        <div className="flex items-center justify-between px-5 py-3">
-           <Link to="/" className="flex items-center gap-2 pb-1">
-              <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
-              <span className="font-serif text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
+        <div className="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-5 py-3">
+           <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink">
+              <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain shrink-0" />
+              <span className="hidden sm:inline font-serif text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
            </Link>
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) =>
               link.isAnchor ? (
-                <a key={link.label} href={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200">{link.label}</a>
+                <a key={link.label} href={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</a>
               ) : (
-                <Link key={link.label} to={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200">{link.label}</Link>
+                <Link key={link.label} to={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</Link>
               )
             )}
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {user ? (
-              <Link to="/app" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+              <Link to="/app" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
                 Open App <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
               </Link>
             ) : (
               <>
                 <Link to="/auth" className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">Sign In</Link>
-                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
+                <Link to="/auth" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
                   Get Started <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
                 </Link>
               </>
             )}
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors shrink-0">
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
