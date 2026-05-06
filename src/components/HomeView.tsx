@@ -314,12 +314,19 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
             {/* Infinite scroll sentinel + manual load more */}
             {hasMore && (
               <div ref={sentinelRef} className="flex justify-center mt-8">
-                <button
-                  onClick={() => setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length))}
-                  className="px-4 py-2 rounded-xl border border-border bg-card text-sm text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                >
-                  Load more ({allFiltered.length - visible} remaining)
-                </button>
+                {loadingMore ? (
+                  <div className="inline-flex items-center gap-2 text-xs text-muted-foreground" aria-live="polite">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Loading more…
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length))}
+                    className="px-4 py-2 rounded-xl border border-border bg-card text-sm text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                  >
+                    Load more ({allFiltered.length - visible} remaining)
+                  </button>
+                )}
               </div>
             )}
 
