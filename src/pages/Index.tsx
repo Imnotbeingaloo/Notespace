@@ -32,7 +32,8 @@ function AppContent() {
   const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading } = useNotebooks();
+  const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
 
   // Hydrate selection from URL once notebooks load
   useEffect(() => {
