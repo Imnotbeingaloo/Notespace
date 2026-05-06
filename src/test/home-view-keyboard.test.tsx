@@ -50,9 +50,10 @@ describe("HomeView keyboard navigation", () => {
     render(<HomeView onOpenNotebook={onOpen} />);
     const cards = screen.getAllByRole("gridcell");
     expect(cards.length).toBe(6);
+    // Newest sort places nb-5 first
     cards[0].focus();
     fireEvent.keyDown(cards[0], { key: "Enter" });
-    expect(onOpen).toHaveBeenCalledWith("nb-0");
+    expect(onOpen).toHaveBeenCalledWith("nb-5");
   });
 
   it("ArrowRight moves focus to next card", () => {
