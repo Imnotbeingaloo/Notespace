@@ -59,20 +59,24 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
     setFocusedIdx(0);
   }, [query, sort]);
 
-  // Infinite scroll observer
+  // Infinite scroll observer with brief loading indicator to avoid flicker
   useEffect(() => {
     if (!hasMore || !sentinelRef.current) return;
     const obs = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
+        if (entries[0].isIntersecting && !loadingMore) {
+          setLoadingMore(true);
+          window.setTimeout(() => {
+            setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
+            setLoadingMore(false);
+          }, 250);
         }
       },
       { rootMargin: "200px" }
     );
     obs.observe(sentinelRef.current);
     return () => obs.disconnect();
-  }, [hasMore, allFiltered.length]);
+  }, [hasMore, allFiltered.length, loadingMore]);
 
   const totalNotes = useMemo(
     () => notebooks.reduce((acc, nb) => acc + (nb.notes?.length ?? 0), 0),
