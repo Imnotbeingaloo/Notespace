@@ -279,12 +279,12 @@ export default function AboutPage() {
       <PageHeader activePage="about" />
 
       {/* Hero */}
-      <section className="container mx-auto px-6 pt-24 pb-20 max-w-4xl text-center">
+      <section className="container mx-auto px-6 pt-28 pb-16 max-w-4xl text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="font-serif text-3xl md:text-5xl font-bold text-foreground mb-6">
+          <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-5">
             We're building the notebook <span className="text-primary">you always wanted</span>
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Notebook Archive was created for thinkers — students, researchers, writers, and anyone who believes better tools lead to better ideas. We're a small, passionate team on a mission to make knowledge management feel effortless.
           </p>
         </motion.div>
