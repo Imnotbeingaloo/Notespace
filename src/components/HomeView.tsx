@@ -63,14 +63,20 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
 
   // Infinite scroll observer with brief loading indicator to avoid flicker
   useEffect(() => {
-    if (!hasMore || !sentinelRef.current) return;
+    if (!hasMore || !sentinelRef.current || pageError) return;
     const obs = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loadingMore) {
           setLoadingMore(true);
           window.setTimeout(() => {
-            setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
-            setLoadingMore(false);
+            try {
+              setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
+              setPageError(null);
+            } catch (err: any) {
+              setPageError(err?.message || "Couldn't load more notebooks.");
+            } finally {
+              setLoadingMore(false);
+            }
           }, 250);
         }
       },
@@ -78,7 +84,21 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
     );
     obs.observe(sentinelRef.current);
     return () => obs.disconnect();
-  }, [hasMore, allFiltered.length, loadingMore]);
+  }, [hasMore, allFiltered.length, loadingMore, pageError]);
+
+  const handleRetryPage = useCallback(() => {
+    setPageError(null);
+    setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
+  }, [allFiltered.length]);
+
+  const handleRetryFetch = useCallback(async () => {
+    setRetrying(true);
+    try {
+      await refreshData();
+    } finally {
+      setRetrying(false);
+    }
+  }, [refreshData]);
 
   const totalNotes = useMemo(
     () => notebooks.reduce((acc, nb) => acc + (nb.notes?.length ?? 0), 0),
