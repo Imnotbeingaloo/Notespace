@@ -68,8 +68,8 @@ describe("PageHeader responsive", () => {
     // Hamburger button (md:hidden) exists
     const buttons = screen.getAllByRole("button");
     expect(buttons.length).toBeGreaterThanOrEqual(1);
-    // Brand span uses hidden sm:inline so it carries the responsive class
+    // Brand text is always shown
     const brand = screen.getByText(/Notebook Archive/i);
-    expect(brand.className).toMatch(/hidden\s+sm:inline/);
+    expect(brand).toBeInTheDocument();
   });
 });

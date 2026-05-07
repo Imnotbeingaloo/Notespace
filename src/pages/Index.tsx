@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === "undefined" ? true : window.innerWidth >= 768);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
@@ -32,8 +32,14 @@ function AppContent() {
   const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
+  const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
+  const [retryingDeepLink, setRetryingDeepLink] = useState(false);
+  const handleRetryDeepLink = useCallback(async () => {
+    setRetryingDeepLink(true);
+    try { await refreshData(); } finally { setRetryingDeepLink(false); }
+  }, [refreshData]);
 
   // Hydrate selection from URL once notebooks load
   useEffect(() => {
@@ -141,7 +147,7 @@ function AppContent() {
                   Open Sidebar
                 </button>
               )}
-              {!focusMode && (
+              {!focusMode && !showHome && (
                 <Link
                   to="/"
                   className="inline-flex items-center justify-center h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
@@ -204,8 +210,19 @@ function AppContent() {
         </TooltipProvider>
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
-            {hydratingDeepLink ? (
+            {hydratingDeepLink || retryingDeepLink ? (
               <LoadingScreen label="Opening notebook…" />
+            ) : deepLinkMissing ? (
+              <div className="flex-1 flex items-center justify-center p-6">
+                <div role="alert" className="max-w-sm w-full rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center">
+                  <p className="font-serif text-base font-bold text-foreground mb-1">Couldn't open this notebook</p>
+                  <p className="text-xs text-muted-foreground mb-4">It may have been deleted, or there was a connection problem.</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <button onClick={handleRetryDeepLink} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-medium hover:opacity-90">Retry</button>
+                    <button onClick={openHome} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60">Go Home</button>
+                  </div>
+                </div>
+              </div>
             ) : opening ? (
               <LoadingScreen label="Opening notebook…" />
             ) : showHome ? (

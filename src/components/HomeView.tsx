@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 
@@ -12,12 +12,14 @@ type SortKey = "newest" | "oldest" | "title";
 const PAGE_SIZE = 9;
 
 export function HomeView({ onOpenNotebook }: HomeViewProps) {
-  const { notebooks, loading } = useNotebooks();
+  const { notebooks, loading, refreshData } = useNotebooks();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [focusedIdx, setFocusedIdx] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [retrying, setRetrying] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -61,14 +63,20 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
 
   // Infinite scroll observer with brief loading indicator to avoid flicker
   useEffect(() => {
-    if (!hasMore || !sentinelRef.current) return;
+    if (!hasMore || !sentinelRef.current || pageError) return;
     const obs = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loadingMore) {
           setLoadingMore(true);
           window.setTimeout(() => {
-            setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
-            setLoadingMore(false);
+            try {
+              setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
+              setPageError(null);
+            } catch (err: any) {
+              setPageError(err?.message || "Couldn't load more notebooks.");
+            } finally {
+              setLoadingMore(false);
+            }
           }, 250);
         }
       },
@@ -76,7 +84,21 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
     );
     obs.observe(sentinelRef.current);
     return () => obs.disconnect();
-  }, [hasMore, allFiltered.length, loadingMore]);
+  }, [hasMore, allFiltered.length, loadingMore, pageError]);
+
+  const handleRetryPage = useCallback(() => {
+    setPageError(null);
+    setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
+  }, [allFiltered.length]);
+
+  const handleRetryFetch = useCallback(async () => {
+    setRetrying(true);
+    try {
+      await refreshData();
+    } finally {
+      setRetrying(false);
+    }
+  }, [refreshData]);
 
   const totalNotes = useMemo(
     () => notebooks.reduce((acc, nb) => acc + (nb.notes?.length ?? 0), 0),
@@ -313,8 +335,19 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
 
             {/* Infinite scroll sentinel + manual load more */}
             {hasMore && (
-              <div ref={sentinelRef} className="flex justify-center mt-8">
-                {loadingMore ? (
+              <div ref={sentinelRef} className="flex justify-center mt-8" data-testid="home-pagination">
+                {pageError ? (
+                  <div role="alert" className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border border-destructive/30 bg-destructive/5 text-xs text-destructive">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    <span>{pageError}</span>
+                    <button
+                      onClick={handleRetryPage}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-destructive text-destructive-foreground hover:opacity-90 transition-opacity font-medium"
+                    >
+                      <RotateCcw className="h-3 w-3" /> Retry
+                    </button>
+                  </div>
+                ) : loadingMore ? (
                   <div className="inline-flex items-center gap-2 text-xs text-muted-foreground" aria-live="polite">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     Loading more…

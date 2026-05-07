@@ -113,17 +113,17 @@ export default function LandingPage() {
           scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
         }`}
       >
-        <div className="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-5 py-3">
+        <div className="flex items-center justify-between gap-3 md:gap-6 px-3 sm:px-5 py-3">
            <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink">
-              <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain shrink-0" />
-              <span className="hidden sm:inline font-serif text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
+              <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0" />
+              <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate">Notebook Archive</span>
            </Link>
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0">
             {navLinks.map((link) =>
               link.isAnchor ? (
-                <a key={link.label} href={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</a>
+                <a key={link.label} href={link.href} className="px-2.5 lg:px-3 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</a>
               ) : (
-                <Link key={link.label} to={link.href} className="px-3 py-1.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</Link>
+                <Link key={link.label} to={link.href} className="px-2.5 lg:px-3 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</Link>
               )
             )}
           </nav>
@@ -147,7 +147,7 @@ export default function LandingPage() {
         </div>
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="md:hidden border-t border-border/50 overflow-hidden">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="md:hidden border-t border-border/50 overflow-hidden bg-background/95 backdrop-blur-xl rounded-b-2xl">
               <nav className="flex flex-col gap-1 p-3">
                 {navLinks.map((link) =>
                   link.isAnchor ? (
