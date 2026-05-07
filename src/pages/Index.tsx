@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === "undefined" ? true : window.innerWidth >= 768);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
