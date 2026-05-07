@@ -89,7 +89,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border/50 overflow-hidden"
+            className="md:hidden border-t border-border/50 overflow-hidden bg-background/95 backdrop-blur-xl rounded-b-2xl"
           >
             <nav className="flex flex-col gap-1 p-3">
               {navLinks.map((link) => (
