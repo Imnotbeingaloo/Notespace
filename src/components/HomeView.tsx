@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 
@@ -12,12 +12,14 @@ type SortKey = "newest" | "oldest" | "title";
 const PAGE_SIZE = 9;
 
 export function HomeView({ onOpenNotebook }: HomeViewProps) {
-  const { notebooks, loading } = useNotebooks();
+  const { notebooks, loading, refreshData } = useNotebooks();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [focusedIdx, setFocusedIdx] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [retrying, setRetrying] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
