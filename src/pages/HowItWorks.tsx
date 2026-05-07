@@ -309,16 +309,16 @@ export default function HowItWorksPage() {
       <PageHeader activePage="how-it-works" />
 
       {/* Hero with parallax */}
-      <section ref={heroRef} className="container mx-auto px-6 pt-32 md:pt-36 pb-28 md:pb-32 max-w-5xl text-center overflow-hidden">
+      <section ref={heroRef} className="container mx-auto px-6 pt-28 md:pt-32 pb-20 md:pb-24 max-w-5xl text-center overflow-hidden">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <motion.div style={{ y: badgeY }} className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-8">
+          <motion.div style={{ y: badgeY }} className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             Get Started in Minutes
           </motion.div>
-          <motion.h1 style={{ y: headingY }} className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+          <motion.h1 style={{ y: headingY }} className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-5">
             How Notebook Archive <span className="text-primary">works</span>
           </motion.h1>
-          <motion.p style={{ y: subtitleY }} className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <motion.p style={{ y: subtitleY }} className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             From first note to full knowledge base — here's how you go from scattered thoughts to organized understanding.
           </motion.p>
         </motion.div>
