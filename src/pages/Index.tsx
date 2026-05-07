@@ -32,8 +32,14 @@ function AppContent() {
   const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
+  const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
+  const [retryingDeepLink, setRetryingDeepLink] = useState(false);
+  const handleRetryDeepLink = useCallback(async () => {
+    setRetryingDeepLink(true);
+    try { await refreshData(); } finally { setRetryingDeepLink(false); }
+  }, [refreshData]);
 
   // Hydrate selection from URL once notebooks load
   useEffect(() => {
