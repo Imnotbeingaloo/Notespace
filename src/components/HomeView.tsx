@@ -335,8 +335,19 @@ export function HomeView({ onOpenNotebook }: HomeViewProps) {
 
             {/* Infinite scroll sentinel + manual load more */}
             {hasMore && (
-              <div ref={sentinelRef} className="flex justify-center mt-8">
-                {loadingMore ? (
+              <div ref={sentinelRef} className="flex justify-center mt-8" data-testid="home-pagination">
+                {pageError ? (
+                  <div role="alert" className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border border-destructive/30 bg-destructive/5 text-xs text-destructive">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    <span>{pageError}</span>
+                    <button
+                      onClick={handleRetryPage}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-destructive text-destructive-foreground hover:opacity-90 transition-opacity font-medium"
+                    >
+                      <RotateCcw className="h-3 w-3" /> Retry
+                    </button>
+                  </div>
+                ) : loadingMore ? (
                   <div className="inline-flex items-center gap-2 text-xs text-muted-foreground" aria-live="polite">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     Loading more…
