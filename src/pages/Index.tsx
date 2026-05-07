@@ -210,8 +210,19 @@ function AppContent() {
         </TooltipProvider>
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
-            {hydratingDeepLink ? (
+            {hydratingDeepLink || retryingDeepLink ? (
               <LoadingScreen label="Opening notebook…" />
+            ) : deepLinkMissing ? (
+              <div className="flex-1 flex items-center justify-center p-6">
+                <div role="alert" className="max-w-sm w-full rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center">
+                  <p className="font-serif text-base font-bold text-foreground mb-1">Couldn't open this notebook</p>
+                  <p className="text-xs text-muted-foreground mb-4">It may have been deleted, or there was a connection problem.</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <button onClick={handleRetryDeepLink} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-medium hover:opacity-90">Retry</button>
+                    <button onClick={openHome} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60">Go Home</button>
+                  </div>
+                </div>
+              </div>
             ) : opening ? (
               <LoadingScreen label="Opening notebook…" />
             ) : showHome ? (
