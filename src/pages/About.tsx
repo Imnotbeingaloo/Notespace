@@ -279,15 +279,17 @@ export default function AboutPage() {
       <PageHeader activePage="about" />
 
       {/* Hero */}
-      <section className="container mx-auto px-6 pt-28 pb-16 max-w-4xl text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-5">
-            We're building the notebook <span className="text-primary">you always wanted</span>
-          </h1>
-          <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Notebook Archive was created for thinkers — students, researchers, writers, and anyone who believes better tools lead to better ideas. We're a small, passionate team on a mission to make knowledge management feel effortless.
-          </p>
-        </motion.div>
+      <section className="relative overflow-hidden pt-28 pb-16">
+        <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+              We're building the notebook <span className="text-primary">you always wanted</span>
+            </h1>
+            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Notebook Archive was created for thinkers — students, researchers, writers, and anyone who believes better tools lead to better ideas. We're a small, passionate team on a mission to make knowledge management feel effortless.
+            </p>
+          </motion.div>
+        </div>
       </section>
 
       <AnimatedDivider />

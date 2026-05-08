@@ -67,17 +67,21 @@ export default function PricingPage() {
     <div className="min-h-screen bg-background">
       <PageHeader activePage="pricing" />
 
-      <section className="container mx-auto px-6 pt-24 pb-8 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
-            <Sparkles className="h-3.5 w-3.5 text-accent" />
-            Simple Pricing
-          </div>
-          <h1 className="font-serif text-3xl md:text-5xl font-bold text-foreground mb-4">Plans that grow with you</h1>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Start free, upgrade when you need more AI power. No hidden fees, cancel anytime. Every plan includes our core markdown editor, instant search, and auto-save — so you're always covered.
-          </p>
-        </motion.div>
+      <section className="relative overflow-hidden pt-28 pb-8">
+        <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
+              <Sparkles className="h-3.5 w-3.5 text-accent" />
+              Simple Pricing
+            </div>
+            <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+              Plans that <span className="text-primary">grow with you</span>
+            </h1>
+            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Start free, upgrade when you need more AI power. No hidden fees, cancel anytime. Every plan includes our core markdown editor, instant search, and auto-save — so you're always covered.
+            </p>
+          </motion.div>
+        </div>
       </section>
 
       {/* Pricing Cards */}

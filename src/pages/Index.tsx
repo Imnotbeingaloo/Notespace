@@ -5,8 +5,8 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
-import { Navigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import { Link } from "react-router-dom";
+
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
@@ -32,6 +32,7 @@ function AppContent() {
   const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
@@ -126,7 +127,7 @@ function AppContent() {
               onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
               onOpenPlanner={() => setPlannerOpen(true)}
-              onOpenHome={openHome}
+              onOpenHome={() => { if (showHome) { navigate("/"); } else { openHome(); } }}
             />
           </motion.div>
         )}
@@ -146,16 +147,6 @@ function AppContent() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                   Open Sidebar
                 </button>
-              )}
-              {!focusMode && !showHome && (
-                <Link
-                  to="/"
-                  className="inline-flex items-center justify-center h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                  title="Back to website"
-                  aria-label="Back to website"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Link>
               )}
             </div>
             <div className="flex items-center gap-1">
