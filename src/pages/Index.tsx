@@ -147,16 +147,6 @@ function AppContent() {
                   Open Sidebar
                 </button>
               )}
-              {!focusMode && !showHome && (
-                <Link
-                  to="/"
-                  className="inline-flex items-center justify-center h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                  title="Back to website"
-                  aria-label="Back to website"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Link>
-              )}
             </div>
             <div className="flex items-center gap-1">
               <Tooltip>
