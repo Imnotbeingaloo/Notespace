@@ -1,7 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Download, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import DOMPurify from "dompurify";
 import { useNotebooks } from "@/context/NotebookContext";
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
+const sanitizeHtml = (html: string) =>
+  DOMPurify.sanitize(html, { FORBID_TAGS: ["script", "style", "iframe", "object", "embed"], FORBID_ATTR: ["onerror", "onload", "onclick"] });
 
 export function ExportButtons() {
   const { activeNote } = useNotebooks();
@@ -40,14 +47,16 @@ export function ExportButtons() {
   };
 
   const exportHtml = () => {
+    const safeTitle = escapeHtml(title);
     const htmlContent = contentToHtml(title, content);
-    const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:system-ui,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7;}h1{font-size:28px;}h2{font-size:22px;}h3{font-size:18px;}code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:0.9em;}li{margin-left:20px;}</style></head><body><h1>${title}</h1><hr>${htmlContent}</body></html>`;
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${safeTitle}</title><style>body{font-family:system-ui,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7;}h1{font-size:28px;}h2{font-size:22px;}h3{font-size:18px;}code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:0.9em;}li{margin-left:20px;}</style></head><body><h1>${safeTitle}</h1><hr>${htmlContent}</body></html>`;
     downloadBlob(new Blob([fullHtml], { type: "text/html" }), `${title}.html`);
   };
 
   const exportDocx = () => {
+    const safeTitle = escapeHtml(title);
     const htmlContent = contentToHtml(title, content);
-    const docHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:'Calibri',sans-serif;line-height:1.6;color:#222;}h1{font-size:24pt;}h2{font-size:18pt;}h3{font-size:14pt;}code{background:#f0f0f0;padding:2px 4px;border-radius:3px;font-family:'Consolas',monospace;}</style></head><body>${htmlContent}</body></html>`;
+    const docHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${safeTitle}</title><style>body{font-family:'Calibri',sans-serif;line-height:1.6;color:#222;}h1{font-size:24pt;}h2{font-size:18pt;}h3{font-size:14pt;}code{background:#f0f0f0;padding:2px 4px;border-radius:3px;font-family:'Consolas',monospace;}</style></head><body>${htmlContent}</body></html>`;
     downloadBlob(new Blob([docHtml], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }), `${title}.docx`);
   };
 
@@ -58,25 +67,25 @@ export function ExportButtons() {
   };
 
   const exportOdt = () => {
-    const htmlContent = contentToHtml(title, content);
-    const odtXml = `<?xml version="1.0" encoding="UTF-8"?><office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" office:mimetype="application/vnd.oasis.opendocument.text" office:version="1.2"><office:body><office:text><text:p>${title}</text:p><text:p>${content.replace(/\n/g, "</text:p><text:p>")}</text:p></office:text></office:body></office:document>`;
+    const safeTitle = escapeHtml(title);
+    const safeContent = escapeHtml(content);
+    const odtXml = `<?xml version="1.0" encoding="UTF-8"?><office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" office:mimetype="application/vnd.oasis.opendocument.text" office:version="1.2"><office:body><office:text><text:p>${safeTitle}</text:p><text:p>${safeContent.replace(/\n/g, "</text:p><text:p>")}</text:p></office:text></office:body></office:document>`;
     downloadBlob(new Blob([odtXml], { type: "application/vnd.oasis.opendocument.text" }), `${title}.odt`);
   };
 
   const exportEpub = () => {
+    const safeTitle = escapeHtml(title);
     const htmlContent = contentToHtml(title, content);
-    const container = `<?xml version="1.0"?><container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0"><rootfiles><rootfile full-path="content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>`;
-    const opf = `<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" version="3.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>${title}</dc:title><dc:language>en</dc:language></metadata><manifest><item id="content" href="content.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="content"/></spine></package>`;
-    const xhtml = `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>${title}</title></head><body><h1>${title}</h1>${htmlContent}</body></html>`;
-    // Simple single-file approach — download as HTML with epub extension
+    const xhtml = `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>${safeTitle}</title></head><body><h1>${safeTitle}</h1>${htmlContent}</body></html>`;
     downloadBlob(new Blob([xhtml], { type: "application/epub+zip" }), `${title}.epub`);
   };
 
   const exportPDF = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
+    const safeTitle = escapeHtml(title);
     const htmlContent = contentToHtml(title, content);
-    printWindow.document.write(`<!DOCTYPE html><html><head><title>${title}</title><style>body{font-family:'Inter',system-ui,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7;}h1{font-size:28px;margin-bottom:8px;}h2{font-size:22px;margin-top:24px;}h3{font-size:18px;margin-top:20px;}code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:0.9em;}li{margin-left:20px;}@media print{body{margin:0;}}</style></head><body><h1>${title}</h1><hr style="border:none;border-top:1px solid #e0e0e0;margin:16px 0;">${htmlContent}</body></html>`);
+    printWindow.document.write(`<!DOCTYPE html><html><head><title>${safeTitle}</title><style>body{font-family:'Inter',system-ui,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7;}h1{font-size:28px;margin-bottom:8px;}h2{font-size:22px;margin-top:24px;}h3{font-size:18px;margin-top:20px;}code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:0.9em;}li{margin-left:20px;}@media print{body{margin:0;}}</style></head><body><h1>${safeTitle}</h1><hr style="border:none;border-top:1px solid #e0e0e0;margin:16px 0;">${htmlContent}</body></html>`);
     printWindow.document.close();
     setTimeout(() => printWindow.print(), 300);
     setOpen(false);
@@ -129,8 +138,9 @@ export function ExportButtons() {
   );
 }
 
-function contentToHtml(title: string, content: string): string {
-  return content
+function contentToHtml(_title: string, content: string): string {
+  const escaped = escapeHtml(content);
+  const html = escaped
     .replace(/^### (.*$)/gim, "<h3>$1</h3>")
     .replace(/^## (.*$)/gim, "<h2>$1</h2>")
     .replace(/^# (.*$)/gim, "<h1>$1</h1>")
@@ -139,4 +149,5 @@ function contentToHtml(title: string, content: string): string {
     .replace(/`(.*?)`/g, "<code>$1</code>")
     .replace(/^- (.*$)/gim, "<li>$1</li>")
     .replace(/\n/g, "<br>");
+  return sanitizeHtml(html);
 }
