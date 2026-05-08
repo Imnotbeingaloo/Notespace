@@ -15,7 +15,7 @@ import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import { Link } from "react-router-dom";
+
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
