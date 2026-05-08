@@ -40,9 +40,9 @@ export function PageHeader({ activePage }: PageHeaderProps) {
           <img
             src="/favicon.png"
             alt="Notebook Archive"
-            className="h-7 w-7 lg:h-10 lg:w-10 object-contain shrink-0"
+            className="h-7 w-7 lg:h-8 lg:w-8 object-contain shrink-0"
           />
-          <span className="font-serif text-sm sm:text-base lg:text-2xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate">
+          <span className="font-serif text-sm sm:text-base lg:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate">
             Notebook Archive
           </span>
         </Link>
