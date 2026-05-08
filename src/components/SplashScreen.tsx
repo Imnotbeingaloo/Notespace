@@ -35,7 +35,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
 
           {/* Logo */}
           <motion.img
-            src="/logo.png"
+            src="/favicon.png"
             alt="Notebook Archive"
             className="h-20 w-20 object-contain relative z-10"
             initial={{ scale: 0.3, opacity: 0, rotate: -15 }}

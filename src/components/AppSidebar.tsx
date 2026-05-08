@@ -277,7 +277,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               exit={{ opacity: 0 }}
               className="flex items-center gap-2 min-w-0"
             >
-              <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0 mt-1" />
+              <img src="/favicon.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0 mt-1" />
               <span className="font-serif font-bold text-foreground text-base whitespace-nowrap translate-y-[1px] mt-1">Notebook Archive</span>
               <button
                 type="button"

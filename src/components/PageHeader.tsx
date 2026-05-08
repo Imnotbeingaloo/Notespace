@@ -38,7 +38,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
       <div className="flex items-center justify-between gap-3 md:gap-6 lg:gap-8 px-3 sm:px-5 lg:px-6 py-3 lg:py-4">
         <Link to="/" className="flex items-center gap-2 lg:gap-2.5 min-w-0 shrink lg:pt-1">
           <img
-            src="/logo.png"
+            src="/favicon.png"
             alt="Notebook Archive"
             className="h-7 w-7 lg:h-10 lg:w-10 object-contain shrink-0"
           />
