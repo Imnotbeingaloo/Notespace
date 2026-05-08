@@ -5,8 +5,8 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
-import { Navigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ function AppContent() {
   const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
@@ -126,7 +127,7 @@ function AppContent() {
               onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
               onOpenPlanner={() => setPlannerOpen(true)}
-              onOpenHome={openHome}
+              onOpenHome={() => { if (showHome) { navigate("/"); } else { openHome(); } }}
             />
           </motion.div>
         )}
