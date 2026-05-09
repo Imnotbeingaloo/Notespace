@@ -787,7 +787,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         {!collapsed && (
           <Link
             to="/trash"
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-xl mb-1"
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 rounded-lg transition-colors"
           >
             <Trash2 className="h-4 w-4" />
             <span className="flex-1 text-left">Trash</span>
@@ -797,13 +797,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           </Link>
         )}
 
-        <div className={`flex items-center ${collapsed ? "justify-center" : "px-1"}`}>
-          <ThemeToggle />
-          {!collapsed && <span className="text-xs text-muted-foreground ml-1">Theme</span>}
-        </div>
+        {!collapsed ? (
+          <ThemeToggle asSidebarButton />
+        ) : (
+          <div className="flex items-center justify-center">
+            <ThemeToggle />
+          </div>
+        )}
         <button
           onClick={signOut}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground notebook-hover rounded-lg"
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
           title="Sign out"
         >
           <LogOut className="h-4 w-4" />
