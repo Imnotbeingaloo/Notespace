@@ -37,10 +37,14 @@ function AppContent() {
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
+  const [exitingToWebsite, setExitingToWebsite] = useState(false);
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
     try { await refreshData(); } finally { setRetryingDeepLink(false); }
   }, [refreshData]);
+  const handleExitToWebsite = useCallback(() => {
+    setExitingToWebsite(true);
+  }, []);
 
   // Hydrate selection from URL once notebooks load
   useEffect(() => {
@@ -127,7 +131,7 @@ function AppContent() {
               onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
               onOpenPlanner={() => setPlannerOpen(true)}
-              onOpenHome={() => { if (showHome) { navigate("/"); } else { openHome(); } }}
+              onOpenHome={() => { if (showHome) { handleExitToWebsite(); } else { openHome(); } }}
             />
           </motion.div>
         )}
