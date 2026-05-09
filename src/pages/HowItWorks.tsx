@@ -316,7 +316,7 @@ export default function HowItWorksPage() {
               <Sparkles className="h-3.5 w-3.5 text-accent" />
               Get Started in Minutes
             </motion.div>
-            <motion.h1 style={{ y: headingY }} className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+            <motion.h1 style={{ y: headingY }} className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
               How Notebook Archive <span className="text-primary">works</span>
             </motion.h1>
             <motion.p style={{ y: subtitleY }} className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
