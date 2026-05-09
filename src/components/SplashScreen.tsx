@@ -52,6 +52,19 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           >
             Notebook Archive
           </motion.span>
+
+          {/* Loading dots */}
+          <div className="flex gap-1.5 mt-6 relative z-10">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-primary"
+                initial={{ opacity: 0.3, scale: 0.8 }}
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.1, 0.8] }}
+                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
+              />
+            ))}
+          </div>
         </motion.div>
       ) : null}
     </AnimatePresence>

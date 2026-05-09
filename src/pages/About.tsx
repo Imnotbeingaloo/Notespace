@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight, BookOpen, Eye } from "lucide-react";
+import { Heart, Zap, Shield, Lightbulb, Target, Layers, ArrowRight, BookOpen, Eye, Sparkles } from "lucide-react";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
@@ -282,6 +282,10 @@ export default function AboutPage() {
       <section className="relative overflow-hidden pt-28 pb-16">
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
+              <Sparkles className="h-3.5 w-3.5 text-accent" />
+              Our Story
+            </div>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
               We're building the notebook <span className="text-primary">you always wanted</span>
             </h1>
