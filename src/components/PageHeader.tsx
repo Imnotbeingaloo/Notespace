@@ -36,13 +36,13 @@ export function PageHeader({ activePage }: PageHeaderProps) {
       }`}
     >
       <div className="flex items-center justify-between gap-3 md:gap-6 lg:gap-8 px-3 sm:px-5 lg:px-6 py-3 lg:py-4">
-        <Link to="/" className="flex items-center gap-2 lg:gap-2.5 min-w-0 shrink lg:pt-1">
+        <Link to="/" className="flex items-center gap-2 min-w-0 shrink-0">
           <img
-            src="/favicon.png"
+            src="/logo.png"
             alt="Notebook Archive"
-            className="h-7 w-7 lg:h-8 lg:w-8 object-contain shrink-0"
+            className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0"
           />
-          <span className="font-serif text-sm sm:text-base lg:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap truncate">
+          <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">
             Notebook Archive
           </span>
         </Link>
