@@ -935,6 +935,34 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         confirmLabel={confirmLabel}
         onConfirm={confirmAction}
       />
+
+      <ConfirmDialog
+        open={!!pendingMoveNote}
+        onOpenChange={(o) => !o && setPendingMoveNote(null)}
+        title="Move note?"
+        description={pendingMoveNote ? `Move "${pendingMoveNote.noteTitle}" into "${pendingMoveNote.toNbName}"?` : ""}
+        confirmLabel="Move Note"
+        onConfirm={async () => {
+          if (pendingMoveNote) {
+            await moveNoteToNotebook(pendingMoveNote.fromNbId, pendingMoveNote.noteId, pendingMoveNote.toNbId);
+            setPendingMoveNote(null);
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!pendingPromoteNote}
+        onOpenChange={(o) => !o && setPendingPromoteNote(null)}
+        title="Create new notebook from note?"
+        description={pendingPromoteNote ? `"${pendingPromoteNote.title}" will become its own notebook.` : ""}
+        confirmLabel="Create Notebook"
+        onConfirm={async () => {
+          if (pendingPromoteNote) {
+            await promoteNoteToNotebook(pendingPromoteNote.fromNbId, pendingPromoteNote.noteId);
+            setPendingPromoteNote(null);
+          }
+        }}
+      />
     </motion.aside>
   );
 }
