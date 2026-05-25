@@ -524,19 +524,11 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   const handleVoiceTranscript = useCallback(
     (text: string) => {
-      if (!contentRef.current || !activeNotebookId || !activeNote) return;
-      const textarea = contentRef.current;
-      const pos = textarea.selectionStart;
-      const current = textarea.value;
-      const insert = (pos > 0 && current[pos - 1] !== " " ? " " : "") + text;
-      const newContent = current.substring(0, pos) + insert + current.substring(pos);
-      textarea.value = newContent;
-      const newPos = pos + insert.length;
-      textarea.setSelectionRange(newPos, newPos);
-      textarea.focus();
-      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+      if (!activeNotebookId || !activeNote) return;
+      // Insert at cursor via the rich editor (works whether HybridEditor uses textarea or contenteditable)
+      hybridEditorRef.current?.insertAtCursor(" " + text);
     },
-    [activeNotebookId, activeNote?.id, updateNote]
+    [activeNotebookId, activeNote?.id]
   );
 
   const handleAIEdit = useCallback(
