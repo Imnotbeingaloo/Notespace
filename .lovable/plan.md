@@ -1,80 +1,60 @@
-This is a large multi-feature pass. Outlining each change so we agree before I edit ~10 files.
+## 1. Home header cleanup
 
-## 1. Flashcards — make them interactive
+- Remove the "Website" button entirely.
+- Make the "Notebook Archive" logo + wordmark clickable → navigates to `/` (the marketing site). Add an explicit "Home" icon button next to it (same style as the app section's home button) for clarity.
+- Remove the Trash + Theme + Sign-out trio from the visible header row. Replace with a single compact icon button (avatar circle showing user's initial) that opens a small popover containing: Theme toggle, Trash, Sign out. This keeps the header clean without the heaviness of an avatar dropdown menu and avoids cramming three colored buttons into the top bar.
+- Faster app→website transition: drop the splash/loader animation when navigating away from `/app` from ~2s to ~600ms (skip the staged framer-motion sequence on exit; keep entry splash intact).
 
-- Parse the AI-generated `**Q:** … **A:** …` blocks into a real card deck.
-- Build a quiz UI: front shows Q, flip to reveal A, then "Got it right" / "Got it wrong" buttons.
-- Track score, show "X / Y correct" at the end with a Restart button.
-- Replace the current read-only markdown render inside the existing AI Tools panel.
+## 2. Temporary Notes — full rework
 
-## 2. "Ask AI" → dedicated interactive chat area (not a sidebar)
+Temporary notes stop being a "Scratch" notebook. They become a dedicated ephemeral workspace.
 
-- Replace `AIExplainPanel` with a centered modal (or full-width inline panel above the editor) named "Ask AI".
-- Two quick-action buttons inside it: **Explain** and **Edit**.
-- Free-text input so the user can ask anything ("explain paragraph 2", "rewrite this in plainer English", etc.).
-- Streamed assistant replies, multi-turn message thread kept in component state for the session.
-- For "Edit" actions, replies include an **Apply to note** button that writes the suggested markdown into the active note.
-- Edge function: reuse `ai-tools` with a new `chat` action that accepts the note + a conversation history.
+**Storage**
 
-## 3. Voice transcript
+- New `temporary_notes` table: `id`, `user_id`, `title`, `content`, `attachments`, `created_at`, `updated_at`, `expires_at` (default `now() + 24h`).
+- RLS: authenticated users CRUD only their own rows.
+- Daily cleanup: extend the existing `cleanup-trash` edge function (or add a sibling cron) to delete rows where `expires_at < now()`.
+- Remove the auto-created "Scratch" notebook logic from `NotebookContext` (existing scratch notebooks stay intact but no new ones are created; the sidebar "Temporary Note" entry no longer points to them).
 
-- Inspect why the mic isn't inserting text. Current `VoiceTranscription` only fires `onTranscript` on `isFinal` — verify the consumer in `NoteEditor` actually appends to the markdown.
-- Fix the wiring and add a visible "Listening…" indicator.
+**Entry points**
 
-## 4. Share dialog title
+- Single "Temporary Note" button in the sidebar (under New Notebook). Removes the home card and the floating FAB.
+- Clicking routes to `/app/temporary` (new route).
 
-- `ShareNoteDialog` title becomes **"Share '{notebookName}' Notebook"** (falls back to "Share Note" if no notebook context).
+**Temporary workspace UI** (`/app/temporary`)
 
-## 5. Three-dots menu — AI Edit
+- No sidebar, no top bar — clean, distraction-free.
+- Small floating top-left cluster: Notebook Archive logo (→ `/app` home), a "Permanent notes" toggle button that opens a slim read-only drawer listing the user's real notebooks/notes so they can reference (and open in a new tab) permanent content without leaving temporary mode.
+- Editor occupies the full viewport. Uses the same `HybridEditor` + markdown toolbar as regular notes.
+- Visible expiry chip: "Auto-deletes in 23h 47m".
+- The note cannot be deleted manually — no delete button anywhere.
 
-- Keep the "AI Edit" item. Wire it through the same `ai-tools` edge function `action: "edit"`, passing the full note content + user instruction. Replace the note body with the returned markdown after a confirm step.
+**Leave confirmation**
 
-## 6. Preview button (attachments)
+- Intercept navigation away (router guard + `beforeunload` for tab close) whenever the temp note has unsaved or non-empty content.
+- Dialog copy: *"This document is temporary and will be deleted in 24 hours. What would you like to do?"*
+- Buttons, in order:
+  1. **Save as notebook** (primary) — promotes the temp note into a new notebook with one note inside, then navigates to it.
+  2. **Save into existing notebook** — opens a notebook picker; appends as a new note.
+  3. **Download** — exports as `.md`.
+  4. **Discard** — deletes the temp note immediately and routes to `/app` home.
+  - **X / Cancel** on the dialog keeps the user inside the temporary workspace (no navigation).
 
-- The attachment preview button in `NoteEditor` currently doesn't open. Fix it to open the signed URL in a new tab (images/PDF inline, others download).
+## 3. Technical notes
 
-## 7. Upload loading popup
+- New table migration with RLS + trigger for `updated_at`.
+- New route `/app/temporary` in `Index.tsx` / router.
+- New components: `TemporaryWorkspace.tsx`, `LeaveTempDialog.tsx`, `PermanentNotesDrawer.tsx`, `HeaderUserMenu.tsx` (popover for trash/theme/signout).
+- Edit `HomeView.tsx` header: remove Website button, wire logo + Home icon to navigate, swap trio for `HeaderUserMenu`.
+- Edit `AppSidebar.tsx`: point "Temporary Note" button at `/app/temporary` route instead of `createScratchNote`. Remove the home FAB in `Index.tsx`.
+- Edit `SplashScreen.tsx` / route transition: bypass animation on `/app` → `/` transitions.
+- Extend cleanup edge function: add `DELETE FROM temporary_notes WHERE expires_at < now()`.
 
-- `FileUpload` shows a toast/dialog "Preparing your document…" with a spinner while extraction/upload runs, dismisses on success/failure.
-- Tighten validation to reuse `validateFile` helpers already in `file-validation.ts`.
+## 4. Out of scope
 
-## 8. Sidebar Upload — Notes vs Notebook
+- No changes to existing notebooks, notes, trash, or AI features.
+- Existing "Scratch" notebooks already in users' accounts are left alone (they just become regular notebooks).
 
-- New dropdown on the sidebar "+ Upload" button:
-  - **Upload Notes** → asks "Which notebook?" with two options: pick existing (dropdown) or create new (opens `CreateNotebookDialog`, then continues).
-  - **Upload Notebook** → file picker for `.md`/`.txt`/`.docx`, creates a new notebook named after the file and ingests it as the first note.
+change the logo of the temporary notes to something like what chatgpt or better what claude uses to show it temporay chat
 
-## 9. Scratch (temporary notes)
-
-- Add a **Scratch** button in the editor top bar next to Focus Mode (custom icon: pencil with dashed outline).
-- Clicking opens (or creates) the per-user Scratch notebook and a new scratch note.
-- Before navigating away from a scratch note, show a confirm: **Download as .md**, **Save to a notebook** (notebook picker), or **Discard**.
-
-## 10. New-notebook routing bug
-
-- After creating a notebook the URL still has `?notebook=<old>&note=<old>`, so the editor shows the previous notebook contents under the new title.
-- Fix: when `createNotebook` resolves, navigate to `/app?notebook=<newId>` and clear `activeNoteId`. `HomeView` and `AppSidebar` both call `createNotebook` — both need this.
-
-## Files to touch
-
-- `src/components/AIToolsPanel.tsx` — flashcards interactive mode
-- `src/components/AIExplainPanel.tsx` → rewrite as `AskAIPanel.tsx` (chat UI)
-- `src/components/AIEditPanel.tsx` — reuse from three-dots menu, accept instruction
-- `src/components/VoiceTranscription.tsx` + `NoteEditor.tsx` wiring
-- `src/components/ShareNoteDialog.tsx`
-- `src/components/FileUpload.tsx` — loading dialog, preview fix
-- `src/components/NoteEditor.tsx` — attachment preview, scratch button, ask-ai placement
-- `src/components/AppSidebar.tsx` — upload dropdown
-- `src/components/CreateNotebookDialog.tsx` / `HomeView.tsx` / `Index.tsx` — routing fix
-- `src/context/NotebookContext.tsx` — scratch helpers, return new id from createNotebook
-- `supabase/functions/ai-tools/index.ts` — add `chat` action
-
-## Out of scope (will not touch)
-
-- Drag-to-create-notebook flow (already in the codebase from previous turn — leaving as-is).
-- Sub-notebook nesting UI (DB already supports it; sidebar tree stays as-is).
-- Pricing/marketing pages.
-
-Reply **"go"** (or with edits) and I'll execute end to end in this turn — it'll be a large diff but no follow-ups needed.  
-  
-it shouldnt make every document temporary, only the ones that are chatted or done in the temporary option and also the colors that i told you to do on the buttons like trash, signout dark mode etc are gone, can you bring them back
+&nbsp;
