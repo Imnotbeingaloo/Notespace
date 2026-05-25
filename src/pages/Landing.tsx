@@ -204,7 +204,7 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero (editorial) ── */}
-      <section className="relative overflow-hidden pt-32 md:pt-36 lg:pt-44 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
+      <section className="relative overflow-hidden pt-24 md:pt-28 lg:pt-32 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
         <div className="container mx-auto px-6 relative">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-start">
             {/* Left: headline column */}
