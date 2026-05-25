@@ -122,7 +122,7 @@ function AppContent() {
 
       {/* Sidebar */}
       <AnimatePresence>
-        {!focusMode && (
+        {!focusMode && !showHome && (
           <motion.div
             initial={false}
             animate={{ width: "auto", opacity: 1 }}
