@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BookOpen, ArrowLeft, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
-const GET_SHARED_NOTE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-shared-note`;
 
 export default function SharedNote() {
   const { token } = useParams<{ token: string }>();
@@ -17,29 +16,23 @@ export default function SharedNote() {
     const fetchSharedNote = async () => {
       if (!token) { setError("Invalid link"); setLoading(false); return; }
 
-      const resp = await fetch(GET_SHARED_NOTE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        },
-        body: JSON.stringify({ token }),
-      });
-      const data = await resp.json().catch(() => null);
+      const { data, error: rpcErr } = await supabase
+        .rpc("get_shared_note" as any, { _token: token });
 
-      if (!resp.ok) {
-        setError(data?.error || "Unable to load this shared note.");
+      if (rpcErr) {
+        setError("Unable to load this shared note.");
         setLoading(false);
         return;
       }
 
-      if (!data?.title) {
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) {
         setError("This shared note doesn't exist, has expired, or has been removed.");
         setLoading(false);
         return;
       }
 
-      setNote({ title: data.title, content: data.content || "" });
+      setNote({ title: (row as any).title, content: (row as any).content });
       setLoading(false);
     };
 

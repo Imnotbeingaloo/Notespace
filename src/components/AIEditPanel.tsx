@@ -17,10 +17,10 @@ export function AIEditPanel({ onOpen }: AIEditPanelProps) {
     <button
       onClick={() => onOpen?.()}
       className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
-      title="Open Ask AI in edit mode"
+      title="AI Edit Document"
     >
       <Wand2 className="h-3.5 w-3.5" />
-      Edit this note
+      AI Edit
     </button>
   );
 }

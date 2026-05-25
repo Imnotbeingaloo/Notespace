@@ -7,7 +7,6 @@ import { FloatingToolbar } from "@/components/FloatingToolbar";
 export interface HybridEditorHandle {
   insertAtCursor: (text: string) => void;
   getValue: () => string;
-  setValue: (text: string) => void;
   getEditorElement: () => HTMLDivElement | null;
 }
 
@@ -149,11 +148,6 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       getValue: () => {
         if (!editorRef.current) return "";
         return htmlToMarkdown(editorRef.current.innerHTML);
-      },
-      setValue: (text: string) => {
-        lastMdRef.current = text;
-        isTypingRef.current = false;
-        setHtmlFromMd(text);
       },
       getEditorElement: () => editorRef.current,
     }));

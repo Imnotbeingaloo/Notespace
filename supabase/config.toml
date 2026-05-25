@@ -5,6 +5,3 @@ verify_jwt = false
 
 [functions.ai-tools]
 verify_jwt = false
-
-[functions.get-shared-note]
-verify_jwt = false

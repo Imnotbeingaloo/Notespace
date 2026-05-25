@@ -29,11 +29,8 @@ function AppContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlNotebook = searchParams.get("notebook");
   const urlNote = searchParams.get("note");
-  // Default to the last opened notebook on reload; otherwise show Home.
-  const [showHome, setShowHome] = useState(() => {
-    if (urlNotebook) return false;
-    return !(typeof window !== "undefined" && localStorage.getItem("activeNotebookId"));
-  });
+  // Default to Home view unless a deep link is present
+  const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -218,7 +215,7 @@ function AppContent() {
         )}
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
-            {hydratingDeepLink || retryingDeepLink || (!showHome && notebooksLoading && !!activeNotebookId) ? (
+            {hydratingDeepLink || retryingDeepLink ? (
               <LoadingScreen label="Opening notebook…" />
             ) : deepLinkMissing ? (
               <div className="flex-1 flex items-center justify-center p-6">
@@ -269,9 +266,7 @@ function AppContent() {
           if (id) {
             setCreateNotebookOpen(false);
             openNotebookFromHome(id);
-            return true;
           }
-          return false;
         }}
       />
 

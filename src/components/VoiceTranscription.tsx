@@ -8,12 +8,12 @@ interface VoiceTranscriptionProps {
 
 /**
  * Voice → text with a live popup:
- *  - Smooth mirrored waveform driven by the mic input level
+ *  - Animated frequency bars driven by the mic input level
  *  - Live interim transcript visible while speaking
  *  - On Stop, the full transcript is sent back via onTranscript
  *    so the editor can insert it at the last cursor position.
  */
-const SAMPLE_COUNT = 48;
+const BAR_COUNT = 40;
 
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [interim, setInterim] = useState("");
   const [finalText, setFinalText] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [levels, setLevels] = useState<number[]>(() => new Array(SAMPLE_COUNT).fill(0));
+  const [levels, setLevels] = useState<number[]>(() => new Array(BAR_COUNT).fill(0));
 
   const recognitionRef = useRef<any>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -30,9 +30,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const rafRef = useRef<number | null>(null);
   const listeningRef = useRef(false);
   const aggregateRef = useRef("");
-  const interimRef = useRef("");
-  const smoothedRef = useRef<number[]>(new Array(SAMPLE_COUNT).fill(0));
-  const lastPaintRef = useRef(0);
+  const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
 
   const isSupported =
     typeof window !== "undefined" &&
@@ -53,7 +51,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     audioCtxRef.current = null;
     analyserRef.current = null;
-    smoothedRef.current = new Array(SAMPLE_COUNT).fill(0);
+    smoothedRef.current = new Array(BAR_COUNT).fill(0);
   }, []);
 
   useEffect(() => () => cleanup(), [cleanup]);
@@ -69,34 +67,30 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       const ctx = new Ctx();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 1024;
-      analyser.smoothingTimeConstant = 0.9;
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.82;
       source.connect(analyser);
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
-      const data = new Uint8Array(analyser.fftSize);
+      const data = new Uint8Array(analyser.frequencyBinCount);
 
-      const tick = (time = 0) => {
+      const tick = () => {
         if (!analyserRef.current) return;
-        analyserRef.current.getByteTimeDomainData(data);
-        const step = data.length / SAMPLE_COUNT;
+        analyserRef.current.getByteFrequencyData(data);
+        const useable = Math.floor(data.length * 0.6); // skip very-high freqs
+        const step = useable / BAR_COUNT;
         const next = smoothedRef.current.slice();
-        for (let i = 0; i < SAMPLE_COUNT; i++) {
+        for (let i = 0; i < BAR_COUNT; i++) {
           const start = Math.floor(i * step);
           const end = Math.floor((i + 1) * step) || start + 1;
           let sum = 0;
-          for (let j = start; j < end; j++) {
-            const centered = (data[j] - 128) / 128;
-            sum += Math.abs(centered);
-          }
-          const avg = Math.min(1, sum / (end - start) * 2.6);
-          next[i] = next[i] * 0.78 + avg * 0.22;
+          for (let j = start; j < end; j++) sum += data[j];
+          const avg = sum / (end - start) / 255; // 0..1
+          // exponential smoothing for buttery motion
+          next[i] = next[i] * 0.65 + avg * 0.35;
         }
         smoothedRef.current = next;
-        if (time - lastPaintRef.current > 32) {
-          lastPaintRef.current = time;
-          setLevels(next);
-        }
+        setLevels(next);
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
@@ -110,7 +104,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     setInterim("");
     setFinalText("");
     aggregateRef.current = "";
-    interimRef.current = "";
     setOpen(true);
     setListening(true);
     listeningRef.current = true;
@@ -127,15 +120,14 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     const recognition = new SR();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.maxAlternatives = 3;
-    recognition.lang = "en-US";
+    recognition.maxAlternatives = 1;
+    recognition.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
 
     recognition.onresult = (event: any) => {
       let interimChunk = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const res = event.results[i];
-        const best = Array.from(res as any).sort((a: any, b: any) => (b.confidence ?? 0) - (a.confidence ?? 0))[0] as any;
-        const txt = best?.transcript ?? res[0]?.transcript ?? "";
+        const txt = res[0]?.transcript ?? "";
         if (res.isFinal) {
           const trimmed = txt.trim();
           if (trimmed) {
@@ -147,7 +139,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
         }
       }
       setFinalText(aggregateRef.current);
-      interimRef.current = interimChunk;
       setInterim(interimChunk);
     };
     recognition.onerror = (e: any) => {
@@ -181,15 +172,14 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const stopAndInsert = useCallback(() => {
     setListening(false);
     listeningRef.current = false;
-    const text = (aggregateRef.current + (interimRef.current ? " " + interimRef.current : "")).trim();
+    const text = (aggregateRef.current + (interim ? " " + interim : "")).trim();
     cleanup();
     if (text) onTranscript(text);
     setOpen(false);
     setInterim("");
     setFinalText("");
     aggregateRef.current = "";
-    interimRef.current = "";
-  }, [cleanup, onTranscript]);
+  }, [interim, cleanup, onTranscript]);
 
   const cancel = useCallback(() => {
     setListening(false);
@@ -199,7 +189,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     setInterim("");
     setFinalText("");
     aggregateRef.current = "";
-    interimRef.current = "";
   }, [cleanup]);
 
   if (!isSupported) return null;
@@ -208,13 +197,10 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const W = 320;
   const H = 80;
   const mid = H / 2;
-  const stepX = W / (SAMPLE_COUNT - 1);
-  const amp = (v: number, i: number) => {
-    const edgeFade = Math.sin((i / (SAMPLE_COUNT - 1)) * Math.PI);
-    return Math.max(2, v * edgeFade * (H / 2 - 5));
-  };
-  const topPts = levels.map((v, i) => [i * stepX, mid - amp(v, i)] as const);
-  const botPts = levels.map((v, i) => [i * stepX, mid + amp(v, i)] as const);
+  const stepX = W / (BAR_COUNT - 1);
+  const amp = (v: number) => Math.max(2, v * (H / 2 - 4));
+  const topPts = levels.map((v, i) => [i * stepX, mid - amp(v)] as const);
+  const botPts = levels.map((v, i) => [i * stepX, mid + amp(v)] as const);
   const toPath = (pts: readonly (readonly [number, number])[]) => {
     if (pts.length === 0) return "";
     let d = `M ${pts[0][0]} ${pts[0][1]}`;
@@ -226,8 +212,11 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     return d;
   };
-  const reversedBot = [...botPts].reverse();
-  const fillPath = `${toPath(topPts)} L ${reversedBot[0][0]} ${reversedBot[0][1]} ${toPath(reversedBot).replace(/^M\s[^Q]+/, "")} Z`;
+  const fillPath =
+    toPath(topPts) +
+    ` L ${botPts[botPts.length - 1][0]} ${botPts[botPts.length - 1][1]}` +
+    toPath([...botPts].reverse()) +
+    " Z";
 
   return (
     <>
