@@ -242,7 +242,7 @@ function AppContent() {
           </AnimatePresence>
         </div>
       </div>
-      {exitingToWebsite && <SplashScreen onComplete={() => navigate("/")} />}
+      
     </div>
   );
 }
