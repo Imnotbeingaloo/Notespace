@@ -204,7 +204,7 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero (editorial) ── */}
-      <section className="relative overflow-hidden pt-28 pb-20 min-h-[88vh] flex items-center bg-muted/40">
+      <section className="relative overflow-hidden pt-40 md:pt-44 pb-20 min-h-[88vh] flex items-center bg-muted/40">
         <div className="container mx-auto px-6 relative">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
             {/* Left: headline column */}
@@ -225,9 +225,11 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.05] tracking-tight"
+                className="font-serif text-[2rem] md:text-[2.6rem] lg:text-[3.25rem] font-bold text-foreground leading-[1.05] tracking-tight"
               >
-                Your thoughts, organized &{" "}
+                Your thoughts,{" "}
+                <span className="italic text-primary">organized</span>
+                {" & "}
                 <span className="italic text-primary">understood</span>
                 <span className="text-foreground">.</span>
               </motion.h1>
@@ -271,29 +273,33 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="relative mx-auto max-w-sm"
+                className="relative mx-auto max-w-md group"
               >
-                {/* Peeking second page (depth) */}
+                {/* Peeking second page (depth) — tinted to match Explain accent */}
                 <div
                   aria-hidden
-                  className="absolute -top-3 -left-3 right-6 bottom-10 rounded-2xl border border-border/60 bg-card/60 shadow-md -rotate-[3deg] -z-10"
+                  className="absolute -top-3 -left-3 right-6 bottom-10 rounded-2xl border border-primary/20 bg-primary/5 shadow-md -rotate-[3deg] -z-10 transition-transform duration-500 group-hover:-rotate-[5deg] group-hover:-translate-x-1"
                 />
 
                 {/* Paper card */}
-                <div className="relative rounded-2xl border border-border bg-card p-6 shadow-xl shadow-primary/[0.06] -rotate-1">
+                <motion.div
+                  whileHover={{ rotate: 0, y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  className="relative rounded-2xl border border-border bg-card p-7 shadow-xl shadow-primary/[0.08] -rotate-1 cursor-default hover:shadow-2xl hover:shadow-primary/15 transition-shadow duration-500"
+                >
                   <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-3">
                     §  Chapter One
                   </div>
-                  <div className="font-serif text-xl font-bold text-foreground mb-4">
+                  <div className="font-serif text-2xl md:text-[1.65rem] font-bold text-foreground mb-5 leading-tight">
                     On wave theory
                   </div>
-                  <div className="space-y-2.5">
+                  <div className="space-y-3">
                     <div className="h-[3px] w-[92%] rounded-full bg-border/70" />
                     <div className="h-[3px] w-[78%] rounded-full bg-border/70" />
                     {/* Animated highlight sweep */}
                     <div className="relative h-[6px] w-[88%] rounded-sm bg-border/40 overflow-hidden">
                       <motion.div
-                        className="absolute inset-y-0 left-0 rounded-sm bg-gradient-to-r from-primary/40 to-primary/20"
+                        className="absolute inset-y-0 left-0 rounded-sm bg-gradient-to-r from-primary/50 to-primary/25"
                         initial={{ width: "0%" }}
                         animate={{ width: ["0%", "100%", "100%", "0%"] }}
                         transition={{
@@ -308,13 +314,13 @@ export default function LandingPage() {
                     <div className="h-[3px] w-[70%] rounded-full bg-border/70" />
                     <div className="h-[3px] w-[55%] rounded-full bg-border/70" />
                   </div>
-                  <div className="mt-5 flex items-center justify-between">
+                  <div className="mt-6 flex items-center justify-between">
                     <span className="inline-flex items-center rounded-full border border-border/80 bg-muted/40 px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                       # physics
                     </span>
                     <span className="font-mono text-[10px] text-muted-foreground/60">p.14</span>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Floating Explain popover with looping typewriter */}
                 <motion.div
