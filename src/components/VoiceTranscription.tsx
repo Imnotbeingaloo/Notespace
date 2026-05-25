@@ -6,6 +6,58 @@ interface VoiceTranscriptionProps {
   onTranscript: (text: string) => void;
 }
 
+type SpeechAlternativeLike = {
+  transcript: string;
+  confidence?: number;
+};
+
+type SpeechResultLike = {
+  readonly length: number;
+  readonly isFinal: boolean;
+  readonly [index: number]: SpeechAlternativeLike;
+};
+
+type SpeechRecognitionEventLike = {
+  resultIndex: number;
+  results: {
+    readonly length: number;
+    readonly [index: number]: SpeechResultLike;
+  };
+};
+
+type SpeechRecognitionErrorEventLike = {
+  error?: string;
+};
+
+type BrowserSpeechRecognition = {
+  continuous: boolean;
+  interimResults: boolean;
+  maxAlternatives: number;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEventLike) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  abort: () => void;
+};
+
+type BrowserSpeechRecognitionCtor = new () => BrowserSpeechRecognition;
+
+type VoiceWindow = Window & {
+  SpeechRecognition?: BrowserSpeechRecognitionCtor;
+  webkitSpeechRecognition?: BrowserSpeechRecognitionCtor;
+  webkitAudioContext?: typeof AudioContext;
+};
+
+const getErrorMessage = (error: unknown, fallback: string) => {
+  if (error instanceof Error && error.message) return error.message;
+  if (typeof error === "object" && error && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string" && message) return message;
+  }
+  return fallback;
+};
+
 /**
  * Voice → text with a live popup.
  * The waveform is updated imperatively via refs (no React state in the RAF loop)
@@ -24,7 +76,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [finalText, setFinalText] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
