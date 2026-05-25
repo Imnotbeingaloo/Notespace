@@ -325,15 +325,38 @@ export default function LandingPage() {
                   </div>
                 </motion.div>
 
-                {/* Floating Explain popover with looping typewriter */}
+                {/* Vol. 01 side note (peeking behind Explain card) */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 1.1 }}
+                  className="absolute -bottom-20 right-8 sm:right-12 max-w-[14rem]"
+                >
+                  <div className="flex gap-3">
+                    <div className="w-px bg-border" />
+                    <div>
+                      <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted-foreground/70 mb-1.5">
+                        Vol. 01
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        A writing tool for people who think on the page — and want their notes to think back.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Floating Explain popover with looping typewriter — styled as a button-card */}
                 <motion.div
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.9 }}
-                  className="absolute -bottom-16 sm:-bottom-20 right-0 sm:-right-4 w-60 rounded-2xl border border-border/70 bg-card p-3.5 shadow-2xl shadow-primary/10 rotate-2"
+                  whileHover={{ y: -3, scale: 1.02 }}
+                  role="button"
+                  tabIndex={0}
+                  className="absolute -bottom-8 -right-4 sm:-right-8 w-60 rounded-2xl border border-primary/30 bg-card p-3.5 shadow-2xl shadow-primary/20 rotate-2 cursor-pointer ring-1 ring-primary/10 hover:border-primary/50 hover:shadow-primary/30 transition-all duration-300"
                 >
                   <div className="flex items-center gap-1.5 mb-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                     <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-primary">
                       Explain
                     </span>
@@ -342,9 +365,8 @@ export default function LandingPage() {
                     {manuscriptTyped}
                     <span className="inline-block w-[2px] h-3 bg-primary ml-0.5 align-middle animate-pulse" />
                   </p>
-
-
                 </motion.div>
+
 
 
 
