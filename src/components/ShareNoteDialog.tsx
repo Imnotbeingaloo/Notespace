@@ -16,6 +16,7 @@ import { toast } from "sonner";
 interface ShareNoteDialogProps {
   noteId: string;
   noteTitle: string;
+  notebookName?: string;
 }
 
 interface SharedLink {
@@ -26,7 +27,7 @@ interface SharedLink {
   created_at: string;
 }
 
-export function ShareNoteDialog({ noteId, noteTitle }: ShareNoteDialogProps) {
+export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDialogProps) {
   const [open, setOpen] = useState(false);
   const [shares, setShares] = useState<SharedLink[]>([]);
   const [loading, setLoading] = useState(false);
