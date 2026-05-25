@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Home, Loader2, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -167,22 +167,10 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                 title="Back to website"
               >
                 <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0" />
-                <span className="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors">
+                <span className="font-serif font-bold text-foreground text-base whitespace-nowrap group-hover:text-primary transition-colors">
                   Notebook Archive
                 </span>
               </button>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => navigate("/", { state: { fromApp: true } })}
-                    aria-label="Go to website home"
-                    className="inline-flex items-center justify-center h-8 w-8 ml-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                  >
-                    <Home className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Website home</TooltipContent>
-              </Tooltip>
             </div>
 
             <div className="flex items-center gap-1">
