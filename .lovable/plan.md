@@ -1,39 +1,40 @@
-## Why it reads as AI right now
+## 1. Revert hero to original centered layout
 
-Looking at the current hero, the colors themselves are fine. The "AI smell" comes from how they're arranged. Specifically:
+Restore the previous version of the hero in `src/pages/Landing.tsx`:
+- Sparkle pill badge ("AI-Powered Note Taker") with the rotating Sparkles icon
+- Centered two-tone headline ("Your thoughts, organized & understood")
+- Centered subhead and two CTAs ("Start for Free" + "See Features")
+- Re-add the `Sparkles` import that was removed
 
-1. **The sparkle-icon badge** saying "AI-Powered Note Taker" — this exact pill is on roughly every Lovable/v0/Bolt landing page in the wild
-2. **Two different accent colors splitting one headline** ("organized" in teal, "understood" in orange) — classic AI default
-3. **Dead-centered everything** — badge, headline, subtext, buttons all stacked on the centerline
-4. **Soft radial teal gradient washing the whole background** — the most-overused AI hero treatment
-5. **"Beautiful workspace" type copy** — generic SaaS voice
+## 2. Replace the orange accent (hero only) with forest green
 
-## What I'll change (palette stays identical)
+The global `--accent` orange token is used in many other places (Temporary Note button, study planner dots, the sparkle icon, etc.), so the global token stays.
 
-### Composition
-- Switch hero from dead-center stack to a **left-aligned editorial layout** on desktop (headline + sub left, small meta column right). Stays centered on mobile.
-- Remove the wash gradient. Replace with a single, off-center warm-cream tint behind the headline so the page reads as paper, not as a generated card.
-- Add a hairline rule above the headline (Swiss-editorial signal, not an AI trope).
+- Add one new CSS variable `--hero-green: 152 42% 32%` to `:root` and `.dark` in `src/index.css`
+- In the hero headline, change the word "understood" from `text-accent` to `text-[hsl(var(--hero-green))]`
+- Everything else that uses orange (sparkle icon, badges, buttons across the rest of the site) is untouched
 
-### Headline
-- Drop the sparkle badge entirely.
-- Headline becomes **one line of restrained color**: only one accent word (teal "understood"), the rest in foreground ink. No orange word.
-- Move the orange accent to a **small kicker label** above the headline (uppercase mono, like "◆ A note-taker that thinks with you") — same orange/teal already in the palette, but used as editorial chrome instead of as headline highlights. This is how serious publications use accent color.
-- Slightly tighter leading on the headline so it feels typeset, not generated.
+If a different green is wanted later (sage, emerald, olive), it's a one-value swap.
 
-### Subhead & CTAs
-- Rewrite the subhead to drop the "intelligent / beautiful workspace" phrasing. Replace with a shorter, more specific line.
-- CTAs left-aligned under the subhead, not centered. Primary button gets a subtle inset highlight instead of the big glowing shadow.
-- Add a small secondary text line under the buttons ("No credit card · Free forever tier") in muted mono — anchors trust without adding a badge.
+## 3. Aurora-wash background animation behind the hero
 
-### Background
-- Remove `bg-gradient-to-b from-primary/[0.04]`.
-- Add a faint dotted-grid texture (same dot pattern already used on the Home view inside the app) at very low opacity — ties marketing to product, and dotted grids don't read as AI gradients.
+Add two large blurred blobs behind the hero content:
+- Blob A: teal (`--primary`), top-left area, ~32rem, blur-3xl, ~12% opacity
+- Blob B: forest green (`--hero-green`), bottom-right area, ~28rem, blur-3xl, ~10% opacity
+- Both animated with framer-motion: slow drift (x/y by ~40px) and scale (1 → 1.08) on a 14–18s loop, `repeatType: "mirror"`, `ease: "easeInOut"`
+- `mix-blend-mode: multiply` so they tint the cream paper rather than sitting on top
+- Wrapped in `motion.div` with `aria-hidden` and `pointer-events-none`
+- A `@media (prefers-reduced-motion: reduce)` rule freezes them at their initial position
+
+The existing soft gradient wash (`bg-gradient-to-b from-primary/[0.04]`) is kept so the hero still has its warm halo; the aurora blobs sit on top of it and provide the motion.
 
 ## Files touched
 
-- `src/pages/Landing.tsx` — only the `{/* ── Hero ── */}` section (lines ~180–228). Everything else (navbar, app preview, features, dividers, footer) untouched.
+- `src/index.css` — add `--hero-green` to `:root` and `.dark`, plus the reduced-motion rule for the aurora blobs
+- `src/pages/Landing.tsx` — revert hero JSX to the centered version, swap the "understood" color class, add the two animated blob divs as the first children inside the hero `<section>`, re-add `Sparkles` import
 
 ## Out of scope
 
-- No new colors, no font swaps, no changes to the app preview mockup, features grid, or any other section. Strictly the hero block.
+- No changes to the navbar, app preview, features grid, dividers, footer, or any other page
+- No change to the global `--accent` token
+- No new fonts, no copy rewrites beyond what's already in the original hero
