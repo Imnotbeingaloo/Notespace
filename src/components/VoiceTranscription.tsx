@@ -13,25 +13,31 @@ interface VoiceTranscriptionProps {
  *  - On Stop, the full transcript is sent back via onTranscript
  *    so the editor can insert it at the last cursor position.
  */
+const BAR_COUNT = 40;
+
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState("");
   const [finalText, setFinalText] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [levels, setLevels] = useState<number[]>(() => new Array(28).fill(4));
+  const [levels, setLevels] = useState<number[]>(() => new Array(BAR_COUNT).fill(0));
 
   const recognitionRef = useRef<any>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number | null>(null);
+  const listeningRef = useRef(false);
+  const aggregateRef = useRef("");
+  const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
 
   const isSupported =
     typeof window !== "undefined" &&
     ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
 
   const cleanup = useCallback(() => {
+    listeningRef.current = false;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
     try { recognitionRef.current?.stop(); } catch {}
@@ -45,20 +51,24 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     audioCtxRef.current = null;
     analyserRef.current = null;
+    smoothedRef.current = new Array(BAR_COUNT).fill(0);
   }, []);
 
   useEffect(() => () => cleanup(), [cleanup]);
 
   const startVisualizer = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
       streamRef.current = stream;
       const Ctx: typeof AudioContext =
         (window as any).AudioContext || (window as any).webkitAudioContext;
       const ctx = new Ctx();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 64;
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.82;
       source.connect(analyser);
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
@@ -67,19 +77,20 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       const tick = () => {
         if (!analyserRef.current) return;
         analyserRef.current.getByteFrequencyData(data);
-        // Down/up-sample to 28 bars
-        const bars: number[] = [];
-        const step = data.length / 28;
-        for (let i = 0; i < 28; i++) {
+        const useable = Math.floor(data.length * 0.6); // skip very-high freqs
+        const step = useable / BAR_COUNT;
+        const next = smoothedRef.current.slice();
+        for (let i = 0; i < BAR_COUNT; i++) {
           const start = Math.floor(i * step);
           const end = Math.floor((i + 1) * step) || start + 1;
           let sum = 0;
           for (let j = start; j < end; j++) sum += data[j];
-          const avg = sum / (end - start);
-          // 0..255 → 4..56 height
-          bars.push(4 + (avg / 255) * 52);
+          const avg = sum / (end - start) / 255; // 0..1
+          // exponential smoothing for buttery motion
+          next[i] = next[i] * 0.65 + avg * 0.35;
         }
-        setLevels(bars);
+        smoothedRef.current = next;
+        setLevels(next);
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
@@ -92,22 +103,25 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     setError(null);
     setInterim("");
     setFinalText("");
+    aggregateRef.current = "";
     setOpen(true);
     setListening(true);
+    listeningRef.current = true;
     await startVisualizer();
 
     const SR: any =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
-      setError("Speech recognition is not supported in this browser.");
+      setError("Speech recognition is not supported in this browser. Try Chrome or Edge.");
       setListening(false);
+      listeningRef.current = false;
       return;
     }
     const recognition = new SR();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = "en-US";
-    let aggregate = "";
+    recognition.maxAlternatives = 1;
+    recognition.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
 
     recognition.onresult = (event: any) => {
       let interimChunk = "";
@@ -115,51 +129,94 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
         const res = event.results[i];
         const txt = res[0]?.transcript ?? "";
         if (res.isFinal) {
-          aggregate += (aggregate && !aggregate.endsWith(" ") ? " " : "") + txt.trim();
+          const trimmed = txt.trim();
+          if (trimmed) {
+            aggregateRef.current +=
+              (aggregateRef.current && !aggregateRef.current.endsWith(" ") ? " " : "") + trimmed;
+          }
         } else {
           interimChunk += txt;
         }
       }
-      setFinalText(aggregate);
+      setFinalText(aggregateRef.current);
       setInterim(interimChunk);
     };
     recognition.onerror = (e: any) => {
-      if (e?.error && e.error !== "aborted") {
-        setError(`Recognition error: ${e.error}`);
+      const err = e?.error;
+      if (err === "no-speech" || err === "aborted") return;
+      if (err === "not-allowed" || err === "service-not-allowed") {
+        setError("Microphone permission denied. Allow mic access and try again.");
+        listeningRef.current = false;
+        setListening(false);
+      } else if (err) {
+        setError(`Recognition error: ${err}`);
       }
     };
     recognition.onend = () => {
-      // Auto-restart while user is still in listening state (Chrome cuts off after silence)
-      if (listening && recognitionRef.current) {
+      // Chrome ends after ~60s or on brief silence — restart while user is still listening
+      if (listeningRef.current) {
         try { recognition.start(); } catch {}
       }
     };
     recognitionRef.current = recognition;
     try { recognition.start(); } catch (e: any) {
-      setError(e?.message || "Could not start recognition.");
-      setListening(false);
+      // Some browsers throw if start() is called twice quickly
+      if (!String(e?.message || "").includes("already started")) {
+        setError(e?.message || "Could not start recognition.");
+        setListening(false);
+        listeningRef.current = false;
+      }
     }
-  }, [listening, startVisualizer]);
+  }, [startVisualizer]);
 
   const stopAndInsert = useCallback(() => {
     setListening(false);
-    const text = (finalText + (interim ? " " + interim : "")).trim();
+    listeningRef.current = false;
+    const text = (aggregateRef.current + (interim ? " " + interim : "")).trim();
     cleanup();
     if (text) onTranscript(text);
     setOpen(false);
     setInterim("");
     setFinalText("");
-  }, [finalText, interim, cleanup, onTranscript]);
+    aggregateRef.current = "";
+  }, [interim, cleanup, onTranscript]);
 
   const cancel = useCallback(() => {
     setListening(false);
+    listeningRef.current = false;
     cleanup();
     setOpen(false);
     setInterim("");
     setFinalText("");
+    aggregateRef.current = "";
   }, [cleanup]);
 
   if (!isSupported) return null;
+
+  // Build smooth waveform SVG path (mirrored top/bottom around centerline)
+  const W = 320;
+  const H = 80;
+  const mid = H / 2;
+  const stepX = W / (BAR_COUNT - 1);
+  const amp = (v: number) => Math.max(2, v * (H / 2 - 4));
+  const topPts = levels.map((v, i) => [i * stepX, mid - amp(v)] as const);
+  const botPts = levels.map((v, i) => [i * stepX, mid + amp(v)] as const);
+  const toPath = (pts: readonly (readonly [number, number])[]) => {
+    if (pts.length === 0) return "";
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const [x0, y0] = pts[i];
+      const [x1, y1] = pts[i + 1];
+      const cx = (x0 + x1) / 2;
+      d += ` Q ${cx} ${y0} ${cx} ${(y0 + y1) / 2} T ${x1} ${y1}`;
+    }
+    return d;
+  };
+  const fillPath =
+    toPath(topPts) +
+    ` L ${botPts[botPts.length - 1][0]} ${botPts[botPts.length - 1][1]}` +
+    toPath([...botPts].reverse()) +
+    " Z";
 
   return (
     <>
@@ -213,17 +270,44 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                 </button>
               </div>
 
-              {/* Visualizer */}
+              {/* Smooth waveform visualizer */}
               <div className="px-5 pt-5 pb-3">
-                <div className="flex items-end justify-center gap-[3px] h-20" aria-hidden="true">
-                  {levels.map((h, i) => (
-                    <div
-                      key={i}
-                      className="w-1.5 rounded-full bg-gradient-to-t from-primary/60 to-primary transition-[height] duration-75"
-                      style={{ height: `${Math.max(4, h)}px` }}
-                    />
-                  ))}
-                </div>
+                <svg
+                  viewBox={`0 0 ${W} ${H}`}
+                  preserveAspectRatio="none"
+                  className="w-full h-20"
+                  aria-hidden="true"
+                >
+                  <defs>
+                    <linearGradient id="vt-wave-grad" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
+                      <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
+                    </linearGradient>
+                  </defs>
+                  <line
+                    x1="0" x2={W} y1={mid} y2={mid}
+                    stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="2 4"
+                  />
+                  <path d={fillPath} fill="url(#vt-wave-grad)" opacity="0.55" />
+                  <path
+                    d={toPath(topPts)}
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d={toPath(botPts)}
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity="0.6"
+                  />
+                </svg>
               </div>
 
               {/* Live transcript */}

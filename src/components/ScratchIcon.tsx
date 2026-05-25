@@ -1,35 +1,51 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 
-// Temporary chat icon — chat bubble + small hourglass (Claude/ChatGPT-style "temporary chat")
+// Friendly ghost icon for temporary notes — wiggles + winks on hover
 export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
-  ({ className, ...props }, ref) => (
-    <svg
-      ref={ref}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      {...props}
-    >
-      {/* Chat bubble with dashed outline = ephemeral */}
-      <path
-        d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-1 4.2A8 8 0 0 1 21 12z"
-        strokeDasharray="3 2"
-        fill="currentColor"
-        fillOpacity="0.06"
-      />
-      {/* Hourglass inside bubble */}
-      <path d="M9.5 9h5" strokeDasharray="0" />
-      <path d="M9.5 15h5" strokeDasharray="0" />
-      <path d="M9.5 9c0 2 2.5 2.6 2.5 3s-2.5 1-2.5 3" strokeDasharray="0" />
-      <path d="M14.5 9c0 2-2.5 2.6-2.5 3s2.5 1 2.5 3" strokeDasharray="0" />
-    </svg>
-  )
+  ({ className, style, ...props }, ref) => {
+    const [hover, setHover] = useState(false);
+    return (
+      <svg
+        ref={ref}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{
+          transform: hover ? "translateY(-2px) rotate(-6deg)" : "translateY(0) rotate(0deg)",
+          transition: "transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+          transformOrigin: "center",
+          ...style,
+        }}
+        {...props}
+      >
+        {/* Ghost body */}
+        <path
+          d="M5 11a7 7 0 1 1 14 0v8.2c0 .6-.7.9-1.1.5l-1.4-1.3a.7.7 0 0 0-1 0L14 19.7a.7.7 0 0 1-1 0l-1.5-1.3a.7.7 0 0 0-1 0L9 19.7a.7.7 0 0 1-1 0l-1.5-1.3a.7.7 0 0 0-1 0l-1.4 1.3c-.4.4-1.1.1-1.1-.5V11z"
+          fill="currentColor"
+          fillOpacity="0.08"
+        />
+        {/* Eyes — wink on hover */}
+        <circle cx="9.5" cy="11" r="0.9" fill="currentColor" stroke="none" />
+        {hover ? (
+          <path d="M13.4 11h2.2" strokeWidth="1.8" />
+        ) : (
+          <circle cx="14.5" cy="11" r="0.9" fill="currentColor" stroke="none" />
+        )}
+        {/* Mouth */}
+        <path
+          d={hover ? "M11 13.6c.5.7 1.5.7 2 0" : "M11.2 13.8c.4-.4 1.2-.4 1.6 0"}
+        />
+      </svg>
+    );
+  }
 );
 ScratchIcon.displayName = "ScratchIcon";
