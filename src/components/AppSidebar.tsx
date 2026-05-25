@@ -52,6 +52,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     permanentlyDeleteNotebook,
     permanentlyDeleteNote,
     refreshData,
+    createScratchNote,
   } = useNotebooks();
 
   // Top-level vs nested notebooks
