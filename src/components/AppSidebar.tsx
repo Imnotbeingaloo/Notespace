@@ -329,7 +329,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               {sidebarUploading ? "..." : "Upload"}
             </button>
             <button
-              onClick={() => setShowNewNotebook(true)}
+              onClick={() => setNewNotebookOpen(true)}
               className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -338,32 +338,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           </div>
 
           <input ref={sidebarUploadRef} type="file" multiple className="hidden" onChange={handleSidebarUpload} />
-
-          {/* New Notebook Input */}
-          <AnimatePresence>
-            {showNewNotebook && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-2 overflow-hidden"
-              >
-                <div className="flex gap-1 px-1">
-                  <Input
-                    value={newNotebookName}
-                    onChange={(e) => setNewNotebookName(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleCreateNotebook()}
-                    placeholder="Notebook name..."
-                    className="h-8 text-sm"
-                    autoFocus
-                  />
-                  <Button size="sm" onClick={handleCreateNotebook} className="h-8 px-2">
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
