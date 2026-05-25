@@ -177,56 +177,145 @@ export default function LandingPage() {
         </AnimatePresence>
       </motion.header>
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden pt-28 pb-16">
-        {/* Soft gradient wash (original) */}
+      {/* ── Hero (editorial) ── */}
+      <section className="relative overflow-hidden pt-28 pb-20 min-h-[88vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-transparent to-transparent pointer-events-none" />
 
-        <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6"
-          >
-            <motion.span
-              animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-            >
-              <Sparkles className="h-3.5 w-3.5 text-accent" />
-            </motion.span>
-            AI-Powered Note Taker
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto"
-          >
-            Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-primary">understood</span>
+        <div className="container mx-auto px-6 relative">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+            {/* Left: headline column */}
+            <div className="lg:col-span-7">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="flex items-center gap-3 mb-6"
+              >
+                <span className="h-px w-8 bg-accent" />
+                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">
+                  A Note-Taker That Thinks With You
+                </span>
+              </motion.div>
 
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-          >
-            Notebook Archive is the intelligent note-taking app that helps you capture ideas, organize knowledge, and get AI-powered insights — all in one beautiful workspace.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Open App" : "Start for Free"} <ArrowRight className="h-5 w-5" />
-            </Link>
-            <a href="#features" className="magnetic-btn inline-flex items-center gap-2 rounded-2xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors">
-              See Features
-            </a>
-          </motion.div>
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.05] tracking-tight"
+              >
+                Your thoughts, organized &{" "}
+                <span className="italic text-primary">understood</span>
+                <span className="text-foreground">.</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+                className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed"
+              >
+                A quiet place to write, link, and revisit your ideas — with intelligence woven in only where it actually helps.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+              >
+                <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+                  {user ? "Open App" : "Start writing"} <ArrowRight className="h-5 w-5" />
+                </Link>
+                <a href="#features" className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+                  See what it does
+                </a>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.65 }}
+                className="mt-6 font-mono text-[11px] tracking-[0.22em] uppercase text-muted-foreground/70"
+              >
+                No credit card · Free forever tier
+              </motion.p>
+            </div>
+
+            {/* Right: manuscript vignette */}
+            <div className="lg:col-span-5 relative">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="relative mx-auto max-w-sm"
+              >
+                {/* Paper card */}
+                <div className="relative rounded-2xl border border-border bg-card p-6 shadow-xl shadow-primary/[0.06] -rotate-1">
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-3">
+                    §  Chapter One
+                  </div>
+                  <div className="font-serif text-xl font-bold text-foreground mb-4">
+                    On wave theory
+                  </div>
+                  <div className="space-y-2.5">
+                    <div className="h-[3px] w-[92%] rounded-full bg-border/70" />
+                    <div className="h-[3px] w-[78%] rounded-full bg-border/70" />
+                    <div className="relative">
+                      <div className="h-[6px] w-[88%] rounded-sm bg-primary/25" />
+                      <div className="absolute inset-0 h-[6px] w-[88%] rounded-sm bg-gradient-to-r from-primary/30 to-transparent" />
+                    </div>
+                    <div className="h-[3px] w-[70%] rounded-full bg-border/70" />
+                    <div className="h-[3px] w-[55%] rounded-full bg-border/70" />
+                  </div>
+                  <div className="mt-5 flex items-center justify-between">
+                    <span className="inline-flex items-center rounded-full border border-border/80 bg-muted/40 px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                      # physics
+                    </span>
+                    <span className="font-mono text-[10px] text-muted-foreground/60">p.14</span>
+                  </div>
+                </div>
+
+                {/* Floating Explain popover */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.9 }}
+                  className="absolute -bottom-8 -right-4 sm:-right-8 w-60 rounded-xl border border-primary/20 bg-background/95 backdrop-blur p-3.5 shadow-2xl shadow-primary/10 rotate-2"
+                >
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-primary">
+                      Explain
+                    </span>
+                  </div>
+                  <p className="text-xs text-foreground/80 leading-relaxed">
+                    Wave theory describes how energy propagates through space as oscillations
+                    <span className="inline-block w-[2px] h-3 bg-primary ml-0.5 align-middle animate-pulse" />
+                  </p>
+                </motion.div>
+
+                {/* VOL. 01 side note */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 1.1 }}
+                  className="mt-16 flex justify-end"
+                >
+                  <div className="flex gap-3 max-w-[14rem]">
+                    <div className="w-px bg-border" />
+                    <div>
+                      <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted-foreground/70 mb-1.5">
+                        Vol. 01
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        A writing tool for people who think on the page — and want their notes to think back.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
