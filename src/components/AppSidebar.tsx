@@ -363,7 +363,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             </button>
           </div>
 
-          <input ref={sidebarUploadRef} type="file" multiple className="hidden" onChange={handleSidebarUpload} />
+          <input
+            ref={sidebarUploadRef}
+            type="file"
+            multiple
+            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            className="hidden"
+            onChange={handleSidebarUpload}
+          />
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
