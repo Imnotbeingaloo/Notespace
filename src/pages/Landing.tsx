@@ -204,9 +204,9 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero (editorial) ── */}
-      <section className="relative overflow-hidden pt-40 md:pt-44 pb-20 min-h-[88vh] flex items-center bg-muted/40">
+      <section className="relative overflow-hidden pt-32 md:pt-36 lg:pt-44 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
         <div className="container mx-auto px-6 relative">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-start">
             {/* Left: headline column */}
             <div className="lg:col-span-7">
               <motion.div
@@ -267,19 +267,28 @@ export default function LandingPage() {
               </motion.p>
             </div>
 
-            {/* Right: manuscript vignette */}
-            <div className="lg:col-span-5 relative">
+            {/* Right: manuscript vignette — desktop only */}
+            <div className="hidden lg:block lg:col-span-5 relative lg:pt-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="relative mx-auto max-w-md group"
               >
-                {/* Peeking second page (depth) — tinted to match Explain accent */}
+                {/* Peeking second card — styled like an Explain card */}
                 <div
                   aria-hidden
-                  className="absolute -top-3 -left-3 right-6 bottom-10 rounded-2xl border border-primary/20 bg-primary/5 shadow-md -rotate-[3deg] -z-10 transition-transform duration-500 group-hover:-rotate-[5deg] group-hover:-translate-x-1"
-                />
+                  className="absolute -top-3 -left-3 right-6 bottom-10 rounded-2xl border border-border/70 bg-card shadow-lg -rotate-[3deg] -z-10 transition-transform duration-500 group-hover:-rotate-[5deg] group-hover:-translate-x-1 p-3.5"
+                >
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-primary/70">Explain</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="h-[3px] w-[80%] rounded-full bg-border/60" />
+                    <div className="h-[3px] w-[60%] rounded-full bg-border/60" />
+                  </div>
+                </div>
 
                 {/* Paper card */}
                 <motion.div
@@ -287,10 +296,10 @@ export default function LandingPage() {
                   transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   className="relative rounded-2xl border border-border bg-card p-7 shadow-xl shadow-primary/[0.08] -rotate-1 cursor-default hover:shadow-2xl hover:shadow-primary/15 transition-shadow duration-500"
                 >
-                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-3">
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
                     §  Chapter One
                   </div>
-                  <div className="font-serif text-2xl md:text-[1.65rem] font-bold text-foreground mb-5 leading-tight">
+                  <div className="font-serif text-lg md:text-xl font-bold text-foreground mb-5 leading-tight">
                     On wave theory
                   </div>
                   <div className="space-y-3">
@@ -327,10 +336,10 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.9 }}
-                  className="absolute -bottom-8 -right-4 sm:-right-8 w-60 rounded-xl border border-primary/20 bg-background/95 backdrop-blur p-3.5 shadow-2xl shadow-primary/10 rotate-2"
+                  className="absolute -bottom-8 -right-4 sm:-right-8 w-60 rounded-2xl border border-border/70 bg-card p-3.5 shadow-2xl shadow-primary/10 rotate-2"
                 >
                   <div className="flex items-center gap-1.5 mb-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                     <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-primary">
                       Explain
                     </span>
