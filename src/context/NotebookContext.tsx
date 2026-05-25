@@ -61,6 +61,8 @@ interface NotebookContextType {
   activeNote: Note | null;
   loading: boolean;
   refreshData: () => Promise<void>;
+  setOverride: (override: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => void;
+  isOverrideActive: boolean;
 }
 
 const NotebookContext = createContext<NotebookContextType | null>(null);
