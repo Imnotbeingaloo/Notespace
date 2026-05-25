@@ -87,9 +87,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const aggregateRef = useRef("");
   const smoothedRef = useRef<number[]>(new Array(POINT_COUNT).fill(0));
   const restartTimerRef = useRef<number | null>(null);
-  const topPathRef = useRef<SVGPathElement | null>(null);
-  const botPathRef = useRef<SVGPathElement | null>(null);
-  const fillPathRef = useRef<SVGPathElement | null>(null);
+  const barsPathRef = useRef<SVGPathElement | null>(null);
 
   const isSupported =
     typeof window !== "undefined" &&
