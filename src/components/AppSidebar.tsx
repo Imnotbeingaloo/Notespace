@@ -925,9 +925,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           if (!pendingNestChild) return "";
           const child = notebooks.find((n) => n.id === pendingNestChild.childId)?.name;
           const parent = notebooks.find((n) => n.id === pendingNestChild.parentId)?.name;
-          return `Move "${child}" inside "${parent}" as a sub-notebook?`;
+          return `Are you sure you want to move "${child}" inside "${parent}" as a sub-notebook?`;
         })()}
         confirmLabel="Create Sub-Notebook"
+        destructive={false}
         onConfirm={async () => {
           if (pendingNestChild) {
             await nestNotebook(pendingNestChild.childId, pendingNestChild.parentId);
@@ -949,8 +950,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         open={!!pendingMoveNote}
         onOpenChange={(o) => !o && setPendingMoveNote(null)}
         title="Move note?"
-        description={pendingMoveNote ? `Move "${pendingMoveNote.noteTitle}" into "${pendingMoveNote.toNbName}"?` : ""}
+        description={pendingMoveNote ? `Are you sure you want to move "${pendingMoveNote.noteTitle}" into "${pendingMoveNote.toNbName}"?` : ""}
         confirmLabel="Move Note"
+        destructive={false}
         onConfirm={async () => {
           if (pendingMoveNote) {
             await moveNoteToNotebook(pendingMoveNote.fromNbId, pendingMoveNote.noteId, pendingMoveNote.toNbId);
@@ -963,8 +965,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         open={!!pendingPromoteNote}
         onOpenChange={(o) => !o && setPendingPromoteNote(null)}
         title="Create new notebook from note?"
-        description={pendingPromoteNote ? `"${pendingPromoteNote.title}" will become its own notebook.` : ""}
+        description={pendingPromoteNote ? `Are you sure you want to turn "${pendingPromoteNote.title}" into its own notebook?` : ""}
         confirmLabel="Create Notebook"
+        destructive={false}
         onConfirm={async () => {
           if (pendingPromoteNote) {
             await promoteNoteToNotebook(pendingPromoteNote.fromNbId, pendingPromoteNote.noteId);
