@@ -47,7 +47,9 @@ interface NotebookContextType {
   promoteNoteToNotebook: (notebookId: string, noteId: string, newName?: string) => Promise<string | null>;
   ensureScratchNotebook: () => Promise<string | null>;
   createScratchNote: () => Promise<{ notebookId: string; noteId: string } | null>;
-  createNote: (notebookId: string, title?: string, content?: string) => Promise<void>;
+  isScratchNotebook: (notebookId: string | null) => boolean;
+  moveNoteToNotebook: (fromNotebookId: string, noteId: string, toNotebookId: string) => Promise<boolean>;
+  createNote: (notebookId: string, title?: string, content?: string) => Promise<string | null>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
