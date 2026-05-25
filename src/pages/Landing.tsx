@@ -204,11 +204,11 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero (editorial) ── */}
-      <section className="relative overflow-hidden pt-24 md:pt-28 lg:pt-32 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
+      <section className="relative overflow-hidden pt-28 md:pt-32 lg:pt-36 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
         <div className="container mx-auto px-6 relative">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-start">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-8 lg:gap-10 items-start">
             {/* Left: headline column */}
-            <div className="lg:col-span-7">
+            <div className="md:col-span-7">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
