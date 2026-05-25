@@ -365,6 +365,12 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const updateNote = useCallback(
     async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => {
+      // Override path: temp notes don't live in `notes` table
+      if (override && noteId === override.note.id) {
+        override.onUpdate(updates);
+        setOverrideState((cur) => cur ? { ...cur, note: { ...cur.note, ...updates, updated_at: new Date().toISOString() } } : cur);
+        return;
+      }
       await supabase.from("notes").update(updates as any).eq("id", noteId);
       setAllNotebooks((prev) =>
         prev.map((nb) =>
@@ -374,7 +380,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         )
       );
     },
-    []
+    [override]
   );
 
   const reorderNotes = useCallback(
