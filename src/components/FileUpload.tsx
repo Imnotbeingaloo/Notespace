@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Paperclip, X, FileIcon, Download, Loader2 } from "lucide-react";
+import { Paperclip, X, FileIcon, Download, Loader2, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
