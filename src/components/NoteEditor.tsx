@@ -747,20 +747,24 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -4, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1 mobile-dropdown"
-                      onClick={() => setMoreOpen(false)}
+                      className="absolute right-0 top-full mt-1 z-50 min-w-[200px] rounded-xl border border-border bg-popover p-2 shadow-lg flex flex-col gap-1 mobile-dropdown"
                     >
-                      {/* Show these only in mobile dropdown (hidden on desktop) */}
+                      {/* Mobile / tablet ordering: Import → Voice → Ask AI → Flashcards → AI Edit → Download → Preview */}
                       <div className="lg:hidden flex flex-col gap-1">
-                        <FlashcardsButton />
-                        <AskAIPanel onApplyEdit={handleAIEdit} />
+                        <ImportNotesButton onInsert={handleImportNotes} />
                         <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                        <AskAIPanel onApplyEdit={handleAIEdit} />
+                        <FlashcardsButton />
+                        <AIEditPanel onApplyEdit={handleAIEdit} />
                         <ExportButtons />
+                        <PreviewButton />
                       </div>
-                      {/* Secondary actions always in dropdown */}
-                      <AIEditPanel onApplyEdit={handleAIEdit} />
-                      <PreviewButton />
-                      <ImportNotesButton onInsert={handleImportNotes} />
+                      {/* Desktop: secondary actions only (primary actions are inline above) */}
+                      <div className="hidden lg:flex flex-col gap-1">
+                        <ImportNotesButton onInsert={handleImportNotes} />
+                        <AIEditPanel onApplyEdit={handleAIEdit} />
+                        <PreviewButton />
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
