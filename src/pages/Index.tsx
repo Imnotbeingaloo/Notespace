@@ -35,11 +35,13 @@ function AppContent() {
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
-  
+  const lastHydratedUrlRef = useRef<string | null>(null);
+  const [scratchLeavePending, setScratchLeavePending] = useState<null | { fromNotebookId: string; noteId: string; targetView: () => void }>(null);
+
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
     try { await refreshData(); } finally { setRetryingDeepLink(false); }
@@ -48,11 +50,15 @@ function AppContent() {
     navigate("/", { state: { fromApp: true } });
   }, [navigate]);
 
-  // Hydrate selection from URL once notebooks load
+  // Hydrate selection from URL ONCE per URL change (not when notebooks length changes,
+  // which would otherwise revert a freshly-created notebook back to the old URL value)
   useEffect(() => {
     if (!urlNotebook) return;
+    const hydrationKey = `${urlNotebook}|${urlNote ?? ""}`;
+    if (lastHydratedUrlRef.current === hydrationKey) return;
     const nb = notebooks.find((n) => n.id === urlNotebook);
-    if (!nb) return;
+    if (!nb) return; // wait until notebooks load
+    lastHydratedUrlRef.current = hydrationKey;
     setActiveNotebookId(urlNotebook);
     const target = urlNote && nb.notes.find((x) => x.id === urlNote) ? urlNote : nb.notes[0]?.id ?? null;
     setActiveNoteId(target);
