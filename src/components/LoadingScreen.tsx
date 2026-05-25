@@ -10,7 +10,7 @@ export function LoadingScreen({ label }: { label?: string }) {
         className="absolute w-64 h-64 rounded-full bg-primary blur-3xl"
       />
       <motion.img
-        src="/favicon.png"
+        src="/logo.png"
         alt=""
         className="h-14 w-14 object-contain relative z-10"
         initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
