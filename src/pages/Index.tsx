@@ -6,7 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Pencil, Timer } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Pencil, Plus, Timer } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,6 +16,7 @@ import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { toast } from "sonner";
 
 import { useNotebooks } from "@/context/NotebookContext";
