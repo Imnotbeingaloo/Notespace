@@ -167,7 +167,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                 title="Back to website"
               >
                 <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0" />
-                <span className="font-serif font-bold text-foreground text-base whitespace-nowrap hidden sm:inline group-hover:text-primary transition-colors">
+                <span className="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors">
                   Notebook Archive
                 </span>
               </button>
