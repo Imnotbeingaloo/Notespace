@@ -729,7 +729,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                 <AskAIPanel onApplyEdit={handleAIEdit} />
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
-                {activeNote && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} />}
+                {activeNote && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} notebookName={activeNotebook?.name} />}
               </div>
 
               {/* Three-dots menu for secondary actions (all sizes) */}
