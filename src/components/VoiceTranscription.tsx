@@ -64,11 +64,12 @@ const getErrorMessage = (error: unknown, fallback: string) => {
  * The waveform is updated imperatively via refs (no React state in the RAF loop)
  * so the visualizer stays smooth even while speech recognition is firing.
  */
-const POINT_COUNT = 56;
+const POINT_COUNT = 72;
 const W = 320;
 const H = 80;
 const MID = H / 2;
-const STEP_X = W / (POINT_COUNT - 1);
+const STEP_X = W / POINT_COUNT;
+const BAR_WIDTH = Math.max(1.2, STEP_X * 0.42);
 
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [open, setOpen] = useState(false);
