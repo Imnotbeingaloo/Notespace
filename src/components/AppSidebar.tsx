@@ -857,12 +857,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <>
             <Link
               to="/trash"
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
             >
               <Trash2 className="h-4 w-4" />
               <span className="flex-1 text-left">Trash</span>
               {trashCount > 0 && (
-                <span className="text-xs bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded-full">{trashCount}</span>
+                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
               )}
             </Link>
             <ThemeToggle asSidebarButton />
