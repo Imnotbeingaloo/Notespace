@@ -151,6 +151,11 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         return htmlToMarkdown(editorRef.current.innerHTML);
       },
       getEditorElement: () => editorRef.current,
+      setContent: (md: string) => {
+        lastMdRef.current = md;
+        isTypingRef.current = false;
+        setHtmlFromMd(md);
+      },
     }));
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
