@@ -239,8 +239,8 @@ function AppContent() {
                   const res = await createScratchNote();
                   if (res) {
                     setShowHome(false);
-                    toast.success("Scratch note ready", {
-                      description: "Temporary — save or download before leaving.",
+                    toast.success("Temporary note ready", {
+                      description: "Remember to save or download it before leaving.",
                     });
                   }
                 }}
