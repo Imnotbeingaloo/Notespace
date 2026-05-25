@@ -303,25 +303,33 @@ export default function LandingPage() {
                     On wave theory
                   </div>
                   <div className="space-y-3">
-                    <div className="h-[3px] w-[92%] rounded-full bg-border/70" />
-                    <div className="h-[3px] w-[78%] rounded-full bg-border/70" />
-                    {/* Animated highlight sweep */}
-                    <div className="relative h-[6px] w-[88%] rounded-sm bg-border/40 overflow-hidden">
-                      <motion.div
-                        className="absolute inset-y-0 left-0 rounded-sm bg-gradient-to-r from-primary/50 to-primary/25"
-                        initial={{ width: "0%" }}
-                        animate={{ width: ["0%", "100%", "100%", "0%"] }}
-                        transition={{
-                          duration: 8,
-                          times: [0, 0.35, 0.85, 1],
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: 0.8,
-                        }}
-                      />
-                    </div>
-                    <div className="h-[3px] w-[70%] rounded-full bg-border/70" />
-                    <div className="h-[3px] w-[55%] rounded-full bg-border/70" />
+                    {[
+                      { width: "92%", delay: 0.4 },
+                      { width: "78%", delay: 1.4 },
+                      { width: "88%", delay: 2.4 },
+                      { width: "70%", delay: 3.4 },
+                      { width: "55%", delay: 4.4 },
+                    ].map((line, i) => (
+                      <div
+                        key={i}
+                        className="relative h-[4px] rounded-full bg-border/50 overflow-hidden"
+                        style={{ width: line.width }}
+                      >
+                        <motion.div
+                          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary/60 to-primary/30"
+                          initial={{ width: "0%" }}
+                          animate={{ width: ["0%", "100%", "100%", "0%"] }}
+                          transition={{
+                            duration: 6,
+                            times: [0, 0.18, 0.92, 1],
+                            repeat: Infinity,
+                            repeatDelay: 0,
+                            ease: "easeInOut",
+                            delay: line.delay,
+                          }}
+                        />
+                      </div>
+                    ))}
                   </div>
                   <div className="mt-6 flex items-center justify-between">
                     <span className="inline-flex items-center rounded-full border border-border/80 bg-muted/40 px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">
