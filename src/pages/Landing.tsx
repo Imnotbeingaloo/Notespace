@@ -29,11 +29,23 @@ const navLinks = [
 
 export default function LandingPage() {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const fromApp = (location.state as { fromApp?: boolean } | null)?.fromApp === true;
+  const [showExitSplash, setShowExitSplash] = useState(fromApp);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [visibleLines, setVisibleLines] = useState(0);
   const [typingText, setTypingText] = useState("");
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
+
+  useEffect(() => {
+    if (fromApp) {
+      // Clear state so refreshes don't replay the splash
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
