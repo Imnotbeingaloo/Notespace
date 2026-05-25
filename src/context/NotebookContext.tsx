@@ -29,6 +29,7 @@ export interface Notebook {
   notes: Note[];
   created_at: string;
   deleted_at: string | null;
+  parent_id?: string | null;
 }
 
 interface NotebookContextType {
@@ -39,9 +40,13 @@ interface NotebookContextType {
   activeNoteId: string | null;
   setActiveNotebookId: (id: string | null) => void;
   setActiveNoteId: (id: string | null) => void;
-  createNotebook: (name: string, emoji?: string) => Promise<void>;
+  createNotebook: (name: string, emoji?: string, parentId?: string | null) => Promise<string | null>;
   deleteNotebook: (id: string) => Promise<void>;
   updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<void>;
+  nestNotebook: (childId: string, parentId: string) => Promise<boolean>;
+  promoteNoteToNotebook: (notebookId: string, noteId: string, newName?: string) => Promise<string | null>;
+  ensureScratchNotebook: () => Promise<string | null>;
+  createScratchNote: () => Promise<{ notebookId: string; noteId: string } | null>;
   createNote: (notebookId: string, title?: string, content?: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
