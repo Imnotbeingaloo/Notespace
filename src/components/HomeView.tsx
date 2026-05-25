@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
