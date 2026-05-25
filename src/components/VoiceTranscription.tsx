@@ -270,17 +270,44 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                 </button>
               </div>
 
-              {/* Visualizer */}
+              {/* Smooth waveform visualizer */}
               <div className="px-5 pt-5 pb-3">
-                <div className="flex items-end justify-center gap-[3px] h-20" aria-hidden="true">
-                  {levels.map((h, i) => (
-                    <div
-                      key={i}
-                      className="w-1.5 rounded-full bg-gradient-to-t from-primary/60 to-primary transition-[height] duration-75"
-                      style={{ height: `${Math.max(4, h)}px` }}
-                    />
-                  ))}
-                </div>
+                <svg
+                  viewBox={`0 0 ${W} ${H}`}
+                  preserveAspectRatio="none"
+                  className="w-full h-20"
+                  aria-hidden="true"
+                >
+                  <defs>
+                    <linearGradient id="vt-wave-grad" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
+                      <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
+                    </linearGradient>
+                  </defs>
+                  <line
+                    x1="0" x2={W} y1={mid} y2={mid}
+                    stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="2 4"
+                  />
+                  <path d={fillPath} fill="url(#vt-wave-grad)" opacity="0.55" />
+                  <path
+                    d={toPath(topPts)}
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d={toPath(botPts)}
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity="0.6"
+                  />
+                </svg>
               </div>
 
               {/* Live transcript */}
