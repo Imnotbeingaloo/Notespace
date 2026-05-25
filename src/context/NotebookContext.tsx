@@ -175,10 +175,21 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const createNotebook = useCallback(async (name: string, emoji?: string, parentId?: string | null): Promise<string | null> => {
     if (!user) return null;
+    const trimmed = name.trim();
+    if (!trimmed) {
+      toast.error("Notebook name can't be empty.");
+      return null;
+    }
+    const lower = trimmed.toLowerCase();
+    const dupe = allNotebooks.some((nb) => !nb.deleted_at && nb.name.trim().toLowerCase() === lower);
+    if (dupe) {
+      toast.error(`A notebook named "${trimmed}" already exists. Pick a different name.`);
+      return null;
+    }
     const e = emoji || EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
     const { data, error } = await supabase
       .from("notebooks")
-      .insert({ name, emoji: e, user_id: user.id, parent_id: parentId ?? null } as any)
+      .insert({ name: trimmed, emoji: e, user_id: user.id, parent_id: parentId ?? null } as any)
       .select()
       .single();
     if (error || !data) {
@@ -192,7 +203,8 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       setActiveNoteId(null);
     }
     return data.id;
-  }, [user]);
+  }, [user, allNotebooks]);
+
 
   const nestNotebook = useCallback(async (childId: string, parentId: string): Promise<boolean> => {
     if (childId === parentId) return false;
