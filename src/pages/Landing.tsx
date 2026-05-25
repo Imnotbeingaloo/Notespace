@@ -268,7 +268,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right: manuscript vignette — desktop only */}
-            <div className="hidden md:block md:col-span-5 relative md:pt-6 lg:pt-8">
+            <div className="hidden md:block md:col-span-5 relative md:pt-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
