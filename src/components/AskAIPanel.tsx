@@ -212,12 +212,12 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
             </button>
           </div>
           <button
-            onClick={() => mode === "edit" ? null : callAI("explain")}
-            disabled={loading || mode === "edit"}
+            onClick={() => mode === "edit" ? callAI("edit", "Improve this note: fix grammar, clarity, and flow") : callAI("explain")}
+            disabled={loading}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Explain this note
+            {mode === "edit" ? "Edit this note" : "Explain this note"}
           </button>
         </div>
 
