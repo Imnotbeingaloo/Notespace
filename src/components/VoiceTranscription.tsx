@@ -177,14 +177,19 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     const recognition = new SR();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-    recognition.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
+    recognition.maxAlternatives = 3;
+    recognition.lang = navigator.language || "en-US";
 
     recognition.onresult = (event: any) => {
       let interimChunk = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const res = event.results[i];
-        const txt = res[0]?.transcript ?? "";
+        const alternatives = Array.from(res as SpeechRecognitionResult);
+        const best = alternatives.reduce<any>((winner, current: any) => {
+          if (!winner) return current;
+          return (current?.confidence ?? 0) > (winner?.confidence ?? 0) ? current : winner;
+        }, null);
+        const txt = best?.transcript ?? res[0]?.transcript ?? "";
         if (res.isFinal) {
           const trimmed = txt.trim();
           if (trimmed) {
@@ -200,7 +205,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     };
     recognition.onerror = (e: any) => {
       const err = e?.error;
-      if (err === "no-speech" || err === "aborted") return;
+      if (err === "no-speech" || err === "aborted" || err === "audio-capture") return;
       if (err === "not-allowed" || err === "service-not-allowed") {
         setError("Microphone permission denied. Allow mic access and try again.");
         listeningRef.current = false;
@@ -211,7 +216,10 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     };
     recognition.onend = () => {
       if (listeningRef.current) {
-        try { recognition.start(); } catch {}
+        restartTimerRef.current = window.setTimeout(() => {
+          if (!listeningRef.current) return;
+          try { recognition.start(); } catch {}
+        }, 180);
       }
     };
     recognitionRef.current = recognition;
