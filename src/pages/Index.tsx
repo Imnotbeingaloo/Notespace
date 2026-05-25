@@ -16,6 +16,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
+import { ScratchIcon } from "@/components/ScratchIcon";
 import { toast } from "sonner";
 
 import { useNotebooks } from "@/context/NotebookContext";
