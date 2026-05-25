@@ -555,7 +555,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                                 e.dataTransfer.effectAllowed = "move";
                               }}
                               onDragOver={(e) => {
-                                if (dragNoteId && dragNoteFromNb === nb.id) {
+                                if (dragNoteId && dragNoteId !== note.id) {
                                   e.preventDefault();
                                   e.dataTransfer.dropEffect = "move";
                                   setDragOverNoteId(note.id);
@@ -564,12 +564,28 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               onDragLeave={() => setDragOverNoteId(null)}
                               onDrop={(e) => {
                                 e.preventDefault();
+                                e.stopPropagation();
                                 setDragOverNoteId(null);
                                 if (!dragNoteId || dragNoteId === note.id) return;
-                                if (dragNoteFromNb !== nb.id) return;
-                                const fromIdx = nb.notes.findIndex((n) => n.id === dragNoteId);
-                                if (fromIdx === -1) return;
-                                reorderNotes(nb.id, fromIdx, noteIndex);
+                                if (dragNoteFromNb === nb.id) {
+                                  // Same-notebook reorder
+                                  const fromIdx = nb.notes.findIndex((n) => n.id === dragNoteId);
+                                  if (fromIdx === -1) return;
+                                  reorderNotes(nb.id, fromIdx, noteIndex);
+                                } else if (dragNoteFromNb) {
+                                  // Cross-notebook move via confirm dialog
+                                  const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
+                                  const draggedNote = sourceNb?.notes.find((n) => n.id === dragNoteId);
+                                  if (draggedNote) {
+                                    setPendingMoveNote({
+                                      noteId: dragNoteId,
+                                      fromNbId: dragNoteFromNb,
+                                      toNbId: nb.id,
+                                      noteTitle: draggedNote.title,
+                                      toNbName: nb.name,
+                                    });
+                                  }
+                                }
                                 setDragNoteId(null);
                                 setDragNoteFromNb(null);
                               }}
