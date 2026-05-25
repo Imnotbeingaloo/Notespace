@@ -474,7 +474,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
     setSaveStatus("idle");
-    if (activeNote) {
+    if (activeNote && !isOverrideActive) {
       supabase
         .from("notes")
         .select("tags")
@@ -483,8 +483,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         .then(({ data }) => {
           setTags((data as any)?.tags || []);
         });
+    } else {
+      setTags([]);
     }
-  }, [activeNote?.id]);
+  }, [activeNote?.id, isOverrideActive]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
