@@ -42,7 +42,7 @@ interface NotebookContextType {
   setActiveNoteId: (id: string | null) => void;
   createNotebook: (name: string, emoji?: string, parentId?: string | null) => Promise<string | null>;
   deleteNotebook: (id: string) => Promise<void>;
-  updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<void>;
+  updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<boolean>;
   nestNotebook: (childId: string, parentId: string) => Promise<boolean>;
   promoteNoteToNotebook: (notebookId: string, noteId: string, newName?: string) => Promise<string | null>;
   ensureScratchNotebook: () => Promise<string | null>;
@@ -68,6 +68,7 @@ interface NotebookContextType {
 const NotebookContext = createContext<NotebookContextType | null>(null);
 
 const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+const normalizeNotebookName = (name: string) => name.trim().replace(/\s+/g, " ").toLowerCase();
 
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -175,14 +176,21 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const createNotebook = useCallback(async (name: string, emoji?: string, parentId?: string | null): Promise<string | null> => {
     if (!user) return null;
+    const cleanName = name.trim().replace(/\s+/g, " ");
+    if (!cleanName) return null;
+    const duplicate = allNotebooks.some((nb) => !nb.deleted_at && normalizeNotebookName(nb.name) === normalizeNotebookName(cleanName));
+    if (duplicate) {
+      toast.error(`A notebook named "${cleanName}" already exists. Choose a different name.`);
+      return null;
+    }
     const e = emoji || EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
     const { data, error } = await supabase
       .from("notebooks")
-      .insert({ name, emoji: e, user_id: user.id, parent_id: parentId ?? null } as any)
+      .insert({ name: cleanName, emoji: e, user_id: user.id, parent_id: parentId ?? null } as any)
       .select()
       .single();
     if (error || !data) {
-      toast.error(error?.message || "Could not create notebook.");
+      toast.error(error?.code === "23505" ? `A notebook named "${cleanName}" already exists. Choose a different name.` : error?.message || "Could not create notebook.");
       return null;
     }
     const nb: Notebook = { ...(data as any), notes: [], deleted_at: null };
@@ -192,7 +200,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       setActiveNoteId(null);
     }
     return data.id;
-  }, [user]);
+  }, [user, allNotebooks]);
 
   const nestNotebook = useCallback(async (childId: string, parentId: string): Promise<boolean> => {
     if (childId === parentId) return false;
@@ -292,12 +300,27 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     });
   }, [activeNotebookId, allNotebooks]);
 
-  const updateNotebook = useCallback(async (id: string, updates: { name?: string; emoji?: string }) => {
-    await supabase.from("notebooks").update(updates).eq("id", id);
+  const updateNotebook = useCallback(async (id: string, updates: { name?: string; emoji?: string }): Promise<boolean> => {
+    const nextName = updates.name?.trim().replace(/\s+/g, " ");
+    if (updates.name !== undefined && !nextName) return false;
+    if (nextName) {
+      const duplicate = allNotebooks.some((nb) => nb.id !== id && !nb.deleted_at && normalizeNotebookName(nb.name) === normalizeNotebookName(nextName));
+      if (duplicate) {
+        toast.error(`A notebook named "${nextName}" already exists. Choose a different name.`);
+        return false;
+      }
+    }
+    const cleanUpdates = { ...updates, ...(nextName ? { name: nextName } : {}) };
+    const { error } = await supabase.from("notebooks").update(cleanUpdates).eq("id", id);
+    if (error) {
+      toast.error(error.code === "23505" ? `A notebook named "${nextName}" already exists. Choose a different name.` : error.message || "Could not update notebook.");
+      return false;
+    }
     setAllNotebooks((prev) =>
-      prev.map((nb) => nb.id === id ? { ...nb, ...updates } : nb)
+      prev.map((nb) => nb.id === id ? { ...nb, ...cleanUpdates } : nb)
     );
-  }, []);
+    return true;
+  }, [allNotebooks]);
 
   const createNote = useCallback(async (notebookId: string, title?: string, content?: string): Promise<string | null> => {
     if (!user) return null;
