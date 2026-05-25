@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-// Sticky note with a clock corner — signals a temporary, time-limited note
+// Temporary chat icon — chat bubble + small hourglass (Claude/ChatGPT-style "temporary chat")
 export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
   ({ className, ...props }, ref) => (
     <svg
@@ -17,15 +17,18 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
       className={className}
       {...props}
     >
-      {/* Sticky note body with folded corner */}
-      <path d="M4 4h11l5 5v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="currentColor" fillOpacity="0.08" />
-      <path d="M15 4v5h5" opacity="0.7" />
-      {/* Lines */}
-      <path d="M6 13h7" opacity="0.6" />
-      <path d="M6 17h5" opacity="0.6" />
-      {/* Small clock pip (temporary) */}
-      <circle cx="17.5" cy="16.5" r="3.2" fill="hsl(var(--background))" />
-      <path d="M17.5 14.6v1.9l1.3 0.8" />
+      {/* Chat bubble with dashed outline = ephemeral */}
+      <path
+        d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-1 4.2A8 8 0 0 1 21 12z"
+        strokeDasharray="3 2"
+        fill="currentColor"
+        fillOpacity="0.06"
+      />
+      {/* Hourglass inside bubble */}
+      <path d="M9.5 9h5" strokeDasharray="0" />
+      <path d="M9.5 15h5" strokeDasharray="0" />
+      <path d="M9.5 9c0 2 2.5 2.6 2.5 3s-2.5 1-2.5 3" strokeDasharray="0" />
+      <path d="M14.5 9c0 2-2.5 2.6-2.5 3s2.5 1 2.5 3" strokeDasharray="0" />
     </svg>
   )
 );
