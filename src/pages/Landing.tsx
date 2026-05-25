@@ -332,7 +332,7 @@ export default function LandingPage() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.9 }}
                   whileHover={{ y: -3, scale: 1.02 }}
-                  className="absolute -bottom-8 -right-4 sm:-right-8 w-64 rounded-2xl border border-border bg-card p-4 shadow-2xl shadow-primary/10 rotate-1"
+                  className="absolute -bottom-[42px] -right-[20px] sm:-bottom-[42px] sm:-right-[36px] w-64 rounded-2xl border border-border bg-card p-4 shadow-2xl shadow-primary/10 rotate-1"
                 >
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
