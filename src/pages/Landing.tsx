@@ -440,6 +440,7 @@ export default function LandingPage() {
             </div>
           </div>
         </motion.div>
+        </div>
       </section>
 
       <AnimatedDivider />
