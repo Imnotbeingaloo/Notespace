@@ -204,7 +204,7 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero (editorial) ── */}
-      <section className="relative overflow-hidden pt-32 md:pt-36 lg:pt-44 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
+      <section className="relative overflow-hidden pt-24 md:pt-28 lg:pt-32 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
         <div className="container mx-auto px-6 relative">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-start">
             {/* Left: headline column */}
@@ -249,10 +249,10 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4"
               >
-                <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-                  {user ? "Open App" : "Start writing"} <ArrowRight className="h-5 w-5" />
+                <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+                  {user ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5" />
                 </Link>
-                <a href="#features" className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+                <a href="#features" className="text-sm md:text-[15px] lg:text-base font-medium text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
                   See what it does
                 </a>
               </motion.div>
@@ -303,25 +303,33 @@ export default function LandingPage() {
                     On wave theory
                   </div>
                   <div className="space-y-3">
-                    <div className="h-[3px] w-[92%] rounded-full bg-border/70" />
-                    <div className="h-[3px] w-[78%] rounded-full bg-border/70" />
-                    {/* Animated highlight sweep */}
-                    <div className="relative h-[6px] w-[88%] rounded-sm bg-border/40 overflow-hidden">
-                      <motion.div
-                        className="absolute inset-y-0 left-0 rounded-sm bg-gradient-to-r from-primary/50 to-primary/25"
-                        initial={{ width: "0%" }}
-                        animate={{ width: ["0%", "100%", "100%", "0%"] }}
-                        transition={{
-                          duration: 8,
-                          times: [0, 0.35, 0.85, 1],
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: 0.8,
-                        }}
-                      />
-                    </div>
-                    <div className="h-[3px] w-[70%] rounded-full bg-border/70" />
-                    <div className="h-[3px] w-[55%] rounded-full bg-border/70" />
+                    {[
+                      { width: "92%", delay: 0.4 },
+                      { width: "78%", delay: 1.4 },
+                      { width: "88%", delay: 2.4 },
+                      { width: "70%", delay: 3.4 },
+                      { width: "55%", delay: 4.4 },
+                    ].map((line, i) => (
+                      <div
+                        key={i}
+                        className="relative h-[4px] rounded-full bg-border/50 overflow-hidden"
+                        style={{ width: line.width }}
+                      >
+                        <motion.div
+                          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary/60 to-primary/30"
+                          initial={{ width: "0%" }}
+                          animate={{ width: ["0%", "100%", "100%", "0%"] }}
+                          transition={{
+                            duration: 6,
+                            times: [0, 0.18, 0.92, 1],
+                            repeat: Infinity,
+                            repeatDelay: 0,
+                            ease: "easeInOut",
+                            delay: line.delay,
+                          }}
+                        />
+                      </div>
+                    ))}
                   </div>
                   <div className="mt-6 flex items-center justify-between">
                     <span className="inline-flex items-center rounded-full border border-border/80 bg-muted/40 px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">
