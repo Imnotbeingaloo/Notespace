@@ -72,8 +72,12 @@ const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [allNotebooks, setAllNotebooks] = useState<Notebook[]>([]);
-  const [activeNotebookId, setActiveNotebookIdRaw] = useState<string | null>(null);
-  const [activeNoteId, setActiveNoteIdRaw] = useState<string | null>(null);
+  const [activeNotebookId, setActiveNotebookIdRaw] = useState<string | null>(
+    () => (typeof window !== "undefined" ? localStorage.getItem("activeNotebookId") : null)
+  );
+  const [activeNoteId, setActiveNoteIdRaw] = useState<string | null>(
+    () => (typeof window !== "undefined" ? localStorage.getItem("activeNoteId") : null)
+  );
   const [loading, setLoading] = useState(true);
   const [override, setOverrideState] = useState<{ note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null>(null);
 
