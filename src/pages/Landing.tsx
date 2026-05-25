@@ -338,10 +338,11 @@ export default function LandingPage() {
                       Explain
                     </span>
                   </div>
-                  <p className="text-xs text-foreground/80 leading-relaxed min-h-[3.6rem]">
-                    {manuscriptTyped}
-                    <span className="inline-block w-[2px] h-3 bg-primary ml-0.5 align-middle animate-pulse" />
-                  </p>
+                  <div className="space-y-1.5">
+                    <div className="h-[3px] w-[85%] rounded-full bg-border/60" />
+                    <div className="h-[3px] w-[65%] rounded-full bg-border/60" />
+                  </div>
+
                 </motion.div>
 
 
