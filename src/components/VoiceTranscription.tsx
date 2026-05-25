@@ -97,6 +97,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     listeningRef.current = false;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
+    if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
+    idleRafRef.current = null;
     if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
     restartTimerRef.current = null;
     try {
