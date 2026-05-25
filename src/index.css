@@ -308,11 +308,3 @@
 .mobile-dropdown .hidden.sm\:inline {
   display: inline !important;
 }
-
-/* Aurora blobs respect reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .hero-aurora {
-    animation: none !important;
-    transform: none !important;
-  }
-}
