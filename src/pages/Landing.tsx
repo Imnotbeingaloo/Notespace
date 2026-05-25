@@ -330,7 +330,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.9 }}
-                  className="absolute -bottom-8 -right-4 sm:-right-8 w-60 rounded-2xl border border-border/70 bg-card p-3.5 shadow-2xl shadow-primary/10 rotate-2"
+                  className="absolute -bottom-16 sm:-bottom-20 right-0 sm:-right-4 w-60 rounded-2xl border border-border/70 bg-card p-3.5 shadow-2xl shadow-primary/10 rotate-2"
                 >
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -338,10 +338,11 @@ export default function LandingPage() {
                       Explain
                     </span>
                   </div>
-                  <div className="space-y-1.5">
-                    <div className="h-[3px] w-[85%] rounded-full bg-border/60" />
-                    <div className="h-[3px] w-[65%] rounded-full bg-border/60" />
-                  </div>
+                  <p className="text-xs text-foreground/80 leading-relaxed min-h-[3.6rem]">
+                    {manuscriptTyped}
+                    <span className="inline-block w-[2px] h-3 bg-primary ml-0.5 align-middle animate-pulse" />
+                  </p>
+
 
                 </motion.div>
 
