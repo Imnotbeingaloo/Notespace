@@ -122,7 +122,7 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Share2 className="h-4 w-4 text-primary" />
-            Share "{noteTitle}"
+            {notebookName ? `Share "${notebookName}" Notebook` : `Share "${noteTitle}"`}
           </DialogTitle>
         </DialogHeader>
 
