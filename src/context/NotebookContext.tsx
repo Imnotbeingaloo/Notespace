@@ -47,7 +47,9 @@ interface NotebookContextType {
   promoteNoteToNotebook: (notebookId: string, noteId: string, newName?: string) => Promise<string | null>;
   ensureScratchNotebook: () => Promise<string | null>;
   createScratchNote: () => Promise<{ notebookId: string; noteId: string } | null>;
-  createNote: (notebookId: string, title?: string, content?: string) => Promise<void>;
+  isScratchNotebook: (notebookId: string | null) => boolean;
+  moveNoteToNotebook: (fromNotebookId: string, noteId: string, toNotebookId: string) => Promise<boolean>;
+  createNote: (notebookId: string, title?: string, content?: string) => Promise<string | null>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
@@ -253,8 +255,8 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
-  const createNote = useCallback(async (notebookId: string, title?: string, content?: string) => {
-    if (!user) return;
+  const createNote = useCallback(async (notebookId: string, title?: string, content?: string): Promise<string | null> => {
+    if (!user) return null;
     const { data } = await supabase
       .from("notes")
       .insert({ notebook_id: notebookId, user_id: user.id, title: title || "Untitled Note", content: content || "" })
@@ -266,8 +268,36 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb)
       );
       setActiveNoteId(data.id);
+      return data.id;
     }
+    return null;
   }, [user]);
+
+  const isScratchNotebook = useCallback((notebookId: string | null) => {
+    if (!notebookId) return false;
+    const nb = allNotebooks.find((n) => n.id === notebookId);
+    return !!nb && nb.name === "Scratch" && nb.emoji === "✏️";
+  }, [allNotebooks]);
+
+  const moveNoteToNotebook = useCallback(async (fromNotebookId: string, noteId: string, toNotebookId: string): Promise<boolean> => {
+    if (fromNotebookId === toNotebookId) return true;
+    const { error } = await supabase.from("notes").update({ notebook_id: toNotebookId } as any).eq("id", noteId);
+    if (error) {
+      toast.error("Could not move note.");
+      return false;
+    }
+    setAllNotebooks((prev) => {
+      const sourceNb = prev.find((n) => n.id === fromNotebookId);
+      const note = sourceNb?.notes.find((n) => n.id === noteId);
+      if (!note) return prev;
+      return prev.map((n) => {
+        if (n.id === fromNotebookId) return { ...n, notes: n.notes.filter((x) => x.id !== noteId) };
+        if (n.id === toNotebookId) return { ...n, notes: [...n.notes, note] };
+        return n;
+      });
+    });
+    return true;
+  }, []);
 
   const deleteNote = useCallback(async (notebookId: string, noteId: string) => {
     const now = new Date().toISOString();
@@ -385,7 +415,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         activeNotebookId, activeNoteId,
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, nestNotebook, promoteNoteToNotebook,
-        ensureScratchNotebook, createScratchNote,
+        ensureScratchNotebook, createScratchNote, isScratchNotebook, moveNoteToNotebook,
         createNote, deleteNote, updateNote,
         reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,
         activeNotebook, activeNote, loading, refreshData: fetchData,

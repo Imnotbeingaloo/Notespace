@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { NotebookProvider } from "@/context/NotebookContext";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
@@ -7,6 +7,7 @@ import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { CalendarDays, Loader2, Maximize2, Minimize2, Pencil, Timer } from "lucide-react";
+import { ScratchIcon } from "@/components/ScratchIcon";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { toast } from "sonner";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
@@ -33,11 +35,13 @@ function AppContent() {
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
-  
+  const lastHydratedUrlRef = useRef<string | null>(null);
+  const [scratchLeavePending, setScratchLeavePending] = useState<null | { fromNotebookId: string; noteId: string; targetView: () => void }>(null);
+
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
     try { await refreshData(); } finally { setRetryingDeepLink(false); }
@@ -46,11 +50,15 @@ function AppContent() {
     navigate("/", { state: { fromApp: true } });
   }, [navigate]);
 
-  // Hydrate selection from URL once notebooks load
+  // Hydrate selection from URL ONCE per URL change (not when notebooks length changes,
+  // which would otherwise revert a freshly-created notebook back to the old URL value)
   useEffect(() => {
     if (!urlNotebook) return;
+    const hydrationKey = `${urlNotebook}|${urlNote ?? ""}`;
+    if (lastHydratedUrlRef.current === hydrationKey) return;
     const nb = notebooks.find((n) => n.id === urlNotebook);
-    if (!nb) return;
+    if (!nb) return; // wait until notebooks load
+    lastHydratedUrlRef.current = hydrationKey;
     setActiveNotebookId(urlNotebook);
     const target = urlNote && nb.notes.find((x) => x.id === urlNote) ? urlNote : nb.notes[0]?.id ?? null;
     setActiveNoteId(target);
@@ -154,6 +162,29 @@ function AppContent() {
               )}
             </div>
             <div className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={async () => {
+                      const res = await createScratchNote();
+                      if (res) {
+                        setShowHome(false);
+                        toast.success("Scratch note ready", {
+                          description: "Temporary — save or download before leaving.",
+                        });
+                      }
+                    }}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-xl shrink-0 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:text-amber-300"
+                  >
+                    <ScratchIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>New Scratch Note (temporary)</p>
+                </TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button

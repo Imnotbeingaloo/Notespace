@@ -1,69 +1,80 @@
-# Plan
+This is a large multi-feature pass. Outlining each change so we agree before I edit ~10 files.
 
-A focused set of additive changes across UX, data, and uploads. Nothing existing is removed.
+## 1. Flashcards — make them interactive
 
-## 1. Scratch / temporary notes
+- Parse the AI-generated `**Q:** … **A:** …` blocks into a real card deck.
+- Build a quiz UI: front shows Q, flip to reveal A, then "Got it right" / "Got it wrong" buttons.
+- Track score, show "X / Y correct" at the end with a Restart button.
+- Replace the current read-only markdown render inside the existing AI Tools panel.
 
-- Auto-create a per-user notebook named **"Scratch"** (📝 emoji) on first app load if missing.
-- New top-bar button next to Focus Mode (✏️ "Scratch") — clicking it opens the Scratch notebook and creates a fresh blank note inside it.
-- Scratch notes are marked visually (subtle "Scratch" tag) but otherwise behave normally.
+## 2. "Ask AI" → dedicated interactive chat area (not a sidebar)
 
-## 2. Drag-and-drop
+- Replace `AIExplainPanel` with a centered modal (or full-width inline panel above the editor) named "Ask AI".
+- Two quick-action buttons inside it: **Explain** and **Edit**.
+- Free-text input so the user can ask anything ("explain paragraph 2", "rewrite this in plainer English", etc.).
+- Streamed assistant replies, multi-turn message thread kept in component state for the session.
+- For "Edit" actions, replies include an **Apply to note** button that writes the suggested markdown into the active note.
+- Edge function: reuse `ai-tools` with a new `chat` action that accepts the note + a conversation history.
 
-- **Drag a note out of its notebook** (drop on empty Home grid area) → confirm dialog "Promote this note to a new notebook?" → on confirm, create notebook (named after note title) and move the note into it.
-- **Drag a notebook onto another notebook** → confirm dialog "Make X a sub-notebook of Y?" → on confirm, set `parent_id`.
-- Sub-notebooks: **one level deep only** (keeps UI simple; sub-notebook can't itself be a parent). Sidebar shows nested children under an expandable caret. Home grid shows parents only with a "N sub" badge.
+## 3. Voice transcript
 
-## 3. Create-notebook modal
+- Inspect why the mic isn't inserting text. Current `VoiceTranscription` only fires `onTranscript` on `isFinal` — verify the consumer in `NoteEditor` actually appends to the markdown.
+- Fix the wiring and add a visible "Listening…" indicator.
 
-- Remove the inline name input on sidebar + Home.
-- Replace with `+ New Notebook` button → opens a centered modal (Framer Motion fade+scale, backdrop blur) with name input, emoji picker (reuse existing), Create / Cancel.
-- Same modal triggered from:
-  - Sidebar header `+`
-  - New **"Create Notebook"** tile rendered as the first card on Home grid
-  - Mobile collapsed-sidebar state (visible on Home even when sidebar closed)
+## 4. Share dialog title
 
-## 4. Collapsed sidebar icons
+- `ShareNoteDialog` title becomes **"Share '{notebookName}' Notebook"** (falls back to "Share Note" if no notebook context).
 
-- When collapsed, footer shows icon-only buttons (no labels) for: Theme toggle (sun/moon), Trash, Sign Out. All with tooltips. Sign Out keeps destructive hover tint.
+## 5. Three-dots menu — AI Edit
 
-## 5. File upload fixes + extraction
+- Keep the "AI Edit" item. Wire it through the same `ai-tools` edge function `action: "edit"`, passing the full note content + user instruction. Replace the note body with the returned markdown after a confirm step.
 
-- Fix the broken upload trigger in `FileUpload.tsx` (input ref / accept attribute).
-- **Allow-list** by MIME + extension: images (jpg, png, webp, gif), PDFs, plain text, markdown, docx. **Block** html, exe, scripts, archives, svg with inline scripts. Reject with a clear toast.
-- Keep 10 MB limit, private bucket, signed URLs.
-- **Extraction** on upload:
-  - PDFs: client-side `pdfjs-dist` text extraction → inserted into the note as markdown.
-  - Images: edge function `extract-file` calling Lovable AI (`google/gemini-2.5-flash`) vision to OCR / describe → inserted as markdown under a `## From <filename>` heading.
-  - DOCX/TXT/MD: parsed client-side, inserted as markdown.
-- Original file is still saved to storage and shown as an attachment chip below the note for download.
+## 6. Preview button (attachments)
 
-## 6. Header logo sizing
+- The attachment preview button in `NoteEditor` currently doesn't open. Fix it to open the signed URL in a new tab (images/PDF inline, others download).
 
-- On `PageHeader` and `Landing` header, scale the "Notebook Archive" text to match the action button heights at every breakpoint (mobile gets a real readable size, not the current tiny one). Logo image sizing stays as-is.
+## 7. Upload loading popup
 
-## Technical details
+- `FileUpload` shows a toast/dialog "Preparing your document…" with a spinner while extraction/upload runs, dismisses on success/failure.
+- Tighten validation to reuse `validateFile` helpers already in `file-validation.ts`.
 
-**DB migration**
-- `notebooks`: add `parent_id uuid null references notebooks(id) on delete set null`, `is_scratch boolean not null default false`. Index on `(user_id, parent_id)`.
-- `notes`: add `is_scratch boolean not null default false`.
-- Add CHECK trigger preventing a notebook whose `parent_id is not null` from itself being a parent (enforces one level).
+## 8. Sidebar Upload — Notes vs Notebook
 
-**Edge function**
-- `extract-file`: accepts base64 image, returns `{ markdown }`. JWT-verified. Uses `LOVABLE_API_KEY`, Gemini vision, prompt-injection-hardened with XML wrappers.
+- New dropdown on the sidebar "+ Upload" button:
+  - **Upload Notes** → asks "Which notebook?" with two options: pick existing (dropdown) or create new (opens `CreateNotebookDialog`, then continues).
+  - **Upload Notebook** → file picker for `.md`/`.txt`/`.docx`, creates a new notebook named after the file and ingests it as the first note.
 
-**Frontend**
-- `src/components/CreateNotebookDialog.tsx` (new) — modal w/ framer-motion.
-- `src/components/HomeView.tsx` — first-tile "Create Notebook", drag-out drop zone, sub-notebook badge.
-- `src/components/AppSidebar.tsx` — nested children render, collapsed footer icons, drag handlers.
-- `src/context/NotebookContext.tsx` — `createNotebook(name, emoji, parentId?)`, `nestNotebook(childId, parentId)`, `promoteNoteToNotebook(noteId)`, `ensureScratchNotebook()`, `createScratchNote()`.
-- `src/components/FileUpload.tsx` — fixed click trigger, MIME allow-list, extraction routing.
-- `src/lib/file-extraction.ts` (new) — pdfjs / docx / txt parsers.
-- Top-bar in `pages/Index.tsx` — Scratch button + tooltip.
+## 9. Scratch (temporary notes)
 
-**Out of scope (will not do)**
-- Multi-level nested sub-notebooks.
-- Server-side virus scanning.
-- Moving sub-notebooks via drag back to root (use a context-menu "Move to root" later if needed).
+- Add a **Scratch** button in the editor top bar next to Focus Mode (custom icon: pencil with dashed outline).
+- Clicking opens (or creates) the per-user Scratch notebook and a new scratch note.
+- Before navigating away from a scratch note, show a confirm: **Download as .md**, **Save to a notebook** (notebook picker), or **Discard**.
 
-Suggested order: 6 → 3 → 4 → 1 → 5 → 2.
+## 10. New-notebook routing bug
+
+- After creating a notebook the URL still has `?notebook=<old>&note=<old>`, so the editor shows the previous notebook contents under the new title.
+- Fix: when `createNotebook` resolves, navigate to `/app?notebook=<newId>` and clear `activeNoteId`. `HomeView` and `AppSidebar` both call `createNotebook` — both need this.
+
+## Files to touch
+
+- `src/components/AIToolsPanel.tsx` — flashcards interactive mode
+- `src/components/AIExplainPanel.tsx` → rewrite as `AskAIPanel.tsx` (chat UI)
+- `src/components/AIEditPanel.tsx` — reuse from three-dots menu, accept instruction
+- `src/components/VoiceTranscription.tsx` + `NoteEditor.tsx` wiring
+- `src/components/ShareNoteDialog.tsx`
+- `src/components/FileUpload.tsx` — loading dialog, preview fix
+- `src/components/NoteEditor.tsx` — attachment preview, scratch button, ask-ai placement
+- `src/components/AppSidebar.tsx` — upload dropdown
+- `src/components/CreateNotebookDialog.tsx` / `HomeView.tsx` / `Index.tsx` — routing fix
+- `src/context/NotebookContext.tsx` — scratch helpers, return new id from createNotebook
+- `supabase/functions/ai-tools/index.ts` — add `chat` action
+
+## Out of scope (will not touch)
+
+- Drag-to-create-notebook flow (already in the codebase from previous turn — leaving as-is).
+- Sub-notebook nesting UI (DB already supports it; sidebar tree stays as-is).
+- Pricing/marketing pages.
+
+Reply **"go"** (or with edits) and I'll execute end to end in this turn — it'll be a large diff but no follow-ups needed.  
+  
+it shouldnt make every document temporary, only the ones that are chatted or done in the temporary option and also the colors that i told you to do on the buttons like trash, signout dark mode etc are gone, can you bring them back
