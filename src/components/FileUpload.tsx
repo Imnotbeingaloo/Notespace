@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Paperclip, X, FileIcon, Download, Loader2 } from "lucide-react";
+import { Paperclip, X, FileIcon, Download, Loader2, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -109,6 +109,23 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     a.click();
   };
 
+  const handlePreview = async (att: { path?: string; url: string; name: string }) => {
+    try {
+      let url = att.url;
+      if (att.path) {
+        const { data, error } = await supabase.storage
+          .from("note-attachments")
+          .createSignedUrl(att.path, 60 * 60);
+        if (error) throw error;
+        if (data?.signedUrl) url = data.signedUrl;
+      }
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+      if (!win) toast({ title: "Popup blocked", description: "Allow popups to preview attachments." });
+    } catch (err: any) {
+      toast({ title: "Preview failed", description: err.message || "Could not open this file." });
+    }
+  };
+
   const isImage = (type: string) => type.startsWith("image/");
 
   const formatSize = (bytes: number) => {
@@ -156,6 +173,13 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
                     <span className="truncate max-w-[120px]">{att.name}</span>
                     <span className="text-[10px] text-muted-foreground">{formatSize(att.size)}</span>
                   </div>
+                  <button
+                    onClick={() => handlePreview(att)}
+                    className="p-1 rounded hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
+                    title="Preview"
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                  </button>
                   <button
                     onClick={() => handleDownload(att.url, att.name)}
                     className="p-1 rounded hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"

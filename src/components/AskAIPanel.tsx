@@ -26,6 +26,7 @@ export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
   const { activeNote } = useNotebooks();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [mode, setMode] = useState<"chat" | "edit">("chat");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -119,9 +120,12 @@ export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
   const handleSend = () => {
     const text = input.trim();
     if (!text || loading) return;
-    // Heuristic: if user clearly asks to edit/rewrite, use edit action
-    const editish = /^(edit|rewrite|fix|change|update|make it|shorten|expand|simplify|translate|convert)/i.test(text);
-    callAI(editish ? "edit" : "analyze", text);
+    if (mode === "edit") {
+      callAI("edit", text);
+    } else {
+      const editish = /^(edit|rewrite|fix|change|update|make it|shorten|expand|simplify|translate|convert)/i.test(text);
+      callAI(editish ? "edit" : "analyze", text);
+    }
   };
 
   const handleApply = (msg: Msg) => {
@@ -170,26 +174,35 @@ export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
           </button>
         </div>
 
-        {/* Quick actions */}
-        <div className="flex gap-2 px-5 py-3 border-b border-border">
+        {/* Mode toggle + quick actions */}
+        <div className="flex items-center gap-2 px-5 py-3 border-b border-border">
+          <div className="inline-flex items-center gap-0.5 p-0.5 rounded-xl bg-muted/60">
+            <button
+              onClick={() => setMode("chat")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                mode === "chat" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              Explain
+            </button>
+            <button
+              onClick={() => setMode("edit")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                mode === "edit" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Wand2 className="h-3.5 w-3.5" />
+              Edit
+            </button>
+          </div>
           <button
-            onClick={() => callAI("explain")}
-            disabled={loading}
+            onClick={() => mode === "edit" ? null : callAI("explain")}
+            disabled={loading || mode === "edit"}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
           >
-            <BookOpen className="h-3.5 w-3.5" />
+            <Sparkles className="h-3.5 w-3.5" />
             Explain this note
-          </button>
-          <button
-            onClick={() => {
-              const i = window.prompt("How should AI edit your note? (e.g., fix grammar, make more concise)");
-              if (i?.trim()) callAI("edit", i.trim());
-            }}
-            disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent-foreground hover:bg-accent/20 border border-accent/20 disabled:opacity-50 transition-colors"
-          >
-            <Wand2 className="h-3.5 w-3.5" />
-            Edit note
           </button>
         </div>
 
@@ -269,7 +282,7 @@ export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
                   handleSend();
                 }
               }}
-              placeholder="Ask anything about your note…"
+              placeholder={mode === "edit" ? "Describe the edit (e.g., fix grammar, shorten, add a conclusion)…" : "Ask anything about your note…"}
               rows={1}
               className="flex-1 resize-none bg-background border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 max-h-32"
             />

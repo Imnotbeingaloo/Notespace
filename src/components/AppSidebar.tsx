@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -330,10 +331,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <button
               onClick={() => sidebarUploadRef.current?.click()}
               disabled={sidebarUploading}
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              title="Upload files into the current note. Allowed: images, PDF, DOC/DOCX, XLSX, TXT, MD, CSV, JSON (max 10 MB)."
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn disabled:opacity-60"
             >
-              <Upload className="h-3.5 w-3.5" />
-              {sidebarUploading ? "..." : "Upload"}
+              {sidebarUploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+              {sidebarUploading ? "Uploading…" : "Upload"}
             </button>
             <button
               onClick={() => setNewNotebookOpen(true)}
@@ -362,7 +364,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             </button>
           </div>
 
-          <input ref={sidebarUploadRef} type="file" multiple className="hidden" onChange={handleSidebarUpload} />
+          <input
+            ref={sidebarUploadRef}
+            type="file"
+            multiple
+            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            className="hidden"
+            onChange={handleSidebarUpload}
+          />
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
@@ -963,6 +972,21 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           }
         }}
       />
+
+      {/* Upload progress dialog */}
+      <Dialog open={sidebarUploading}>
+        <DialogContent className="sm:max-w-sm" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              Uploading files…
+            </DialogTitle>
+            <DialogDescription>
+              Validating and saving your files. Allowed: images, PDF, DOC/DOCX, XLSX, TXT, MD, CSV, JSON. Max 10 MB each. HTML, SVG, scripts and archives are blocked for safety.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </motion.aside>
   );
 }
