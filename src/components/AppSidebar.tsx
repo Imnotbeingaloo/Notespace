@@ -39,6 +39,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     createNotebook,
     deleteNotebook,
     updateNotebook,
+    nestNotebook,
     createNote,
     deleteNote,
     updateNote,
@@ -49,6 +50,20 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     permanentlyDeleteNote,
     refreshData,
   } = useNotebooks();
+
+  // Top-level vs nested notebooks
+  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id), [notebooks]);
+  const childrenByParent = useMemo(() => {
+    const map = new Map<string, typeof notebooks>();
+    notebooks.forEach((nb) => {
+      if (nb.parent_id) {
+        const arr = map.get(nb.parent_id) || [];
+        arr.push(nb);
+        map.set(nb.parent_id, arr);
+      }
+    });
+    return map;
+  }, [notebooks]);
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
   const [showNewNotebook, setShowNewNotebook] = useState(false);
