@@ -48,6 +48,7 @@
     --notebook-hover: 40 25% 91%;
     --editor-bg: 0 0% 100%;
     --editor-line: 40 20% 93%;
+    --hero-green: 152 42% 32%;
   }
 
   .dark {
@@ -91,6 +92,7 @@
     --notebook-hover: 220 15% 15%;
     --editor-bg: 220 18% 12%;
     --editor-line: 220 15% 18%;
+    --hero-green: 152 45% 42%;
   }
 }
 
