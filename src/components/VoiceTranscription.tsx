@@ -6,16 +6,69 @@ interface VoiceTranscriptionProps {
   onTranscript: (text: string) => void;
 }
 
+type SpeechAlternativeLike = {
+  transcript: string;
+  confidence?: number;
+};
+
+type SpeechResultLike = {
+  readonly length: number;
+  readonly isFinal: boolean;
+  readonly [index: number]: SpeechAlternativeLike;
+};
+
+type SpeechRecognitionEventLike = {
+  resultIndex: number;
+  results: {
+    readonly length: number;
+    readonly [index: number]: SpeechResultLike;
+  };
+};
+
+type SpeechRecognitionErrorEventLike = {
+  error?: string;
+};
+
+type BrowserSpeechRecognition = {
+  continuous: boolean;
+  interimResults: boolean;
+  maxAlternatives: number;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEventLike) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  abort: () => void;
+};
+
+type BrowserSpeechRecognitionCtor = new () => BrowserSpeechRecognition;
+
+type VoiceWindow = Window & {
+  AudioContext?: typeof AudioContext;
+  SpeechRecognition?: BrowserSpeechRecognitionCtor;
+  webkitSpeechRecognition?: BrowserSpeechRecognitionCtor;
+  webkitAudioContext?: typeof AudioContext;
+};
+
+const getErrorMessage = (error: unknown, fallback: string) => {
+  if (error instanceof Error && error.message) return error.message;
+  if (typeof error === "object" && error && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string" && message) return message;
+  }
+  return fallback;
+};
+
 /**
  * Voice → text with a live popup.
  * The waveform is updated imperatively via refs (no React state in the RAF loop)
  * so the visualizer stays smooth even while speech recognition is firing.
  */
-const BAR_COUNT = 48;
+const POINT_COUNT = 56;
 const W = 320;
 const H = 80;
 const MID = H / 2;
-const STEP_X = W / (BAR_COUNT - 1);
+const STEP_X = W / (POINT_COUNT - 1);
 
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [open, setOpen] = useState(false);
@@ -24,14 +77,15 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [finalText, setFinalText] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number | null>(null);
   const listeningRef = useRef(false);
   const aggregateRef = useRef("");
-  const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  const smoothedRef = useRef<number[]>(new Array(POINT_COUNT).fill(0));
+  const restartTimerRef = useRef<number | null>(null);
   const topPathRef = useRef<SVGPathElement | null>(null);
   const botPathRef = useRef<SVGPathElement | null>(null);
   const fillPathRef = useRef<SVGPathElement | null>(null);
@@ -44,7 +98,13 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     listeningRef.current = false;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
-    try { recognitionRef.current?.stop(); } catch {}
+    if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
+    restartTimerRef.current = null;
+    try {
+      recognitionRef.current?.abort();
+    } catch {
+      // Browser speech engines can throw when aborting an already-ended session.
+    }
     recognitionRef.current = null;
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -55,26 +115,51 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     audioCtxRef.current = null;
     analyserRef.current = null;
-    smoothedRef.current = new Array(BAR_COUNT).fill(0);
+    smoothedRef.current = new Array(POINT_COUNT).fill(0);
   }, []);
 
   useEffect(() => () => cleanup(), [cleanup]);
 
-  const buildPath = (vals: number[], topSide: boolean) => {
-    // Smooth wave via quadratic curves between midpoints
+  const buildStrokePath = (vals: number[], topSide: boolean) => {
     const pts: [number, number][] = vals.map((v, i) => {
-      const amp = Math.max(2, v * (H / 2 - 4));
+      const amp = Math.max(1.5, Math.min(1, v) * (H / 2 - 6));
       return [i * STEP_X, topSide ? MID - amp : MID + amp];
     });
     let d = `M ${pts[0][0]} ${pts[0][1]}`;
     for (let i = 1; i < pts.length; i++) {
       const [x0, y0] = pts[i - 1];
       const [x1, y1] = pts[i];
-      const cx = (x0 + x1) / 2;
-      const cy = (y0 + y1) / 2;
-      d += ` Q ${x0} ${y0} ${cx} ${cy}`;
+      const mx = (x0 + x1) / 2;
+      d += ` Q ${x0} ${y0} ${mx} ${(y0 + y1) / 2}`;
     }
-    d += ` L ${pts[pts.length - 1][0]} ${pts[pts.length - 1][1]}`;
+    const last = pts[pts.length - 1];
+    d += ` T ${last[0]} ${last[1]}`;
+    return d;
+  };
+
+  const buildFillPath = (vals: number[]) => {
+    const top = vals.map((v, i): [number, number] => [
+      i * STEP_X,
+      MID - Math.max(1.5, Math.min(1, v) * (H / 2 - 6)),
+    ]);
+    const bottom = vals.map((v, i): [number, number] => [
+      i * STEP_X,
+      MID + Math.max(1.5, Math.min(1, v) * (H / 2 - 6)),
+    ]);
+
+    let d = `M ${top[0][0]} ${top[0][1]}`;
+    for (let i = 1; i < top.length; i++) {
+      const [x0, y0] = top[i - 1];
+      const [x1, y1] = top[i];
+      d += ` Q ${x0} ${y0} ${(x0 + x1) / 2} ${(y0 + y1) / 2}`;
+    }
+    d += ` T ${top[top.length - 1][0]} ${top[top.length - 1][1]}`;
+    for (let i = bottom.length - 1; i > 0; i--) {
+      const [x0, y0] = bottom[i];
+      const [x1, y1] = bottom[i - 1];
+      d += ` Q ${x0} ${y0} ${(x0 + x1) / 2} ${(y0 + y1) / 2}`;
+    }
+    d += ` T ${bottom[0][0]} ${bottom[0][1]} Z`;
     return d;
   };
 
@@ -84,56 +169,47 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
       });
       streamRef.current = stream;
-      const Ctx: typeof AudioContext =
-        (window as any).AudioContext || (window as any).webkitAudioContext;
+      const voiceWindow = window as VoiceWindow;
+      const Ctx = voiceWindow.AudioContext || voiceWindow.webkitAudioContext;
       const ctx = new Ctx();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.85;
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.9;
       source.connect(analyser);
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
-      const data = new Uint8Array(analyser.frequencyBinCount);
+      const data = new Uint8Array(analyser.fftSize);
 
       const tick = () => {
         if (!analyserRef.current) return;
-        analyserRef.current.getByteFrequencyData(data);
-        const useable = Math.floor(data.length * 0.55);
-        const step = useable / BAR_COUNT;
+        analyserRef.current.getByteTimeDomainData(data);
+        const step = data.length / POINT_COUNT;
         const next = smoothedRef.current;
-        for (let i = 0; i < BAR_COUNT; i++) {
+        for (let i = 0; i < POINT_COUNT; i++) {
           const start = Math.floor(i * step);
-          const end = Math.floor((i + 1) * step) || start + 1;
-          let sum = 0;
-          for (let j = start; j < end; j++) sum += data[j];
-          const avg = sum / (end - start) / 255;
-          next[i] = next[i] * 0.6 + avg * 0.4;
+          const end = Math.max(start + 1, Math.floor((i + 1) * step));
+          let peak = 0;
+          let sumSquares = 0;
+          for (let j = start; j < end; j++) {
+            const sample = Math.abs(data[j] - 128) / 128;
+            peak = Math.max(peak, sample);
+            sumSquares += sample * sample;
+          }
+          const rms = Math.sqrt(sumSquares / (end - start));
+          const target = Math.min(1, Math.max(peak * 0.72, rms * 1.9));
+          next[i] = next[i] * 0.78 + target * 0.22;
         }
-        // Direct DOM writes — bypass React entirely
-        const topD = buildPath(next, true);
-        const botD = buildPath(next, false);
+        const topD = buildStrokePath(next, true);
+        const botD = buildStrokePath(next, false);
         if (topPathRef.current) topPathRef.current.setAttribute("d", topD);
         if (botPathRef.current) botPathRef.current.setAttribute("d", botD);
-        if (fillPathRef.current) {
-          // Build closed fill path: top forward then bottom reversed
-          let fill = topD;
-          const lastTop = next.length - 1;
-          const lastAmp = Math.max(2, next[lastTop] * (H / 2 - 4));
-          fill += ` L ${lastTop * STEP_X} ${MID + lastAmp}`;
-          // Reverse bottom
-          for (let i = next.length - 1; i >= 0; i--) {
-            const amp = Math.max(2, next[i] * (H / 2 - 4));
-            fill += ` L ${i * STEP_X} ${MID + amp}`;
-          }
-          fill += " Z";
-          fillPathRef.current.setAttribute("d", fill);
-        }
+        if (fillPathRef.current) fillPathRef.current.setAttribute("d", buildFillPath(next));
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
-    } catch (e: any) {
-      setError(e?.message || "Microphone access denied.");
+    } catch (e: unknown) {
+      setError(getErrorMessage(e, "Microphone access denied."));
     }
   }, []);
 
@@ -147,8 +223,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     listeningRef.current = true;
     await startVisualizer();
 
-    const SR: any =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const voiceWindow = window as VoiceWindow;
+    const SR = voiceWindow.SpeechRecognition || voiceWindow.webkitSpeechRecognition;
     if (!SR) {
       setError("Speech recognition is not supported in this browser. Try Chrome or Edge.");
       setListening(false);
@@ -158,14 +234,19 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     const recognition = new SR();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
+    recognition.maxAlternatives = 3;
     recognition.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       let interimChunk = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const res = event.results[i];
-        const txt = res[0]?.transcript ?? "";
+        const alternatives = Array.from({ length: res.length }, (_, index) => res[index]);
+        const best = alternatives.reduce<SpeechAlternativeLike | null>((winner, current) => {
+          if (!winner) return current;
+          return (current?.confidence ?? 0) > (winner?.confidence ?? 0) ? current : winner;
+        }, null);
+        const txt = best?.transcript ?? res[0]?.transcript ?? "";
         if (res.isFinal) {
           const trimmed = txt.trim();
           if (trimmed) {
@@ -179,9 +260,9 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       setFinalText(aggregateRef.current);
       setInterim(interimChunk);
     };
-    recognition.onerror = (e: any) => {
+    recognition.onerror = (e) => {
       const err = e?.error;
-      if (err === "no-speech" || err === "aborted") return;
+      if (err === "no-speech" || err === "aborted" || err === "audio-capture") return;
       if (err === "not-allowed" || err === "service-not-allowed") {
         setError("Microphone permission denied. Allow mic access and try again.");
         listeningRef.current = false;
@@ -192,13 +273,21 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     };
     recognition.onend = () => {
       if (listeningRef.current) {
-        try { recognition.start(); } catch {}
+        restartTimerRef.current = window.setTimeout(() => {
+          if (!listeningRef.current) return;
+          try {
+            recognition.start();
+          } catch {
+            // Ignore duplicate restarts while the browser engine is still active.
+          }
+        }, 180);
       }
     };
     recognitionRef.current = recognition;
-    try { recognition.start(); } catch (e: any) {
-      if (!String(e?.message || "").includes("already started")) {
-        setError(e?.message || "Could not start recognition.");
+    try { recognition.start(); } catch (e: unknown) {
+      const message = getErrorMessage(e, "Could not start recognition.");
+      if (!message.includes("already started")) {
+        setError(message);
         setListening(false);
         listeningRef.current = false;
       }
