@@ -225,7 +225,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-serif text-[2rem] md:text-[2.6rem] lg:text-[3.25rem] font-bold text-foreground leading-[1.05] tracking-tight"
+                className="font-serif text-[2rem] md:text-[2.6rem] lg:text-[3.25rem] font-bold text-foreground leading-[1.15] tracking-tight"
               >
                 Your thoughts,{" "}
                 <span className="italic text-primary">organized</span>
