@@ -38,6 +38,32 @@ export default function LandingPage() {
   const [visibleLines, setVisibleLines] = useState(0);
   const [typingText, setTypingText] = useState("");
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [manuscriptTyped, setManuscriptTyped] = useState("");
+
+  // Looping manuscript-card typewriter
+  useEffect(() => {
+    const SENTENCE = "Wave theory describes how energy propagates through space as oscillations.";
+    let i = 0;
+    let pause = 0;
+    let phase: "typing" | "holding" | "resetting" = "typing";
+    const id = setInterval(() => {
+      if (pause > 0) { pause--; return; }
+      if (phase === "typing") {
+        i++;
+        setManuscriptTyped(SENTENCE.slice(0, i));
+        if (i >= SENTENCE.length) { phase = "holding"; pause = 70; }
+      } else if (phase === "holding") {
+        phase = "resetting";
+        pause = 6;
+      } else {
+        i = 0;
+        setManuscriptTyped("");
+        phase = "typing";
+        pause = 8;
+      }
+    }, 45);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (fromApp) {
