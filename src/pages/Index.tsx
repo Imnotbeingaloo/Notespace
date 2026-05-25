@@ -29,8 +29,11 @@ function AppContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlNotebook = searchParams.get("notebook");
   const urlNote = searchParams.get("note");
-  // Default to Home view unless a deep link is present
-  const [showHome, setShowHome] = useState(!urlNotebook);
+  // Default to the last opened notebook on reload; otherwise show Home.
+  const [showHome, setShowHome] = useState(() => {
+    if (urlNotebook) return false;
+    return !(typeof window !== "undefined" && localStorage.getItem("activeNotebookId"));
+  });
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
