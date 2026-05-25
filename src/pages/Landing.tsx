@@ -225,7 +225,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-serif text-[2rem] md:text-[2.6rem] lg:text-[3.25rem] font-bold text-foreground leading-[1.05] tracking-tight"
+                className="font-serif text-[2rem] md:text-[2.6rem] lg:text-[3.25rem] font-bold text-foreground leading-[1.15] tracking-tight"
               >
                 Your thoughts,{" "}
                 <span className="italic text-primary">organized</span>
@@ -268,7 +268,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right: manuscript vignette — desktop only */}
-            <div className="hidden md:block md:col-span-5 relative md:pt-6 lg:pt-8">
+            <div className="hidden md:block md:col-span-5 relative md:pt-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -304,11 +304,11 @@ export default function LandingPage() {
                   </div>
                   <div className="space-y-3">
                     {[
-                      { width: "92%", delay: 0.6 },
-                      { width: "78%", delay: 2.2 },
-                      { width: "88%", delay: 3.8 },
-                      { width: "70%", delay: 5.4 },
-                      { width: "55%", delay: 7.0 },
+                      { width: "92%", delay: 0 },
+                      { width: "78%", delay: 4 },
+                      { width: "88%", delay: 8 },
+                      { width: "70%", delay: 12 },
+                      { width: "55%", delay: 16 },
                     ].map((line, i) => (
                       <div
                         key={i}
@@ -320,10 +320,10 @@ export default function LandingPage() {
                           initial={{ width: "0%" }}
                           animate={{ width: ["0%", "100%", "100%", "0%"] }}
                           transition={{
-                            duration: 12,
-                            times: [0, 0.28, 0.9, 1],
+                            duration: 3,
+                            times: [0, 0.7, 0.85, 1],
                             repeat: Infinity,
-                            repeatDelay: 0,
+                            repeatDelay: 17,
                             ease: "easeInOut",
                             delay: line.delay,
                           }}
