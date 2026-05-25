@@ -304,11 +304,11 @@ export default function LandingPage() {
                   </div>
                   <div className="space-y-3">
                     {[
-                      { width: "92%", delay: 0.4 },
-                      { width: "78%", delay: 1.4 },
-                      { width: "88%", delay: 2.4 },
-                      { width: "70%", delay: 3.4 },
-                      { width: "55%", delay: 4.4 },
+                      { width: "92%", delay: 0.6 },
+                      { width: "78%", delay: 2.2 },
+                      { width: "88%", delay: 3.8 },
+                      { width: "70%", delay: 5.4 },
+                      { width: "55%", delay: 7.0 },
                     ].map((line, i) => (
                       <div
                         key={i}
@@ -320,8 +320,8 @@ export default function LandingPage() {
                           initial={{ width: "0%" }}
                           animate={{ width: ["0%", "100%", "100%", "0%"] }}
                           transition={{
-                            duration: 6,
-                            times: [0, 0.18, 0.92, 1],
+                            duration: 12,
+                            times: [0, 0.28, 0.9, 1],
                             repeat: Infinity,
                             repeatDelay: 0,
                             ease: "easeInOut",
