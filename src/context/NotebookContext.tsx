@@ -111,8 +111,20 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const effectiveActiveNotebookId = override ? OVERRIDE_NB_ID : activeNotebookId;
   const effectiveActiveNoteId = override ? override.note.id : activeNoteId;
 
-  const setActiveNotebookId = setActiveNotebookIdRaw;
-  const setActiveNoteId = setActiveNoteIdRaw;
+  const setActiveNotebookId = useCallback((id: string | null) => {
+    setActiveNotebookIdRaw(id);
+    if (typeof window !== "undefined") {
+      if (id) localStorage.setItem("activeNotebookId", id);
+      else localStorage.removeItem("activeNotebookId");
+    }
+  }, []);
+  const setActiveNoteId = useCallback((id: string | null) => {
+    setActiveNoteIdRaw(id);
+    if (typeof window !== "undefined") {
+      if (id) localStorage.setItem("activeNoteId", id);
+      else localStorage.removeItem("activeNoteId");
+    }
+  }, []);
 
   const setOverride = useCallback((next: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => {
     setOverrideState(next);
