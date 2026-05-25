@@ -344,25 +344,8 @@ export default function LandingPage() {
                   </p>
                 </motion.div>
 
-                {/* VOL. 01 side note */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 1.1 }}
-                  className="mt-16 flex justify-end"
-                >
-                  <div className="flex gap-3 max-w-[14rem]">
-                    <div className="w-px bg-border" />
-                    <div>
-                      <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted-foreground/70 mb-1.5">
-                        Vol. 01
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        A writing tool for people who think on the page — and want their notes to think back.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
+
+
               </motion.div>
             </div>
           </div>
