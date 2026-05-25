@@ -342,7 +342,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           {/* Notebooks List */}
           <div className="space-y-0.5">
             <AnimatePresence>
-              {notebooks.map((nb) => (
+              {topLevelNotebooks.map((nb) => (
                 <motion.div
                   key={nb.id}
                   initial={{ opacity: 0, x: -10 }}
