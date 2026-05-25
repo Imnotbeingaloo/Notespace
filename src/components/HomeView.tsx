@@ -1,8 +1,13 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Globe, Loader2, LogOut, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
+import { useAuth } from "@/context/AuthContext";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
@@ -15,7 +20,9 @@ type SortKey = "newest" | "oldest" | "title";
 const PAGE_SIZE = 9;
 
 export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote }: HomeViewProps) {
-  const { notebooks, loading, refreshData } = useNotebooks();
+  const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
   const [visible, setVisible] = useState(PAGE_SIZE);
@@ -23,8 +30,11 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
   const [loadingMore, setLoadingMore] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<null | { id: string; name: string }>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  const trashCount = trashedNotebooks.length + trashedNotes.length;
 
   const lastUpdated = useCallback((nb: any) => {
     if (!nb.notes?.length) return nb.updated_at || nb.created_at;
@@ -58,13 +68,11 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
   const paged = useMemo(() => allFiltered.slice(0, visible), [allFiltered, visible]);
   const hasMore = visible < allFiltered.length;
 
-  // Reset paging on query/sort change
   useEffect(() => {
     setVisible(PAGE_SIZE);
     setFocusedIdx(0);
   }, [query, sort]);
 
-  // Infinite scroll observer with brief loading indicator to avoid flicker
   useEffect(() => {
     if (!hasMore || !sentinelRef.current || pageError) return;
     const obs = new IntersectionObserver(
@@ -94,15 +102,6 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
     setVisible((v) => Math.min(v + PAGE_SIZE, allFiltered.length));
   }, [allFiltered.length]);
 
-  const handleRetryFetch = useCallback(async () => {
-    setRetrying(true);
-    try {
-      await refreshData();
-    } finally {
-      setRetrying(false);
-    }
-  }, [refreshData]);
-
   const totalNotes = useMemo(
     () => notebooks.reduce((acc, nb) => acc + (nb.notes?.length ?? 0), 0),
     [notebooks]
@@ -111,7 +110,6 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
   const formatDate = (d: string) =>
     new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(d));
 
-  // Determine grid columns to compute up/down navigation step
   const getCols = () => {
     if (typeof window === "undefined") return 4;
     if (window.innerWidth >= 1280) return 4;
@@ -159,6 +157,75 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
 
   return (
     <div className="flex-1 overflow-y-auto bg-background" data-testid="home-view">
+      {/* Home top bar (chrome) */}
+      <TooltipProvider delayDuration={150}>
+        <header className="sticky top-0 z-20 backdrop-blur bg-background/85 border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 h-14 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => navigate("/", { state: { fromApp: true } })}
+              className="flex items-center gap-2 min-w-0 group"
+              title="Back to website"
+            >
+              <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0" />
+              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap hidden sm:inline group-hover:text-primary transition-colors">
+                Notebook Archive
+              </span>
+            </button>
+
+            <div className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => navigate("/", { state: { fromApp: true } })}
+                    className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                  >
+                    <Globe className="h-4 w-4" />
+                    <span className="hidden sm:inline">Website</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Back to website</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to="/trash"
+                    className="relative inline-flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                    aria-label="Trash"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    {trashCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 text-[9px] bg-muted text-muted-foreground px-1 rounded-full leading-tight min-w-[16px] text-center">
+                        {trashCount}
+                      </span>
+                    )}
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Trash{trashCount > 0 ? ` (${trashCount})` : ""}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div><ThemeToggle /></div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Toggle theme</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={signOut}
+                    className="inline-flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                    aria-label="Sign out"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Sign out</TooltipContent>
+              </Tooltip>
+            </div>
+          </div>
+        </header>
+      </TooltipProvider>
+
       {/* Hero */}
       <div className="relative border-b border-border overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-primary/[0.04] pointer-events-none" />
@@ -170,7 +237,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
             backgroundSize: "24px 24px",
           }}
         />
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-10 sm:py-14">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-12">
           <p className="text-[11px] uppercase tracking-[0.25em] text-primary/80 font-mono mb-3">
             ◆ Your Library
           </p>
@@ -181,6 +248,30 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
             {notebooks.length} {notebooks.length === 1 ? "notebook" : "notebooks"} · {totalNotes}{" "}
             {totalNotes === 1 ? "note" : "notes"}. Pick one up where you left off.
           </p>
+
+          {/* Quick actions row — separated from the notebook grid */}
+          <div className="flex flex-wrap items-center gap-2 mt-6">
+            {onCreateNotebook && (
+              <button
+                onClick={onCreateNotebook}
+                data-testid="home-create-notebook"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                <Plus className="h-4 w-4" />
+                New Notebook
+              </button>
+            )}
+            {onCreateScratchNote && (
+              <button
+                onClick={onCreateScratchNote}
+                data-testid="home-create-scratch"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/[0.06] text-amber-700 dark:text-amber-300 text-sm font-medium hover:bg-amber-500/[0.12] transition-colors"
+              >
+                <ScratchIcon className="h-4 w-4" />
+                Scratch Note
+              </button>
+            )}
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-7 sm:items-center">
             <div className="relative flex-1 max-w-md">
@@ -193,7 +284,6 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
               />
             </div>
 
-            {/* Sort tabs */}
             <div
               role="tablist"
               aria-label="Sort notebooks"
@@ -282,110 +372,88 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
               aria-label="Notebooks"
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
             >
-              {onCreateNotebook && (
-                <motion.button
-                  type="button"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ y: -4 }}
-                  onClick={onCreateNotebook}
-                  data-testid="home-create-notebook"
-                  className="group relative text-left rounded-2xl border-2 border-dashed border-primary/30 bg-primary/[0.03] hover:border-primary/60 hover:bg-primary/[0.06] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[180px] flex flex-col items-center justify-center gap-2 p-5"
-                >
-                  <div className="h-11 w-11 rounded-xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
-                    <Plus className="h-5 w-5 text-primary" strokeWidth={2.2} />
-                  </div>
-                  <div className="text-center">
-                    <h3 className="font-serif font-bold text-base text-foreground">Create a Notebook</h3>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Start a new collection</p>
-                  </div>
-                </motion.button>
-              )}
-              {onCreateScratchNote && (
-                <motion.button
-                  type="button"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.04, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ y: -4 }}
-                  onClick={onCreateScratchNote}
-                  data-testid="home-create-scratch"
-                  className="group relative text-left rounded-2xl border-2 border-dashed border-amber-500/40 bg-amber-500/[0.04] hover:border-amber-500/70 hover:bg-amber-500/[0.08] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[180px] flex flex-col items-center justify-center gap-2 p-5"
-                >
-                  <div className="h-11 w-11 rounded-xl bg-amber-500/10 group-hover:bg-amber-500/20 flex items-center justify-center transition-colors text-amber-600 dark:text-amber-400">
-                    <ScratchIcon className="h-6 w-6" />
-                  </div>
-                  <div className="text-center">
-                    <h3 className="font-serif font-bold text-base text-foreground">Scratch Note</h3>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Temporary · save before leaving</p>
-                  </div>
-                </motion.button>
-              )}
               {paged.map((nb, idx) => {
                 const noteCount = nb.notes?.length ?? 0;
                 const preview = nb.notes?.slice(0, 3) ?? [];
                 return (
-                  <motion.button
+                  <motion.div
                     key={nb.id}
-                    ref={(el) => (cardRefs.current[idx] = el)}
-                    role="gridcell"
-                    tabIndex={focusedIdx === idx ? 0 : -1}
-                    onFocus={() => setFocusedIdx(idx)}
-                    onKeyDown={(e) => onCardKeyDown(e, idx)}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: Math.min(idx * 0.03, 0.3), ease: [0.16, 1, 0.3, 1] }}
                     whileHover={{ y: -4 }}
-                    onClick={() => onOpenNotebook(nb.id)}
-                    className="group relative text-left rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className="group relative rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
                   >
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/20 opacity-70 group-hover:opacity-100 transition-opacity" />
-                    <div className="p-5">
-                      <div className="flex items-start justify-between gap-3 mb-3">
-                        <div className="text-3xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
-                          {nb.emoji}
+                    {/* Delete button (hover-revealed) */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPendingDelete({ id: nb.id, name: nb.name });
+                      }}
+                      className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus:opacity-100 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-all"
+                      aria-label={`Delete ${nb.name}`}
+                      title="Move to Trash"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      ref={(el) => (cardRefs.current[idx] = el)}
+                      role="gridcell"
+                      tabIndex={focusedIdx === idx ? 0 : -1}
+                      onFocus={() => setFocusedIdx(idx)}
+                      onKeyDown={(e) => onCardKeyDown(e, idx)}
+                      onClick={() => onOpenNotebook(nb.id)}
+                      className="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-2xl"
+                    >
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/20 opacity-70 group-hover:opacity-100 transition-opacity" />
+                      <div className="p-5">
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="text-3xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
+                            {nb.emoji}
+                          </div>
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
+                            {noteCount} {noteCount === 1 ? "note" : "notes"}
+                          </span>
                         </div>
-                        <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
-                          {noteCount} {noteCount === 1 ? "note" : "notes"}
-                        </span>
+
+                        <h3 className="font-serif font-bold text-base text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
+                          {nb.name}
+                        </h3>
+
+                        {preview.length > 0 ? (
+                          <ul className="space-y-1 mb-3">
+                            {preview.map((n) => (
+                              <li
+                                key={n.id}
+                                className="flex items-center gap-2 text-[11px] text-muted-foreground truncate"
+                              >
+                                <FileText className="h-3 w-3 shrink-0 opacity-60" />
+                                <span className="truncate">{n.title || "Untitled"}</span>
+                              </li>
+                            ))}
+                            {noteCount > 3 && (
+                              <li className="text-[10px] text-muted-foreground/70 pl-5">
+                                +{noteCount - 3} more
+                              </li>
+                            )}
+                          </ul>
+                        ) : (
+                          <p className="text-[11px] text-muted-foreground italic mb-3">Empty notebook</p>
+                        )}
+
+                        <div className="text-[10px] text-muted-foreground/70 font-mono pt-2 border-t border-border/60">
+                          Updated {formatDate(lastUpdated(nb))}
+                        </div>
                       </div>
-
-                      <h3 className="font-serif font-bold text-base text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
-                        {nb.name}
-                      </h3>
-
-                      {preview.length > 0 ? (
-                        <ul className="space-y-1 mb-3">
-                          {preview.map((n) => (
-                            <li
-                              key={n.id}
-                              className="flex items-center gap-2 text-[11px] text-muted-foreground truncate"
-                            >
-                              <FileText className="h-3 w-3 shrink-0 opacity-60" />
-                              <span className="truncate">{n.title || "Untitled"}</span>
-                            </li>
-                          ))}
-                          {noteCount > 3 && (
-                            <li className="text-[10px] text-muted-foreground/70 pl-5">
-                              +{noteCount - 3} more
-                            </li>
-                          )}
-                        </ul>
-                      ) : (
-                        <p className="text-[11px] text-muted-foreground italic mb-3">Empty notebook</p>
-                      )}
-
-                      <div className="text-[10px] text-muted-foreground/70 font-mono pt-2 border-t border-border/60">
-                        Updated {formatDate(lastUpdated(nb))}
-                      </div>
-                    </div>
-                  </motion.button>
+                    </button>
+                  </motion.div>
                 );
               })}
             </div>
 
-            {/* Infinite scroll sentinel + manual load more */}
             {hasMore && (
               <div ref={sentinelRef} className="flex justify-center mt-8" data-testid="home-pagination">
                 {pageError ? (
@@ -421,6 +489,20 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
           </>
         )}
       </div>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        title="Move to Trash?"
+        description={pendingDelete ? `"${pendingDelete.name}" and all its notes will be moved to Trash. You can restore them later.` : ""}
+        confirmLabel="Move to Trash"
+        onConfirm={async () => {
+          if (pendingDelete) {
+            await deleteNotebook(pendingDelete.id);
+            setPendingDelete(null);
+          }
+        }}
+      />
     </div>
   );
 }

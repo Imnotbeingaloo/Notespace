@@ -21,7 +21,7 @@ export function ThemeToggle({ asSidebarButton = false }: ThemeToggleProps) {
     return (
       <button
         onClick={toggle}
-        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-amber-600 dark:text-indigo-300 hover:bg-amber-500/10 dark:hover:bg-indigo-500/10 hover:text-amber-700 dark:hover:text-indigo-200 rounded-lg transition-colors"
+        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-amber-500/10 dark:hover:bg-indigo-500/10 hover:text-amber-600 dark:hover:text-indigo-300 rounded-lg transition-colors"
         title={isDark ? "Switch to light mode" : "Switch to dark mode"}
       >
         <div className="relative h-4 w-4">

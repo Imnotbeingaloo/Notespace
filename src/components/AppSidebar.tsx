@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X } from "lucide-react";
+import { ScratchIcon } from "@/components/ScratchIcon";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { format, isToday, isTomorrow, addDays, isSameDay } from "date-fns";
@@ -52,6 +53,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     permanentlyDeleteNotebook,
     permanentlyDeleteNote,
     refreshData,
+    createScratchNote,
   } = useNotebooks();
 
   // Top-level vs nested notebooks
@@ -362,6 +364,17 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <Plus className="h-3.5 w-3.5" />
               {promoteDropActive ? "Drop to make notebook" : "New Notebook"}
             </button>
+            <button
+              onClick={async () => {
+                const res = await createScratchNote();
+                if (res) onSelectNote?.();
+              }}
+              title="Quick temporary note — remember to save it before closing."
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors"
+            >
+              <ScratchIcon className="h-3.5 w-3.5" />
+              Scratch Note
+            </button>
           </div>
 
           <input
@@ -399,7 +412,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         e.preventDefault();
                         e.dataTransfer.dropEffect = "move";
                         setDragOverNotebookId(nb.id);
-                        if (canAcceptNote) setNoteDropTargetNb(nb.id);
+                        if (canAcceptNote) {
+                          setNoteDropTargetNb(nb.id);
+                          // Auto-expand the notebook so user can choose a position
+                          if (expandedNotebook !== nb.id) setExpandedNotebook(nb.id);
+                        }
                       }
                     }}
                     onDragLeave={() => { setDragOverNotebookId(null); setNoteDropTargetNb(null); }}
@@ -538,7 +555,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                                 e.dataTransfer.effectAllowed = "move";
                               }}
                               onDragOver={(e) => {
-                                if (dragNoteId && dragNoteFromNb === nb.id) {
+                                if (dragNoteId && dragNoteId !== note.id) {
                                   e.preventDefault();
                                   e.dataTransfer.dropEffect = "move";
                                   setDragOverNoteId(note.id);
@@ -547,12 +564,28 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               onDragLeave={() => setDragOverNoteId(null)}
                               onDrop={(e) => {
                                 e.preventDefault();
+                                e.stopPropagation();
                                 setDragOverNoteId(null);
                                 if (!dragNoteId || dragNoteId === note.id) return;
-                                if (dragNoteFromNb !== nb.id) return;
-                                const fromIdx = nb.notes.findIndex((n) => n.id === dragNoteId);
-                                if (fromIdx === -1) return;
-                                reorderNotes(nb.id, fromIdx, noteIndex);
+                                if (dragNoteFromNb === nb.id) {
+                                  // Same-notebook reorder
+                                  const fromIdx = nb.notes.findIndex((n) => n.id === dragNoteId);
+                                  if (fromIdx === -1) return;
+                                  reorderNotes(nb.id, fromIdx, noteIndex);
+                                } else if (dragNoteFromNb) {
+                                  // Cross-notebook move via confirm dialog
+                                  const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
+                                  const draggedNote = sourceNb?.notes.find((n) => n.id === dragNoteId);
+                                  if (draggedNote) {
+                                    setPendingMoveNote({
+                                      noteId: dragNoteId,
+                                      fromNbId: dragNoteFromNb,
+                                      toNbId: nb.id,
+                                      noteTitle: draggedNote.title,
+                                      toNbName: nb.name,
+                                    });
+                                  }
+                                }
                                 setDragNoteId(null);
                                 setDragNoteFromNb(null);
                               }}
@@ -857,12 +890,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <>
             <Link
               to="/trash"
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
             >
               <Trash2 className="h-4 w-4" />
               <span className="flex-1 text-left">Trash</span>
               {trashCount > 0 && (
-                <span className="text-xs bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded-full">{trashCount}</span>
+                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
               )}
             </Link>
             <ThemeToggle asSidebarButton />
@@ -880,7 +913,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <div className="flex flex-col items-center gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link to="/trash" className="p-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition-colors" aria-label="Trash">
+                  <Link to="/trash" className="p-2 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors" aria-label="Trash">
                     <Trash2 className="h-4 w-4" />
                   </Link>
                 </TooltipTrigger>
@@ -925,9 +958,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           if (!pendingNestChild) return "";
           const child = notebooks.find((n) => n.id === pendingNestChild.childId)?.name;
           const parent = notebooks.find((n) => n.id === pendingNestChild.parentId)?.name;
-          return `Move "${child}" inside "${parent}" as a sub-notebook?`;
+          return `Are you sure you want to move "${child}" inside "${parent}" as a sub-notebook?`;
         })()}
         confirmLabel="Create Sub-Notebook"
+        destructive={false}
         onConfirm={async () => {
           if (pendingNestChild) {
             await nestNotebook(pendingNestChild.childId, pendingNestChild.parentId);
@@ -949,8 +983,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         open={!!pendingMoveNote}
         onOpenChange={(o) => !o && setPendingMoveNote(null)}
         title="Move note?"
-        description={pendingMoveNote ? `Move "${pendingMoveNote.noteTitle}" into "${pendingMoveNote.toNbName}"?` : ""}
+        description={pendingMoveNote ? `Are you sure you want to move "${pendingMoveNote.noteTitle}" into "${pendingMoveNote.toNbName}"?` : ""}
         confirmLabel="Move Note"
+        destructive={false}
         onConfirm={async () => {
           if (pendingMoveNote) {
             await moveNoteToNotebook(pendingMoveNote.fromNbId, pendingMoveNote.noteId, pendingMoveNote.toNbId);
@@ -963,8 +998,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         open={!!pendingPromoteNote}
         onOpenChange={(o) => !o && setPendingPromoteNote(null)}
         title="Create new notebook from note?"
-        description={pendingPromoteNote ? `"${pendingPromoteNote.title}" will become its own notebook.` : ""}
+        description={pendingPromoteNote ? `Are you sure you want to turn "${pendingPromoteNote.title}" into its own notebook?` : ""}
         confirmLabel="Create Notebook"
+        destructive={false}
         onConfirm={async () => {
           if (pendingPromoteNote) {
             await promoteNoteToNotebook(pendingPromoteNote.fromNbId, pendingPromoteNote.noteId);
