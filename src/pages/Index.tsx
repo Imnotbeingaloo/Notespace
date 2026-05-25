@@ -279,6 +279,33 @@ function AppContent() {
           }
         }}
       />
+
+      {/* Global floating action — create a temporary note from anywhere */}
+      {!focusMode && (
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={async () => {
+                  const res = await createScratchNote();
+                  if (res) {
+                    setShowHome(false);
+                    toast.success("Temporary note ready", {
+                      description: "Remember to save or download it before leaving.",
+                    });
+                  }
+                }}
+                aria-label="New temporary note"
+                className="fixed bottom-5 right-5 z-40 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center ring-1 ring-primary/40"
+              >
+                <ScratchIcon className="h-5 w-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="left">New temporary note</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
     </div>
   );
 }
