@@ -218,7 +218,7 @@ function AppContent() {
         )}
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
-            {hydratingDeepLink || retryingDeepLink ? (
+            {hydratingDeepLink || retryingDeepLink || (!showHome && notebooksLoading && !!activeNotebookId) ? (
               <LoadingScreen label="Opening notebook…" />
             ) : deepLinkMissing ? (
               <div className="flex-1 flex items-center justify-center p-6">
