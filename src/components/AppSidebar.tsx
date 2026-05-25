@@ -40,6 +40,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     deleteNotebook,
     updateNotebook,
     nestNotebook,
+    promoteNoteToNotebook,
+    moveNoteToNotebook,
     createNote,
     deleteNote,
     updateNote,
