@@ -11,11 +11,11 @@ interface VoiceTranscriptionProps {
  * The waveform is updated imperatively via refs (no React state in the RAF loop)
  * so the visualizer stays smooth even while speech recognition is firing.
  */
-const BAR_COUNT = 48;
+const POINT_COUNT = 56;
 const W = 320;
 const H = 80;
 const MID = H / 2;
-const STEP_X = W / (BAR_COUNT - 1);
+const STEP_X = W / (POINT_COUNT - 1);
 
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [open, setOpen] = useState(false);
@@ -31,7 +31,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const rafRef = useRef<number | null>(null);
   const listeningRef = useRef(false);
   const aggregateRef = useRef("");
-  const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  const smoothedRef = useRef<number[]>(new Array(POINT_COUNT).fill(0));
+  const restartTimerRef = useRef<number | null>(null);
   const topPathRef = useRef<SVGPathElement | null>(null);
   const botPathRef = useRef<SVGPathElement | null>(null);
   const fillPathRef = useRef<SVGPathElement | null>(null);
@@ -44,7 +45,9 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     listeningRef.current = false;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
-    try { recognitionRef.current?.stop(); } catch {}
+    if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
+    restartTimerRef.current = null;
+    try { recognitionRef.current?.abort(); } catch {}
     recognitionRef.current = null;
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -55,26 +58,51 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     audioCtxRef.current = null;
     analyserRef.current = null;
-    smoothedRef.current = new Array(BAR_COUNT).fill(0);
+    smoothedRef.current = new Array(POINT_COUNT).fill(0);
   }, []);
 
   useEffect(() => () => cleanup(), [cleanup]);
 
-  const buildPath = (vals: number[], topSide: boolean) => {
-    // Smooth wave via quadratic curves between midpoints
+  const buildStrokePath = (vals: number[], topSide: boolean) => {
     const pts: [number, number][] = vals.map((v, i) => {
-      const amp = Math.max(2, v * (H / 2 - 4));
+      const amp = Math.max(1.5, Math.min(1, v) * (H / 2 - 6));
       return [i * STEP_X, topSide ? MID - amp : MID + amp];
     });
     let d = `M ${pts[0][0]} ${pts[0][1]}`;
     for (let i = 1; i < pts.length; i++) {
       const [x0, y0] = pts[i - 1];
       const [x1, y1] = pts[i];
-      const cx = (x0 + x1) / 2;
-      const cy = (y0 + y1) / 2;
-      d += ` Q ${x0} ${y0} ${cx} ${cy}`;
+      const mx = (x0 + x1) / 2;
+      d += ` Q ${x0} ${y0} ${mx} ${(y0 + y1) / 2}`;
     }
-    d += ` L ${pts[pts.length - 1][0]} ${pts[pts.length - 1][1]}`;
+    const last = pts[pts.length - 1];
+    d += ` T ${last[0]} ${last[1]}`;
+    return d;
+  };
+
+  const buildFillPath = (vals: number[]) => {
+    const top = vals.map((v, i): [number, number] => [
+      i * STEP_X,
+      MID - Math.max(1.5, Math.min(1, v) * (H / 2 - 6)),
+    ]);
+    const bottom = vals.map((v, i): [number, number] => [
+      i * STEP_X,
+      MID + Math.max(1.5, Math.min(1, v) * (H / 2 - 6)),
+    ]);
+
+    let d = `M ${top[0][0]} ${top[0][1]}`;
+    for (let i = 1; i < top.length; i++) {
+      const [x0, y0] = top[i - 1];
+      const [x1, y1] = top[i];
+      d += ` Q ${x0} ${y0} ${(x0 + x1) / 2} ${(y0 + y1) / 2}`;
+    }
+    d += ` T ${top[top.length - 1][0]} ${top[top.length - 1][1]}`;
+    for (let i = bottom.length - 1; i > 0; i--) {
+      const [x0, y0] = bottom[i];
+      const [x1, y1] = bottom[i - 1];
+      d += ` Q ${x0} ${y0} ${(x0 + x1) / 2} ${(y0 + y1) / 2}`;
+    }
+    d += ` T ${bottom[0][0]} ${bottom[0][1]} Z`;
     return d;
   };
 
