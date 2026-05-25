@@ -134,7 +134,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       let interimChunk = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const res = event.results[i];
-        const best = Array.from(res as SpeechRecognitionResult).sort((a: any, b: any) => (b.confidence ?? 0) - (a.confidence ?? 0))[0] as SpeechRecognitionAlternative | undefined;
+        const best = Array.from(res as any).sort((a: any, b: any) => (b.confidence ?? 0) - (a.confidence ?? 0))[0] as any;
         const txt = best?.transcript ?? res[0]?.transcript ?? "";
         if (res.isFinal) {
           const trimmed = txt.trim();
