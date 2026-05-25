@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Globe, Loader2, LogOut, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Home, Loader2, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
-import { useAuth } from "@/context/AuthContext";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -21,7 +20,6 @@ const PAGE_SIZE = 9;
 
 export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote }: HomeViewProps) {
   const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
-  const { signOut } = useAuth();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
@@ -161,66 +159,34 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
       <TooltipProvider delayDuration={150}>
         <header className="sticky top-0 z-20 backdrop-blur bg-background/85 border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-8 h-14 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => navigate("/", { state: { fromApp: true } })}
-              className="flex items-center gap-2 min-w-0 group"
-              title="Back to website"
-            >
-              <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0" />
-              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap hidden sm:inline group-hover:text-primary transition-colors">
-                Notebook Archive
-              </span>
-            </button>
-
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 min-w-0">
+              <button
+                type="button"
+                onClick={() => navigate("/", { state: { fromApp: true } })}
+                className="flex items-center gap-2 min-w-0 group"
+                title="Back to website"
+              >
+                <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0" />
+                <span className="font-serif font-bold text-foreground text-base whitespace-nowrap hidden sm:inline group-hover:text-primary transition-colors">
+                  Notebook Archive
+                </span>
+              </button>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => navigate("/", { state: { fromApp: true } })}
-                    className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                    aria-label="Go to website home"
+                    className="inline-flex items-center justify-center h-8 w-8 ml-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
                   >
-                    <Globe className="h-4 w-4" />
-                    <span className="hidden sm:inline">Website</span>
+                    <Home className="h-4 w-4" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">Back to website</TooltipContent>
+                <TooltipContent side="bottom">Website home</TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    to="/trash"
-                    className="relative inline-flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
-                    aria-label="Trash"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    {trashCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 text-[9px] bg-muted text-muted-foreground px-1 rounded-full leading-tight min-w-[16px] text-center">
-                        {trashCount}
-                      </span>
-                    )}
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Trash{trashCount > 0 ? ` (${trashCount})` : ""}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div><ThemeToggle /></div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Toggle theme</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={signOut}
-                    className="inline-flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
-                    aria-label="Sign out"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Sign out</TooltipContent>
-              </Tooltip>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <HomeHeaderMenu trashCount={trashCount} />
             </div>
           </div>
         </header>

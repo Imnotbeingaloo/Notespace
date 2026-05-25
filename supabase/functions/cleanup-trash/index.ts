@@ -101,7 +101,20 @@ Deno.serve(async (req) => {
 
     if (nbDelErr) throw nbDelErr;
 
-    const deletedCount = (expiredNotes?.length || 0) + (expiredNotebooks?.length || 0);
+    // Delete expired temporary notes (expires_at < now)
+    const { data: expiredTempNotes, error: tempQueryErr } = await supabase
+      .from("temporary_notes")
+      .select("id")
+      .lt("expires_at", new Date().toISOString());
+    if (tempQueryErr) throw tempQueryErr;
+    if (expiredTempNotes && expiredTempNotes.length > 0) {
+      await supabase.from("temporary_notes").delete().lt("expires_at", new Date().toISOString());
+    }
+
+    const deletedCount =
+      (expiredNotes?.length || 0) +
+      (expiredNotebooks?.length || 0) +
+      (expiredTempNotes?.length || 0);
 
     return new Response(
       JSON.stringify({ success: true, deleted: deletedCount }),

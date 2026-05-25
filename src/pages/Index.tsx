@@ -6,7 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Plus, Timer } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -16,8 +16,6 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
-import { ScratchIcon } from "@/components/ScratchIcon";
-import { toast } from "sonner";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
@@ -236,15 +234,7 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
-                onCreateScratchNote={async () => {
-                  const res = await createScratchNote();
-                  if (res) {
-                    setShowHome(false);
-                    toast.success("Temporary note ready", {
-                      description: "Remember to save or download it before leaving.",
-                    });
-                  }
-                }}
+                onCreateScratchNote={() => navigate("/app/temporary")}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
@@ -280,32 +270,7 @@ function AppContent() {
         }}
       />
 
-      {/* Global floating action — create a temporary note from anywhere */}
-      {!focusMode && (
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={async () => {
-                  const res = await createScratchNote();
-                  if (res) {
-                    setShowHome(false);
-                    toast.success("Temporary note ready", {
-                      description: "Remember to save or download it before leaving.",
-                    });
-                  }
-                }}
-                aria-label="New temporary note"
-                className="fixed bottom-5 right-5 z-40 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center ring-1 ring-primary/40"
-              >
-                <ScratchIcon className="h-5 w-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="left">New temporary note</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
+      {/* Temporary-note FAB removed — entry points are sidebar + home button + route */}
     </div>
   );
 }
