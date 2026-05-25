@@ -1,68 +1,69 @@
-## Plan
+# Plan
 
-### 1. Favicon & logo split
+A focused set of additive changes across UX, data, and uploads. Nothing existing is removed.
 
-- Replace `public/favicon.png` with the new uploaded teal open-book image (no white circle background). This file is used by the browser tab favicon AND by the in-app logo across `PageHeader.tsx`, `Landing.tsx`, `SplashScreen.tsx`, `LoadingScreen.tsx`, `SharedNote.tsx`, `AppSidebar.tsx`. By replacing the single asset with the no-white-circle version, the logo "returns to as it was" everywhere (no white halo) while the favicon also updates to the new icon. No code changes to image refs needed.
+## 1. Scratch / temporary notes
 
-### 2. App top-bar: back-arrow replaces Home / Visit Website
+- Auto-create a per-user notebook named **"Scratch"** (📝 emoji) on first app load if missing.
+- New top-bar button next to Focus Mode (✏️ "Scratch") — clicking it opens the Scratch notebook and creates a fresh blank note inside it.
+- Scratch notes are marked visually (subtle "Scratch" tag) but otherwise behave normally.
 
-In `src/pages/Index.tsx` top bar:
+## 2. Drag-and-drop
 
-- Remove the current dual button (Home icon when editing / "Visit Website" link when on home).
-- Replace with a single icon-only `ArrowLeft` button (no text) that links to `/` (website). Always visible (focus-mode aside). Place it as the first item in the left cluster, next to the sidebar toggle.
-- Keep `openHome` reachable via the sidebar Home button (already wired).
+- **Drag a note out of its notebook** (drop on empty Home grid area) → confirm dialog "Promote this note to a new notebook?" → on confirm, create notebook (named after note title) and move the note into it.
+- **Drag a notebook onto another notebook** → confirm dialog "Make X a sub-notebook of Y?" → on confirm, set `parent_id`.
+- Sub-notebooks: **one level deep only** (keeps UI simple; sub-notebook can't itself be a parent). Sidebar shows nested children under an expandable caret. Home grid shows parents only with a "N sub" badge.
 
-### 3. Mobile/tablet header alignment (Landing + PageHeader)
+## 3. Create-notebook modal
 
-The screenshots show "Notebook Archive | Open App | hamburger" cramped/overlapping on phone, and "Features Pricing About How It Works" too tight to logo on tablet.
+- Remove the inline name input on sidebar + Home.
+- Replace with `+ New Notebook` button → opens a centered modal (Framer Motion fade+scale, backdrop blur) with name input, emoji picker (reuse existing), Create / Cancel.
+- Same modal triggered from:
+  - Sidebar header `+`
+  - New **"Create Notebook"** tile rendered as the first card on Home grid
+  - Mobile collapsed-sidebar state (visible on Home even when sidebar closed)
 
-`**src/pages/Landing.tsx` floating navbar (lines ~108–147):**
+## 4. Collapsed sidebar icons
 
-- Hide the "Notebook Archive" wordmark below `sm` (only show logo icon on phones) so the Open App button + hamburger fit cleanly.
-- Add `gap-2 sm:gap-3` between brand / nav / CTA cluster.
-- Reduce CTA padding on mobile (`px-2.5 py-1.5`) and ensure `whitespace-nowrap`.
+- When collapsed, footer shows icon-only buttons (no labels) for: Theme toggle (sun/moon), Trash, Sign Out. All with tooltips. Sign Out keeps destructive hover tint.
 
-`**src/components/PageHeader.tsx`:**
+## 5. File upload fixes + extraction
 
-- Same wordmark hide-below-sm rule.
-- Increase tablet (`md`) gap between logo and nav (`md:gap-5`) and between nav links (`md:gap-1.5`).
-- Keep desktop sizing/padding as-is.
+- Fix the broken upload trigger in `FileUpload.tsx` (input ref / accept attribute).
+- **Allow-list** by MIME + extension: images (jpg, png, webp, gif), PDFs, plain text, markdown, docx. **Block** html, exe, scripts, archives, svg with inline scripts. Reject with a clear toast.
+- Keep 10 MB limit, private bucket, signed URLs.
+- **Extraction** on upload:
+  - PDFs: client-side `pdfjs-dist` text extraction → inserted into the note as markdown.
+  - Images: edge function `extract-file` calling Lovable AI (`google/gemini-2.5-flash`) vision to OCR / describe → inserted as markdown under a `## From <filename>` heading.
+  - DOCX/TXT/MD: parsed client-side, inserted as markdown.
+- Original file is still saved to storage and shown as an attachment chip below the note for download.
 
-### 4. HomeView loading + error states
+## 6. Header logo sizing
 
-In `src/components/HomeView.tsx`:
+- On `PageHeader` and `Landing` header, scale the "Notebook Archive" text to match the action button heights at every breakpoint (mobile gets a real readable size, not the current tiny one). Logo image sizing stays as-is.
 
-- Pull `loading` flag from `NotebookContext` (add it if not exposed; it likely already loads notebooks). Show a 6-card skeleton grid (animated `bg-muted/60` placeholders) while loading.
-- Pagination: when the IntersectionObserver triggers `setVisible`, show a small spinner row above the sentinel for ~250ms before revealing new cards (purely presentational, prevents flicker).
-- Error: catch any context error; display a small bordered card "Couldn't load your notebooks" with a Retry button.
+## Technical details
 
-In `src/pages/Index.tsx`:
+**DB migration**
+- `notebooks`: add `parent_id uuid null references notebooks(id) on delete set null`, `is_scratch boolean not null default false`. Index on `(user_id, parent_id)`.
+- `notes`: add `is_scratch boolean not null default false`.
+- Add CHECK trigger preventing a notebook whose `parent_id is not null` from itself being a parent (enforces one level).
 
-- Deep-link hydration: while `urlNotebook` exists but notebooks list is still empty, render `<LoadingScreen label="Opening notebook…" />` instead of `HomeView` flicker.
+**Edge function**
+- `extract-file`: accepts base64 image, returns `{ markdown }`. JWT-verified. Uses `LOVABLE_API_KEY`, Gemini vision, prompt-injection-hardened with XML wrappers.
 
-### 5. Tests
+**Frontend**
+- `src/components/CreateNotebookDialog.tsx` (new) — modal w/ framer-motion.
+- `src/components/HomeView.tsx` — first-tile "Create Notebook", drag-out drop zone, sub-notebook badge.
+- `src/components/AppSidebar.tsx` — nested children render, collapsed footer icons, drag handlers.
+- `src/context/NotebookContext.tsx` — `createNotebook(name, emoji, parentId?)`, `nestNotebook(childId, parentId)`, `promoteNoteToNotebook(noteId)`, `ensureScratchNotebook()`, `createScratchNote()`.
+- `src/components/FileUpload.tsx` — fixed click trigger, MIME allow-list, extraction routing.
+- `src/lib/file-extraction.ts` (new) — pdfjs / docx / txt parsers.
+- Top-bar in `pages/Index.tsx` — Scratch button + tooltip.
 
-- **Keyboard nav** — `src/test/home-view-keyboard.test.tsx`: render `HomeView` with a mock `NotebookProvider` of 6 notebooks, simulate ArrowRight/ArrowDown/Home/End focus moves, and `Enter` to assert `onOpenNotebook` is called with the right id.
-- **Deep-link refresh integration** — `src/test/app-deeplink.test.tsx`: render `<MemoryRouter initialEntries={["/app?notebook=ID&note=NID"]}>` with a mock notebooks fixture; assert the editor renders that note's title (i.e. selection survives mount). Run a second render (simulating refresh) with same URL → same note still selected.
-- **Visual regression** — add `src/test/visual-regression.test.tsx` using Vitest + jsdom to snapshot `PageHeader` and `HomeView` markup at mobile (375), tablet (820), desktop (1440) viewport widths via `matchMedia` mock. (True pixel screenshots need Playwright which isn't set up; DOM/className snapshot regression is the practical equivalent inside Vitest and catches alignment-class changes.)
+**Out of scope (will not do)**
+- Multi-level nested sub-notebooks.
+- Server-side virus scanning.
+- Moving sub-notebooks via drag back to root (use a context-menu "Move to root" later if needed).
 
-### Files touched
-
-```text
-public/favicon.png                       (replaced asset)
-src/pages/Landing.tsx                    (mobile header)
-src/components/PageHeader.tsx            (tablet/mobile spacing)
-src/pages/Index.tsx                      (back-arrow, deep-link loading)
-src/components/HomeView.tsx              (skeleton + pagination spinner + error)
-src/test/home-view-keyboard.test.tsx     (new)
-src/test/app-deeplink.test.tsx           (new)
-src/test/visual-regression.test.tsx      (new)
-```
-
-### Out of scope
-
-- No changes to existing animations/timings of SplashScreen (logo asset itself updates via favicon.png replacement).
-- No backend / RLS / migration changes.
-- No content/copy changes elsewhere.
-
-Implement a strict Content Security Policy (CSP) to reduce the impact of any future XSS vectors and add automated tests that verify the editor output is sanitized and cannot render executable HTML or scripts.
+Suggested order: 6 → 3 → 4 → 1 → 5 → 2.

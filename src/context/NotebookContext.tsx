@@ -29,6 +29,7 @@ export interface Notebook {
   notes: Note[];
   created_at: string;
   deleted_at: string | null;
+  parent_id?: string | null;
 }
 
 interface NotebookContextType {
@@ -39,9 +40,13 @@ interface NotebookContextType {
   activeNoteId: string | null;
   setActiveNotebookId: (id: string | null) => void;
   setActiveNoteId: (id: string | null) => void;
-  createNotebook: (name: string, emoji?: string) => Promise<void>;
+  createNotebook: (name: string, emoji?: string, parentId?: string | null) => Promise<string | null>;
   deleteNotebook: (id: string) => Promise<void>;
   updateNotebook: (id: string, updates: { name?: string; emoji?: string }) => Promise<void>;
+  nestNotebook: (childId: string, parentId: string) => Promise<boolean>;
+  promoteNoteToNotebook: (notebookId: string, noteId: string, newName?: string) => Promise<string | null>;
+  ensureScratchNotebook: () => Promise<string | null>;
+  createScratchNote: () => Promise<{ notebookId: string; noteId: string } | null>;
   createNote: (notebookId: string, title?: string, content?: string) => Promise<void>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
   updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
@@ -122,21 +127,88 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  const createNotebook = useCallback(async (name: string, emoji?: string) => {
-    if (!user) return;
+  const createNotebook = useCallback(async (name: string, emoji?: string, parentId?: string | null): Promise<string | null> => {
+    if (!user) return null;
     const e = emoji || EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("notebooks")
-      .insert({ name, emoji: e, user_id: user.id })
+      .insert({ name, emoji: e, user_id: user.id, parent_id: parentId ?? null } as any)
       .select()
       .single();
-    if (data) {
-      const nb: Notebook = { ...data, notes: [], deleted_at: null };
-      setAllNotebooks((prev) => [...prev, nb]);
+    if (error || !data) {
+      toast.error(error?.message || "Could not create notebook.");
+      return null;
+    }
+    const nb: Notebook = { ...(data as any), notes: [], deleted_at: null };
+    setAllNotebooks((prev) => [...prev, nb]);
+    if (!parentId) {
       setActiveNotebookId(data.id);
       setActiveNoteId(null);
     }
+    return data.id;
   }, [user]);
+
+  const nestNotebook = useCallback(async (childId: string, parentId: string): Promise<boolean> => {
+    if (childId === parentId) return false;
+    const { error } = await supabase
+      .from("notebooks")
+      .update({ parent_id: parentId } as any)
+      .eq("id", childId);
+    if (error) {
+      toast.error(error.message || "Could not nest notebook.");
+      return false;
+    }
+    setAllNotebooks((prev) => prev.map((n) => n.id === childId ? { ...n, parent_id: parentId } : n));
+    return true;
+  }, []);
+
+  const promoteNoteToNotebook = useCallback(async (notebookId: string, noteId: string, newName?: string): Promise<string | null> => {
+    if (!user) return null;
+    const nb = allNotebooks.find((n) => n.id === notebookId);
+    const note = nb?.notes.find((n) => n.id === noteId);
+    if (!note) return null;
+    const name = (newName || note.title || "Untitled Notebook").slice(0, 80);
+    const newNotebookId = await createNotebook(name);
+    if (!newNotebookId) return null;
+    const { error } = await supabase.from("notes").update({ notebook_id: newNotebookId } as any).eq("id", noteId);
+    if (error) {
+      toast.error("Could not move note to new notebook.");
+      return null;
+    }
+    setAllNotebooks((prev) => prev.map((n) => {
+      if (n.id === notebookId) return { ...n, notes: n.notes.filter((x) => x.id !== noteId) };
+      if (n.id === newNotebookId) return { ...n, notes: [...n.notes, note] };
+      return n;
+    }));
+    setActiveNotebookId(newNotebookId);
+    setActiveNoteId(noteId);
+    return newNotebookId;
+  }, [user, allNotebooks, createNotebook]);
+
+  const ensureScratchNotebook = useCallback(async (): Promise<string | null> => {
+    if (!user) return null;
+    const existing = allNotebooks.find((n) => !n.deleted_at && n.name === "Scratch" && n.emoji === "✏️");
+    if (existing) return existing.id;
+    const id = await createNotebook("Scratch", "✏️");
+    return id;
+  }, [user, allNotebooks, createNotebook]);
+
+  const createScratchNote = useCallback(async (): Promise<{ notebookId: string; noteId: string } | null> => {
+    if (!user) return null;
+    const nbId = await ensureScratchNotebook();
+    if (!nbId) return null;
+    const { data, error } = await supabase
+      .from("notes")
+      .insert({ notebook_id: nbId, user_id: user.id, title: "Scratch note", content: "" })
+      .select()
+      .single();
+    if (error || !data) return null;
+    const note: Note = { ...(data as any), attachments: [], tags: [], deleted_at: null };
+    setAllNotebooks((prev) => prev.map((n) => n.id === nbId ? { ...n, notes: [...n.notes, note] } : n));
+    setActiveNotebookId(nbId);
+    setActiveNoteId(data.id);
+    return { notebookId: nbId, noteId: data.id };
+  }, [user, ensureScratchNotebook]);
 
   // Soft delete notebook
   const deleteNotebook = useCallback(async (id: string) => {
@@ -312,7 +384,9 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         notebooks, trashedNotebooks, trashedNotes,
         activeNotebookId, activeNoteId,
         setActiveNotebookId, setActiveNoteId,
-        createNotebook, deleteNotebook, updateNotebook, createNote, deleteNote, updateNote,
+        createNotebook, deleteNotebook, updateNotebook, nestNotebook, promoteNoteToNotebook,
+        ensureScratchNotebook, createScratchNote,
+        createNote, deleteNote, updateNote,
         reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,
         activeNotebook, activeNote, loading, refreshData: fetchData,
       }}

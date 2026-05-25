@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -37,6 +39,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     createNotebook,
     deleteNotebook,
     updateNotebook,
+    nestNotebook,
     createNote,
     deleteNote,
     updateNote,
@@ -48,9 +51,25 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     refreshData,
   } = useNotebooks();
 
+  // Top-level vs nested notebooks
+  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id), [notebooks]);
+  const childrenByParent = useMemo(() => {
+    const map = new Map<string, typeof notebooks>();
+    notebooks.forEach((nb) => {
+      if (nb.parent_id) {
+        const arr = map.get(nb.parent_id) || [];
+        arr.push(nb);
+        map.set(nb.parent_id, arr);
+      }
+    });
+    return map;
+  }, [notebooks]);
+
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
-  const [showNewNotebook, setShowNewNotebook] = useState(false);
-  const [newNotebookName, setNewNotebookName] = useState("");
+  const [newNotebookOpen, setNewNotebookOpen] = useState(false);
+  const [pendingNestChild, setPendingNestChild] = useState<{ childId: string; parentId: string } | null>(null);
+  const [draggedNotebookId, setDraggedNotebookId] = useState<string | null>(null);
+  const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(null);
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
   const sidebarUploadRef = useRef<HTMLInputElement>(null);
   const [sidebarUploading, setSidebarUploading] = useState(false);
@@ -245,13 +264,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     if (sidebarUploadRef.current) sidebarUploadRef.current.value = "";
   };
 
-  const handleCreateNotebook = () => {
-    if (newNotebookName.trim()) {
-      createNotebook(newNotebookName.trim());
-      setNewNotebookName("");
-      setShowNewNotebook(false);
-    }
-  };
+  // (Inline create form removed; we now use the CreateNotebookDialog modal.)
 
   const toggleExpand = (id: string) => {
     setExpandedNotebook((prev) => (prev === id ? null : id));
@@ -316,7 +329,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               {sidebarUploading ? "..." : "Upload"}
             </button>
             <button
-              onClick={() => setShowNewNotebook(true)}
+              onClick={() => setNewNotebookOpen(true)}
               className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -326,36 +339,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
           <input ref={sidebarUploadRef} type="file" multiple className="hidden" onChange={handleSidebarUpload} />
 
-          {/* New Notebook Input */}
-          <AnimatePresence>
-            {showNewNotebook && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-2 overflow-hidden"
-              >
-                <div className="flex gap-1 px-1">
-                  <Input
-                    value={newNotebookName}
-                    onChange={(e) => setNewNotebookName(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleCreateNotebook()}
-                    placeholder="Notebook name..."
-                    className="h-8 text-sm"
-                    autoFocus
-                  />
-                  <Button size="sm" onClick={handleCreateNotebook} className="h-8 px-2">
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Notebooks List */}
           <div className="space-y-0.5">
             <AnimatePresence>
-              {notebooks.map((nb) => (
+              {topLevelNotebooks.map((nb) => (
                 <motion.div
                   key={nb.id}
                   initial={{ opacity: 0, x: -10 }}
@@ -783,38 +770,89 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
       {/* Footer */}
       <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
-        {/* Trash Link */}
-        {!collapsed && (
-          <Link
-            to="/trash"
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 rounded-lg transition-colors"
-          >
-            <Trash2 className="h-4 w-4" />
-            <span className="flex-1 text-left">Trash</span>
-            {trashCount > 0 && (
-              <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
-            )}
-          </Link>
-        )}
-
         {!collapsed ? (
-          <ThemeToggle asSidebarButton />
+          <>
+            <Link
+              to="/trash"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 rounded-lg transition-colors"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="flex-1 text-left">Trash</span>
+              {trashCount > 0 && (
+                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
+              )}
+            </Link>
+            <ThemeToggle asSidebarButton />
+            <button
+              onClick={signOut}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
+              title="Sign out"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Sign out</span>
+            </button>
+          </>
         ) : (
-          <div className="flex items-center justify-center">
-            <ThemeToggle />
-          </div>
+          <TooltipProvider delayDuration={200}>
+            <div className="flex flex-col items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link to="/trash" className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 transition-colors" aria-label="Trash">
+                    <Trash2 className="h-4 w-4" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">Trash{trashCount > 0 ? ` (${trashCount})` : ""}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div><ThemeToggle /></div>
+                </TooltipTrigger>
+                <TooltipContent side="right">Theme</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={signOut}
+                    className="p-2 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                    aria-label="Sign out"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Sign out</TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
         )}
-        <button
-          onClick={signOut}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
-          title="Sign out"
-        >
-          <LogOut className="h-4 w-4" />
-          {!collapsed && <span>Sign out</span>}
-        </button>
       </div>
 
-      {/* Confirm Dialog */}
+      {/* Create Notebook Modal */}
+      <CreateNotebookDialog
+        open={newNotebookOpen}
+        onOpenChange={setNewNotebookOpen}
+        onCreate={async (name, emoji) => { await createNotebook(name, emoji); }}
+      />
+
+      {/* Confirm Sub-Notebook nesting */}
+      <ConfirmDialog
+        open={!!pendingNestChild}
+        onOpenChange={(o) => !o && setPendingNestChild(null)}
+        title="Create sub-notebook?"
+        description={(() => {
+          if (!pendingNestChild) return "";
+          const child = notebooks.find((n) => n.id === pendingNestChild.childId)?.name;
+          const parent = notebooks.find((n) => n.id === pendingNestChild.parentId)?.name;
+          return `Move "${child}" inside "${parent}" as a sub-notebook?`;
+        })()}
+        confirmLabel="Create Sub-Notebook"
+        onConfirm={async () => {
+          if (pendingNestChild) {
+            await nestNotebook(pendingNestChild.childId, pendingNestChild.parentId);
+            setPendingNestChild(null);
+          }
+        }}
+      />
+
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
