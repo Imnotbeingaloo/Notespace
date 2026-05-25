@@ -6,7 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Pencil, Timer } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Pencil, Plus, Timer } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,6 +16,7 @@ import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { toast } from "sonner";
 
 import { useNotebooks } from "@/context/NotebookContext";
@@ -35,12 +36,13 @@ function AppContent() {
   const [opening, setOpening] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
   const lastHydratedUrlRef = useRef<string | null>(null);
   const [scratchLeavePending, setScratchLeavePending] = useState<null | { fromNotebookId: string; noteId: string; targetView: () => void }>(null);
+  const [createNotebookOpen, setCreateNotebookOpen] = useState(false);
 
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
@@ -120,7 +122,7 @@ function AppContent() {
 
       {/* Sidebar */}
       <AnimatePresence>
-        {!focusMode && (
+        {!focusMode && !showHome && (
           <motion.div
             initial={false}
             animate={{ width: "auto", opacity: 1 }}
@@ -147,7 +149,8 @@ function AppContent() {
 
       {/* Editor / Home */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar — minimal, only essential actions */}
+        {/* Top bar — hidden on Home (Home is chrome-free) */}
+        {!showHome && (
         <TooltipProvider>
           <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
             <div className="flex items-center gap-2">
@@ -162,6 +165,23 @@ function AppContent() {
               )}
             </div>
             <div className="flex items-center gap-1">
+              {/* New Notebook — only when inside the app/notebook (never on Home, which has its own tile) */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setCreateNotebookOpen(true)}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-2.5 rounded-xl shrink-0 gap-1.5 text-primary hover:bg-primary/10 hover:text-primary"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span className="hidden sm:inline text-xs font-medium">New Notebook</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Create a new notebook</p>
+                </TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -234,6 +254,7 @@ function AppContent() {
             </div>
           </div>
         </TooltipProvider>
+        )}
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
             {hydratingDeepLink || retryingDeepLink ? (
@@ -252,7 +273,10 @@ function AppContent() {
             ) : opening ? (
               <LoadingScreen label="Opening notebook…" />
             ) : showHome ? (
-              <HomeView onOpenNotebook={openNotebookFromHome} />
+              <HomeView
+                onOpenNotebook={openNotebookFromHome}
+                onCreateNotebook={() => setCreateNotebookOpen(true)}
+              />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
             )}
@@ -273,7 +297,19 @@ function AppContent() {
           </AnimatePresence>
         </div>
       </div>
-      
+
+      {/* Create Notebook dialog (used by topbar button + Home tile) */}
+      <CreateNotebookDialog
+        open={createNotebookOpen}
+        onOpenChange={setCreateNotebookOpen}
+        onCreate={async (name, emoji) => {
+          const id = await createNotebook(name, emoji);
+          if (id) {
+            setCreateNotebookOpen(false);
+            openNotebookFromHome(id);
+          }
+        }}
+      />
     </div>
   );
 }

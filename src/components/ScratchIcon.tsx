@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-// Pencil with dashed circle outline indicating temporary/scratch
+// Pencil drawing on a dashed-outline page — signals temporary / scratch
 export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
   ({ className, ...props }, ref) => (
     <svg
@@ -11,17 +11,19 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
       {...props}
     >
-      {/* Dashed circle */}
-      <circle cx="12" cy="12" r="9.5" strokeDasharray="3 3" opacity="0.6" />
-      {/* Pencil */}
-      <path d="M14.5 6.5l3 3" />
-      <path d="M15.5 5.5a1.5 1.5 0 1 1 2.121 2.121L9 16.243 6 17l.757-3z" />
+      {/* Dashed page outline */}
+      <rect x="3" y="3" width="14" height="18" rx="2" strokeDasharray="2.5 2.5" opacity="0.55" />
+      {/* Pencil overlay */}
+      <path d="M16.2 7.6l3.2 3.2" />
+      <path d="M17.6 6.2a1.7 1.7 0 0 1 2.4 2.4L11 17.6l-3.4.8.8-3.4z" fill="currentColor" fillOpacity="0.08" />
+      {/* tip mark */}
+      <path d="M8.4 15l1.6 1.6" opacity="0.7" />
     </svg>
   )
 );
