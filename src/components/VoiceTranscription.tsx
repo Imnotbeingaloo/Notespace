@@ -381,8 +381,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                   aria-hidden="true"
                 >
                   <path
-                    ref={barsPathRef}
-                    d=""
+                    ref={setBarsPath}
+                    d={buildBarsPath(smoothedRef.current)}
                     fill="none"
                     stroke="hsl(var(--primary))"
                     strokeWidth={BAR_WIDTH}
