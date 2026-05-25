@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-// Pencil drawing on a dashed-outline page — signals temporary / scratch
+// Sticky note with a clock corner — signals a temporary, time-limited note
 export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
   ({ className, ...props }, ref) => (
     <svg
@@ -17,13 +17,15 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
       className={className}
       {...props}
     >
-      {/* Dashed page outline */}
-      <rect x="3" y="3" width="14" height="18" rx="2" strokeDasharray="2.5 2.5" opacity="0.55" />
-      {/* Pencil overlay */}
-      <path d="M16.2 7.6l3.2 3.2" />
-      <path d="M17.6 6.2a1.7 1.7 0 0 1 2.4 2.4L11 17.6l-3.4.8.8-3.4z" fill="currentColor" fillOpacity="0.08" />
-      {/* tip mark */}
-      <path d="M8.4 15l1.6 1.6" opacity="0.7" />
+      {/* Sticky note body with folded corner */}
+      <path d="M4 4h11l5 5v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="currentColor" fillOpacity="0.08" />
+      <path d="M15 4v5h5" opacity="0.7" />
+      {/* Lines */}
+      <path d="M6 13h7" opacity="0.6" />
+      <path d="M6 17h5" opacity="0.6" />
+      {/* Small clock pip (temporary) */}
+      <circle cx="17.5" cy="16.5" r="3.2" fill="hsl(var(--background))" />
+      <path d="M17.5 14.6v1.9l1.3 0.8" />
     </svg>
   )
 );
