@@ -734,7 +734,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
               {/* Core actions always visible on desktop */}
               <div className="hidden lg:flex items-center gap-1">
                 <FlashcardsButton />
-                <AIExplainPanel />
+                <AskAIPanel onApplyEdit={handleAIEdit} />
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
                 {activeNote && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} />}
@@ -761,7 +761,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       {/* Show these only in mobile dropdown (hidden on desktop) */}
                       <div className="lg:hidden flex flex-col gap-1">
                         <FlashcardsButton />
-                        <AIExplainPanel />
+                        <AskAIPanel onApplyEdit={handleAIEdit} />
                         <VoiceTranscription onTranscript={handleVoiceTranscript} />
                         <ExportButtons />
                       </div>
