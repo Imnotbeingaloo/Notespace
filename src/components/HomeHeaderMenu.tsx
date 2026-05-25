@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LogOut, Moon, Sun, Trash2 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -12,6 +13,7 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
   const { user, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
+  const [open, setOpen] = useState(false);
 
   const initial = (user?.email?.[0] || "U").toUpperCase();
 
@@ -19,6 +21,12 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
     const next = isDark ? "light" : "dark";
     setTheme(next);
     localStorage.setItem("app-theme", next);
+    setOpen(false);
+  };
+
+  const handleSignOut = () => {
+    setOpen(false);
+    signOut();
   };
 
   return (
