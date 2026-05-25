@@ -484,8 +484,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                             className="h-8 text-sm"
                             onKeyDown={(e) => {
                               if (e.key === "Enter" && editName.trim()) {
-                                updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
-                                setEditingNotebook(null);
+                                updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji }).then((ok) => {
+                                  if (ok) setEditingNotebook(null);
+                                });
                               }
                             }}
                           />
@@ -505,10 +506,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                           </div>
                           <div className="flex gap-2 justify-end">
                             <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingNotebook(null)}>Cancel</Button>
-                            <Button size="sm" className="h-7 text-xs" onClick={() => {
+                            <Button size="sm" className="h-7 text-xs" onClick={async () => {
                               if (editName.trim()) {
-                                updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
-                                setEditingNotebook(null);
+                                const ok = await updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
+                                if (ok) setEditingNotebook(null);
                               }
                             }}>Save</Button>
                           </div>
@@ -943,7 +944,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       <CreateNotebookDialog
         open={newNotebookOpen}
         onOpenChange={setNewNotebookOpen}
-        onCreate={async (name, emoji) => { await createNotebook(name, emoji); }}
+        onCreate={async (name, emoji) => !!(await createNotebook(name, emoji))}
       />
 
       {/* Confirm Sub-Notebook nesting */}

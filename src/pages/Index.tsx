@@ -266,7 +266,9 @@ function AppContent() {
           if (id) {
             setCreateNotebookOpen(false);
             openNotebookFromHome(id);
+            return true;
           }
+          return false;
         }}
       />
 
