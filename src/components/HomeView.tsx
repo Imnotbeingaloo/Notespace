@@ -1,17 +1,18 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, RotateCcw } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
+  onCreateNotebook: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
   const { notebooks, loading, refreshData } = useNotebooks();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
