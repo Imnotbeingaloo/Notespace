@@ -116,7 +116,9 @@ export default function LandingPage() {
   }, [visibleLines, currentCharIndex]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {showExitSplash && <SplashScreen onComplete={() => setShowExitSplash(false)} />}
+      <div className="min-h-screen bg-background" style={showExitSplash ? { visibility: "hidden" } : undefined}>
       {/* ── Floating Navbar ── */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
