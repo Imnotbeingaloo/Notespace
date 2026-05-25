@@ -43,8 +43,8 @@ function AppContent() {
     try { await refreshData(); } finally { setRetryingDeepLink(false); }
   }, [refreshData]);
   const handleExitToWebsite = useCallback(() => {
-    setExitingToWebsite(true);
-  }, []);
+    navigate("/", { state: { fromApp: true } });
+  }, [navigate]);
 
   // Hydrate selection from URL once notebooks load
   useEffect(() => {
