@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface AppSidebarProps {
   collapsed: boolean;
