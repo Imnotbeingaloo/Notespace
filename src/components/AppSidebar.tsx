@@ -184,7 +184,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   };
 
   const [dragNoteId, setDragNoteId] = useState<string | null>(null);
+  const [dragNoteFromNb, setDragNoteFromNb] = useState<string | null>(null);
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
+  const [noteDropTargetNb, setNoteDropTargetNb] = useState<string | null>(null);
+  const [promoteDropActive, setPromoteDropActive] = useState(false);
+  const [pendingMoveNote, setPendingMoveNote] = useState<null | { noteId: string; fromNbId: string; toNbId: string; noteTitle: string; toNbName: string }>(null);
+  const [pendingPromoteNote, setPendingPromoteNote] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
   const [trashExpanded, setTrashExpanded] = useState(false);
 
   // Confirm dialog state
@@ -332,10 +337,28 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             </button>
             <button
               onClick={() => setNewNotebookOpen(true)}
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              onDragOver={(e) => {
+                if (dragNoteId) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
+              }}
+              onDragLeave={() => setPromoteDropActive(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setPromoteDropActive(false);
+                if (dragNoteId && dragNoteFromNb) {
+                  const nb = notebooks.find((n) => n.id === dragNoteFromNb);
+                  const note = nb?.notes.find((n) => n.id === dragNoteId);
+                  if (note) setPendingPromoteNote({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
+                  setDragNoteId(null); setDragNoteFromNb(null);
+                }
+              }}
+              className={`w-full flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg magnetic-btn transition-colors ${
+                promoteDropActive
+                  ? "bg-primary/15 text-primary ring-1 ring-primary/40"
+                  : "text-muted-foreground notebook-hover"
+              }`}
             >
               <Plus className="h-3.5 w-3.5" />
-              New Notebook
+              {promoteDropActive ? "Drop to make notebook" : "New Notebook"}
             </button>
           </div>
 
