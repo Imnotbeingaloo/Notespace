@@ -839,12 +839,20 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         </div>
 
         {/* File upload */}
-        {!focusMode && (
+        {!focusMode && !isOverrideActive && (
           <div className="shrink-0 border-t border-border">
             <FileUpload onInsertMarkdown={handleInsertMarkdown} />
           </div>
         )}
 
+        {/* Shared Ask-AI panel (controlled). Triggered by Ask AI button and by AI Edit button. */}
+        <AskAIPanel
+          hideTrigger
+          open={askAIOpen}
+          onOpenChange={setAskAIOpen}
+          defaultMode={askAIMode}
+          onApplyEdit={handleAIEdit}
+        />
       </motion.div>
     </AnimatePresence>
   );
