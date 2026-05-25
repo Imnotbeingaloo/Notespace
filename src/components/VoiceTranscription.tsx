@@ -132,6 +132,37 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     return d;
   };
 
+  // Ref callback that paints the initial idle waveform the instant the SVG
+  // mounts, so the user never sees an empty box while the mic is connecting.
+  const setBarsPath = useCallback((el: SVGPathElement | null) => {
+    barsPathRef.current = el;
+    if (el) el.setAttribute("d", buildBarsPath(smoothedRef.current));
+  }, []);
+
+  // Lightweight idle animation: gentle sine bars before the mic stream is ready.
+  const idleRafRef = useRef<number | null>(null);
+  const startIdleAnimation = useCallback(() => {
+    if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
+    const startTs = performance.now();
+    const idleTick = (now: number) => {
+      // Stop idle as soon as the real analyser starts driving the path.
+      if (analyserRef.current) {
+        idleRafRef.current = null;
+        return;
+      }
+      const t = (now - startTs) / 1000;
+      const next = smoothedRef.current;
+      for (let i = 0; i < POINT_COUNT; i++) {
+        const phase = (i / POINT_COUNT) * Math.PI * 2;
+        const v = 0.08 + 0.05 * Math.sin(t * 3 + phase) + 0.04 * Math.sin(t * 5 + phase * 1.7);
+        next[i] = Math.max(0.02, v);
+      }
+      if (barsPathRef.current) barsPathRef.current.setAttribute("d", buildBarsPath(next));
+      idleRafRef.current = requestAnimationFrame(idleTick);
+    };
+    idleRafRef.current = requestAnimationFrame(idleTick);
+  }, []);
+
   const startVisualizer = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
