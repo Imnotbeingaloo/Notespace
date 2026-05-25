@@ -5,7 +5,7 @@ import { useNotebooks } from "@/context/NotebookContext";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
-  onCreateNotebook: () => void;
+  onCreateNotebook?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
