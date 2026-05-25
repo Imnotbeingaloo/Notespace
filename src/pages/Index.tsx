@@ -37,7 +37,7 @@ function AppContent() {
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
-  const [exitingToWebsite, setExitingToWebsite] = useState(false);
+  
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
     try { await refreshData(); } finally { setRetryingDeepLink(false); }
