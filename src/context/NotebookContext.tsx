@@ -305,11 +305,28 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [activeNotebookId, allNotebooks]);
 
   const updateNotebook = useCallback(async (id: string, updates: { name?: string; emoji?: string }) => {
+    if (updates.name !== undefined) {
+      const trimmed = updates.name.trim();
+      if (!trimmed) {
+        toast.error("Notebook name can't be empty.");
+        return;
+      }
+      const lower = trimmed.toLowerCase();
+      const dupe = allNotebooks.some(
+        (nb) => nb.id !== id && !nb.deleted_at && nb.name.trim().toLowerCase() === lower
+      );
+      if (dupe) {
+        toast.error(`A notebook named "${trimmed}" already exists. Pick a different name.`);
+        return;
+      }
+      updates = { ...updates, name: trimmed };
+    }
     await supabase.from("notebooks").update(updates).eq("id", id);
     setAllNotebooks((prev) =>
       prev.map((nb) => nb.id === id ? { ...nb, ...updates } : nb)
     );
-  }, []);
+  }, [allNotebooks]);
+
 
   const createNote = useCallback(async (notebookId: string, title?: string, content?: string): Promise<string | null> => {
     if (!user) return null;
