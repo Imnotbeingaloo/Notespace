@@ -271,6 +271,26 @@ export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
               aria-label="Notebooks"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
             >
+              {onCreateNotebook && (
+                <motion.button
+                  type="button"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  whileHover={{ y: -4 }}
+                  onClick={onCreateNotebook}
+                  data-testid="home-create-notebook"
+                  className="group relative text-left rounded-2xl border-2 border-dashed border-primary/30 bg-primary/[0.03] hover:border-primary/60 hover:bg-primary/[0.06] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[240px] flex flex-col items-center justify-center gap-3 p-6"
+                >
+                  <div className="h-14 w-14 rounded-2xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                    <Plus className="h-7 w-7 text-primary" strokeWidth={2.2} />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-serif font-bold text-lg text-foreground">Create a Notebook</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Start a new collection of notes</p>
+                  </div>
+                </motion.button>
+              )}
               {paged.map((nb, idx) => {
                 const noteCount = nb.notes?.length ?? 0;
                 const preview = nb.notes?.slice(0, 3) ?? [];
