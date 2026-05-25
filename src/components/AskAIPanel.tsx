@@ -95,9 +95,9 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         },
         body: JSON.stringify({
           action,
-          noteTitle: activeNote.title,
-          noteContent: activeNote.content,
-          editInstruction: action === "edit" ? instruction : undefined,
+          noteTitle: activeNote.title || "Untitled",
+          noteContent: activeNote.content ?? "",
+          editInstruction: action === "edit" ? (instruction || "Improve this note: fix grammar, clarity, and flow") : undefined,
         }),
       });
 
