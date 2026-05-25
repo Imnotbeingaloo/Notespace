@@ -200,10 +200,6 @@ function AppContent() {
                   <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
                 </TooltipContent>
               </Tooltip>
-                <TooltipContent side="bottom">
-                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
-                </TooltipContent>
-              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
