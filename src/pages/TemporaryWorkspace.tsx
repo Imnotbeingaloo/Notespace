@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Clock, Download, FolderPlus, FolderInput, Loader2, Trash, X, BookOpen } from "lucide-react";
+import { Clock, Download, FolderPlus, FolderInput, Loader2, Trash, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { NotebookProvider, useNotebooks } from "@/context/NotebookContext";
