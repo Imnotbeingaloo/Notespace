@@ -169,11 +169,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
           const target = Math.min(1, Math.max(peak * 0.72, rms * 1.9));
           next[i] = next[i] * 0.78 + target * 0.22;
         }
-        const topD = buildStrokePath(next, true);
-        const botD = buildStrokePath(next, false);
-        if (topPathRef.current) topPathRef.current.setAttribute("d", topD);
-        if (botPathRef.current) botPathRef.current.setAttribute("d", botD);
-        if (fillPathRef.current) fillPathRef.current.setAttribute("d", buildFillPath(next));
+        if (barsPathRef.current) barsPathRef.current.setAttribute("d", buildBarsPath(next));
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
