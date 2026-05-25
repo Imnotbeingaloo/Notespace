@@ -688,7 +688,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
 
           {/* Tags row */}
-          {!focusMode && (
+          {!focusMode && !isOverrideActive && (
             <div className="mt-2">
               <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
             </div>
