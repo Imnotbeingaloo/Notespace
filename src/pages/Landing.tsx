@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
-import { SplashScreen } from "@/components/SplashScreen";
+import { ExitBookFlash } from "@/components/ExitBookFlash";
 
 // Typing animation lines for the preview
 const editorLines = [
