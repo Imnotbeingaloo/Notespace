@@ -8,6 +8,7 @@ export interface HybridEditorHandle {
   insertAtCursor: (text: string) => void;
   getValue: () => string;
   getEditorElement: () => HTMLDivElement | null;
+  setContent: (md: string) => void;
 }
 
 interface HybridEditorProps {
