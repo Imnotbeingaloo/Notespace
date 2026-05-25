@@ -20,7 +20,11 @@ import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
-  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === "undefined" ? true : window.innerWidth >= 768);
+  const isMobile = useIsMobile();
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.innerWidth >= 768;
+  });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
@@ -32,8 +36,19 @@ function AppContent() {
   // Default to Home view unless a deep link is present
   const [showHome, setShowHome] = useState(!urlNotebook);
   const [opening, setOpening] = useState(false);
-  const isMobile = useIsMobile();
   const navigate = useNavigate();
+
+  // Close sidebar when switching into mobile viewport so the
+  // backdrop overlay doesn't cover the screen on first mobile render.
+  const prevIsMobileRef = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (prevIsMobileRef.current === null) {
+      if (isMobile) setSidebarOpen(false);
+    } else if (prevIsMobileRef.current !== isMobile) {
+      setSidebarOpen(!isMobile);
+    }
+    prevIsMobileRef.current = isMobile;
+  }, [isMobile]);
   const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
