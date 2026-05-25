@@ -40,6 +40,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     deleteNotebook,
     updateNotebook,
     nestNotebook,
+    promoteNoteToNotebook,
+    moveNoteToNotebook,
     createNote,
     deleteNote,
     updateNote,
@@ -182,7 +184,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   };
 
   const [dragNoteId, setDragNoteId] = useState<string | null>(null);
+  const [dragNoteFromNb, setDragNoteFromNb] = useState<string | null>(null);
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
+  const [noteDropTargetNb, setNoteDropTargetNb] = useState<string | null>(null);
+  const [promoteDropActive, setPromoteDropActive] = useState(false);
+  const [pendingMoveNote, setPendingMoveNote] = useState<null | { noteId: string; fromNbId: string; toNbId: string; noteTitle: string; toNbName: string }>(null);
+  const [pendingPromoteNote, setPendingPromoteNote] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
   const [trashExpanded, setTrashExpanded] = useState(false);
 
   // Confirm dialog state
@@ -330,10 +337,28 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             </button>
             <button
               onClick={() => setNewNotebookOpen(true)}
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              onDragOver={(e) => {
+                if (dragNoteId) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
+              }}
+              onDragLeave={() => setPromoteDropActive(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setPromoteDropActive(false);
+                if (dragNoteId && dragNoteFromNb) {
+                  const nb = notebooks.find((n) => n.id === dragNoteFromNb);
+                  const note = nb?.notes.find((n) => n.id === dragNoteId);
+                  if (note) setPendingPromoteNote({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
+                  setDragNoteId(null); setDragNoteFromNb(null);
+                }
+              }}
+              className={`w-full flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg magnetic-btn transition-colors ${
+                promoteDropActive
+                  ? "bg-primary/15 text-primary ring-1 ring-primary/40"
+                  : "text-muted-foreground notebook-hover"
+              }`}
             >
               <Plus className="h-3.5 w-3.5" />
-              New Notebook
+              {promoteDropActive ? "Drop to make notebook" : "New Notebook"}
             </button>
           </div>
 
@@ -352,11 +377,54 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 >
                   {/* Notebook Item */}
                   <div
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-all duration-200 ${
+                    draggable
+                    onDragStart={(e) => {
+                      setDraggedNotebookId(nb.id);
+                      e.dataTransfer.effectAllowed = "move";
+                    }}
+                    onDragEnd={() => { setDraggedNotebookId(null); setDragOverNotebookId(null); }}
+                    onDragOver={(e) => {
+                      const canAcceptNotebook = draggedNotebookId && draggedNotebookId !== nb.id && !nb.parent_id;
+                      const canAcceptNote = dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id;
+                      if (canAcceptNotebook || canAcceptNote) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = "move";
+                        setDragOverNotebookId(nb.id);
+                        if (canAcceptNote) setNoteDropTargetNb(nb.id);
+                      }
+                    }}
+                    onDragLeave={() => { setDragOverNotebookId(null); setNoteDropTargetNb(null); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragOverNotebookId(null);
+                      setNoteDropTargetNb(null);
+                      // Cross-notebook note move
+                      if (dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id) {
+                        const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
+                        const note = sourceNb?.notes.find((n) => n.id === dragNoteId);
+                        if (note) {
+                          setPendingMoveNote({
+                            noteId: dragNoteId,
+                            fromNbId: dragNoteFromNb,
+                            toNbId: nb.id,
+                            noteTitle: note.title,
+                            toNbName: nb.name,
+                          });
+                        }
+                        setDragNoteId(null); setDragNoteFromNb(null);
+                        return;
+                      }
+                      // Nest notebook
+                      if (draggedNotebookId && draggedNotebookId !== nb.id) {
+                        setPendingNestChild({ childId: draggedNotebookId, parentId: nb.id });
+                        setDraggedNotebookId(null);
+                      }
+                    }}
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
                       activeNotebookId === nb.id
                         ? "bg-primary/10 text-foreground font-medium"
                         : "text-sidebar-foreground notebook-hover"
-                    }`}
+                    } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => toggleExpand(nb.id)}
                   >
                     <motion.div
@@ -457,25 +525,31 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               draggable
                               onDragStart={(e) => {
                                 setDragNoteId(note.id);
+                                setDragNoteFromNb(nb.id);
                                 e.dataTransfer.effectAllowed = "move";
                               }}
                               onDragOver={(e) => {
-                                e.preventDefault();
-                                e.dataTransfer.dropEffect = "move";
-                                setDragOverNoteId(note.id);
+                                if (dragNoteId && dragNoteFromNb === nb.id) {
+                                  e.preventDefault();
+                                  e.dataTransfer.dropEffect = "move";
+                                  setDragOverNoteId(note.id);
+                                }
                               }}
                               onDragLeave={() => setDragOverNoteId(null)}
                               onDrop={(e) => {
                                 e.preventDefault();
                                 setDragOverNoteId(null);
                                 if (!dragNoteId || dragNoteId === note.id) return;
+                                if (dragNoteFromNb !== nb.id) return;
                                 const fromIdx = nb.notes.findIndex((n) => n.id === dragNoteId);
                                 if (fromIdx === -1) return;
                                 reorderNotes(nb.id, fromIdx, noteIndex);
                                 setDragNoteId(null);
+                                setDragNoteFromNb(null);
                               }}
                               onDragEnd={() => {
                                 setDragNoteId(null);
+                                setDragNoteFromNb(null);
                                 setDragOverNoteId(null);
                               }}
                               className={`group/note flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-all duration-200 ${
@@ -774,12 +848,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <>
             <Link
               to="/trash"
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 rounded-lg transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg transition-colors"
             >
               <Trash2 className="h-4 w-4" />
               <span className="flex-1 text-left">Trash</span>
               {trashCount > 0 && (
-                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
+                <span className="text-xs bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded-full">{trashCount}</span>
               )}
             </Link>
             <ThemeToggle asSidebarButton />
@@ -797,7 +871,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <div className="flex flex-col items-center gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link to="/trash" className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 transition-colors" aria-label="Trash">
+                  <Link to="/trash" className="p-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition-colors" aria-label="Trash">
                     <Trash2 className="h-4 w-4" />
                   </Link>
                 </TooltipTrigger>
@@ -860,6 +934,34 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         description={confirmDesc}
         confirmLabel={confirmLabel}
         onConfirm={confirmAction}
+      />
+
+      <ConfirmDialog
+        open={!!pendingMoveNote}
+        onOpenChange={(o) => !o && setPendingMoveNote(null)}
+        title="Move note?"
+        description={pendingMoveNote ? `Move "${pendingMoveNote.noteTitle}" into "${pendingMoveNote.toNbName}"?` : ""}
+        confirmLabel="Move Note"
+        onConfirm={async () => {
+          if (pendingMoveNote) {
+            await moveNoteToNotebook(pendingMoveNote.fromNbId, pendingMoveNote.noteId, pendingMoveNote.toNbId);
+            setPendingMoveNote(null);
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!pendingPromoteNote}
+        onOpenChange={(o) => !o && setPendingPromoteNote(null)}
+        title="Create new notebook from note?"
+        description={pendingPromoteNote ? `"${pendingPromoteNote.title}" will become its own notebook.` : ""}
+        confirmLabel="Create Notebook"
+        onConfirm={async () => {
+          if (pendingPromoteNote) {
+            await promoteNoteToNotebook(pendingPromoteNote.fromNbId, pendingPromoteNote.noteId);
+            setPendingPromoteNote(null);
+          }
+        }}
       />
     </motion.aside>
   );

@@ -6,8 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Pencil, Plus, Timer } from "lucide-react";
-import { ScratchIcon } from "@/components/ScratchIcon";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Plus, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -165,46 +164,6 @@ function AppContent() {
               )}
             </div>
             <div className="flex items-center gap-1">
-              {/* New Notebook — only when inside the app/notebook (never on Home, which has its own tile) */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => setCreateNotebookOpen(true)}
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-2.5 rounded-xl shrink-0 gap-1.5 text-primary hover:bg-primary/10 hover:text-primary"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span className="hidden sm:inline text-xs font-medium">New Notebook</span>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>Create a new notebook</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={async () => {
-                      const res = await createScratchNote();
-                      if (res) {
-                        setShowHome(false);
-                        toast.success("Scratch note ready", {
-                          description: "Temporary — save or download before leaving.",
-                        });
-                      }
-                    }}
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-xl shrink-0 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:text-amber-300"
-                  >
-                    <ScratchIcon className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>New Scratch Note (temporary)</p>
-                </TooltipContent>
-              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -276,6 +235,15 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
+                onCreateScratchNote={async () => {
+                  const res = await createScratchNote();
+                  if (res) {
+                    setShowHome(false);
+                    toast.success("Scratch note ready", {
+                      description: "Temporary — save or download before leaving.",
+                    });
+                  }
+                }}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />

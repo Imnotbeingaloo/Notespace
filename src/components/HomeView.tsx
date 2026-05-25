@@ -1,18 +1,20 @@
 import { motion } from "framer-motion";
 import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw } from "lucide-react";
+import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
   onCreateNotebook?: () => void;
+  onCreateScratchNote?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote }: HomeViewProps) {
   const { notebooks, loading, refreshData } = useNotebooks();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
@@ -111,9 +113,9 @@ export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
 
   // Determine grid columns to compute up/down navigation step
   const getCols = () => {
-    if (typeof window === "undefined") return 3;
-    if (window.innerWidth >= 1024) return 3;
-    if (window.innerWidth >= 640) return 2;
+    if (typeof window === "undefined") return 4;
+    if (window.innerWidth >= 1280) return 4;
+    if (window.innerWidth >= 640) return 3;
     return 1;
   };
 
@@ -224,7 +226,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
         {loading && notebooks.length === 0 ? (
           <div
             data-testid="home-skeleton"
@@ -278,7 +280,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
             <div
               role="grid"
               aria-label="Notebooks"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
             >
               {onCreateNotebook && (
                 <motion.button
@@ -289,14 +291,34 @@ export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
                   whileHover={{ y: -4 }}
                   onClick={onCreateNotebook}
                   data-testid="home-create-notebook"
-                  className="group relative text-left rounded-2xl border-2 border-dashed border-primary/30 bg-primary/[0.03] hover:border-primary/60 hover:bg-primary/[0.06] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[240px] flex flex-col items-center justify-center gap-3 p-6"
+                  className="group relative text-left rounded-2xl border-2 border-dashed border-primary/30 bg-primary/[0.03] hover:border-primary/60 hover:bg-primary/[0.06] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[180px] flex flex-col items-center justify-center gap-2 p-5"
                 >
-                  <div className="h-14 w-14 rounded-2xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
-                    <Plus className="h-7 w-7 text-primary" strokeWidth={2.2} />
+                  <div className="h-11 w-11 rounded-xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                    <Plus className="h-5 w-5 text-primary" strokeWidth={2.2} />
                   </div>
                   <div className="text-center">
-                    <h3 className="font-serif font-bold text-lg text-foreground">Create a Notebook</h3>
-                    <p className="text-xs text-muted-foreground mt-1">Start a new collection of notes</p>
+                    <h3 className="font-serif font-bold text-base text-foreground">Create a Notebook</h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Start a new collection</p>
+                  </div>
+                </motion.button>
+              )}
+              {onCreateScratchNote && (
+                <motion.button
+                  type="button"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.04, ease: [0.16, 1, 0.3, 1] }}
+                  whileHover={{ y: -4 }}
+                  onClick={onCreateScratchNote}
+                  data-testid="home-create-scratch"
+                  className="group relative text-left rounded-2xl border-2 border-dashed border-amber-500/40 bg-amber-500/[0.04] hover:border-amber-500/70 hover:bg-amber-500/[0.08] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[180px] flex flex-col items-center justify-center gap-2 p-5"
+                >
+                  <div className="h-11 w-11 rounded-xl bg-amber-500/10 group-hover:bg-amber-500/20 flex items-center justify-center transition-colors text-amber-600 dark:text-amber-400">
+                    <ScratchIcon className="h-6 w-6" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-serif font-bold text-base text-foreground">Scratch Note</h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Temporary · save before leaving</p>
                   </div>
                 </motion.button>
               )}
@@ -319,42 +341,42 @@ export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
                     className="group relative text-left rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/20 opacity-70 group-hover:opacity-100 transition-opacity" />
-                    <div className="p-6">
-                      <div className="flex items-start justify-between gap-3 mb-4">
-                        <div className="text-4xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="text-3xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
                           {nb.emoji}
                         </div>
-                        <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
                           {noteCount} {noteCount === 1 ? "note" : "notes"}
                         </span>
                       </div>
 
-                      <h3 className="font-serif font-bold text-xl text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-1">
+                      <h3 className="font-serif font-bold text-base text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
                         {nb.name}
                       </h3>
 
                       {preview.length > 0 ? (
-                        <ul className="space-y-1.5 mb-4">
+                        <ul className="space-y-1 mb-3">
                           {preview.map((n) => (
                             <li
                               key={n.id}
-                              className="flex items-center gap-2 text-xs text-muted-foreground truncate"
+                              className="flex items-center gap-2 text-[11px] text-muted-foreground truncate"
                             >
                               <FileText className="h-3 w-3 shrink-0 opacity-60" />
                               <span className="truncate">{n.title || "Untitled"}</span>
                             </li>
                           ))}
                           {noteCount > 3 && (
-                            <li className="text-[11px] text-muted-foreground/70 pl-5">
+                            <li className="text-[10px] text-muted-foreground/70 pl-5">
                               +{noteCount - 3} more
                             </li>
                           )}
                         </ul>
                       ) : (
-                        <p className="text-xs text-muted-foreground italic mb-4">Empty notebook</p>
+                        <p className="text-[11px] text-muted-foreground italic mb-3">Empty notebook</p>
                       )}
 
-                      <div className="text-[11px] text-muted-foreground/70 font-mono pt-3 border-t border-border/60">
+                      <div className="text-[10px] text-muted-foreground/70 font-mono pt-2 border-t border-border/60">
                         Updated {formatDate(lastUpdated(nb))}
                       </div>
                     </div>
