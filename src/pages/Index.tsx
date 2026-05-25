@@ -273,7 +273,10 @@ function AppContent() {
             ) : opening ? (
               <LoadingScreen label="Opening notebook…" />
             ) : showHome ? (
-              <HomeView onOpenNotebook={openNotebookFromHome} />
+              <HomeView
+                onOpenNotebook={openNotebookFromHome}
+                onCreateNotebook={() => setCreateNotebookOpen(true)}
+              />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
             )}
@@ -294,7 +297,19 @@ function AppContent() {
           </AnimatePresence>
         </div>
       </div>
-      
+
+      {/* Create Notebook dialog (used by topbar button + Home tile) */}
+      <CreateNotebookDialog
+        open={createNotebookOpen}
+        onOpenChange={setCreateNotebookOpen}
+        onCreate={async (name, emoji) => {
+          const id = await createNotebook(name, emoji);
+          if (id) {
+            setCreateNotebookOpen(false);
+            openNotebookFromHome(id);
+          }
+        }}
+      />
     </div>
   );
 }
