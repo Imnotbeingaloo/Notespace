@@ -165,6 +165,29 @@ function AppContent() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
+                    onClick={async () => {
+                      const res = await createScratchNote();
+                      if (res) {
+                        setShowHome(false);
+                        toast.success("Scratch note ready", {
+                          description: "Temporary — save or download before leaving.",
+                        });
+                      }
+                    }}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-xl shrink-0 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:text-amber-300"
+                  >
+                    <ScratchIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>New Scratch Note (temporary)</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
                     onClick={() => setFocusMode((p) => !p)}
                     variant={focusMode ? "default" : "ghost"}
                     size="icon"
@@ -173,6 +196,10 @@ function AppContent() {
                     {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                   </Button>
                 </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
+                </TooltipContent>
+              </Tooltip>
                 <TooltipContent side="bottom">
                   <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
                 </TooltipContent>
