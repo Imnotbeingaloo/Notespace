@@ -377,11 +377,54 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 >
                   {/* Notebook Item */}
                   <div
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-all duration-200 ${
+                    draggable
+                    onDragStart={(e) => {
+                      setDraggedNotebookId(nb.id);
+                      e.dataTransfer.effectAllowed = "move";
+                    }}
+                    onDragEnd={() => { setDraggedNotebookId(null); setDragOverNotebookId(null); }}
+                    onDragOver={(e) => {
+                      const canAcceptNotebook = draggedNotebookId && draggedNotebookId !== nb.id && !nb.parent_id;
+                      const canAcceptNote = dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id;
+                      if (canAcceptNotebook || canAcceptNote) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = "move";
+                        setDragOverNotebookId(nb.id);
+                        if (canAcceptNote) setNoteDropTargetNb(nb.id);
+                      }
+                    }}
+                    onDragLeave={() => { setDragOverNotebookId(null); setNoteDropTargetNb(null); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragOverNotebookId(null);
+                      setNoteDropTargetNb(null);
+                      // Cross-notebook note move
+                      if (dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id) {
+                        const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
+                        const note = sourceNb?.notes.find((n) => n.id === dragNoteId);
+                        if (note) {
+                          setPendingMoveNote({
+                            noteId: dragNoteId,
+                            fromNbId: dragNoteFromNb,
+                            toNbId: nb.id,
+                            noteTitle: note.title,
+                            toNbName: nb.name,
+                          });
+                        }
+                        setDragNoteId(null); setDragNoteFromNb(null);
+                        return;
+                      }
+                      // Nest notebook
+                      if (draggedNotebookId && draggedNotebookId !== nb.id) {
+                        setPendingNestChild({ childId: draggedNotebookId, parentId: nb.id });
+                        setDraggedNotebookId(null);
+                      }
+                    }}
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
                       activeNotebookId === nb.id
                         ? "bg-primary/10 text-foreground font-medium"
                         : "text-sidebar-foreground notebook-hover"
-                    }`}
+                    } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => toggleExpand(nb.id)}
                   >
                     <motion.div
