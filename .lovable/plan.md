@@ -1,31 +1,85 @@
-## 1. Revert the hero back to the original look
+## Goal
 
-In `src/pages/Landing.tsx`:
-- Remove the two animated aurora blob `motion.div`s that were added behind the hero. Keep only the original soft gradient wash (`bg-gradient-to-b from-primary/[0.04]`).
-- Change the headline so both "organized" and "understood" use the teal primary color:
-  - `Your thoughts, <span className="text-primary">organized</span> & <span className="text-primary">understood</span>`
-- Leave the "AI-Powered Note Taker" pill badge exactly as it currently is (rounded pill, rotating `Sparkles` icon, muted text) — that matches the original design.
+Bring the hero back to the editorial layout from the PDF (left-aligned headline, orange kicker, "VOL. 01" side column, "Start writing" + "See what it does" CTAs) — but solve its biggest weakness: the giant blank area on the right. Also pull the hero height back down (it grew taller in a recent change).
 
-In `src/index.css`:
-- Remove the now-unused `--hero-green` CSS variable from both `:root` and `.dark`, and remove the `.hero-aurora` reduced-motion rule.
+Nothing outside the hero `<section>` changes. Navbar, app preview, features grid, testimonials, CTA, footer all stay untouched.
 
-## 2. Make the favicon look bigger in the browser tab
+## What the new hero looks like
 
-The current `public/favicon.png` is 1920×1920 but the actual book artwork only fills the middle ~38% of the canvas, surrounded by white padding. That padding is why the icon looks tiny next to other sites' favicons in the tab strip.
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ── A NOTE-TAKER THAT THINKS WITH YOU                                     │
+│                                                                          │
+│ Your thoughts, organized                          ╭──────────────────╮  │
+│ & understood.                                     │ §  Chapter 1     │  │
+│ ───────────────────                               │ ───────────────  │  │
+│ A quiet place to write, link, and                 │ ─── highlight ── │  │
+│ revisit your ideas — with intelligence            │ ───────────────  │  │
+│ woven in only where it actually helps.            │ ─────────        │  │
+│                                                   ╰──────────────────╯  │
+│ [ Start writing → ]   See what it does              ↳ ╭──────────────╮  │
+│                                                       │ ✦ Explain    │  │
+│ NO CREDIT CARD · FREE FOREVER TIER                    │ Wave theory…│  │
+│                                                       ╰──────────────╯  │
+│                                                                          │
+│                                                   VOL. 01                │
+│                                                   A writing tool for     │
+│                                                   people who think on    │
+│                                                   the page.              │
+└──────────────────────────────────────────────────────────────────────────┘
+```
 
-Fix:
-- Auto-trim the surrounding white from `public/favicon.png`, then re-pad with a small ~6% margin and re-export at 512×512. The visible book artwork will then fill nearly the whole 16×16 tab favicon slot, so it reads much larger.
-- `index.html` already references `/favicon.png` with the correct cache-busting setup, so no markup change is needed beyond optionally bumping a query string if caching is sticky.
+Two-column grid on `lg`, single column on mobile. Headline column left (≈7/12), composition column right (≈5/12). On mobile the manuscript card stacks below the CTAs.
 
-## Out of scope
+## Right column: "manuscript card" vignette
 
-- No changes to navbar, features grid, app preview, footer, or any other page.
-- No copy changes.
-- No new colors, fonts, or animations introduced.
-- The book artwork itself is not redrawn — only the empty padding around it is trimmed.
+A single tasteful composition — purpose-built to fill the empty area without overlapping anything that already exists on the page (no app mockup, no typing demo, no feature cards, no graph).
+
+Pieces:
+
+1. **Paper card** — cream `bg-card` with thin border, soft shadow, very slight `-rotate-1`. Contains:
+  - A small JetBrains-Mono eyebrow: `§  CHAPTER ONE`
+  - Merriweather title: "On wave theory"
+  - 4 short ruled lines (`<div class="h-px bg-border/60">`-style ink strokes of varying widths) — one stroke uses `bg-primary/30` to indicate a highlighted passage.
+  - A tiny tag chip bottom-left: `# physics`
+2. **Floating "Explain" popover** — smaller card, `+rotate-2`, anchored bottom-right of the paper card with a dotted leader line up to the highlighted stroke. Contains a Sparkles icon, label "Explain", and one short streaming-style line: "Wave theory describes how…" with a blinking caret. (Reuses the existing 60fps typing pattern but on a *different* sentence, so it reads as AI output, not the typing-demo input below.)
+3. **VOL. 01 side note** — sits under the card, right-aligned, exactly as in the PDF: mono `VOL. 01` over a thin vertical rule, then the small paragraph "A writing tool for people who think on the page — and want their notes to think back."
+
+Motion: card fades + lifts in (`y: 20 → 0`, 0.6s, delay 0.4s). Popover fades in delayed 0.9s. Typing line starts after popover settles. Both honour `prefers-reduced-motion` by snapping in place. No infinite background animations.
+
+## Why this and not the other options
+
+- Not the feature-card stack — those literally appear directly below the hero.
+- Not a full app mockup — that's the next section ("App Preview").
+- Not the typing demo — already used further down.
+- Not a knowledge-graph — too abstract, doesn't match the paper/editorial brand.
+
+The manuscript card *demonstrates* the product (paper + highlight + AI explanation) in a single editorial still life, which is exactly the brand promise from the headline.
+
+## Hero height
+
+Reduce to `min-h-[88vh]` with `pt-28 pb-20` (down from the recent taller version). On `lg`+ the two columns are vertically centered so the section feels intentional rather than empty.
+
+## Copy & colors
+
+Exactly as in the PDF:
+
+- Kicker: orange (`text-accent`), JetBrains Mono, tracking-widest, with a leading short rule.
+- Headline: "Your thoughts, organized & *understood*." — "organized" in default foreground, "understood" italic in teal (`text-primary`), trailing period in foreground.
+- Subhead: muted, as in PDF.
+- Primary CTA: solid teal "Start writing →" → `/auth` (or `/app` if signed in).
+- Secondary: ghost "See what it does" → `#features`.
+- Microcopy: `NO CREDIT CARD · FREE FOREVER TIER` (mono, tracking-widest, muted).
 
 ## Files touched
 
-- `src/pages/Landing.tsx` — remove aurora blobs, swap "understood" color back to `text-primary`.
-- `src/index.css` — drop `--hero-green` and the `.hero-aurora` reduced-motion block.
-- `public/favicon.png` — re-exported with whitespace trimmed.
+- `src/pages/Landing.tsx` — replace the current centered hero `<section>` (lines ~180–231) with the two-column editorial hero described above. Nothing else in the file changes.
+- `src/index.css` — no new tokens needed; uses existing `--primary`, `--accent`, `--card`, `--border`, `--muted-foreground`.
+
+## Out of scope
+
+Header/nav, app preview, features, testimonials, CTA band, footer, favicon, theme tokens, any backend or data work.
+
+&nbsp;
+
+also do this too, increase the favicon size to whatever lovable's is
