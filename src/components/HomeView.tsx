@@ -171,19 +171,8 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                   Notebook Archive
                 </span>
               </button>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => navigate("/", { state: { fromApp: true } })}
-                    aria-label="Go to website home"
-                    className="inline-flex items-center justify-center h-8 w-8 ml-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                  >
-                    <Home className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Website home</TooltipContent>
-              </Tooltip>
             </div>
+
 
             <div className="flex items-center gap-1">
               <HomeHeaderMenu trashCount={trashCount} />
