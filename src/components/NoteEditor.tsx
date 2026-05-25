@@ -441,7 +441,7 @@ function PreviewButton() {
 
 
 export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindReplaceChange }: { focusMode?: boolean; findReplaceOpen?: boolean; onFindReplaceChange?: (open: boolean) => void }) {
-  const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
+  const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote, isOverrideActive } = useNotebooks();
   const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -453,6 +453,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  // Shared Ask-AI modal state — opened by both the Ask AI trigger and the AI Edit button.
+  const [askAIOpen, setAskAIOpen] = useState(false);
+  const [askAIMode, setAskAIMode] = useState<"chat" | "edit">("chat");
+  const openAskAI = useCallback((mode: "chat" | "edit") => { setAskAIMode(mode); setAskAIOpen(true); }, []);
 
   // Ctrl+F for find and replace
   useEffect(() => {
