@@ -20,16 +20,31 @@ type Msg = {
 
 interface AskAIPanelProps {
   onApplyEdit?: (newContent: string) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  defaultMode?: "chat" | "edit";
+  hideTrigger?: boolean;
 }
 
-export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
+export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, defaultMode = "chat", hideTrigger = false }: AskAIPanelProps) {
   const { activeNote } = useNotebooks();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = (v: boolean) => {
+    if (onOpenChange) onOpenChange(v);
+    else setInternalOpen(v);
+  };
   const [input, setInput] = useState("");
-  const [mode, setMode] = useState<"chat" | "edit">("chat");
+  const [mode, setMode] = useState<"chat" | "edit">(defaultMode);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Sync mode when defaultMode changes (e.g. opened from AI Edit trigger)
+  useEffect(() => {
+    if (open) setMode(defaultMode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, defaultMode]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
