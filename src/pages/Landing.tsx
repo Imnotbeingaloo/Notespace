@@ -204,9 +204,7 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero (editorial) ── */}
-      <section className="relative overflow-hidden pt-28 pb-20 min-h-[88vh] flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-transparent to-transparent pointer-events-none" />
-
+      <section className="relative overflow-hidden pt-28 pb-20 min-h-[88vh] flex items-center bg-muted/40">
         <div className="container mx-auto px-6 relative">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
             {/* Left: headline column */}
@@ -275,6 +273,12 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="relative mx-auto max-w-sm"
               >
+                {/* Peeking second page (depth) */}
+                <div
+                  aria-hidden
+                  className="absolute -top-3 -left-3 right-6 bottom-10 rounded-2xl border border-border/60 bg-card/60 shadow-md -rotate-[3deg] -z-10"
+                />
+
                 {/* Paper card */}
                 <div className="relative rounded-2xl border border-border bg-card p-6 shadow-xl shadow-primary/[0.06] -rotate-1">
                   <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-3">
@@ -286,9 +290,20 @@ export default function LandingPage() {
                   <div className="space-y-2.5">
                     <div className="h-[3px] w-[92%] rounded-full bg-border/70" />
                     <div className="h-[3px] w-[78%] rounded-full bg-border/70" />
-                    <div className="relative">
-                      <div className="h-[6px] w-[88%] rounded-sm bg-primary/25" />
-                      <div className="absolute inset-0 h-[6px] w-[88%] rounded-sm bg-gradient-to-r from-primary/30 to-transparent" />
+                    {/* Animated highlight sweep */}
+                    <div className="relative h-[6px] w-[88%] rounded-sm bg-border/40 overflow-hidden">
+                      <motion.div
+                        className="absolute inset-y-0 left-0 rounded-sm bg-gradient-to-r from-primary/40 to-primary/20"
+                        initial={{ width: "0%" }}
+                        animate={{ width: ["0%", "100%", "100%", "0%"] }}
+                        transition={{
+                          duration: 8,
+                          times: [0, 0.35, 0.85, 1],
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: 0.8,
+                        }}
+                      />
                     </div>
                     <div className="h-[3px] w-[70%] rounded-full bg-border/70" />
                     <div className="h-[3px] w-[55%] rounded-full bg-border/70" />
@@ -301,7 +316,7 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Floating Explain popover */}
+                {/* Floating Explain popover with looping typewriter */}
                 <motion.div
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -314,8 +329,8 @@ export default function LandingPage() {
                       Explain
                     </span>
                   </div>
-                  <p className="text-xs text-foreground/80 leading-relaxed">
-                    Wave theory describes how energy propagates through space as oscillations
+                  <p className="text-xs text-foreground/80 leading-relaxed min-h-[3.6rem]">
+                    {manuscriptTyped}
                     <span className="inline-block w-[2px] h-3 bg-primary ml-0.5 align-middle animate-pulse" />
                   </p>
                 </motion.div>
@@ -346,7 +361,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── App Preview ── */}
-      <section className="container mx-auto px-6 pt-16 md:pt-24 pb-32">
+      <section className="relative border-t border-border/60 bg-background">
+        <div className="container mx-auto px-6 pt-20 md:pt-28 pb-32">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
