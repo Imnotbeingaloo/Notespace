@@ -268,7 +268,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/[0.06] text-amber-700 dark:text-amber-300 text-sm font-medium hover:bg-amber-500/[0.12] transition-colors"
               >
                 <ScratchIcon className="h-4 w-4" />
-                Scratch Note
+                Temporary Note
               </button>
             )}
           </div>
