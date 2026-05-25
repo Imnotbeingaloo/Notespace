@@ -336,10 +336,10 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.9 }}
-                  className="absolute -bottom-8 -right-4 sm:-right-8 w-60 rounded-xl border border-primary/20 bg-background/95 backdrop-blur p-3.5 shadow-2xl shadow-primary/10 rotate-2"
+                  className="absolute -bottom-8 -right-4 sm:-right-8 w-60 rounded-2xl border border-border/70 bg-card p-3.5 shadow-2xl shadow-primary/10 rotate-2"
                 >
                   <div className="flex items-center gap-1.5 mb-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                     <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-primary">
                       Explain
                     </span>
