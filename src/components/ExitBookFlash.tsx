@@ -2,25 +2,44 @@ import { useEffect, useState } from "react";
 import { BookOpen } from "lucide-react";
 
 /**
- * Minimal, no-animation exit flash shown when the user navigates from the app
- * back to the marketing site. Just a centered book icon for ~220ms.
+ * Minimal book flash shown when navigating from the app back to the marketing
+ * site. Uses a pure CSS keyframe so the fade is driven by the compositor and
+ * is NOT blocked while the (heavy) Landing page is mounting/hydrating.
  */
 export function ExitBookFlash({ onDone }: { onDone: () => void }) {
-  const [fadingOut, setFadingOut] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const fade = window.setTimeout(() => setFadingOut(true), 200);
-    const done = window.setTimeout(onDone, 380);
-    return () => { clearTimeout(fade); clearTimeout(done); };
+    // Fallback removal in case animationend never fires.
+    const t = window.setTimeout(() => {
+      setHidden(true);
+      onDone();
+    }, 700);
+    return () => clearTimeout(t);
   }, [onDone]);
+
+  if (hidden) return null;
 
   return (
     <div
       aria-hidden
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background transition-opacity duration-150"
-      style={{ opacity: fadingOut ? 0 : 1 }}
+      onAnimationEnd={() => {
+        setHidden(true);
+        onDone();
+      }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background pointer-events-none"
+      style={{
+        animation: "exit-book-fade 500ms ease-out forwards",
+      }}
     >
       <BookOpen className="h-12 w-12 text-primary" strokeWidth={1.75} />
+      <style>{`
+        @keyframes exit-book-fade {
+          0%   { opacity: 1; }
+          60%  { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }

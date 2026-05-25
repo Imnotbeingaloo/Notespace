@@ -97,6 +97,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     listeningRef.current = false;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
+    if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
+    idleRafRef.current = null;
     if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
     restartTimerRef.current = null;
     try {
@@ -131,6 +133,37 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     return d;
   };
+
+  // Ref callback that paints the initial idle waveform the instant the SVG
+  // mounts, so the user never sees an empty box while the mic is connecting.
+  const setBarsPath = useCallback((el: SVGPathElement | null) => {
+    barsPathRef.current = el;
+    if (el) el.setAttribute("d", buildBarsPath(smoothedRef.current));
+  }, []);
+
+  // Lightweight idle animation: gentle sine bars before the mic stream is ready.
+  const idleRafRef = useRef<number | null>(null);
+  const startIdleAnimation = useCallback(() => {
+    if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
+    const startTs = performance.now();
+    const idleTick = (now: number) => {
+      // Stop idle as soon as the real analyser starts driving the path.
+      if (analyserRef.current) {
+        idleRafRef.current = null;
+        return;
+      }
+      const t = (now - startTs) / 1000;
+      const next = smoothedRef.current;
+      for (let i = 0; i < POINT_COUNT; i++) {
+        const phase = (i / POINT_COUNT) * Math.PI * 2;
+        const v = 0.08 + 0.05 * Math.sin(t * 3 + phase) + 0.04 * Math.sin(t * 5 + phase * 1.7);
+        next[i] = Math.max(0.02, v);
+      }
+      if (barsPathRef.current) barsPathRef.current.setAttribute("d", buildBarsPath(next));
+      idleRafRef.current = requestAnimationFrame(idleTick);
+    };
+    idleRafRef.current = requestAnimationFrame(idleTick);
+  }, []);
 
   const startVisualizer = useCallback(async () => {
     try {
@@ -186,7 +219,11 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     setOpen(true);
     setListening(true);
     listeningRef.current = true;
+    // Start idle bars immediately so the visualizer is alive while we
+    // wait for getUserMedia + recognition to spin up.
+    startIdleAnimation();
     await startVisualizer();
+
 
     const voiceWindow = window as VoiceWindow;
     const SR = voiceWindow.SpeechRecognition || voiceWindow.webkitSpeechRecognition;
@@ -344,8 +381,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                   aria-hidden="true"
                 >
                   <path
-                    ref={barsPathRef}
-                    d=""
+                    ref={setBarsPath}
+                    d={buildBarsPath(smoothedRef.current)}
                     fill="none"
                     stroke="hsl(var(--primary))"
                     strokeWidth={BAR_WIDTH}
