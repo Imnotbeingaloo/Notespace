@@ -263,7 +263,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.65 }}
                 className="mt-6 font-mono text-[11px] tracking-[0.22em] uppercase text-muted-foreground/70"
               >
-                No credit card · Free forever tier
+                No credit card required
               </motion.p>
             </div>
 
