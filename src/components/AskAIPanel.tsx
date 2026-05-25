@@ -282,7 +282,7 @@ export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
                   handleSend();
                 }
               }}
-              placeholder="Ask anything about your note…"
+              placeholder={mode === "edit" ? "Describe the edit (e.g., fix grammar, shorten, add a conclusion)…" : "Ask anything about your note…"}
               rows={1}
               className="flex-1 resize-none bg-background border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 max-h-32"
             />
