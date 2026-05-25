@@ -1,17 +1,11 @@
 ## Plan
 
-1. Update the hero vignette in `src/pages/Landing.tsx` so the floating `Explain` card matches the reference screenshot again.
-2. Remove the extra `Vol. 01` side note entirely.
-3. Reposition the `Explain` card so it sits lower-right and separate from the manuscript card instead of awkwardly overlapping the layout.
-4. Keep the original typewriter text inside the `Explain` card and preserve its simple card look so it reads like a clickable button.
-5. Leave the rest of the hero unchanged unless needed to avoid collisions.
+Move the floating **Explain** card back to its original position: overlapping the bottom-right corner of the "On wave theory" manuscript card (as shown in the second reference), instead of sitting fully below it.
 
 ## Technical details
 
-- Edit only the hero block in `src/pages/Landing.tsx`.
-- Remove the `Vol. 01` motion block.
-- Adjust the `Explain` card’s absolute positioning, spacing, width, and hover behavior to match the uploaded reference.
-- Preserve the typewriter content and cursor.
-- Avoid changing unrelated animation timing or the main manuscript card styling unless necessary for the restored layout.
+- In `src/pages/Landing.tsx`, change the Explain card's absolute positioning from `-bottom-16 sm:-bottom-20 right-0 sm:-right-4` to something like `-bottom-8 -right-4 sm:-right-8` so it overlaps the manuscript card's bottom-right corner.
+- Keep all other styling intact (border, rotate, typewriter content, hover lift).
+- No other changes.
 
-lastly "what it does " should be a button like sign up (dont make it teal)
+add a color hover over effect on the see what it does button when hovered it should become grey-ish colored
