@@ -99,7 +99,11 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     rafRef.current = null;
     if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
     restartTimerRef.current = null;
-    try { recognitionRef.current?.abort(); } catch {}
+    try {
+      recognitionRef.current?.abort();
+    } catch {
+      // Browser speech engines can throw when aborting an already-ended session.
+    }
     recognitionRef.current = null;
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -164,8 +168,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
       });
       streamRef.current = stream;
-      const Ctx: typeof AudioContext =
-        (window as any).AudioContext || (window as any).webkitAudioContext;
+      const voiceWindow = window as VoiceWindow;
+      const Ctx = voiceWindow.AudioContext || voiceWindow.webkitAudioContext;
       const ctx = new Ctx();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
@@ -203,8 +207,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
-    } catch (e: any) {
-      setError(e?.message || "Microphone access denied.");
+    } catch (e: unknown) {
+      setError(getErrorMessage(e, "Microphone access denied."));
     }
   }, []);
 
@@ -218,8 +222,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     listeningRef.current = true;
     await startVisualizer();
 
-    const SR: any =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const voiceWindow = window as VoiceWindow;
+    const SR = voiceWindow.SpeechRecognition || voiceWindow.webkitSpeechRecognition;
     if (!SR) {
       setError("Speech recognition is not supported in this browser. Try Chrome or Edge.");
       setListening(false);
@@ -232,12 +236,12 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     recognition.maxAlternatives = 3;
     recognition.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       let interimChunk = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const res = event.results[i];
         const alternatives = Array.from({ length: res.length }, (_, index) => res[index]);
-        const best = alternatives.reduce<any>((winner, current: any) => {
+        const best = alternatives.reduce<SpeechAlternativeLike | null>((winner, current) => {
           if (!winner) return current;
           return (current?.confidence ?? 0) > (winner?.confidence ?? 0) ? current : winner;
         }, null);
@@ -255,7 +259,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       setFinalText(aggregateRef.current);
       setInterim(interimChunk);
     };
-    recognition.onerror = (e: any) => {
+    recognition.onerror = (e) => {
       const err = e?.error;
       if (err === "no-speech" || err === "aborted" || err === "audio-capture") return;
       if (err === "not-allowed" || err === "service-not-allowed") {
@@ -270,14 +274,19 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       if (listeningRef.current) {
         restartTimerRef.current = window.setTimeout(() => {
           if (!listeningRef.current) return;
-          try { recognition.start(); } catch {}
+          try {
+            recognition.start();
+          } catch {
+            // Ignore duplicate restarts while the browser engine is still active.
+          }
         }, 180);
       }
     };
     recognitionRef.current = recognition;
-    try { recognition.start(); } catch (e: any) {
-      if (!String(e?.message || "").includes("already started")) {
-        setError(e?.message || "Could not start recognition.");
+    try { recognition.start(); } catch (e: unknown) {
+      const message = getErrorMessage(e, "Could not start recognition.");
+      if (!message.includes("already started")) {
+        setError(message);
         setListening(false);
         listeningRef.current = false;
       }
