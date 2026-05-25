@@ -155,10 +155,18 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
     setAllNotebooks(merged);
     const active = merged.filter((nb) => !nb.deleted_at);
-    if (!activeNotebookId && active.length > 0) {
+    // Validate persisted IDs still exist; otherwise fall back to first available
+    const persistedNb = active.find((nb) => nb.id === activeNotebookId);
+    if (!persistedNb && active.length > 0) {
       setActiveNotebookId(active[0].id);
-      const activeNotes = active[0].notes.filter((n) => !n.deleted_at);
-      if (activeNotes.length > 0) setActiveNoteId(activeNotes[0].id);
+      const firstNotes = active[0].notes.filter((n) => !n.deleted_at);
+      setActiveNoteId(firstNotes[0]?.id ?? null);
+    } else if (persistedNb) {
+      const validNote = persistedNb.notes.find((n) => n.id === activeNoteId && !n.deleted_at);
+      if (!validNote) {
+        const firstNotes = persistedNb.notes.filter((n) => !n.deleted_at);
+        setActiveNoteId(firstNotes[0]?.id ?? null);
+      }
     }
     setLoading(false);
   }, [user]);
