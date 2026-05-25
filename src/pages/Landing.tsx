@@ -182,21 +182,6 @@ export default function LandingPage() {
         {/* Soft gradient wash (original) */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-transparent to-transparent pointer-events-none" />
 
-        {/* Aurora wash — two slow drifting blobs (teal + forest green) */}
-        <motion.div
-          aria-hidden
-          className="hero-aurora absolute -top-32 -left-20 w-[34rem] h-[34rem] rounded-full bg-primary/20 blur-3xl pointer-events-none mix-blend-multiply"
-          animate={{ x: [0, 40, -20, 0], y: [0, 30, -10, 0], scale: [1, 1.08, 0.96, 1] }}
-          transition={{ duration: 16, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden
-          className="hero-aurora absolute -bottom-24 -right-16 w-[30rem] h-[30rem] rounded-full blur-3xl pointer-events-none mix-blend-multiply"
-          style={{ backgroundColor: "hsl(var(--hero-green) / 0.18)" }}
-          animate={{ x: [0, -30, 20, 0], y: [0, -20, 15, 0], scale: [1, 1.05, 0.98, 1] }}
-          transition={{ duration: 18, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
-        />
-
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -218,7 +203,8 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto"
           >
-            Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span style={{ color: "hsl(var(--hero-green))" }}>understood</span>
+            Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-primary">understood</span>
+
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

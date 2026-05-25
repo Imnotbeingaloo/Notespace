@@ -1,40 +1,31 @@
-## 1. Revert hero to original centered layout
+## 1. Revert the hero back to the original look
 
-Restore the previous version of the hero in `src/pages/Landing.tsx`:
-- Sparkle pill badge ("AI-Powered Note Taker") with the rotating Sparkles icon
-- Centered two-tone headline ("Your thoughts, organized & understood")
-- Centered subhead and two CTAs ("Start for Free" + "See Features")
-- Re-add the `Sparkles` import that was removed
+In `src/pages/Landing.tsx`:
+- Remove the two animated aurora blob `motion.div`s that were added behind the hero. Keep only the original soft gradient wash (`bg-gradient-to-b from-primary/[0.04]`).
+- Change the headline so both "organized" and "understood" use the teal primary color:
+  - `Your thoughts, <span className="text-primary">organized</span> & <span className="text-primary">understood</span>`
+- Leave the "AI-Powered Note Taker" pill badge exactly as it currently is (rounded pill, rotating `Sparkles` icon, muted text) — that matches the original design.
 
-## 2. Replace the orange accent (hero only) with forest green
+In `src/index.css`:
+- Remove the now-unused `--hero-green` CSS variable from both `:root` and `.dark`, and remove the `.hero-aurora` reduced-motion rule.
 
-The global `--accent` orange token is used in many other places (Temporary Note button, study planner dots, the sparkle icon, etc.), so the global token stays.
+## 2. Make the favicon look bigger in the browser tab
 
-- Add one new CSS variable `--hero-green: 152 42% 32%` to `:root` and `.dark` in `src/index.css`
-- In the hero headline, change the word "understood" from `text-accent` to `text-[hsl(var(--hero-green))]`
-- Everything else that uses orange (sparkle icon, badges, buttons across the rest of the site) is untouched
+The current `public/favicon.png` is 1920×1920 but the actual book artwork only fills the middle ~38% of the canvas, surrounded by white padding. That padding is why the icon looks tiny next to other sites' favicons in the tab strip.
 
-If a different green is wanted later (sage, emerald, olive), it's a one-value swap.
-
-## 3. Aurora-wash background animation behind the hero
-
-Add two large blurred blobs behind the hero content:
-- Blob A: teal (`--primary`), top-left area, ~32rem, blur-3xl, ~12% opacity
-- Blob B: forest green (`--hero-green`), bottom-right area, ~28rem, blur-3xl, ~10% opacity
-- Both animated with framer-motion: slow drift (x/y by ~40px) and scale (1 → 1.08) on a 14–18s loop, `repeatType: "mirror"`, `ease: "easeInOut"`
-- `mix-blend-mode: multiply` so they tint the cream paper rather than sitting on top
-- Wrapped in `motion.div` with `aria-hidden` and `pointer-events-none`
-- A `@media (prefers-reduced-motion: reduce)` rule freezes them at their initial position
-
-The existing soft gradient wash (`bg-gradient-to-b from-primary/[0.04]`) is kept so the hero still has its warm halo; the aurora blobs sit on top of it and provide the motion.
-
-## Files touched
-
-- `src/index.css` — add `--hero-green` to `:root` and `.dark`, plus the reduced-motion rule for the aurora blobs
-- `src/pages/Landing.tsx` — revert hero JSX to the centered version, swap the "understood" color class, add the two animated blob divs as the first children inside the hero `<section>`, re-add `Sparkles` import
+Fix:
+- Auto-trim the surrounding white from `public/favicon.png`, then re-pad with a small ~6% margin and re-export at 512×512. The visible book artwork will then fill nearly the whole 16×16 tab favicon slot, so it reads much larger.
+- `index.html` already references `/favicon.png` with the correct cache-busting setup, so no markup change is needed beyond optionally bumping a query string if caching is sticky.
 
 ## Out of scope
 
-- No changes to the navbar, app preview, features grid, dividers, footer, or any other page
-- No change to the global `--accent` token
-- No new fonts, no copy rewrites beyond what's already in the original hero
+- No changes to navbar, features grid, app preview, footer, or any other page.
+- No copy changes.
+- No new colors, fonts, or animations introduced.
+- The book artwork itself is not redrawn — only the empty padding around it is trimmed.
+
+## Files touched
+
+- `src/pages/Landing.tsx` — remove aurora blobs, swap "understood" color back to `text-primary`.
+- `src/index.css` — drop `--hero-green` and the `.hero-aurora` reduced-motion block.
+- `public/favicon.png` — re-exported with whitespace trimmed.
