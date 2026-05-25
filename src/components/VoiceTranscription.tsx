@@ -178,13 +178,13 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 3;
-    recognition.lang = navigator.language || "en-US";
+    recognition.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
 
     recognition.onresult = (event: any) => {
       let interimChunk = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const res = event.results[i];
-        const alternatives = Array.from(res as SpeechRecognitionResult);
+        const alternatives = Array.from({ length: res.length }, (_, index) => res[index]);
         const best = alternatives.reduce<any>((winner, current: any) => {
           if (!winner) return current;
           return (current?.confidence ?? 0) > (winner?.confidence ?? 0) ? current : winner;
