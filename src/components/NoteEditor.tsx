@@ -540,10 +540,18 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const handleAIEdit = useCallback(
     (newContent: string) => {
       if (!activeNotebookId || !activeNote) return;
-      if (contentRef.current) contentRef.current.value = newContent;
-      updateNote(activeNotebookId, activeNote.id, { content: newContent });
+      const original = (activeNote.content ?? "").trim();
+      const incoming = (newContent ?? "").trim();
+      if (!incoming) return;
+      // Merge: preserve the user's original content and append the AI edit below it
+      const merged = original
+        ? `${original}\n\n---\n\n## AI Edit\n\n${incoming}`
+        : incoming;
+      if (contentRef.current) contentRef.current.value = merged;
+      hybridEditorRef.current?.setContent(merged);
+      updateNote(activeNotebookId, activeNote.id, { content: merged });
     },
-    [activeNotebookId, activeNote?.id, updateNote]
+    [activeNotebookId, activeNote?.id, activeNote?.content, updateNote]
   );
 
   const handleSymbolInsert = useCallback(
