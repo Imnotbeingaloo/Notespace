@@ -364,6 +364,17 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <Plus className="h-3.5 w-3.5" />
               {promoteDropActive ? "Drop to make notebook" : "New Notebook"}
             </button>
+            <button
+              onClick={async () => {
+                const res = await createScratchNote();
+                if (res) onSelectNote?.();
+              }}
+              title="Quick temporary note — remember to save it before closing."
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors"
+            >
+              <ScratchIcon className="h-3.5 w-3.5" />
+              Scratch Note
+            </button>
           </div>
 
           <input
