@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, Navigate, useBlocker } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Clock, Download, FolderPlus, FolderInput, Loader2, Trash, X, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -144,17 +144,25 @@ function TemporaryWorkspaceInner() {
     persist({ content: v });
   };
 
-  // Router navigation guard
+  // Router navigation guard via history.pushState + popstate (back button)
   const hasContent = !!(note && (note.content.trim() || note.title.trim() !== "Temporary Note"));
-  const blocker = useBlocker(({ currentLocation, nextLocation }) =>
-    hasContent && !skipGuardRef.current && currentLocation.pathname !== nextLocation.pathname
-  );
+  const pendingPopRef = useRef(false);
 
   useEffect(() => {
-    if (blocker.state === "blocked") {
-      setLeaveOpen(true);
-    }
-  }, [blocker.state]);
+    if (!hasContent) return;
+    // Push a sentinel so the first Back press lands here and we can intercept
+    window.history.pushState({ tempGuard: true }, "");
+    const onPop = (e: PopStateEvent) => {
+      if (hasContent) {
+        // Re-push to keep user on the page until they choose
+        window.history.pushState({ tempGuard: true }, "");
+        pendingPopRef.current = true;
+        setLeaveOpen(true);
+      }
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [hasContent]);
 
   // Tab-close guard
   useEffect(() => {
@@ -170,11 +178,11 @@ function TemporaryWorkspaceInner() {
 
   const proceedNavigation = () => {
     skipGuardRef.current = true;
-    if (blocker.state === "blocked") blocker.proceed?.();
+    pendingPopRef.current = false;
   };
   const cancelNavigation = () => {
     setLeaveOpen(false);
-    if (blocker.state === "blocked") blocker.reset?.();
+    pendingPopRef.current = false;
   };
 
   const handleSaveAsNotebook = async () => {
