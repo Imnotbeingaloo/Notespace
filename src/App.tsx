@@ -13,6 +13,7 @@ import PricingPage from "./pages/Pricing";
 import AboutPage from "./pages/About";
 import HowItWorksPage from "./pages/HowItWorks";
 import TrashPage from "./pages/Trash";
+import TemporaryWorkspacePage from "./pages/TemporaryWorkspace";
 import NotFound from "./pages/NotFound";
 import { lazy, Suspense } from "react";
 const SharedNotePage = lazy(() => import("./pages/SharedNote"));
@@ -26,7 +27,7 @@ function ThemeController() {
   const { setTheme, theme } = useTheme();
 
   useEffect(() => {
-    const isAppPage = pathname === "/app" || pathname === "/trash";
+    const isAppPage = pathname === "/app" || pathname === "/trash" || pathname === "/app/temporary";
     if (isAppPage) {
       // Restore saved app theme
       const saved = localStorage.getItem("app-theme") || "light";
@@ -58,6 +59,7 @@ const App = () => (
               <Route path="/about" element={<AboutPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="/trash" element={<TrashPage />} />
+              <Route path="/app/temporary" element={<TemporaryWorkspacePage />} />
               <Route path="/shared/:token" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><SharedNotePage /></Suspense>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
