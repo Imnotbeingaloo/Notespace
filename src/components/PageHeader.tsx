@@ -42,7 +42,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
             alt="Notebook Archive"
             className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0"
           />
-          <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">
+          <span className="font-serif text-base sm:text-lg md:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap">
             Notebook Archive
           </span>
         </Link>
