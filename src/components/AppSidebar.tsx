@@ -330,10 +330,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <button
               onClick={() => sidebarUploadRef.current?.click()}
               disabled={sidebarUploading}
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              title="Upload files into the current note. Allowed: images, PDF, DOC/DOCX, XLSX, TXT, MD, CSV, JSON (max 10 MB)."
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn disabled:opacity-60"
             >
-              <Upload className="h-3.5 w-3.5" />
-              {sidebarUploading ? "..." : "Upload"}
+              {sidebarUploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+              {sidebarUploading ? "Uploading…" : "Upload"}
             </button>
             <button
               onClick={() => setNewNotebookOpen(true)}
