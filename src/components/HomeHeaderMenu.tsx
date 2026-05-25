@@ -30,7 +30,7 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
           aria-label="Account menu"
@@ -60,6 +60,7 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
 
         <Link
           to="/trash"
+          onClick={() => setOpen(false)}
           className="w-full flex items-center gap-2 px-2.5 py-2 text-sm text-foreground rounded-md hover:bg-muted transition-colors"
         >
           <Trash2 className="h-4 w-4" />
@@ -74,7 +75,7 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
         <div className="my-1 border-t border-border" />
 
         <button
-          onClick={signOut}
+          onClick={handleSignOut}
           className="w-full flex items-center gap-2 px-2.5 py-2 text-sm text-rose-600 dark:text-rose-400 rounded-md hover:bg-rose-500/10 transition-colors"
         >
           <LogOut className="h-4 w-4" />
