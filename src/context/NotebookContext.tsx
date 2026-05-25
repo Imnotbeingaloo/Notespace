@@ -438,13 +438,15 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     <NotebookContext.Provider
       value={{
         notebooks, trashedNotebooks, trashedNotes,
-        activeNotebookId, activeNoteId,
+        activeNotebookId: effectiveActiveNotebookId,
+        activeNoteId: effectiveActiveNoteId,
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, nestNotebook, promoteNoteToNotebook,
         ensureScratchNotebook, createScratchNote, isScratchNotebook, moveNoteToNotebook,
         createNote, deleteNote, updateNote,
         reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,
         activeNotebook, activeNote, loading, refreshData: fetchData,
+        setOverride, isOverrideActive: !!override,
       }}
     >
       {children}
