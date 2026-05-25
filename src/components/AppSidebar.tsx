@@ -880,7 +880,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <div className="flex flex-col items-center gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link to="/trash" className="p-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition-colors" aria-label="Trash">
+                  <Link to="/trash" className="p-2 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors" aria-label="Trash">
                     <Trash2 className="h-4 w-4" />
                   </Link>
                 </TooltipTrigger>
