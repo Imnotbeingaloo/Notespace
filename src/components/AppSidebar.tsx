@@ -264,13 +264,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     if (sidebarUploadRef.current) sidebarUploadRef.current.value = "";
   };
 
-  const handleCreateNotebook = () => {
-    if (newNotebookName.trim()) {
-      createNotebook(newNotebookName.trim());
-      setNewNotebookName("");
-      setShowNewNotebook(false);
-    }
-  };
+  // (Inline create form removed; we now use the CreateNotebookDialog modal.)
 
   const toggleExpand = (id: string) => {
     setExpandedNotebook((prev) => (prev === id ? null : id));
