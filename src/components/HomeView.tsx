@@ -1,18 +1,20 @@
 import { motion } from "framer-motion";
 import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw } from "lucide-react";
+import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
   onCreateNotebook?: () => void;
+  onCreateScratchNote?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote }: HomeViewProps) {
   const { notebooks, loading, refreshData } = useNotebooks();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
@@ -111,9 +113,9 @@ export function HomeView({ onOpenNotebook, onCreateNotebook }: HomeViewProps) {
 
   // Determine grid columns to compute up/down navigation step
   const getCols = () => {
-    if (typeof window === "undefined") return 3;
-    if (window.innerWidth >= 1024) return 3;
-    if (window.innerWidth >= 640) return 2;
+    if (typeof window === "undefined") return 4;
+    if (window.innerWidth >= 1280) return 4;
+    if (window.innerWidth >= 640) return 3;
     return 1;
   };
 
