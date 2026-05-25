@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Home, Loader2, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
@@ -171,19 +171,8 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                   Notebook Archive
                 </span>
               </button>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => navigate("/", { state: { fromApp: true } })}
-                    aria-label="Go to website home"
-                    className="inline-flex items-center justify-center h-8 w-8 ml-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                  >
-                    <Home className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Website home</TooltipContent>
-              </Tooltip>
             </div>
+
 
             <div className="flex items-center gap-1">
               <HomeHeaderMenu trashCount={trashCount} />
@@ -231,12 +220,13 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
               <button
                 onClick={onCreateScratchNote}
                 data-testid="home-create-scratch"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/[0.06] text-amber-700 dark:text-amber-300 text-sm font-medium hover:bg-amber-500/[0.12] transition-colors"
+                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/[0.06] text-amber-700 dark:text-amber-300 text-sm font-medium hover:bg-amber-500/[0.12] transition-colors"
               >
                 <ScratchIcon className="h-4 w-4" />
                 Temporary Note
               </button>
             )}
+
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-7 sm:items-center">

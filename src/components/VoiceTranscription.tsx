@@ -7,13 +7,15 @@ interface VoiceTranscriptionProps {
 }
 
 /**
- * Voice → text with a live popup:
- *  - Animated frequency bars driven by the mic input level
- *  - Live interim transcript visible while speaking
- *  - On Stop, the full transcript is sent back via onTranscript
- *    so the editor can insert it at the last cursor position.
+ * Voice → text with a live popup.
+ * The waveform is updated imperatively via refs (no React state in the RAF loop)
+ * so the visualizer stays smooth even while speech recognition is firing.
  */
-const BAR_COUNT = 40;
+const BAR_COUNT = 48;
+const W = 320;
+const H = 80;
+const MID = H / 2;
+const STEP_X = W / (BAR_COUNT - 1);
 
 export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [open, setOpen] = useState(false);
@@ -21,7 +23,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const [interim, setInterim] = useState("");
   const [finalText, setFinalText] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [levels, setLevels] = useState<number[]>(() => new Array(BAR_COUNT).fill(0));
 
   const recognitionRef = useRef<any>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -31,6 +32,9 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const listeningRef = useRef(false);
   const aggregateRef = useRef("");
   const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  const topPathRef = useRef<SVGPathElement | null>(null);
+  const botPathRef = useRef<SVGPathElement | null>(null);
+  const fillPathRef = useRef<SVGPathElement | null>(null);
 
   const isSupported =
     typeof window !== "undefined" &&
@@ -56,6 +60,24 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
 
   useEffect(() => () => cleanup(), [cleanup]);
 
+  const buildPath = (vals: number[], topSide: boolean) => {
+    // Smooth wave via quadratic curves between midpoints
+    const pts: [number, number][] = vals.map((v, i) => {
+      const amp = Math.max(2, v * (H / 2 - 4));
+      return [i * STEP_X, topSide ? MID - amp : MID + amp];
+    });
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1];
+      const [x1, y1] = pts[i];
+      const cx = (x0 + x1) / 2;
+      const cy = (y0 + y1) / 2;
+      d += ` Q ${x0} ${y0} ${cx} ${cy}`;
+    }
+    d += ` L ${pts[pts.length - 1][0]} ${pts[pts.length - 1][1]}`;
+    return d;
+  };
+
   const startVisualizer = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -67,8 +89,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       const ctx = new Ctx();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.82;
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.85;
       source.connect(analyser);
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
@@ -77,20 +99,36 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       const tick = () => {
         if (!analyserRef.current) return;
         analyserRef.current.getByteFrequencyData(data);
-        const useable = Math.floor(data.length * 0.6); // skip very-high freqs
+        const useable = Math.floor(data.length * 0.55);
         const step = useable / BAR_COUNT;
-        const next = smoothedRef.current.slice();
+        const next = smoothedRef.current;
         for (let i = 0; i < BAR_COUNT; i++) {
           const start = Math.floor(i * step);
           const end = Math.floor((i + 1) * step) || start + 1;
           let sum = 0;
           for (let j = start; j < end; j++) sum += data[j];
-          const avg = sum / (end - start) / 255; // 0..1
-          // exponential smoothing for buttery motion
-          next[i] = next[i] * 0.65 + avg * 0.35;
+          const avg = sum / (end - start) / 255;
+          next[i] = next[i] * 0.6 + avg * 0.4;
         }
-        smoothedRef.current = next;
-        setLevels(next);
+        // Direct DOM writes — bypass React entirely
+        const topD = buildPath(next, true);
+        const botD = buildPath(next, false);
+        if (topPathRef.current) topPathRef.current.setAttribute("d", topD);
+        if (botPathRef.current) botPathRef.current.setAttribute("d", botD);
+        if (fillPathRef.current) {
+          // Build closed fill path: top forward then bottom reversed
+          let fill = topD;
+          const lastTop = next.length - 1;
+          const lastAmp = Math.max(2, next[lastTop] * (H / 2 - 4));
+          fill += ` L ${lastTop * STEP_X} ${MID + lastAmp}`;
+          // Reverse bottom
+          for (let i = next.length - 1; i >= 0; i--) {
+            const amp = Math.max(2, next[i] * (H / 2 - 4));
+            fill += ` L ${i * STEP_X} ${MID + amp}`;
+          }
+          fill += " Z";
+          fillPathRef.current.setAttribute("d", fill);
+        }
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
@@ -153,14 +191,12 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       }
     };
     recognition.onend = () => {
-      // Chrome ends after ~60s or on brief silence — restart while user is still listening
       if (listeningRef.current) {
         try { recognition.start(); } catch {}
       }
     };
     recognitionRef.current = recognition;
     try { recognition.start(); } catch (e: any) {
-      // Some browsers throw if start() is called twice quickly
       if (!String(e?.message || "").includes("already started")) {
         setError(e?.message || "Could not start recognition.");
         setListening(false);
@@ -192,31 +228,6 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   }, [cleanup]);
 
   if (!isSupported) return null;
-
-  // Build smooth waveform SVG path (mirrored top/bottom around centerline)
-  const W = 320;
-  const H = 80;
-  const mid = H / 2;
-  const stepX = W / (BAR_COUNT - 1);
-  const amp = (v: number) => Math.max(2, v * (H / 2 - 4));
-  const topPts = levels.map((v, i) => [i * stepX, mid - amp(v)] as const);
-  const botPts = levels.map((v, i) => [i * stepX, mid + amp(v)] as const);
-  const toPath = (pts: readonly (readonly [number, number])[]) => {
-    if (pts.length === 0) return "";
-    let d = `M ${pts[0][0]} ${pts[0][1]}`;
-    for (let i = 0; i < pts.length - 1; i++) {
-      const [x0, y0] = pts[i];
-      const [x1, y1] = pts[i + 1];
-      const cx = (x0 + x1) / 2;
-      d += ` Q ${cx} ${y0} ${cx} ${(y0 + y1) / 2} T ${x1} ${y1}`;
-    }
-    return d;
-  };
-  const fillPath =
-    toPath(topPts) +
-    ` L ${botPts[botPts.length - 1][0]} ${botPts[botPts.length - 1][1]}` +
-    toPath([...botPts].reverse()) +
-    " Z";
 
   return (
     <>
@@ -270,7 +281,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                 </button>
               </div>
 
-              {/* Smooth waveform visualizer */}
+              {/* Smooth waveform visualizer (imperative SVG updates) */}
               <div className="px-5 pt-5 pb-3">
                 <svg
                   viewBox={`0 0 ${W} ${H}`}
@@ -280,18 +291,19 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                 >
                   <defs>
                     <linearGradient id="vt-wave-grad" x1="0" x2="1" y1="0" y2="0">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
-                      <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
+                      <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.85" />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
                     </linearGradient>
                   </defs>
                   <line
-                    x1="0" x2={W} y1={mid} y2={mid}
+                    x1="0" x2={W} y1={MID} y2={MID}
                     stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="2 4"
                   />
-                  <path d={fillPath} fill="url(#vt-wave-grad)" opacity="0.55" />
+                  <path ref={fillPathRef} d="" fill="url(#vt-wave-grad)" opacity="0.55" />
                   <path
-                    d={toPath(topPts)}
+                    ref={topPathRef}
+                    d=""
                     fill="none"
                     stroke="hsl(var(--primary))"
                     strokeWidth="1.8"
@@ -299,7 +311,8 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                     strokeLinejoin="round"
                   />
                   <path
-                    d={toPath(botPts)}
+                    ref={botPathRef}
+                    d=""
                     fill="none"
                     stroke="hsl(var(--primary))"
                     strokeWidth="1.8"

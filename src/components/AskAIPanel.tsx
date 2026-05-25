@@ -40,11 +40,11 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Sync mode when defaultMode changes (e.g. opened from AI Edit trigger)
+  // Sync mode whenever the caller changes defaultMode (e.g. opened from AI Edit trigger)
   useEffect(() => {
-    if (open) setMode(defaultMode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, defaultMode]);
+    setMode(defaultMode);
+  }, [defaultMode]);
+
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;

@@ -240,10 +240,11 @@ function TemporaryWorkspaceInner() {
               </span>
             </button>
             <span className="text-muted-foreground/40 mx-1">/</span>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 dark:text-amber-300">
+            <span className="group inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 dark:text-amber-300 cursor-default">
               <ScratchIcon className="h-3.5 w-3.5" />
               Temporary
             </span>
+
           </div>
 
           <div className="flex items-center gap-1.5 pointer-events-auto">
