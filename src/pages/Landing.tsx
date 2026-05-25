@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
+import { BookOpen, ArrowRight, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
@@ -179,51 +179,100 @@ export default function LandingPage() {
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pt-28 pb-16">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-transparent to-transparent pointer-events-none" />
-        <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6"
-          >
-            <motion.span
-              animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+        {/* Off-center warm paper tint (replaces full-wash gradient) */}
+        <div
+          aria-hidden
+          className="absolute -top-24 -left-24 w-[36rem] h-[36rem] rounded-full bg-accent/[0.06] blur-3xl pointer-events-none"
+        />
+        {/* Faint dotted grid — same pattern used inside the app */}
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)",
+            backgroundSize: "24px 24px",
+          }}
+        />
+        <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 relative">
+          <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-end max-w-6xl">
+            <div className="md:col-span-9">
+              {/* Editorial kicker — replaces the AI sparkle pill */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="flex items-center gap-3 mb-6"
+              >
+                <span className="h-px w-10 bg-accent" />
+                <span className="text-[11px] uppercase tracking-[0.28em] font-mono text-accent">
+                  A Note-Taker That Thinks With You
+                </span>
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="font-serif text-[2.25rem] sm:text-5xl lg:text-[4.25rem] font-bold text-foreground leading-[1.02] tracking-tight"
+              >
+                Your thoughts, organized<br className="hidden sm:block" /> &amp; <span className="text-primary italic">understood</span>.
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+                className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed"
+              >
+                A quiet place to write, link, and revisit your ideas — with intelligence woven in only where it actually helps.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4"
+              >
+                <Link
+                  to={user ? "/app" : "/auth"}
+                  className="magnetic-btn inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3 text-base font-semibold text-primary-foreground shadow-sm shadow-primary/10 ring-1 ring-inset ring-white/20"
+                >
+                  {user ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4" />
+                </Link>
+                <a
+                  href="#features"
+                  className="inline-flex items-center justify-center gap-1 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors underline underline-offset-[6px] decoration-border decoration-1 hover:decoration-foreground/40 px-2 py-3"
+                >
+                  See what it does
+                </a>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+                className="mt-5 text-[11px] font-mono uppercase tracking-wider text-muted-foreground/70"
+              >
+                No credit card · Free forever tier
+              </motion.p>
+            </div>
+
+            {/* Right meta column — editorial chrome, hidden on mobile */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="hidden md:flex md:col-span-3 flex-col items-start gap-3 pb-2 border-l border-border pl-5"
             >
-              <Sparkles className="h-3.5 w-3.5 text-accent" />
-            </motion.span>
-            AI-Powered Note Taker
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto"
-          >
-            Your thoughts,{" "}<span className="text-primary">organized</span> &{" "}<span className="text-accent">understood</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-          >
-            Notebook Archive is the intelligent note-taking app that helps you capture ideas, organize knowledge, and get AI-powered insights — all in one beautiful workspace.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Open App" : "Start for Free"} <ArrowRight className="h-5 w-5" />
-            </Link>
-            <a href="#features" className="magnetic-btn inline-flex items-center gap-2 rounded-2xl border border-border px-8 py-3.5 text-base font-medium text-foreground hover:bg-muted transition-colors">
-              See Features
-            </a>
-          </motion.div>
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                Vol. 01
+              </span>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                A writing tool for people who think on the page — and want their notes to think back.
+              </p>
+            </motion.div>
+          </div>
         </div>
       </section>
 

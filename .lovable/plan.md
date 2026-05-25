@@ -1,74 +1,39 @@
-## 1. Home header — show "Notebook Archive" wordmark
+## Why it reads as AI right now
 
-In `src/components/HomeView.tsx` (line ~170):
+Looking at the current hero, the colors themselves are fine. The "AI smell" comes from how they're arranged. Specifically:
 
-- Remove `hidden sm:inline` from the wordmark span so it shows on every viewport.
-- Tighten gap so the logo + wordmark + Home icon button sit cleanly together at 1187px and below.
+1. **The sparkle-icon badge** saying "AI-Powered Note Taker" — this exact pill is on roughly every Lovable/v0/Bolt landing page in the wild
+2. **Two different accent colors splitting one headline** ("organized" in teal, "understood" in orange) — classic AI default
+3. **Dead-centered everything** — badge, headline, subtext, buttons all stacked on the centerline
+4. **Soft radial teal gradient washing the whole background** — the most-overused AI hero treatment
+5. **"Beautiful workspace" type copy** — generic SaaS voice
 
-## 2. Temporary workspace — full editor parity
+## What I'll change (palette stays identical)
 
-The user wants the temp note to look and behave like a real note editor (toolbar, AI buttons, Ask AI, AI Edit, Voice, Import, Flashcards, Export, Preview, Share-off, find/replace, word count, etc.) — just without the **sidebar**.
+### Composition
+- Switch hero from dead-center stack to a **left-aligned editorial layout** on desktop (headline + sub left, small meta column right). Stays centered on mobile.
+- Remove the wash gradient. Replace with a single, off-center warm-cream tint behind the headline so the page reads as paper, not as a generated card.
+- Add a hairline rule above the headline (Swiss-editorial signal, not an AI trope).
 
-Approach:
+### Headline
+- Drop the sparkle badge entirely.
+- Headline becomes **one line of restrained color**: only one accent word (teal "understood"), the rest in foreground ink. No orange word.
+- Move the orange accent to a **small kicker label** above the headline (uppercase mono, like "◆ A note-taker that thinks with you") — same orange/teal already in the palette, but used as editorial chrome instead of as headline highlights. This is how serious publications use accent color.
+- Slightly tighter leading on the headline so it feels typeset, not generated.
 
-- Extend `NotebookContext` with an optional `overrideActiveNote` (and `setOverrideActiveNote`) plus an optional `overrideUpdateNote` callback. When set, `activeNote` resolves to the override and `updateNote` for that synthetic id routes through `overrideUpdateNote`. Real `notebooks` / `activeNotebookId` stay untouched.
-- Rewrite `src/pages/TemporaryWorkspace.tsx`:
-  - Load/create the temp row exactly as today.
-  - Register it as the override note (`{ id, title, content, ... }`); supply an `overrideUpdateNote` that writes `title`/`content` back to `temporary_notes`.
-  - Render `<NoteEditor />` (no `AppSidebar`) inside the same `min-h-screen` shell.
-  - Keep the floating top cluster (logo+back, "Temporary", countdown chip, notebooks drawer) overlaid above the editor.
-  - Keep navigation guard (`popstate` + `beforeunload`) and the Leave dialog logic.
-- Hide the `ShareNoteDialog` row in `NoteEditor` when the active note is the override (sharing a temp note doesn't make sense). Everything else (Ask AI, AI Edit, Voice, Import, Flashcards, Export, Preview, Find/Replace, Word Count, Goal, Pomodoro topbar, Focus toggle) renders unchanged.
+### Subhead & CTAs
+- Rewrite the subhead to drop the "intelligent / beautiful workspace" phrasing. Replace with a shorter, more specific line.
+- CTAs left-aligned under the subhead, not centered. Primary button gets a subtle inset highlight instead of the big glowing shadow.
+- Add a small secondary text line under the buttons ("No credit card · Free forever tier") in muted mono — anchors trust without adding a badge.
 
-## 3. Leave dialog cleanup
+### Background
+- Remove `bg-gradient-to-b from-primary/[0.04]`.
+- Add a faint dotted-grid texture (same dot pattern already used on the Home view inside the app) at very low opacity — ties marketing to product, and dotted grids don't read as AI gradients.
 
-In `TemporaryWorkspace.tsx` Leave dialog:
+## Files touched
 
-- **Remove** the "Download as Markdown" button entirely.
-- Order: 1) Save as new notebook (primary), 2) Save into existing notebook (outline), 3) **Discard** rendered as a real solid button (destructive variant: `bg-destructive text-destructive-foreground hover:bg-destructive/90`) instead of the current ghost link.
-- Closing the dialog with X / Esc / backdrop still cancels the navigation (already handled).
-
-## 4. App → Website transition: bare book, no splash
-
-User says the current splash on exit is too heavy. Replace with a minimal 200–250 ms book swap.
-
-- Delete the `fast` SplashScreen invocation from `src/pages/Landing.tsx`.
-- New tiny component `src/components/ExitBookFlash.tsx`: full-screen `bg-background` with just a centered `BookOpen` lucide icon (or `/logo.png` stripped of label — confirm: user said "just a book, no logo nothing", so use the lucide `BookOpen` icon at ~h-12 in `text-primary`). No motion, no text, no dots; fades out via a single 180ms opacity transition, total visible time ~220ms.
-- `Landing.tsx` renders `<ExitBookFlash />` only when `location.state.fromApp === true`, then clears the state.
-- Remove the splash entry-trigger branch in `SplashScreen.tsx`'s `fast` mode (no longer used). Leave the initial app splash intact.
-
-## 5. AI Edit button → open Ask AI in Edit mode + swap "Explain this note" → "Edit this note"
-
-Goal: Clicking "AI Edit" should open the same Ask-AI modal but with the **Edit** tab preselected; in that state the quick action button labelled "Explain this note" becomes "Edit this note".
-
-- Lift open state and initial mode into `AskAIPanel`: accept optional `defaultMode?: "chat" | "edit"` and expose an imperative `openWith(mode)` via `forwardRef`, OR (simpler) accept controlled `open` / `onOpenChange` + `mode` props.
-- In `NoteEditor.tsx`, render a single shared `AskAIPanel` ref/state, and turn `AIEditPanel` into a trigger-only button: clicking "AI Edit" calls `askAIRef.current.openWith("edit")` instead of opening the side drawer. Keep the AI Edit button visual and label.
-- In the Ask-AI panel, when `mode === "edit"`:
-  - Quick action button label switches from "Explain this note" → "Edit this note", and clicking it sends `callAI("edit", "Improve this note")` (or focuses the input with a sensible default placeholder) instead of being disabled as it is today.
-  - In `mode === "chat"` it stays "Explain this note" (unchanged).
-- Delete the standalone `AIEditPanel` side-drawer UI (the file can stay for the trigger button or be removed; safer: keep the export as a thin trigger-only button that calls the parent handler).
-
-## Technical notes
-
-- `NotebookContext` override pattern keeps the change isolated: no schema changes, no edits to `notes`/`notebooks` paths.
-- `temporary_notes` table already exists with `expires_at`; no migration needed.
-- `NoteEditor` will not break for empty notebooks because the override fills `activeNote` and supplies its own write path.
-- Test viewports: 1187 (current) and 375 — wordmark must be visible at both.
+- `src/pages/Landing.tsx` — only the `{/* ── Hero ── */}` section (lines ~180–228). Everything else (navbar, app preview, features, dividers, footer) untouched.
 
 ## Out of scope
 
-- No changes to notebooks, notes, trash, auth, AI gateway, or marketing pages other than `Landing.tsx` exit flash.
-- No new database fields.  
-  
-also the ai edit option, i told it to write the equation of light (whole) it just did this, i need it to add signs, it can pick up the signs from the signs buttons and upload them into thedoucment, this doesnt look good  
-  
-$c = \lambda f$
-  Where:
-  $c$ is the speed of light (approximately $3 \times 10^8$ m/s)
-  $\lambda$ (lambda) is the wavelength
-  $f$ (or $\nu$) is the frequency
-  Additionally, in the context of energy:  
-  $E = hf = \frac{hc}{\lambda}$
-  Where:
-  $E$ is energy
-  $h$ is Planck's constant ($6.626 \times 10^{-34}$ J·s)
+- No new colors, no font swaps, no changes to the app preview mockup, features grid, or any other section. Strictly the hero block.
