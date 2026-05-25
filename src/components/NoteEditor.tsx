@@ -441,7 +441,7 @@ function PreviewButton() {
 
 
 export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindReplaceChange }: { focusMode?: boolean; findReplaceOpen?: boolean; onFindReplaceChange?: (open: boolean) => void }) {
-  const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote } = useNotebooks();
+  const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote, isOverrideActive } = useNotebooks();
   const { user } = useAuth();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -453,6 +453,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  // Shared Ask-AI modal state — opened by both the Ask AI trigger and the AI Edit button.
+  const [askAIOpen, setAskAIOpen] = useState(false);
+  const [askAIMode, setAskAIMode] = useState<"chat" | "edit">("chat");
+  const openAskAI = useCallback((mode: "chat" | "edit") => { setAskAIMode(mode); setAskAIOpen(true); }, []);
 
   // Ctrl+F for find and replace
   useEffect(() => {
@@ -470,7 +474,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
     setSaveStatus("idle");
-    if (activeNote) {
+    if (activeNote && !isOverrideActive) {
       supabase
         .from("notes")
         .select("tags")
@@ -479,8 +483,10 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         .then(({ data }) => {
           setTags((data as any)?.tags || []);
         });
+    } else {
+      setTags([]);
     }
-  }, [activeNote?.id]);
+  }, [activeNote?.id, isOverrideActive]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -682,7 +688,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
 
           {/* Tags row */}
-          {!focusMode && (
+          {!focusMode && !isOverrideActive && (
             <div className="mt-2">
               <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
             </div>
@@ -726,10 +732,17 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
               {/* Core actions always visible on desktop */}
               <div className="hidden lg:flex items-center gap-1">
                 <FlashcardsButton />
-                <AskAIPanel onApplyEdit={handleAIEdit} />
+                <button
+                  onClick={() => openAskAI("chat")}
+                  className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
+                  title="Ask AI"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Ask AI
+                </button>
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
-                {activeNote && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} notebookName={activeNotebook?.name} />}
+                {activeNote && !isOverrideActive && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} notebookName={activeNotebook?.name} />}
               </div>
 
               {/* Three-dots menu for secondary actions (all sizes) */}
@@ -753,16 +766,22 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       <div className="lg:hidden flex flex-col gap-1">
                         <ImportNotesButton onInsert={handleImportNotes} />
                         <VoiceTranscription onTranscript={handleVoiceTranscript} />
-                        <AskAIPanel onApplyEdit={handleAIEdit} />
+                        <button
+                          onClick={() => { setMoreOpen(false); openAskAI("chat"); }}
+                          className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
+                        >
+                          <Sparkles className="h-3.5 w-3.5" />
+                          Ask AI
+                        </button>
                         <FlashcardsButton />
-                        <AIEditPanel onApplyEdit={handleAIEdit} />
+                        <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <ExportButtons />
                         <PreviewButton />
                       </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
                         <ImportNotesButton onInsert={handleImportNotes} />
-                        <AIEditPanel onApplyEdit={handleAIEdit} />
+                        <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
                       </div>
                     </motion.div>
@@ -820,12 +839,20 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         </div>
 
         {/* File upload */}
-        {!focusMode && (
+        {!focusMode && !isOverrideActive && (
           <div className="shrink-0 border-t border-border">
             <FileUpload onInsertMarkdown={handleInsertMarkdown} />
           </div>
         )}
 
+        {/* Shared Ask-AI panel (controlled). Triggered by Ask AI button and by AI Edit button. */}
+        <AskAIPanel
+          hideTrigger
+          open={askAIOpen}
+          onOpenChange={setAskAIOpen}
+          defaultMode={askAIMode}
+          onApplyEdit={handleAIEdit}
+        />
       </motion.div>
     </AnimatePresence>
   );

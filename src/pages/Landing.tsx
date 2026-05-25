@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
-import { SplashScreen } from "@/components/SplashScreen";
+import { ExitBookFlash } from "@/components/ExitBookFlash";
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -117,7 +117,7 @@ export default function LandingPage() {
 
   return (
     <>
-      {showExitSplash && <SplashScreen fast onComplete={() => setShowExitSplash(false)} />}
+      {showExitSplash && <ExitBookFlash onDone={() => setShowExitSplash(false)} />}
       <div className="min-h-screen bg-background" style={showExitSplash ? { visibility: "hidden" } : undefined}>
       {/* ── Floating Navbar ── */}
       <motion.header

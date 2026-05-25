@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Clock, Download, FolderPlus, FolderInput, Loader2, Trash, BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Clock, FolderPlus, FolderInput, Loader2, Trash, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
-import { NotebookProvider, useNotebooks } from "@/context/NotebookContext";
-import { HybridEditor, type HybridEditorHandle } from "@/components/HybridEditor";
+import { NotebookProvider, useNotebooks, type Note } from "@/context/NotebookContext";
+import { NoteEditor } from "@/components/NoteEditor";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import {
   Dialog,
@@ -31,11 +30,13 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
-interface TempNote {
+interface TempRow {
   id: string;
   title: string;
   content: string;
   expires_at: string;
+  created_at: string;
+  updated_at: string;
 }
 
 function formatRemaining(expiresAt: string): string {
@@ -46,22 +47,12 @@ function formatRemaining(expiresAt: string): string {
   return `${h}h ${m.toString().padStart(2, "0")}m`;
 }
 
-function downloadMarkdown(title: string, content: string) {
-  const blob = new Blob([`# ${title}\n\n${content}`], { type: "text/markdown" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${title || "temporary-note"}.md`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 function TemporaryWorkspaceInner() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { notebooks, createNotebook, createNote, updateNote } = useNotebooks();
+  const { notebooks, createNotebook, createNote, setOverride } = useNotebooks();
 
-  const [note, setNote] = useState<TempNote | null>(null);
+  const [row, setRow] = useState<TempRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [remaining, setRemaining] = useState("24h 00m");
   const [leaveOpen, setLeaveOpen] = useState(false);
@@ -69,29 +60,27 @@ function TemporaryWorkspaceInner() {
   const [chosenNotebookId, setChosenNotebookId] = useState<string>("");
   const [permDrawerOpen, setPermDrawerOpen] = useState(false);
   const [working, setWorking] = useState(false);
-  const editorRef = useRef<HybridEditorHandle>(null);
   const dirtyRef = useRef(false);
   const skipGuardRef = useRef(false);
   const saveTimerRef = useRef<number | null>(null);
+  const rowRef = useRef<TempRow | null>(null);
+  rowRef.current = row;
 
-  // Create / load the temp note on mount
+  // Load or create the temp row
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
-      // Reuse the most recent non-expired temp note in this session, else create new
       const { data: existing } = await supabase
         .from("temporary_notes")
         .select("*")
         .gt("expires_at", new Date().toISOString())
         .order("updated_at", { ascending: false })
         .limit(1);
-
       if (cancelled) return;
-
-      let row = existing?.[0] as TempNote | undefined;
-      if (!row) {
+      let r = existing?.[0] as TempRow | undefined;
+      if (!r) {
         const { data: inserted, error } = await supabase
           .from("temporary_notes")
           .insert({ user_id: user.id, title: "Temporary Note", content: "" })
@@ -102,99 +91,99 @@ function TemporaryWorkspaceInner() {
           navigate("/app", { replace: true });
           return;
         }
-        row = inserted as TempNote;
+        r = inserted as TempRow;
       }
-      if (!cancelled) {
-        setNote(row);
-        setLoading(false);
-      }
+      if (!cancelled) { setRow(r); setLoading(false); }
     })();
     return () => { cancelled = true; };
   }, [user, navigate]);
 
-  // Live countdown
+  // Persist updates with debounce
+  const persist = useCallback((updates: Partial<TempRow>) => {
+    const cur = rowRef.current;
+    if (!cur) return;
+    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(() => {
+      supabase.from("temporary_notes").update(updates).eq("id", cur.id).then(() => {});
+    }, 500);
+  }, []);
+
+  // Register override note so NoteEditor renders the temp note
   useEffect(() => {
-    if (!note) return;
-    const tick = () => setRemaining(formatRemaining(note.expires_at));
+    if (!row) return;
+    const note: Note = {
+      id: row.id,
+      title: row.title,
+      content: row.content,
+      attachments: [],
+      tags: [],
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: null,
+    };
+    setOverride({
+      note,
+      onUpdate: (updates) => {
+        dirtyRef.current = true;
+        setRow((prev) => prev ? { ...prev, ...updates } as TempRow : prev);
+        const { attachments, tags, ...persistable } = updates as any;
+        persist(persistable);
+      },
+    });
+    return () => setOverride(null);
+  }, [row?.id, setOverride, persist]);
+
+  // Countdown
+  useEffect(() => {
+    if (!row) return;
+    const tick = () => setRemaining(formatRemaining(row.expires_at));
     tick();
     const id = window.setInterval(tick, 30_000);
     return () => clearInterval(id);
-  }, [note]);
+  }, [row?.expires_at]);
 
-  // Debounced autosave
-  const persist = useCallback((updates: Partial<TempNote>) => {
-    if (!note) return;
-    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = window.setTimeout(() => {
-      supabase.from("temporary_notes").update(updates).eq("id", note.id).then(() => {});
-    }, 500);
-  }, [note]);
+  const hasContent = !!(row && (row.content.trim() || row.title.trim() !== "Temporary Note"));
 
-  const handleTitleChange = (v: string) => {
-    if (!note) return;
-    dirtyRef.current = true;
-    setNote({ ...note, title: v });
-    persist({ title: v });
-  };
-
-  const handleContentChange = (v: string) => {
-    if (!note) return;
-    dirtyRef.current = true;
-    setNote({ ...note, content: v });
-    persist({ content: v });
-  };
-
-  // Router navigation guard via history.pushState + popstate (back button)
-  const hasContent = !!(note && (note.content.trim() || note.title.trim() !== "Temporary Note"));
-  const pendingPopRef = useRef(false);
-
+  // Back-button & tab-close guards
   useEffect(() => {
     if (!hasContent) return;
-    // Push a sentinel so the first Back press lands here and we can intercept
     window.history.pushState({ tempGuard: true }, "");
-    const onPop = (e: PopStateEvent) => {
-      if (hasContent) {
-        // Re-push to keep user on the page until they choose
-        window.history.pushState({ tempGuard: true }, "");
-        pendingPopRef.current = true;
-        setLeaveOpen(true);
-      }
+    const onPop = () => {
+      if (!hasContent || skipGuardRef.current) return;
+      window.history.pushState({ tempGuard: true }, "");
+      setLeaveOpen(true);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, [hasContent]);
 
-  // Tab-close guard
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (hasContent) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
+      if (hasContent) { e.preventDefault(); e.returnValue = ""; }
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [hasContent]);
 
-  const proceedNavigation = () => {
-    skipGuardRef.current = true;
-    pendingPopRef.current = false;
-  };
-  const cancelNavigation = () => {
-    setLeaveOpen(false);
-    pendingPopRef.current = false;
+  const handleExitClick = () => {
+    if (hasContent) setLeaveOpen(true);
+    else {
+      if (row) supabase.from("temporary_notes").delete().eq("id", row.id).then(() => {});
+      skipGuardRef.current = true;
+      navigate("/app");
+    }
   };
 
   const handleSaveAsNotebook = async () => {
-    if (!note) return;
+    if (!row) return;
     setWorking(true);
-    const nbName = (note.title || "Saved Note").slice(0, 60);
+    const nbName = (row.title || "Saved Note").slice(0, 60);
     const newNbId = await createNotebook(nbName);
     if (newNbId) {
-      const noteId = await createNote(newNbId, note.title || "Untitled", note.content);
-      await supabase.from("temporary_notes").delete().eq("id", note.id);
+      const noteId = await createNote(newNbId, row.title || "Untitled", row.content);
+      await supabase.from("temporary_notes").delete().eq("id", row.id);
       toast.success("Saved as a new notebook.");
-      proceedNavigation();
+      skipGuardRef.current = true;
       navigate(`/app?notebook=${newNbId}${noteId ? `&note=${noteId}` : ""}`, { replace: true });
     } else {
       toast.error("Couldn't create the notebook.");
@@ -203,43 +192,28 @@ function TemporaryWorkspaceInner() {
   };
 
   const handleSaveIntoExisting = async () => {
-    if (!note || !chosenNotebookId) return;
+    if (!row || !chosenNotebookId) return;
     setWorking(true);
-    const noteId = await createNote(chosenNotebookId, note.title || "Untitled", note.content);
-    await supabase.from("temporary_notes").delete().eq("id", note.id);
+    const noteId = await createNote(chosenNotebookId, row.title || "Untitled", row.content);
+    await supabase.from("temporary_notes").delete().eq("id", row.id);
     toast.success("Saved into notebook.");
     setPickerOpen(false);
-    proceedNavigation();
+    skipGuardRef.current = true;
     navigate(`/app?notebook=${chosenNotebookId}${noteId ? `&note=${noteId}` : ""}`, { replace: true });
     setWorking(false);
   };
 
-  const handleDownload = () => {
-    if (!note) return;
-    downloadMarkdown(note.title, note.content);
-  };
-
   const handleDiscard = async () => {
-    if (!note) return;
+    if (!row) return;
     setWorking(true);
-    await supabase.from("temporary_notes").delete().eq("id", note.id);
+    await supabase.from("temporary_notes").delete().eq("id", row.id);
     toast("Temporary note discarded.");
-    proceedNavigation();
+    skipGuardRef.current = true;
     navigate("/app", { replace: true });
     setWorking(false);
   };
 
-  const handleExitClick = () => {
-    if (hasContent) setLeaveOpen(true);
-    else {
-      // empty — silently delete and exit
-      if (note) supabase.from("temporary_notes").delete().eq("id", note.id).then(() => {});
-      skipGuardRef.current = true;
-      navigate("/app");
-    }
-  };
-
-  if (loading || !note) {
+  if (loading || !row) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -248,7 +222,7 @@ function TemporaryWorkspaceInner() {
   }
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen bg-background relative flex flex-col">
       {/* Floating top cluster */}
       <TooltipProvider delayDuration={150}>
         <div className="fixed top-3 left-3 right-3 z-30 flex items-center justify-between gap-2 pointer-events-none">
@@ -312,21 +286,6 @@ function TemporaryWorkspaceInner() {
                         <span className="font-medium text-sm text-foreground truncate flex-1">{nb.name}</span>
                         <span className="text-[10px] text-muted-foreground">{nb.notes?.length ?? 0}</span>
                       </button>
-                      {(nb.notes?.length ?? 0) > 0 && (
-                        <ul className="mt-2 space-y-1 pl-7">
-                          {nb.notes!.slice(0, 5).map((n) => (
-                            <li key={n.id}>
-                              <button
-                                type="button"
-                                onClick={() => window.open(`/app?notebook=${nb.id}&note=${n.id}`, "_blank")}
-                                className="text-[11px] text-muted-foreground hover:text-primary truncate text-left w-full"
-                              >
-                                {n.title || "Untitled"}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -336,33 +295,13 @@ function TemporaryWorkspaceInner() {
         </div>
       </TooltipProvider>
 
-      {/* Editor */}
-      <div className="max-w-3xl mx-auto pt-20 pb-12 px-4 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <input
-            value={note.title}
-            onChange={(e) => handleTitleChange(e.target.value)}
-            placeholder="Temporary note title…"
-            className="w-full bg-transparent border-none outline-none font-serif text-3xl sm:text-4xl font-bold text-foreground placeholder:text-muted-foreground/40 mb-2 px-3 sm:px-8"
-          />
-          <p className="px-3 sm:px-8 text-[11px] text-muted-foreground/70 font-mono mb-4">
-            This note will be deleted automatically. Use “Leave” to save it permanently.
-          </p>
-          <HybridEditor
-            ref={editorRef}
-            content={note.content}
-            onChange={handleContentChange}
-            placeholder="Start typing — nothing here is saved permanently…"
-          />
-        </motion.div>
+      {/* Full NoteEditor — receives the override note from context */}
+      <div className="flex-1 flex flex-col min-h-0 pt-14">
+        <NoteEditor />
       </div>
 
       {/* Leave confirmation dialog */}
-      <Dialog open={leaveOpen} onOpenChange={(o) => { if (!o) cancelNavigation(); setLeaveOpen(o); }}>
+      <Dialog open={leaveOpen} onOpenChange={setLeaveOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -394,18 +333,9 @@ function TemporaryWorkspaceInner() {
             </button>
 
             <button
-              onClick={handleDownload}
-              disabled={working}
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border text-foreground text-sm font-medium hover:bg-muted transition-colors"
-            >
-              <Download className="h-4 w-4" />
-              Download as Markdown
-            </button>
-
-            <button
               onClick={handleDiscard}
               disabled={working}
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors disabled:opacity-60"
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-medium hover:bg-destructive/90 transition-colors disabled:opacity-60"
             >
               <Trash className="h-4 w-4" />
               Discard
@@ -454,16 +384,7 @@ function TemporaryWorkspaceInner() {
   );
 }
 
-export default function TemporaryWorkspacePage() {
-  const { user, loading } = useAuth();
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-      </div>
-    );
-  }
-  if (!user) return <Navigate to="/auth" replace />;
+export default function TemporaryWorkspace() {
   return (
     <NotebookProvider>
       <TemporaryWorkspaceInner />

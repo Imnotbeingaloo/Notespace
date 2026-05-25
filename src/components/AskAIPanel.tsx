@@ -20,16 +20,31 @@ type Msg = {
 
 interface AskAIPanelProps {
   onApplyEdit?: (newContent: string) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  defaultMode?: "chat" | "edit";
+  hideTrigger?: boolean;
 }
 
-export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
+export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, defaultMode = "chat", hideTrigger = false }: AskAIPanelProps) {
   const { activeNote } = useNotebooks();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = (v: boolean) => {
+    if (onOpenChange) onOpenChange(v);
+    else setInternalOpen(v);
+  };
   const [input, setInput] = useState("");
-  const [mode, setMode] = useState<"chat" | "edit">("chat");
+  const [mode, setMode] = useState<"chat" | "edit">(defaultMode);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Sync mode when defaultMode changes (e.g. opened from AI Edit trigger)
+  useEffect(() => {
+    if (open) setMode(defaultMode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, defaultMode]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -197,12 +212,12 @@ export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
             </button>
           </div>
           <button
-            onClick={() => mode === "edit" ? null : callAI("explain")}
-            disabled={loading || mode === "edit"}
+            onClick={() => mode === "edit" ? callAI("edit", "Improve this note: fix grammar, clarity, and flow") : callAI("explain")}
+            disabled={loading}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Explain this note
+            {mode === "edit" ? "Edit this note" : "Explain this note"}
           </button>
         </div>
 
@@ -304,14 +319,16 @@ export function AskAIPanel({ onApplyEdit }: AskAIPanelProps) {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
-        title="Ask AI"
-      >
-        <Sparkles className="h-3.5 w-3.5" />
-        Ask AI
-      </button>
+      {!hideTrigger && (
+        <button
+          onClick={() => setOpen(true)}
+          className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
+          title="Ask AI"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          Ask AI
+        </button>
+      )}
       {typeof document !== "undefined" && createPortal(<AnimatePresence>{panel}</AnimatePresence>, document.body)}
     </>
   );

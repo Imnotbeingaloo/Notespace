@@ -61,6 +61,8 @@ interface NotebookContextType {
   activeNote: Note | null;
   loading: boolean;
   refreshData: () => Promise<void>;
+  setOverride: (override: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => void;
+  isOverrideActive: boolean;
 }
 
 const NotebookContext = createContext<NotebookContextType | null>(null);
@@ -70,9 +72,12 @@ const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [allNotebooks, setAllNotebooks] = useState<Notebook[]>([]);
-  const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
-  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [activeNotebookId, setActiveNotebookIdRaw] = useState<string | null>(null);
+  const [activeNoteId, setActiveNoteIdRaw] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [override, setOverrideState] = useState<{ note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null>(null);
+
+  const OVERRIDE_NB_ID = "__override__";
 
   // Active (non-trashed) notebooks with non-trashed notes
   const notebooks = allNotebooks
@@ -91,8 +96,23 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         .map((note) => ({ note, notebookId: nb.id, notebookName: nb.name }))
     );
 
-  const activeNotebook = notebooks.find((n) => n.id === activeNotebookId) ?? null;
-  const activeNote = activeNotebook?.notes.find((n) => n.id === activeNoteId) ?? null;
+  const realActiveNotebook = notebooks.find((n) => n.id === activeNotebookId) ?? null;
+  const realActiveNote = realActiveNotebook?.notes.find((n) => n.id === activeNoteId) ?? null;
+
+  // Override-aware getters
+  const activeNotebook: Notebook | null = override
+    ? { id: OVERRIDE_NB_ID, name: "Temporary", emoji: "⏳", notes: [override.note], created_at: override.note.created_at, deleted_at: null }
+    : realActiveNotebook;
+  const activeNote: Note | null = override ? override.note : realActiveNote;
+  const effectiveActiveNotebookId = override ? OVERRIDE_NB_ID : activeNotebookId;
+  const effectiveActiveNoteId = override ? override.note.id : activeNoteId;
+
+  const setActiveNotebookId = setActiveNotebookIdRaw;
+  const setActiveNoteId = setActiveNoteIdRaw;
+
+  const setOverride = useCallback((next: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => {
+    setOverrideState(next);
+  }, []);
 
   const fetchData = useCallback(async () => {
     if (!user) { setAllNotebooks([]); setLoading(false); return; }
@@ -345,6 +365,12 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const updateNote = useCallback(
     async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => {
+      // Override path: temp notes don't live in `notes` table
+      if (override && noteId === override.note.id) {
+        override.onUpdate(updates);
+        setOverrideState((cur) => cur ? { ...cur, note: { ...cur.note, ...updates, updated_at: new Date().toISOString() } } : cur);
+        return;
+      }
       await supabase.from("notes").update(updates as any).eq("id", noteId);
       setAllNotebooks((prev) =>
         prev.map((nb) =>
@@ -354,7 +380,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         )
       );
     },
-    []
+    [override]
   );
 
   const reorderNotes = useCallback(
@@ -412,13 +438,15 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     <NotebookContext.Provider
       value={{
         notebooks, trashedNotebooks, trashedNotes,
-        activeNotebookId, activeNoteId,
+        activeNotebookId: effectiveActiveNotebookId,
+        activeNoteId: effectiveActiveNoteId,
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, nestNotebook, promoteNoteToNotebook,
         ensureScratchNotebook, createScratchNote, isScratchNotebook, moveNoteToNotebook,
         createNote, deleteNote, updateNote,
         reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,
         activeNotebook, activeNote, loading, refreshData: fetchData,
+        setOverride, isOverrideActive: !!override,
       }}
     >
       {children}
