@@ -119,46 +119,16 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
 
   useEffect(() => () => cleanup(), [cleanup]);
 
-  const buildStrokePath = (vals: number[], topSide: boolean) => {
-    const pts: [number, number][] = vals.map((v, i) => {
-      const amp = Math.max(1.5, Math.min(1, v) * (H / 2 - 6));
-      return [i * STEP_X, topSide ? MID - amp : MID + amp];
-    });
-    let d = `M ${pts[0][0]} ${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) {
-      const [x0, y0] = pts[i - 1];
-      const [x1, y1] = pts[i];
-      const mx = (x0 + x1) / 2;
-      d += ` Q ${x0} ${y0} ${mx} ${(y0 + y1) / 2}`;
+  // Build a single SVG path containing all vertical wave bars, each centered on MID.
+  const buildBarsPath = (vals: number[]) => {
+    const minHalf = 1.2;
+    const maxHalf = H / 2 - 4;
+    let d = "";
+    for (let i = 0; i < vals.length; i++) {
+      const x = (i + 0.5) * STEP_X;
+      const half = Math.max(minHalf, Math.min(1, vals[i]) * maxHalf);
+      d += `M ${x.toFixed(2)} ${(MID - half).toFixed(2)} L ${x.toFixed(2)} ${(MID + half).toFixed(2)} `;
     }
-    const last = pts[pts.length - 1];
-    d += ` T ${last[0]} ${last[1]}`;
-    return d;
-  };
-
-  const buildFillPath = (vals: number[]) => {
-    const top = vals.map((v, i): [number, number] => [
-      i * STEP_X,
-      MID - Math.max(1.5, Math.min(1, v) * (H / 2 - 6)),
-    ]);
-    const bottom = vals.map((v, i): [number, number] => [
-      i * STEP_X,
-      MID + Math.max(1.5, Math.min(1, v) * (H / 2 - 6)),
-    ]);
-
-    let d = `M ${top[0][0]} ${top[0][1]}`;
-    for (let i = 1; i < top.length; i++) {
-      const [x0, y0] = top[i - 1];
-      const [x1, y1] = top[i];
-      d += ` Q ${x0} ${y0} ${(x0 + x1) / 2} ${(y0 + y1) / 2}`;
-    }
-    d += ` T ${top[top.length - 1][0]} ${top[top.length - 1][1]}`;
-    for (let i = bottom.length - 1; i > 0; i--) {
-      const [x0, y0] = bottom[i];
-      const [x1, y1] = bottom[i - 1];
-      d += ` Q ${x0} ${y0} ${(x0 + x1) / 2} ${(y0 + y1) / 2}`;
-    }
-    d += ` T ${bottom[0][0]} ${bottom[0][1]} Z`;
     return d;
   };
 
