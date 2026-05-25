@@ -22,7 +22,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           key="splash"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.05, filter: "blur(8px)" }}
-          transition={{ duration: 1.2, ease: [0.65, 0, 0.35, 1] }}
+          transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background"
         >
           {/* Subtle radial glow behind logo */}
