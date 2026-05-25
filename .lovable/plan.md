@@ -1,60 +1,74 @@
-## 1. Home header cleanup
+## 1. Home header — show "Notebook Archive" wordmark
 
-- Remove the "Website" button entirely.
-- Make the "Notebook Archive" logo + wordmark clickable → navigates to `/` (the marketing site). Add an explicit "Home" icon button next to it (same style as the app section's home button) for clarity.
-- Remove the Trash + Theme + Sign-out trio from the visible header row. Replace with a single compact icon button (avatar circle showing user's initial) that opens a small popover containing: Theme toggle, Trash, Sign out. This keeps the header clean without the heaviness of an avatar dropdown menu and avoids cramming three colored buttons into the top bar.
-- Faster app→website transition: drop the splash/loader animation when navigating away from `/app` from ~2s to ~600ms (skip the staged framer-motion sequence on exit; keep entry splash intact).
+In `src/components/HomeView.tsx` (line ~170):
 
-## 2. Temporary Notes — full rework
+- Remove `hidden sm:inline` from the wordmark span so it shows on every viewport.
+- Tighten gap so the logo + wordmark + Home icon button sit cleanly together at 1187px and below.
 
-Temporary notes stop being a "Scratch" notebook. They become a dedicated ephemeral workspace.
+## 2. Temporary workspace — full editor parity
 
-**Storage**
+The user wants the temp note to look and behave like a real note editor (toolbar, AI buttons, Ask AI, AI Edit, Voice, Import, Flashcards, Export, Preview, Share-off, find/replace, word count, etc.) — just without the **sidebar**.
 
-- New `temporary_notes` table: `id`, `user_id`, `title`, `content`, `attachments`, `created_at`, `updated_at`, `expires_at` (default `now() + 24h`).
-- RLS: authenticated users CRUD only their own rows.
-- Daily cleanup: extend the existing `cleanup-trash` edge function (or add a sibling cron) to delete rows where `expires_at < now()`.
-- Remove the auto-created "Scratch" notebook logic from `NotebookContext` (existing scratch notebooks stay intact but no new ones are created; the sidebar "Temporary Note" entry no longer points to them).
+Approach:
 
-**Entry points**
+- Extend `NotebookContext` with an optional `overrideActiveNote` (and `setOverrideActiveNote`) plus an optional `overrideUpdateNote` callback. When set, `activeNote` resolves to the override and `updateNote` for that synthetic id routes through `overrideUpdateNote`. Real `notebooks` / `activeNotebookId` stay untouched.
+- Rewrite `src/pages/TemporaryWorkspace.tsx`:
+  - Load/create the temp row exactly as today.
+  - Register it as the override note (`{ id, title, content, ... }`); supply an `overrideUpdateNote` that writes `title`/`content` back to `temporary_notes`.
+  - Render `<NoteEditor />` (no `AppSidebar`) inside the same `min-h-screen` shell.
+  - Keep the floating top cluster (logo+back, "Temporary", countdown chip, notebooks drawer) overlaid above the editor.
+  - Keep navigation guard (`popstate` + `beforeunload`) and the Leave dialog logic.
+- Hide the `ShareNoteDialog` row in `NoteEditor` when the active note is the override (sharing a temp note doesn't make sense). Everything else (Ask AI, AI Edit, Voice, Import, Flashcards, Export, Preview, Find/Replace, Word Count, Goal, Pomodoro topbar, Focus toggle) renders unchanged.
 
-- Single "Temporary Note" button in the sidebar (under New Notebook). Removes the home card and the floating FAB.
-- Clicking routes to `/app/temporary` (new route).
+## 3. Leave dialog cleanup
 
-**Temporary workspace UI** (`/app/temporary`)
+In `TemporaryWorkspace.tsx` Leave dialog:
 
-- No sidebar, no top bar — clean, distraction-free.
-- Small floating top-left cluster: Notebook Archive logo (→ `/app` home), a "Permanent notes" toggle button that opens a slim read-only drawer listing the user's real notebooks/notes so they can reference (and open in a new tab) permanent content without leaving temporary mode.
-- Editor occupies the full viewport. Uses the same `HybridEditor` + markdown toolbar as regular notes.
-- Visible expiry chip: "Auto-deletes in 23h 47m".
-- The note cannot be deleted manually — no delete button anywhere.
+- **Remove** the "Download as Markdown" button entirely.
+- Order: 1) Save as new notebook (primary), 2) Save into existing notebook (outline), 3) **Discard** rendered as a real solid button (destructive variant: `bg-destructive text-destructive-foreground hover:bg-destructive/90`) instead of the current ghost link.
+- Closing the dialog with X / Esc / backdrop still cancels the navigation (already handled).
 
-**Leave confirmation**
+## 4. App → Website transition: bare book, no splash
 
-- Intercept navigation away (router guard + `beforeunload` for tab close) whenever the temp note has unsaved or non-empty content.
-- Dialog copy: *"This document is temporary and will be deleted in 24 hours. What would you like to do?"*
-- Buttons, in order:
-  1. **Save as notebook** (primary) — promotes the temp note into a new notebook with one note inside, then navigates to it.
-  2. **Save into existing notebook** — opens a notebook picker; appends as a new note.
-  3. **Download** — exports as `.md`.
-  4. **Discard** — deletes the temp note immediately and routes to `/app` home.
-  - **X / Cancel** on the dialog keeps the user inside the temporary workspace (no navigation).
+User says the current splash on exit is too heavy. Replace with a minimal 200–250 ms book swap.
 
-## 3. Technical notes
+- Delete the `fast` SplashScreen invocation from `src/pages/Landing.tsx`.
+- New tiny component `src/components/ExitBookFlash.tsx`: full-screen `bg-background` with just a centered `BookOpen` lucide icon (or `/logo.png` stripped of label — confirm: user said "just a book, no logo nothing", so use the lucide `BookOpen` icon at ~h-12 in `text-primary`). No motion, no text, no dots; fades out via a single 180ms opacity transition, total visible time ~220ms.
+- `Landing.tsx` renders `<ExitBookFlash />` only when `location.state.fromApp === true`, then clears the state.
+- Remove the splash entry-trigger branch in `SplashScreen.tsx`'s `fast` mode (no longer used). Leave the initial app splash intact.
 
-- New table migration with RLS + trigger for `updated_at`.
-- New route `/app/temporary` in `Index.tsx` / router.
-- New components: `TemporaryWorkspace.tsx`, `LeaveTempDialog.tsx`, `PermanentNotesDrawer.tsx`, `HeaderUserMenu.tsx` (popover for trash/theme/signout).
-- Edit `HomeView.tsx` header: remove Website button, wire logo + Home icon to navigate, swap trio for `HeaderUserMenu`.
-- Edit `AppSidebar.tsx`: point "Temporary Note" button at `/app/temporary` route instead of `createScratchNote`. Remove the home FAB in `Index.tsx`.
-- Edit `SplashScreen.tsx` / route transition: bypass animation on `/app` → `/` transitions.
-- Extend cleanup edge function: add `DELETE FROM temporary_notes WHERE expires_at < now()`.
+## 5. AI Edit button → open Ask AI in Edit mode + swap "Explain this note" → "Edit this note"
 
-## 4. Out of scope
+Goal: Clicking "AI Edit" should open the same Ask-AI modal but with the **Edit** tab preselected; in that state the quick action button labelled "Explain this note" becomes "Edit this note".
 
-- No changes to existing notebooks, notes, trash, or AI features.
-- Existing "Scratch" notebooks already in users' accounts are left alone (they just become regular notebooks).
+- Lift open state and initial mode into `AskAIPanel`: accept optional `defaultMode?: "chat" | "edit"` and expose an imperative `openWith(mode)` via `forwardRef`, OR (simpler) accept controlled `open` / `onOpenChange` + `mode` props.
+- In `NoteEditor.tsx`, render a single shared `AskAIPanel` ref/state, and turn `AIEditPanel` into a trigger-only button: clicking "AI Edit" calls `askAIRef.current.openWith("edit")` instead of opening the side drawer. Keep the AI Edit button visual and label.
+- In the Ask-AI panel, when `mode === "edit"`:
+  - Quick action button label switches from "Explain this note" → "Edit this note", and clicking it sends `callAI("edit", "Improve this note")` (or focuses the input with a sensible default placeholder) instead of being disabled as it is today.
+  - In `mode === "chat"` it stays "Explain this note" (unchanged).
+- Delete the standalone `AIEditPanel` side-drawer UI (the file can stay for the trigger button or be removed; safer: keep the export as a thin trigger-only button that calls the parent handler).
 
-change the logo of the temporary notes to something like what chatgpt or better what claude uses to show it temporay chat
+## Technical notes
 
-&nbsp;
+- `NotebookContext` override pattern keeps the change isolated: no schema changes, no edits to `notes`/`notebooks` paths.
+- `temporary_notes` table already exists with `expires_at`; no migration needed.
+- `NoteEditor` will not break for empty notebooks because the override fills `activeNote` and supplies its own write path.
+- Test viewports: 1187 (current) and 375 — wordmark must be visible at both.
+
+## Out of scope
+
+- No changes to notebooks, notes, trash, auth, AI gateway, or marketing pages other than `Landing.tsx` exit flash.
+- No new database fields.  
+  
+also the ai edit option, i told it to write the equation of light (whole) it just did this, i need it to add signs, it can pick up the signs from the signs buttons and upload them into thedoucment, this doesnt look good  
+  
+$c = \lambda f$
+  Where:
+  $c$ is the speed of light (approximately $3 \times 10^8$ m/s)
+  $\lambda$ (lambda) is the wavelength
+  $f$ (or $\nu$) is the frequency
+  Additionally, in the context of energy:  
+  $E = hf = \frac{hc}{\lambda}$
+  Where:
+  $E$ is energy
+  $h$ is Planck's constant ($6.626 \times 10^{-34}$ J·s)
