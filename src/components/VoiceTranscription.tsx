@@ -117,46 +117,37 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
       const ctx = new Ctx();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.85;
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.9;
       source.connect(analyser);
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
-      const data = new Uint8Array(analyser.frequencyBinCount);
+      const data = new Uint8Array(analyser.fftSize);
 
       const tick = () => {
         if (!analyserRef.current) return;
-        analyserRef.current.getByteFrequencyData(data);
-        const useable = Math.floor(data.length * 0.55);
-        const step = useable / BAR_COUNT;
+        analyserRef.current.getByteTimeDomainData(data);
+        const step = data.length / POINT_COUNT;
         const next = smoothedRef.current;
-        for (let i = 0; i < BAR_COUNT; i++) {
+        for (let i = 0; i < POINT_COUNT; i++) {
           const start = Math.floor(i * step);
-          const end = Math.floor((i + 1) * step) || start + 1;
-          let sum = 0;
-          for (let j = start; j < end; j++) sum += data[j];
-          const avg = sum / (end - start) / 255;
-          next[i] = next[i] * 0.6 + avg * 0.4;
+          const end = Math.max(start + 1, Math.floor((i + 1) * step));
+          let peak = 0;
+          let sumSquares = 0;
+          for (let j = start; j < end; j++) {
+            const sample = Math.abs(data[j] - 128) / 128;
+            peak = Math.max(peak, sample);
+            sumSquares += sample * sample;
+          }
+          const rms = Math.sqrt(sumSquares / (end - start));
+          const target = Math.min(1, Math.max(peak * 0.72, rms * 1.9));
+          next[i] = next[i] * 0.78 + target * 0.22;
         }
-        // Direct DOM writes — bypass React entirely
-        const topD = buildPath(next, true);
-        const botD = buildPath(next, false);
+        const topD = buildStrokePath(next, true);
+        const botD = buildStrokePath(next, false);
         if (topPathRef.current) topPathRef.current.setAttribute("d", topD);
         if (botPathRef.current) botPathRef.current.setAttribute("d", botD);
-        if (fillPathRef.current) {
-          // Build closed fill path: top forward then bottom reversed
-          let fill = topD;
-          const lastTop = next.length - 1;
-          const lastAmp = Math.max(2, next[lastTop] * (H / 2 - 4));
-          fill += ` L ${lastTop * STEP_X} ${MID + lastAmp}`;
-          // Reverse bottom
-          for (let i = next.length - 1; i >= 0; i--) {
-            const amp = Math.max(2, next[i] * (H / 2 - 4));
-            fill += ` L ${i * STEP_X} ${MID + amp}`;
-          }
-          fill += " Z";
-          fillPathRef.current.setAttribute("d", fill);
-        }
+        if (fillPathRef.current) fillPathRef.current.setAttribute("d", buildFillPath(next));
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
