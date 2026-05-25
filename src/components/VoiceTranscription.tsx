@@ -219,7 +219,11 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     setOpen(true);
     setListening(true);
     listeningRef.current = true;
+    // Start idle bars immediately so the visualizer is alive while we
+    // wait for getUserMedia + recognition to spin up.
+    startIdleAnimation();
     await startVisualizer();
+
 
     const voiceWindow = window as VoiceWindow;
     const SR = voiceWindow.SpeechRecognition || voiceWindow.webkitSpeechRecognition;
