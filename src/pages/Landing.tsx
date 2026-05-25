@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
+import { SplashScreen } from "@/components/SplashScreen";
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -28,11 +29,23 @@ const navLinks = [
 
 export default function LandingPage() {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const fromApp = (location.state as { fromApp?: boolean } | null)?.fromApp === true;
+  const [showExitSplash, setShowExitSplash] = useState(fromApp);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [visibleLines, setVisibleLines] = useState(0);
   const [typingText, setTypingText] = useState("");
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
+
+  useEffect(() => {
+    if (fromApp) {
+      // Clear state so refreshes don't replay the splash
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
@@ -103,7 +116,9 @@ export default function LandingPage() {
   }, [visibleLines, currentCharIndex]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {showExitSplash && <SplashScreen onComplete={() => setShowExitSplash(false)} />}
+      <div className="min-h-screen bg-background" style={showExitSplash ? { visibility: "hidden" } : undefined}>
       {/* ── Floating Navbar ── */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
@@ -421,6 +436,7 @@ export default function LandingPage() {
 
       {/* ── Footer ── */}
       <Footer />
-    </div>
+      </div>
+    </>
   );
 }

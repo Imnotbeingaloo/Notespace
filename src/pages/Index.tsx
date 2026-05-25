@@ -37,14 +37,14 @@ function AppContent() {
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
-  const [exitingToWebsite, setExitingToWebsite] = useState(false);
+  
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
     try { await refreshData(); } finally { setRetryingDeepLink(false); }
   }, [refreshData]);
   const handleExitToWebsite = useCallback(() => {
-    setExitingToWebsite(true);
-  }, []);
+    navigate("/", { state: { fromApp: true } });
+  }, [navigate]);
 
   // Hydrate selection from URL once notebooks load
   useEffect(() => {
@@ -242,7 +242,7 @@ function AppContent() {
           </AnimatePresence>
         </div>
       </div>
-      {exitingToWebsite && <SplashScreen onComplete={() => navigate("/")} />}
+      
     </div>
   );
 }
