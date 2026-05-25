@@ -541,6 +541,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     (newContent: string) => {
       if (!activeNotebookId || !activeNote) return;
       if (contentRef.current) contentRef.current.value = newContent;
+      hybridEditorRef.current?.setValue(newContent);
       updateNote(activeNotebookId, activeNote.id, { content: newContent });
     },
     [activeNotebookId, activeNote?.id, updateNote]

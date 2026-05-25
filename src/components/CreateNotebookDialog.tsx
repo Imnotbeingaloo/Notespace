@@ -9,7 +9,7 @@ const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️
 interface CreateNotebookDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreate: (name: string, emoji: string) => Promise<void> | void;
+  onCreate: (name: string, emoji: string) => Promise<boolean | void> | boolean | void;
   parentName?: string | null;
   title?: string;
 }
@@ -38,8 +38,8 @@ export function CreateNotebookDialog({
     if (!trimmed || submitting) return;
     setSubmitting(true);
     try {
-      await onCreate(trimmed, emoji);
-      onOpenChange(false);
+      const created = await onCreate(trimmed, emoji);
+      if (created !== false) onOpenChange(false);
     } finally {
       setSubmitting(false);
     }

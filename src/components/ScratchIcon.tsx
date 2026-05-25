@@ -1,6 +1,6 @@
 import { forwardRef, useState } from "react";
 
-// Friendly ghost icon for temporary notes — wiggles + winks on hover
+// Friendly ghost icon for temporary notes — floats + winks on hover
 export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
   ({ className, style, ...props }, ref) => {
     const [hover, setHover] = useState(false);
@@ -8,8 +8,8 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
       <svg
         ref={ref}
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+          width="24"
+          height="24"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -20,8 +20,8 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{
-          transform: hover ? "translateY(-2px) rotate(-6deg)" : "translateY(0) rotate(0deg)",
-          transition: "transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+          transform: hover ? "translateY(-3px) rotate(-7deg) scale(1.08)" : "translateY(0) rotate(0deg) scale(1)",
+          transition: "transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1)",
           transformOrigin: "center",
           ...style,
         }}
@@ -29,7 +29,7 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
       >
         {/* Ghost body */}
         <path
-          d="M5 11a7 7 0 1 1 14 0v8.2c0 .6-.7.9-1.1.5l-1.4-1.3a.7.7 0 0 0-1 0L14 19.7a.7.7 0 0 1-1 0l-1.5-1.3a.7.7 0 0 0-1 0L9 19.7a.7.7 0 0 1-1 0l-1.5-1.3a.7.7 0 0 0-1 0l-1.4 1.3c-.4.4-1.1.1-1.1-.5V11z"
+          d="M5 11.3a7 7 0 0 1 14 0v7.9c0 .6-.7.9-1.1.5l-1.4-1.3a.7.7 0 0 0-1 0L14 19.7a.7.7 0 0 1-1 0l-1.5-1.3a.7.7 0 0 0-1 0L9 19.7a.7.7 0 0 1-1 0l-1.5-1.3a.7.7 0 0 0-1 0l-1.4 1.3c-.4.4-1.1.1-1.1-.5v-7.9z"
           fill="currentColor"
           fillOpacity="0.08"
         />
