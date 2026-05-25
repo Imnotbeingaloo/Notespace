@@ -412,7 +412,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         e.preventDefault();
                         e.dataTransfer.dropEffect = "move";
                         setDragOverNotebookId(nb.id);
-                        if (canAcceptNote) setNoteDropTargetNb(nb.id);
+                        if (canAcceptNote) {
+                          setNoteDropTargetNb(nb.id);
+                          // Auto-expand the notebook so user can choose a position
+                          if (expandedNotebook !== nb.id) setExpandedNotebook(nb.id);
+                        }
                       }
                     }}
                     onDragLeave={() => { setDragOverNotebookId(null); setNoteDropTargetNb(null); }}
