@@ -204,11 +204,11 @@ export default function LandingPage() {
       </motion.header>
 
       {/* ── Hero (editorial) ── */}
-      <section className="relative overflow-hidden pt-24 md:pt-28 lg:pt-32 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
+      <section className="relative overflow-hidden pt-28 md:pt-32 lg:pt-36 pb-16 lg:pb-20 lg:min-h-[78vh] flex items-center bg-muted/40">
         <div className="container mx-auto px-6 relative">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-start">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-8 lg:gap-10 items-start">
             {/* Left: headline column */}
-            <div className="lg:col-span-7">
+            <div className="md:col-span-7">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -263,12 +263,12 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.65 }}
                 className="mt-6 font-mono text-[11px] tracking-[0.22em] uppercase text-muted-foreground/70"
               >
-                No credit card · Free forever tier
+                No credit card required
               </motion.p>
             </div>
 
             {/* Right: manuscript vignette — desktop only */}
-            <div className="hidden lg:block lg:col-span-5 relative lg:pt-2">
+            <div className="hidden md:block md:col-span-5 relative md:pt-6 lg:pt-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -304,11 +304,11 @@ export default function LandingPage() {
                   </div>
                   <div className="space-y-3">
                     {[
-                      { width: "92%", delay: 0.4 },
-                      { width: "78%", delay: 1.4 },
-                      { width: "88%", delay: 2.4 },
-                      { width: "70%", delay: 3.4 },
-                      { width: "55%", delay: 4.4 },
+                      { width: "92%", delay: 0.6 },
+                      { width: "78%", delay: 2.2 },
+                      { width: "88%", delay: 3.8 },
+                      { width: "70%", delay: 5.4 },
+                      { width: "55%", delay: 7.0 },
                     ].map((line, i) => (
                       <div
                         key={i}
@@ -320,8 +320,8 @@ export default function LandingPage() {
                           initial={{ width: "0%" }}
                           animate={{ width: ["0%", "100%", "100%", "0%"] }}
                           transition={{
-                            duration: 6,
-                            times: [0, 0.18, 0.92, 1],
+                            duration: 12,
+                            times: [0, 0.28, 0.9, 1],
                             repeat: Infinity,
                             repeatDelay: 0,
                             ease: "easeInOut",
