@@ -149,7 +149,8 @@ function AppContent() {
 
       {/* Editor / Home */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar — minimal, only essential actions */}
+        {/* Top bar — hidden on Home (Home is chrome-free) */}
+        {!showHome && (
         <TooltipProvider>
           <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
             <div className="flex items-center gap-2">
@@ -164,6 +165,23 @@ function AppContent() {
               )}
             </div>
             <div className="flex items-center gap-1">
+              {/* New Notebook — only when inside the app/notebook (never on Home, which has its own tile) */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setCreateNotebookOpen(true)}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-2.5 rounded-xl shrink-0 gap-1.5 text-primary hover:bg-primary/10 hover:text-primary"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span className="hidden sm:inline text-xs font-medium">New Notebook</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Create a new notebook</p>
+                </TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -236,6 +254,7 @@ function AppContent() {
             </div>
           </div>
         </TooltipProvider>
+        )}
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
             {hydratingDeepLink || retryingDeepLink ? (
