@@ -44,6 +44,7 @@ type BrowserSpeechRecognition = {
 type BrowserSpeechRecognitionCtor = new () => BrowserSpeechRecognition;
 
 type VoiceWindow = Window & {
+  AudioContext?: typeof AudioContext;
   SpeechRecognition?: BrowserSpeechRecognitionCtor;
   webkitSpeechRecognition?: BrowserSpeechRecognitionCtor;
   webkitAudioContext?: typeof AudioContext;
