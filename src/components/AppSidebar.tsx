@@ -525,25 +525,31 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               draggable
                               onDragStart={(e) => {
                                 setDragNoteId(note.id);
+                                setDragNoteFromNb(nb.id);
                                 e.dataTransfer.effectAllowed = "move";
                               }}
                               onDragOver={(e) => {
-                                e.preventDefault();
-                                e.dataTransfer.dropEffect = "move";
-                                setDragOverNoteId(note.id);
+                                if (dragNoteId && dragNoteFromNb === nb.id) {
+                                  e.preventDefault();
+                                  e.dataTransfer.dropEffect = "move";
+                                  setDragOverNoteId(note.id);
+                                }
                               }}
                               onDragLeave={() => setDragOverNoteId(null)}
                               onDrop={(e) => {
                                 e.preventDefault();
                                 setDragOverNoteId(null);
                                 if (!dragNoteId || dragNoteId === note.id) return;
+                                if (dragNoteFromNb !== nb.id) return;
                                 const fromIdx = nb.notes.findIndex((n) => n.id === dragNoteId);
                                 if (fromIdx === -1) return;
                                 reorderNotes(nb.id, fromIdx, noteIndex);
                                 setDragNoteId(null);
+                                setDragNoteFromNb(null);
                               }}
                               onDragEnd={() => {
                                 setDragNoteId(null);
+                                setDragNoteFromNb(null);
                                 setDragOverNoteId(null);
                               }}
                               className={`group/note flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-all duration-200 ${
