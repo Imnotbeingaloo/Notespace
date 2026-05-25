@@ -36,9 +36,22 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   };
   const [input, setInput] = useState("");
   const [mode, setMode] = useState<"chat" | "edit">(defaultMode);
-  const [messages, setMessages] = useState<Msg[]>([]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Per-note + per-mode message history. Each (noteId, mode) pair keeps
+  // its own conversation so Explain and Edit don't leak between each other,
+  // and notes don't share chats.
+  const [conversations, setConversations] = useState<Record<string, Msg[]>>({});
+  const convoKey = activeNote ? `${activeNote.id}::${mode}` : "";
+  const messages = conversations[convoKey] ?? [];
+  const setMessages = (updater: Msg[] | ((prev: Msg[]) => Msg[])) => {
+    setConversations((prev) => {
+      const current = prev[convoKey] ?? [];
+      const next = typeof updater === "function" ? (updater as (p: Msg[]) => Msg[])(current) : updater;
+      return { ...prev, [convoKey]: next };
+    });
+  };
 
   // Sync mode whenever the caller changes defaultMode (e.g. opened from AI Edit trigger)
   useEffect(() => {
