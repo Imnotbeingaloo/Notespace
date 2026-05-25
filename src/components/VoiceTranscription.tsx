@@ -343,36 +343,13 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                   className="w-full h-20"
                   aria-hidden="true"
                 >
-                  <defs>
-                    <linearGradient id="vt-wave-grad" x1="0" x2="1" y1="0" y2="0">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
-                      <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.85" />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
-                    </linearGradient>
-                  </defs>
-                  <line
-                    x1="0" x2={W} y1={MID} y2={MID}
-                    stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="2 4"
-                  />
-                  <path ref={fillPathRef} d="" fill="url(#vt-wave-grad)" opacity="0.55" />
                   <path
-                    ref={topPathRef}
+                    ref={barsPathRef}
                     d=""
                     fill="none"
                     stroke="hsl(var(--primary))"
-                    strokeWidth="1.8"
+                    strokeWidth={BAR_WIDTH}
                     strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    ref={botPathRef}
-                    d=""
-                    fill="none"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.6"
                   />
                 </svg>
               </div>
