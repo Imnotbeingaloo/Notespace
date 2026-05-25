@@ -732,10 +732,17 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
               {/* Core actions always visible on desktop */}
               <div className="hidden lg:flex items-center gap-1">
                 <FlashcardsButton />
-                <AskAIPanel onApplyEdit={handleAIEdit} />
+                <button
+                  onClick={() => openAskAI("chat")}
+                  className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
+                  title="Ask AI"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Ask AI
+                </button>
                 <VoiceTranscription onTranscript={handleVoiceTranscript} />
                 <ExportButtons />
-                {activeNote && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} notebookName={activeNotebook?.name} />}
+                {activeNote && !isOverrideActive && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} notebookName={activeNotebook?.name} />}
               </div>
 
               {/* Three-dots menu for secondary actions (all sizes) */}
@@ -759,16 +766,22 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       <div className="lg:hidden flex flex-col gap-1">
                         <ImportNotesButton onInsert={handleImportNotes} />
                         <VoiceTranscription onTranscript={handleVoiceTranscript} />
-                        <AskAIPanel onApplyEdit={handleAIEdit} />
+                        <button
+                          onClick={() => { setMoreOpen(false); openAskAI("chat"); }}
+                          className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
+                        >
+                          <Sparkles className="h-3.5 w-3.5" />
+                          Ask AI
+                        </button>
                         <FlashcardsButton />
-                        <AIEditPanel onApplyEdit={handleAIEdit} />
+                        <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <ExportButtons />
                         <PreviewButton />
                       </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
                         <ImportNotesButton onInsert={handleImportNotes} />
-                        <AIEditPanel onApplyEdit={handleAIEdit} />
+                        <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
                       </div>
                     </motion.div>
