@@ -848,12 +848,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <>
             <Link
               to="/trash"
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 rounded-lg transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg transition-colors"
             >
               <Trash2 className="h-4 w-4" />
               <span className="flex-1 text-left">Trash</span>
               {trashCount > 0 && (
-                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{trashCount}</span>
+                <span className="text-xs bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded-full">{trashCount}</span>
               )}
             </Link>
             <ThemeToggle asSidebarButton />
@@ -871,7 +871,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <div className="flex flex-col items-center gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link to="/trash" className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 hover:text-slate-700 dark:hover:text-slate-100 transition-colors" aria-label="Trash">
+                  <Link to="/trash" className="p-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition-colors" aria-label="Trash">
                     <Trash2 className="h-4 w-4" />
                   </Link>
                 </TooltipTrigger>
