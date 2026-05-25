@@ -66,8 +66,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   }, [notebooks]);
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
-  const [showNewNotebook, setShowNewNotebook] = useState(false);
-  const [newNotebookName, setNewNotebookName] = useState("");
+  const [newNotebookOpen, setNewNotebookOpen] = useState(false);
+  const [pendingNestChild, setPendingNestChild] = useState<{ childId: string; parentId: string } | null>(null);
+  const [draggedNotebookId, setDraggedNotebookId] = useState<string | null>(null);
+  const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(null);
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
   const sidebarUploadRef = useRef<HTMLInputElement>(null);
   const [sidebarUploading, setSidebarUploading] = useState(false);
