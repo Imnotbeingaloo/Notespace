@@ -275,15 +275,24 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="relative mx-auto max-w-md group"
               >
-                {/* Peeking second card — empty paper */}
+                {/* Peeking second card — styled like an Explain card */}
                 <div
                   aria-hidden
-                  className="absolute -top-3 -left-3 right-6 bottom-10 rounded-2xl border border-border/70 bg-card shadow-lg -rotate-[3deg] -z-10 transition-transform duration-500 group-hover:-rotate-[5deg] group-hover:-translate-x-1"
-                />
+                  className="absolute -top-3 -left-3 right-6 bottom-10 rounded-2xl border border-border/70 bg-card shadow-lg -rotate-[3deg] -z-10 transition-transform duration-500 group-hover:-rotate-[5deg] group-hover:-translate-x-1 p-3.5"
+                >
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-primary/70">Explain</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="h-[3px] w-[80%] rounded-full bg-border/60" />
+                    <div className="h-[3px] w-[60%] rounded-full bg-border/60" />
+                  </div>
+                </div>
 
                 {/* Paper card */}
                 <motion.div
-                  whileHover={{ rotate: -1, y: -6, scale: 1.02 }}
+                  whileHover={{ rotate: 0, y: -6, scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   className="relative rounded-2xl border border-border bg-card p-7 shadow-xl shadow-primary/[0.08] -rotate-1 cursor-default hover:shadow-2xl hover:shadow-primary/15 transition-shadow duration-500"
                 >
@@ -296,10 +305,10 @@ export default function LandingPage() {
                   <div className="space-y-3">
                     {[
                       { width: "92%", delay: 0 },
-                      { width: "78%", delay: 6 },
-                      { width: "88%", delay: 12 },
-                      { width: "70%", delay: 18 },
-                      { width: "55%", delay: 24 },
+                      { width: "78%", delay: 4 },
+                      { width: "88%", delay: 8 },
+                      { width: "70%", delay: 12 },
+                      { width: "55%", delay: 16 },
                     ].map((line, i) => (
                       <div
                         key={i}
@@ -311,10 +320,10 @@ export default function LandingPage() {
                           initial={{ width: "0%" }}
                           animate={{ width: ["0%", "100%", "100%", "0%"] }}
                           transition={{
-                            duration: 5,
+                            duration: 3,
                             times: [0, 0.7, 0.85, 1],
                             repeat: Infinity,
-                            repeatDelay: 25,
+                            repeatDelay: 17,
                             ease: "easeInOut",
                             delay: line.delay,
                           }}
