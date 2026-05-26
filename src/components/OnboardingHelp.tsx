@@ -163,12 +163,13 @@ export function OnboardingHelp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.25 }}
-              className="absolute top-full right-0 mt-2 flex flex-col items-center gap-1 pointer-events-none z-50"
+              className="absolute top-full right-0 mt-1.5 flex flex-col items-end gap-1 pointer-events-none z-50"
             >
+              {/* Arrow sits directly under the help button (button is h-8 w-8 = 32px, half = 16px). */}
               <motion.span
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                className="inline-flex text-primary"
+                className="inline-flex text-primary mr-[10px]"
               >
                 <ArrowUp className="h-3.5 w-3.5" />
               </motion.span>
