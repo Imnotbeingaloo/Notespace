@@ -23,10 +23,6 @@ const AuthPage = () => {
       setError("Password must be at least 6 characters.");
       return;
     }
-    if (mode === "signup" && !displayName.trim()) {
-      setError("Please enter your name.");
-      return;
-    }
 
     setLoading(true);
 
@@ -35,9 +31,12 @@ const AuthPage = () => {
       if (error) setError(error.message);
       else navigate("/app");
     } else {
-      const { error } = await signUp(email, password, displayName.trim());
+      const { error } = await signUp(email, password);
       if (error) setError(error.message);
-      else setCheckEmail(true);
+      else {
+        try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+        setCheckEmail(true);
+      }
     }
     setLoading(false);
   };
