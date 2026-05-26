@@ -1,0 +1,13 @@
+# Notebook Archive
+
+> AI-powered personal notebook for organizing notes, ideas, and files — a quiet place to write, link, and revisit your thinking with intelligence woven in only where it actually helps.
+
+Notebook Archive is a focused writing and knowledge tool with a markdown editor, smart tags, global search, AI explanations, a study planner, focus mode, and note sharing. Free, Pro, and Team plans available.
+
+## Pages
+
+- [Home](/): Overview of Notebook Archive and what it does.
+- [Features](/features): Markdown editor, AI explanations, focus mode, study planner, smart tags, find & replace, sharing.
+- [How it works](/how-it-works): Step-by-step walk-through from first note to a full knowledge base.
+- [Pricing](/pricing): Free, Pro ($19/mo), and Team ($29/mo) plans with feature comparison.
+- [About](/about): Mission and philosophy behind Notebook Archive.
