@@ -27,6 +27,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { user } = useAuth();
   const { profile, updateDisplayName, markPasswordChanged, daysSincePasswordChange, refresh } = useProfile();
   const { theme, setTheme } = useTheme();
+  const [pomodoroEnabled, setPomodoroEnabled] = usePomodoroEnabled();
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
