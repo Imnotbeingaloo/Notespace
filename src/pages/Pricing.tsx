@@ -75,9 +75,12 @@ export default function PricingPage() {
               <Sparkles className="h-3.5 w-3.5 text-accent" />
               Simple Pricing
             </div>
-            <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
-              Plans that <span className="text-primary">grow with you</span>
-            </h1>
+            <AnimatedHeading
+              as="h1"
+              className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto"
+              text="Plans that grow with you"
+              delay={0.1}
+            />
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Start free, upgrade when you need more AI power. No hidden fees, cancel anytime. Every plan includes our core markdown editor, instant search, and auto-save — so you're always covered.
             </p>
