@@ -6,6 +6,7 @@ import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
+import { SeoHead } from "@/components/SeoHead";
 
 const steps = [
   { icon: FolderOpen, title: "Create a Notebook", description: "Organize your notes by topic, class, or project. Each notebook is a dedicated space for related ideas." },
@@ -305,8 +306,14 @@ export default function HowItWorksPage() {
   const subtitleY = useTransform(scrollYProgress, [0, 1], [0, -70]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader activePage="how-it-works" />
+    <>
+      <SeoHead
+        title="How it works — Notebook Archive"
+        description="From first note to a full knowledge base: a step-by-step walk-through of how Notebook Archive turns scattered thoughts into organized understanding."
+        path="/how-it-works"
+      />
+      <main className="min-h-screen bg-background">
+        <PageHeader activePage="how-it-works" />
 
       {/* Hero with parallax */}
       <section ref={heroRef} className="relative overflow-hidden pt-28 pb-16">
