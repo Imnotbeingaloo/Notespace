@@ -223,6 +223,13 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         className="hidden"
         onChange={handleImageUpload}
       />
+      <LinkInsertDialog
+        open={linkDialogOpen}
+        initialText={linkInitialText}
+        initialUrl={linkInitialUrl}
+        onCancel={() => setLinkDialogOpen(false)}
+        onConfirm={confirmLink}
+      />
       {canScrollLeft && (
         <button
           type="button"
