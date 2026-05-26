@@ -22,6 +22,11 @@ export function AIExplainPanel() {
     setOpen(true);
     setExplanation("");
     setError("");
+    if (!activeNote.content || activeNote.content.trim().length === 0) {
+      setError("Notebook is empty — write something first.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
 
     try {
