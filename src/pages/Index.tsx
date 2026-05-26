@@ -6,11 +6,12 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Timer, ChevronDown, Focus } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { OnboardingHelp } from "@/components/OnboardingHelp";
 import { SplashScreen } from "@/components/SplashScreen";
@@ -18,6 +19,7 @@ import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { usePomodoroEnabled } from "@/hooks/use-pomodoro-enabled";
+import { useFocusAutoOpenPomodoro } from "@/hooks/use-focus-prefs";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
