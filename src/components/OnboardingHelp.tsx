@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table, Search, Maximize2, Timer, ArrowRight, ArrowUp } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table, Search, Maximize2, Timer, ArrowRight, ArrowUp, Sigma, Edit3, Type } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,6 +13,9 @@ const toolbarTips = [
   { Icon: ImageIcon, title: "Insert image", body: "Opens your file picker. Images upload to your private storage and embed inline. PNG, JPG, WEBP up to 10MB." },
   { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections — useful between topics or before a summary." },
   { Icon: Table, title: "Table", body: "Pick a size from the popover. Once inserted, the table edit toolbar appears for adding rows, columns, or deleting cells." },
+  { Icon: Edit3, title: "Edit table", body: "When the cursor is inside a table, the table toolbar appears next to the main one — add/remove rows & columns, delete the whole table, all inline." },
+  { Icon: Sigma, title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor — no shortcuts to memorise." },
+  { Icon: Type, title: "Punctuation & smart quotes", body: "Inserts em-dashes, ellipses, curly quotes, and other typographic characters that are awkward to type on a normal keyboard." },
   { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search & replace. Supports regex via the toggle." },
   { Icon: Maximize2, title: "Focus Mode", body: "Top bar button — hides the sidebar and chrome so only your note remains. Click again to exit." },
   { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
@@ -160,12 +163,13 @@ export function OnboardingHelp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.25 }}
-              className="absolute top-full right-0 mt-2 flex flex-col items-center gap-1 pointer-events-none z-50"
+              className="absolute top-full right-0 mt-1.5 flex flex-col items-end gap-1 pointer-events-none z-50"
             >
+              {/* Arrow sits directly under the help button (button is h-8 w-8 = 32px, half = 16px). */}
               <motion.span
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                className="inline-flex text-primary"
+                className="inline-flex text-primary mr-[10px]"
               >
                 <ArrowUp className="h-3.5 w-3.5" />
               </motion.span>
@@ -195,7 +199,13 @@ export function OnboardingHelp() {
               The buttons that aren't obvious — what each one actually does.
             </DialogDescription>
           </DialogHeader>
-          <ul className="mt-2 space-y-2">
+          <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
+            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
+            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
+              Don't show the "Confused? Click here" hint again
+            </label>
+          </div>
+          <ul className="mt-4 space-y-2">
             {toolbarTips.map(({ Icon, title, body }) => (
               <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
                 <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
@@ -208,12 +218,6 @@ export function OnboardingHelp() {
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex items-center gap-2 border-t border-border pt-3">
-            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
-            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
-              Don't show the "Confused? Click here" hint again
-            </label>
-          </div>
         </DialogContent>
       </Dialog>
     </>

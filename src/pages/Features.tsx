@@ -15,9 +15,9 @@ const groups = [
     blurb:
       "Long-form writing should feel like thinking out loud. The editor stays out of your way until you need it — and then every tool is one keystroke away.",
     items: [
-      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a refined toolbar built for long-form thinking. Real-time word, character, and reading-time counts." },
-      { Icon: Wand2, name: "AI explanations", desc: "Highlight any phrase, click Explain, and watch a streaming, source-aware answer unfold in a side panel — without ever leaving your note." },
-      { Icon: Layers, name: "Templates", desc: "Start lectures, meetings, weekly reviews, or research notes from a refined skeleton instead of an empty page." },
+      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a refined toolbar built for long-form thinking. Real-time word, character, and reading-time counts.", deepLink: "/app", linkLabel: "Open the editor" },
+      { Icon: Wand2, name: "AI explanations", desc: "Highlight any phrase, click Explain, and watch a streaming, source-aware answer unfold in a side panel — without ever leaving your note.", deepLink: "/app", linkLabel: "Try it in a note" },
+      { Icon: Layers, name: "Templates", desc: "Start lectures, meetings, weekly reviews, or research notes from a refined skeleton instead of an empty page.", deepLink: "/app", linkLabel: "Pick a template" },
     ],
   },
   {
@@ -26,9 +26,9 @@ const groups = [
     blurb:
       "Notes are only useful if you can find them again. Tags aggregate across every notebook, sessions are planned, and a Pomodoro keeps you honest about deep work.",
     items: [
-      { Icon: Tag, name: "Smart tags", desc: "Inline `#tags` aggregate into a live cloud in the sidebar — click any chip to jump straight to every note that mentions it." },
-      { Icon: Timer, name: "Pomodoro timer", desc: "A quiet 25/5 timer that lives in the corner of your workspace. Start a focused sprint, take a real break, and watch your sessions stack up." },
-      { Icon: BookOpen, name: "Study planner", desc: "Plan sessions per notebook, track day streaks, and get gentle reminders so revision actually happens." },
+      { Icon: Tag, name: "Smart tags", desc: "Inline `#tags` aggregate into a live cloud in the sidebar — click any chip to jump straight to every note that mentions it.", deepLink: "/app", linkLabel: "See your tag cloud" },
+      { Icon: Timer, name: "Pomodoro timer", desc: "A quiet 25/5 timer that lives in the corner of your workspace. Start a focused sprint, take a real break, and watch your sessions stack up.", deepLink: "/app", linkLabel: "Start a sprint" },
+      { Icon: BookOpen, name: "Study planner", desc: "Plan sessions per notebook, track day streaks, and get gentle reminders so revision actually happens.", deepLink: "/app", linkLabel: "Open the planner" },
     ],
   },
   {
@@ -37,9 +37,9 @@ const groups = [
     blurb:
       "Your notes are yours. Everything is private by default, hardened against prompt injection, and only leaves your account when you explicitly share or export it.",
     items: [
-      { Icon: Share2, name: "Public share links", desc: "Publish a read-only view via a secure token. Recipients see a polished public page — and you can revoke access in one click." },
-      { Icon: Lock, name: "Private by default", desc: "JWT auth, signed-URL file storage, and strict row-level security mean nobody but you reads your notes — not even our AI without consent." },
-      { Icon: Download, name: "Export anywhere", desc: "Take your work with you any time. One-click export to Markdown or PDF — no lock-in, no proprietary formats, ever." },
+      { Icon: Share2, name: "Public share links", desc: "Publish a read-only view via a secure token. Recipients see a polished public page — and you can revoke access in one click.", deepLink: "/app", linkLabel: "Share a note" },
+      { Icon: Lock, name: "Private by default", desc: "JWT auth, signed-URL file storage, and strict row-level security mean nobody but you reads your notes — not even our AI without consent.", deepLink: "/pricing", linkLabel: "See the security model" },
+      { Icon: Download, name: "Export anywhere", desc: "Take your work with you any time. One-click export to Markdown or PDF — no lock-in, no proprietary formats, ever.", deepLink: "/app", linkLabel: "Export a note" },
     ],
   },
 ];
@@ -185,6 +185,15 @@ export default function FeaturesPage() {
                             <p className="text-sm text-muted-foreground leading-relaxed">
                               {item.desc}
                             </p>
+                            {item.deepLink && (
+                              <Link
+                                to={user ? item.deepLink : "/auth"}
+                                className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:gap-2 transition-all"
+                              >
+                                {item.linkLabel}
+                                <ArrowRight className="h-3 w-3" />
+                              </Link>
+                            )}
                           </div>
                         </motion.li>
                       ))}
