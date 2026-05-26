@@ -889,6 +889,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
         {!collapsed ? (
           <>
+            {profile?.display_name && (
+              <div className="px-3 py-1.5 mb-0.5">
+                <p className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground">Signed in as</p>
+                <p className="text-xs font-semibold text-foreground truncate">{profile.display_name}</p>
+              </div>
+            )}
             <button
               onClick={() => setSettingsOpen(true)}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg transition-colors"
