@@ -21,6 +21,11 @@ export function AIToolsPanel() {
 
   const runTool = async (toolMode: ToolMode) => {
     if (!activeNote) return;
+    const plain = (activeNote.content || "").replace(/<[^>]*>/g, "").trim();
+    if (!plain) {
+      toast.error("Notebook is empty — write something first.");
+      return;
+    }
     setMode(toolMode);
     setOpen(true);
     setResult("");
