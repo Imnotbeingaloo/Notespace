@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -12,8 +12,13 @@ const AuthPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  // If already logged in, bounce back to the landing site.
+  useEffect(() => {
+    if (!authLoading && user) navigate("/", { replace: true });
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

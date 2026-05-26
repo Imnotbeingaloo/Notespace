@@ -38,20 +38,20 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
 
-  // First-run name prompt: only for users who JUST signed up (flag set in Auth.tsx)
+  // Always prompt for a display name until the user provides one.
+  // If they close the tab without entering it, they'll be asked again next visit.
   useEffect(() => {
     if (profileLoading) return;
-    if (profile?.display_name) return;
-    if (typeof window === "undefined") return;
-    const pending = localStorage.getItem("pendingNamePrompt");
-    if (pending === "1") setNamePromptOpen(true);
+    if (profile?.display_name) {
+      setNamePromptOpen(false);
+      return;
+    }
+    setNamePromptOpen(true);
   }, [profile?.display_name, profileLoading]);
 
   const handleNamePromptChange = (open: boolean) => {
+    if (!open && !profile?.display_name) return;
     setNamePromptOpen(open);
-    if (!open) {
-      try { localStorage.removeItem("pendingNamePrompt"); } catch {}
-    }
   };
 
 
