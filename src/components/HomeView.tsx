@@ -38,22 +38,22 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
 
-  // First-run name prompt: open once if no display_name and user hasn't skipped it
+  // First-run name prompt: only for users who JUST signed up (flag set in Auth.tsx)
   useEffect(() => {
     if (profileLoading) return;
     if (profile?.display_name) return;
-    const skipped = typeof window !== "undefined" && localStorage.getItem("namePromptDismissed");
-    if (skipped) return;
-    setNamePromptOpen(true);
+    if (typeof window === "undefined") return;
+    const pending = localStorage.getItem("pendingNamePrompt");
+    if (pending === "1") setNamePromptOpen(true);
   }, [profile?.display_name, profileLoading]);
 
   const handleNamePromptChange = (open: boolean) => {
     setNamePromptOpen(open);
-    if (!open && !profile?.display_name) {
-      // remember they dismissed so we don't badger them every visit
-      localStorage.setItem("namePromptDismissed", "1");
+    if (!open) {
+      try { localStorage.removeItem("pendingNamePrompt"); } catch {}
     }
   };
+
 
 
   const lastUpdated = useCallback((nb: any) => {
