@@ -97,6 +97,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     }
 
     setUploading(false);
+    setProgress(null);
     if (inputRef.current) inputRef.current.value = "";
   };
 
