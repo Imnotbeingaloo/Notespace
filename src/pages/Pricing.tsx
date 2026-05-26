@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
 import { AnimatedHeading } from "@/components/AnimatedHeading";
+import { SeoHead } from "@/components/SeoHead";
 
 const tiers = [
   {
@@ -65,8 +66,28 @@ export default function PricingPage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader activePage="pricing" />
+    <>
+      <SeoHead
+        title="Pricing — Notebook Archive"
+        description="Free, Pro ($19/mo), and Team ($29/mo) — pick the plan that matches how you think. Unlimited notes on every tier."
+        path="/pricing"
+        jsonLd={tiers.map((t) => ({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: `Notebook Archive ${t.name}`,
+          description: t.description,
+          brand: { "@type": "Brand", name: "Notebook Archive" },
+          offers: {
+            "@type": "Offer",
+            price: t.price.replace(/[^0-9.]/g, "") || "0",
+            priceCurrency: "USD",
+            availability: "https://schema.org/InStock",
+            url: "https://notebookarchive.lovable.app/pricing",
+          },
+        }))}
+      />
+      <main className="min-h-screen bg-background">
+        <PageHeader activePage="pricing" />
 
       <section className="relative overflow-hidden pt-28 pb-8">
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
