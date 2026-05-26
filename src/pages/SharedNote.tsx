@@ -96,6 +96,7 @@ export default function SharedNote() {
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{note?.content || ""}</ReactMarkdown>
         </div>
       </motion.article>
-    </div>
+      </main>
+    </>
   );
 }
