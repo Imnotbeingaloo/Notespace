@@ -179,32 +179,33 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.98 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full sm:max-w-2xl h-[85vh] sm:h-[80vh] bg-card border border-border rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
+        className="relative w-full sm:max-w-2xl h-[92vh] sm:h-[80vh] bg-card border border-border rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.04] to-transparent">
-          <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
+        <div className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.04] to-transparent">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
               <Sparkles className="h-4 w-4 text-primary" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="font-sans font-bold text-foreground text-sm leading-none">Ask AI</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5 truncate max-w-[300px]">
+              <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
                 About "{activeNote.title}"
               </p>
             </div>
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
+            aria-label="Close Ask AI"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Mode toggle + quick actions */}
-        <div className="flex items-center gap-2 px-5 py-3 border-b border-border">
-          <div className="inline-flex items-center gap-0.5 p-0.5 rounded-xl bg-muted/60">
+        {/* Mode toggle + quick actions — wraps on narrow screens so nothing gets clipped */}
+        <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3 border-b border-border">
+          <div className="inline-flex items-center gap-0.5 p-0.5 rounded-xl bg-muted/60 shrink-0">
             <button
               onClick={() => setMode("chat")}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
@@ -227,10 +228,10 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           <button
             onClick={() => mode === "edit" ? callAI("edit", "Improve this note: fix grammar, clarity, and flow") : callAI("explain")}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors min-w-0"
           >
-            <Sparkles className="h-3.5 w-3.5" />
-            {mode === "edit" ? "Edit this note" : "Explain this note"}
+            <Sparkles className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">{mode === "edit" ? "Edit this note" : "Explain this note"}</span>
           </button>
         </div>
 
