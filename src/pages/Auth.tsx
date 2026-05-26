@@ -41,6 +41,26 @@ const AuthPage = () => {
     setLoading(false);
   };
 
+  const [verifying, setVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState("");
+
+  const handleVerified = async () => {
+    setVerifyError("");
+    setVerifying(true);
+    const { error } = await signIn(email, password);
+    setVerifying(false);
+    if (error) {
+      if (/confirm/i.test(error.message) || /verif/i.test(error.message)) {
+        setVerifyError("We can't see your verification yet. Click the link in your email, then try again.");
+      } else {
+        setVerifyError(error.message);
+      }
+      return;
+    }
+    try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+    navigate("/app");
+  };
+
   if (checkEmail) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
@@ -53,9 +73,25 @@ const AuthPage = () => {
             <Mail className="h-8 w-8 text-primary" />
           </div>
           <h2 className="font-serif text-2xl font-bold text-foreground mb-2">Check your email</h2>
-          <p className="text-muted-foreground">
-            We sent a verification link to <strong>{email}</strong>. Click it to activate your account.
+          <p className="text-muted-foreground mb-6">
+            We sent a verification link to <strong>{email}</strong>. Click it, then come back and tap the button below.
           </p>
+          <button
+            onClick={handleVerified}
+            disabled={verifying}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <>I've verified — sign me in <ArrowRight className="h-4 w-4" /></>}
+          </button>
+          {verifyError && (
+            <p className="mt-3 text-sm text-destructive">{verifyError}</p>
+          )}
+          <button
+            onClick={() => { setCheckEmail(false); setVerifyError(""); }}
+            className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Use a different email
+          </button>
         </motion.div>
       </div>
     );
