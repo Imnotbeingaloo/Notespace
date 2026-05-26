@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, Lock, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Timer } from "lucide-react";
+import { User as UserIcon, Lock, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { usePomodoroEnabled } from "@/hooks/use-pomodoro-enabled";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -27,7 +26,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { user } = useAuth();
   const { profile, updateDisplayName, markPasswordChanged, daysSincePasswordChange, refresh } = useProfile();
   const { theme, setTheme } = useTheme();
-  const [pomodoroEnabled, setPomodoroEnabled] = usePomodoroEnabled();
+  
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
@@ -250,33 +249,6 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   ))}
                 </div>
 
-                <div className="pt-2">
-                  <h4 className="font-serif text-sm font-bold text-foreground mb-1">Tools</h4>
-                  <p className="text-xs text-muted-foreground mb-3">Show or hide optional workspace tools.</p>
-                  <button
-                    type="button"
-                    onClick={() => setPomodoroEnabled(!pomodoroEnabled)}
-                    className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-border bg-card hover:bg-muted/40 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                        <Timer className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-foreground">Pomodoro timer</p>
-                        <p className="text-xs text-muted-foreground">When on, appears in the topbar and inside Focus Mode.</p>
-                      </div>
-                    </div>
-                    <span
-                      aria-hidden
-                      className={`relative inline-flex h-6 w-10 shrink-0 rounded-full transition-colors ${pomodoroEnabled ? "bg-primary" : "bg-muted"}`}
-                    >
-                      <span
-                        className={`absolute top-0.5 h-5 w-5 rounded-full bg-background shadow transition-transform ${pomodoroEnabled ? "translate-x-[18px]" : "translate-x-0.5"}`}
-                      />
-                    </span>
-                  </button>
-                </div>
               </div>
             )}
 

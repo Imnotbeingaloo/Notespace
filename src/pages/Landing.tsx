@@ -225,12 +225,12 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-serif text-[2.4rem] md:text-[3.1rem] lg:text-[3.85rem] font-bold text-foreground leading-[1.1] tracking-tight"
+                className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2"
               >
                 Your thoughts,{" "}
-                <span className="italic text-primary">organized</span>
+                <span className="italic text-primary inline-block pr-1.5">organized</span>
                 {" & "}
-                <span className="italic text-primary">understood</span>
+                <span className="italic text-primary inline-block pr-1.5">understood</span>
                 <span className="text-foreground">.</span>
               </motion.h1>
 

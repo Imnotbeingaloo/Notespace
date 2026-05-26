@@ -170,7 +170,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
 
   const insertDivider = useCallback(() => {
     focusEditor(editorRef.current);
-    document.execCommand("insertHTML", false, "<hr /><p><br></p>");
+    document.execCommand("insertHTML", false, '<hr class="my-4 border-0 h-[2px] bg-foreground/30 dark:bg-foreground/40 rounded" /><p><br></p>');
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 

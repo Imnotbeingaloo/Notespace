@@ -6,20 +6,16 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { CalendarDays, Loader2, Maximize2, Minimize2, Timer, ChevronDown, Focus } from "lucide-react";
+import { CalendarDays, Loader2, Crosshair, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
-import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { OnboardingHelp } from "@/components/OnboardingHelp";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
-import { usePomodoroEnabled } from "@/hooks/use-pomodoro-enabled";
-import { useFocusAutoOpenPomodoro } from "@/hooks/use-focus-prefs";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
@@ -33,8 +29,7 @@ function AppContent() {
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
-  const [pomodoroEnabled] = usePomodoroEnabled();
-  const [focusAutoOpenPomodoro, setFocusAutoOpenPomodoro] = useFocusAutoOpenPomodoro();
+
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const urlNotebook = searchParams.get("notebook");
@@ -185,81 +180,38 @@ function AppContent() {
             </div>
             <div className="flex items-center gap-1">
               <OnboardingHelp />
-              <DropdownMenu>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant={focusMode || pomodoroOpen ? "default" : "ghost"}
-                        size="sm"
-                        className="h-8 rounded-xl shrink-0 gap-1.5 px-2.5"
-                      >
-                        <Focus className="h-4 w-4" />
-                        <span className="hidden sm:inline text-xs font-medium">Focus</span>
-                        <ChevronDown className="h-3 w-3 opacity-60" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom"><p>Focus tools</p></TooltipContent>
-                </Tooltip>
-                <DropdownMenuContent align="end" className="w-60">
-                  <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono">
-                    Focus tools
-                  </DropdownMenuLabel>
-                  <DropdownMenuItem
-                    onSelect={(e) => {
-                      e.preventDefault();
-                      setFocusMode((p) => {
-                        const next = !p;
-                        if (pomodoroEnabled && focusAutoOpenPomodoro) setPomodoroOpen(next);
-                        else if (!next) setPomodoroOpen(false);
-                        return next;
-                      });
-                    }}
-                    className="flex items-start gap-2 cursor-pointer"
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setFocusMode((p) => !p)}
+                    variant={focusMode ? "default" : "ghost"}
+                    size="icon"
+                    className="h-8 w-8 rounded-xl shrink-0"
+                    aria-label={focusMode ? "Exit Focus Mode" : "Enter Focus Mode"}
                   >
-                    {focusMode ? <Minimize2 className="h-4 w-4 mt-0.5 text-primary" /> : <Maximize2 className="h-4 w-4 mt-0.5" />}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{focusMode ? "Exit Deep Focus" : "Deep Focus"}</p>
-                      <p className="text-[11px] text-muted-foreground">Hide sidebar & chrome for distraction-free writing.</p>
-                    </div>
-                  </DropdownMenuItem>
-                  {pomodoroEnabled && (
-                    <DropdownMenuItem
-                      onSelect={(e) => { e.preventDefault(); setPomodoroOpen((p) => !p); }}
-                      className="flex items-start gap-2 cursor-pointer"
-                    >
-                      <Timer className={`h-4 w-4 mt-0.5 ${pomodoroOpen ? "text-primary" : ""}`} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium">{pomodoroOpen ? "Hide Pomodoro" : "Pomodoro Timer"}</p>
-                        <p className="text-[11px] text-muted-foreground">25/5 work + break cycles in the corner.</p>
-                      </div>
-                    </DropdownMenuItem>
-                  )}
-                  {pomodoroEnabled && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <label className="flex items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={focusAutoOpenPomodoro}
-                          onChange={(e) => setFocusAutoOpenPomodoro(e.target.checked)}
-                          className="h-3.5 w-3.5 rounded border-border accent-primary"
-                        />
-                        <span>Auto-open Pomodoro in Deep Focus</span>
-                      </label>
-                    </>
-                  )}
-                  {!pomodoroEnabled && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <p className="px-2 py-1.5 text-[11px] text-muted-foreground">
-                        Enable the Pomodoro timer in Settings → Appearance.
-                      </p>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    {focusMode ? <Minimize2 className="h-4 w-4" /> : <Crosshair className="h-4 w-4" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setPomodoroOpen((p) => !p)}
+                    variant={pomodoroOpen ? "default" : "ghost"}
+                    size="icon"
+                    className="h-8 w-8 rounded-xl shrink-0"
+                    aria-label={pomodoroOpen ? "Hide Pomodoro Timer" : "Show Pomodoro Timer"}
+                  >
+                    <Timer className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{pomodoroOpen ? "Hide Pomodoro" : "Pomodoro Timer"}</p>
+                </TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -275,7 +227,6 @@ function AppContent() {
                   <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
                 </TooltipContent>
               </Tooltip>
-              <KeyboardShortcuts />
             </div>
           </div>
         </TooltipProvider>
