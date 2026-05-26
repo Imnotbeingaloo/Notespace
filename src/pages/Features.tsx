@@ -136,14 +136,6 @@ export default function FeaturesPage() {
                     <p className="text-base text-muted-foreground leading-relaxed mb-7">
                       {group.blurb}
                     </p>
-                    <div className="inline-flex items-baseline gap-3 rounded-2xl border border-border bg-card/60 px-5 py-4">
-                      <span className="font-serif text-3xl md:text-4xl font-bold text-primary leading-none">
-                        {group.stat.value}
-                      </span>
-                      <span className="text-xs text-muted-foreground max-w-[14ch] leading-snug">
-                        {group.stat.label}
-                      </span>
-                    </div>
                   </motion.div>
 
                   {/* Right column — feature list (vertical, no plain card grid) */}
