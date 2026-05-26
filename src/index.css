@@ -94,8 +94,8 @@
     --notebook-hover: 220 15% 15%;
     --editor-bg: 220 18% 12%;
     --editor-line: 220 15% 18%;
-    --exit-splash-light: 40 33% 97%;
-    --exit-splash-dark: 220 20% 4%;
+    --exit-splash-light: 0 0% 100%;
+    --exit-splash-dark: 0 0% 0%;
 
   }
 }
