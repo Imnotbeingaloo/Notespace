@@ -19,7 +19,7 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   useEffect(() => {
-    const t = window.setTimeout(() => onDoneRef.current(), 650);
+    const t = window.setTimeout(() => onDoneRef.current(), 2650);
     return () => clearTimeout(t);
   }, []);
 
