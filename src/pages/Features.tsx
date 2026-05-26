@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
-import { AnimatedHeading } from "@/components/AnimatedHeading";
+import { PageHeader } from "@/components/PageHeader";
 
 const groups = [
   {
@@ -53,53 +53,23 @@ export default function FeaturesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header / nav */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-background/70 border-b border-border">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-foreground">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <span className="font-serif font-bold tracking-tight">Notebook Archive</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm">
-            <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-            <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">About</Link>
-            <Link to="/how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">How It Works</Link>
-            <Link
-              to={user ? "/app" : "/auth"}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20"
-            >
-              {user ? "Open App" : "Start writing"} <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PageHeader activePage="features" />
 
       {/* Hero */}
-      <section className="relative overflow-hidden py-24 md:py-28 bg-muted/40">
-        <div className="container mx-auto px-6 max-w-4xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-3 mb-6"
-          >
-            <span className="h-px w-8 bg-accent" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Features</span>
-            <span className="h-px w-8 bg-accent" />
+      <section className="relative overflow-hidden pt-28 pb-16">
+        <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
+              <Sparkles className="h-3.5 w-3.5 text-accent" />
+              Features
+            </div>
+            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+              Everything you need. Nothing you don't.
+            </h1>
+            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              A curated set of tools designed to help you write, organize, and revisit your ideas — with intelligence woven in only where it actually helps.
+            </p>
           </motion.div>
-          <AnimatedHeading
-            as="h1"
-            className="font-serif text-[2.4rem] md:text-[3.1rem] lg:text-[3.85rem] font-bold text-foreground leading-[1.1] tracking-tight"
-            text="Everything you need. Nothing you don't."
-          />
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto"
-          >
-            A curated set of tools designed to help you write, organize, and revisit your ideas — with intelligence woven in only where it actually helps.
-          </motion.p>
         </div>
       </section>
 
@@ -136,11 +106,11 @@ export default function FeaturesPage() {
           {groups.map((group, gIdx) => (
             <div key={group.title} className={gIdx > 0 ? "mt-20" : ""}>
               <motion.h2
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-2"
+                className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-2 text-center"
               >
                 {group.title}
               </motion.h2>
@@ -149,7 +119,7 @@ export default function FeaturesPage() {
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.15 }}
-                className="h-px w-16 bg-primary origin-left mb-8"
+                className="h-px w-16 bg-primary mx-auto mb-10"
               />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {group.items.map((item, i) => (

@@ -9,7 +9,7 @@ interface PageHeaderProps {
 }
 
 const navLinks = [
-  { to: "/#features", label: "Features", key: "features" },
+  { to: "/features", label: "Features", key: "features" },
   { to: "/pricing", label: "Pricing", key: "pricing" },
   { to: "/about", label: "About", key: "about" },
   { to: "/how-it-works", label: "How It Works", key: "how-it-works" },
