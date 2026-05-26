@@ -16,6 +16,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
+import { usePomodoroEnabled } from "@/hooks/use-pomodoro-enabled";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
