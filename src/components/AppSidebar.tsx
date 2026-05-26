@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X, Settings } from "lucide-react";
+import { useProfile } from "@/hooks/use-profile";
+import { SettingsDialog } from "@/components/SettingsDialog";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,6 +32,8 @@ interface AppSidebarProps {
 
 export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome }: AppSidebarProps) {
   const { signOut, user } = useAuth();
+  const { profile } = useProfile();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const {
     notebooks,
     trashedNotebooks,
@@ -885,6 +889,20 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
         {!collapsed ? (
           <>
+            {profile?.display_name && (
+              <div className="px-3 py-1.5 mb-0.5">
+                <p className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground">Signed in as</p>
+                <p className="text-xs font-semibold text-foreground truncate">{profile.display_name}</p>
+              </div>
+            )}
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg transition-colors"
+              title="Settings"
+            >
+              <Settings className="h-4 w-4" />
+              <span className="flex-1 text-left">Settings</span>
+            </button>
             <Link
               to="/trash"
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
