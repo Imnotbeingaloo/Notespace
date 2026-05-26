@@ -14,6 +14,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
+import { LinkInsertDialog } from "@/components/LinkInsertDialog";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
