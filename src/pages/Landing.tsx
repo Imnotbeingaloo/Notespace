@@ -7,6 +7,7 @@ import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/Animat
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { ExitBookFlash } from "@/components/ExitBookFlash";
+import { SeoHead } from "@/components/SeoHead";
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -144,10 +145,26 @@ export default function LandingPage() {
 
   return (
     <>
+      <SeoHead
+        title="Notebook Archive — AI-Powered Personal Notebook"
+        description="A quiet place to write, link, and revisit your ideas — with AI woven in only where it actually helps."
+        path="/"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Notebook Archive",
+          url: "https://notebookarchive.lovable.app/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://notebookarchive.lovable.app/?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       <AnimatePresence>
         {showExitSplash && <ExitBookFlash key="exit-splash" onDone={() => setShowExitSplash(false)} />}
       </AnimatePresence>
-      <div className="min-h-screen bg-background">
+      <main className="min-h-screen bg-background">
       {/* ── Floating Navbar ── */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
@@ -570,7 +587,7 @@ export default function LandingPage() {
 
       {/* ── Footer ── */}
       <Footer />
-      </div>
+      </main>
     </>
   );
 }

@@ -7,6 +7,7 @@ import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/Animat
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { PageHeader } from "@/components/PageHeader";
+import { SeoHead } from "@/components/SeoHead";
 
 const groups = [
   {
@@ -61,8 +62,14 @@ export default function FeaturesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader activePage="features" />
+    <>
+      <SeoHead
+        title="Features — Notebook Archive"
+        description="Markdown editor, AI explanations, focus mode, study planner, smart tags, find & replace, and frictionless sharing — every feature explained."
+        path="/features"
+      />
+      <main className="min-h-screen bg-background">
+        <PageHeader activePage="features" />
 
       {/* Hero */}
       <section className="relative overflow-hidden pt-28 pb-16">
@@ -231,6 +238,7 @@ export default function FeaturesPage() {
       </section>
 
       <Footer />
-    </div>
+      </main>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { BookOpen, ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { SeoHead } from "@/components/SeoHead";
 
 export default function SharedNote() {
   const { token } = useParams<{ token: string }>();
@@ -60,8 +61,22 @@ export default function SharedNote() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-background/80 backdrop-blur-lg">
+    <>
+      {note && (
+        <SeoHead
+          title={`${note.title} — Notebook Archive`}
+          description={(note.content || "").slice(0, 160).replace(/\s+/g, " ").trim() || "A shared note from Notebook Archive."}
+          path={`/shared/${token ?? ""}`}
+          jsonLd={{
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: note.title,
+            publisher: { "@type": "Organization", name: "Notebook Archive" },
+          }}
+        />
+      )}
+      <main className="min-h-screen bg-background">
+        <header className="border-b border-border bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto flex items-center justify-between py-4 px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 object-contain" />
@@ -81,6 +96,7 @@ export default function SharedNote() {
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{note?.content || ""}</ReactMarkdown>
         </div>
       </motion.article>
-    </div>
+      </main>
+    </>
   );
 }

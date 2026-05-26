@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
+import { SeoHead } from "@/components/SeoHead";
 import { AnimatedHeading } from "@/components/AnimatedHeading";
 
 const values = [
@@ -276,8 +277,14 @@ export default function AboutPage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader activePage="about" />
+    <>
+      <SeoHead
+        title="About — Notebook Archive"
+        description="The mission and philosophy behind Notebook Archive: a focused, AI-augmented home for your thinking that respects your time and your privacy."
+        path="/about"
+      />
+      <main className="min-h-screen bg-background">
+        <PageHeader activePage="about" />
 
       {/* Hero */}
       <section className="relative overflow-hidden pt-28 pb-16">
@@ -440,6 +447,7 @@ export default function AboutPage() {
       </section>
 
       <Footer />
-    </div>
+      </main>
+    </>
   );
 }
