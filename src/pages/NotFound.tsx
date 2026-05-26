@@ -21,7 +21,7 @@ const NotFound = () => {
         <div className="space-y-1">
           <h1 className="font-serif text-5xl sm:text-6xl font-bold text-foreground">404</h1>
           <p className="text-lg text-muted-foreground">
-            This page doesn't exist. Maybe it never did 🤷
+            This page doesn't exist. Maybe it never did 🤷🏽‍♀️
           </p>
         </div>
         <img
