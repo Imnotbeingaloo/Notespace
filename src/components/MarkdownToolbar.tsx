@@ -14,6 +14,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
+import { LinkInsertDialog } from "@/components/LinkInsertDialog";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -57,15 +58,56 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [linkInitialText, setLinkInitialText] = useState("");
+  const [linkInitialUrl, setLinkInitialUrl] = useState("");
+  const savedRangeRef = useRef<Range | null>(null);
+
   const insertLink = useCallback(() => {
     focusEditor(editorRef.current);
     const sel = window.getSelection();
-    const selected = sel?.toString() || "link text";
-    const url = prompt("Enter URL:", "https://");
-    if (!url) return;
-    const html = `<a href="${url}">${selected}</a>`;
+    const selected = sel?.toString() || "";
+    // Save the current range so we can restore the selection when the dialog closes.
+    if (sel && sel.rangeCount > 0) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+    } else {
+      savedRangeRef.current = null;
+    }
+    // If user clicked inside an existing <a>, prefill its href.
+    let existingHref = "";
+    const anchorNode = sel?.anchorNode as Node | null;
+    if (anchorNode) {
+      let el: HTMLElement | null = anchorNode.nodeType === 1
+        ? (anchorNode as HTMLElement)
+        : (anchorNode.parentElement as HTMLElement | null);
+      while (el && el !== editorRef.current) {
+        if (el.tagName === "A") { existingHref = (el as HTMLAnchorElement).getAttribute("href") || ""; break; }
+        el = el.parentElement;
+      }
+    }
+    setLinkInitialText(selected);
+    setLinkInitialUrl(existingHref);
+    setLinkDialogOpen(true);
+  }, [editorRef]);
+
+  const confirmLink = useCallback((title: string, url: string) => {
+    setLinkDialogOpen(false);
+    focusEditor(editorRef.current);
+    // Restore the saved selection so insertHTML lands in the right place.
+    const sel = window.getSelection();
+    if (sel && savedRangeRef.current) {
+      sel.removeAllRanges();
+      sel.addRange(savedRangeRef.current);
+    }
+    const safeUrl = url.replace(/"/g, "&quot;");
+    const safeTitle = (title || url)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    const html = `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeTitle}</a>`;
     document.execCommand("insertHTML", false, html);
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+    savedRangeRef.current = null;
   }, [editorRef]);
 
   const { user } = useAuth();
@@ -180,6 +222,13 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         accept="image/*"
         className="hidden"
         onChange={handleImageUpload}
+      />
+      <LinkInsertDialog
+        open={linkDialogOpen}
+        initialText={linkInitialText}
+        initialUrl={linkInitialUrl}
+        onCancel={() => setLinkDialogOpen(false)}
+        onConfirm={confirmLink}
       />
       {canScrollLeft && (
         <button

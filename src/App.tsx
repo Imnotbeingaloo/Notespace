@@ -10,6 +10,7 @@ import Landing from "./pages/Landing";
 import AppPage from "./pages/Index";
 import AuthPage from "./pages/Auth";
 import PricingPage from "./pages/Pricing";
+import FeaturesPage from "./pages/Features";
 import AboutPage from "./pages/About";
 import HowItWorksPage from "./pages/HowItWorks";
 import TrashPage from "./pages/Trash";
@@ -56,6 +57,7 @@ const App = () => (
               <Route path="/app" element={<AppPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/features" element={<FeaturesPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="/trash" element={<TrashPage />} />

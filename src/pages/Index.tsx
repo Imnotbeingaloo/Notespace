@@ -12,10 +12,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { OnboardingHelp } from "@/components/OnboardingHelp";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
+import { usePomodoroEnabled } from "@/hooks/use-pomodoro-enabled";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
@@ -29,6 +31,7 @@ function AppContent() {
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
+  const [pomodoroEnabled] = usePomodoroEnabled();
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const urlNotebook = searchParams.get("notebook");
@@ -184,8 +187,9 @@ function AppContent() {
                     onClick={() => {
                       setFocusMode((p) => {
                         const next = !p;
-                        // Focus Mode auto-opens the Pomodoro timer; exiting Focus closes it.
-                        setPomodoroOpen(next);
+                        // When Pomodoro is enabled, Focus Mode auto-opens / closes it.
+                        if (pomodoroEnabled) setPomodoroOpen(next);
+                        else setPomodoroOpen(false);
                         return next;
                       });
                     }}
@@ -197,10 +201,10 @@ function AppContent() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode (includes Pomodoro)"}</p>
+                  <p>{focusMode ? "Exit Focus Mode" : pomodoroEnabled ? "Focus Mode (includes Pomodoro)" : "Focus Mode"}</p>
                 </TooltipContent>
               </Tooltip>
-              {!focusMode && (
+              {pomodoroEnabled && !focusMode && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -232,6 +236,7 @@ function AppContent() {
                   <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
                 </TooltipContent>
               </Tooltip>
+              <OnboardingHelp />
               <KeyboardShortcuts />
             </div>
           </div>
