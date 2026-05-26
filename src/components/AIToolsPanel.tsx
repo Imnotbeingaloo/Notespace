@@ -24,6 +24,11 @@ export function AIToolsPanel() {
     setOpen(true);
     setResult("");
     setError("");
+    if (!activeNote.content || activeNote.content.trim().length === 0) {
+      setError("Notebook is empty — write something first.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
 
     try {
