@@ -1,45 +1,61 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
 
 /**
- * Minimal book flash shown when navigating from the app back to the marketing
- * site. Uses a pure CSS keyframe so the fade is driven by the compositor and
- * is NOT blocked while the (heavy) Landing page is mounting/hydrating.
+ * Richer "leaving the app" splash — a book opens, glows, and fades out.
+ * Driven by framer-motion so it stays smooth while Landing hydrates.
  */
 export function ExitBookFlash({ onDone }: { onDone: () => void }) {
-  const [hidden, setHidden] = useState(false);
-
   useEffect(() => {
-    // Fallback removal in case animationend never fires.
-    const t = window.setTimeout(() => {
-      setHidden(true);
-      onDone();
-    }, 700);
+    // Hard fallback in case the exit animation never fires.
+    const t = window.setTimeout(onDone, 1600);
     return () => clearTimeout(t);
   }, [onDone]);
 
-  if (hidden) return null;
-
   return (
-    <div
+    <motion.div
       aria-hidden
-      onAnimationEnd={() => {
-        setHidden(true);
-        onDone();
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      onAnimationComplete={() => {
+        // After the inner sequence finishes, signal done so parent can unmount.
+        window.setTimeout(onDone, 50);
       }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background pointer-events-none"
-      style={{
-        animation: "exit-book-fade 500ms ease-out forwards",
-      }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background pointer-events-none overflow-hidden"
     >
-      <BookOpen className="h-12 w-12 text-primary" strokeWidth={1.75} />
-      <style>{`
-        @keyframes exit-book-fade {
-          0%   { opacity: 1; }
-          60%  { opacity: 1; }
-          100% { opacity: 0; }
-        }
-      `}</style>
-    </div>
+      {/* Soft radial wash */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.6 }}
+        animate={{ opacity: [0, 0.7, 0], scale: [0.6, 1.6, 2.2] }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="absolute h-96 w-96 rounded-full bg-primary/15 blur-3xl"
+      />
+
+      {/* Book mark */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.7, y: 12, rotate: -4 }}
+        animate={{
+          opacity: [0, 1, 1, 0],
+          scale: [0.7, 1, 1.05, 1.15],
+          y: [12, 0, -2, -8],
+          rotate: [-4, 0, 0, 2],
+        }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], times: [0, 0.3, 0.75, 1] }}
+        className="relative flex flex-col items-center gap-3"
+      >
+        <BookOpen className="h-14 w-14 text-primary" strokeWidth={1.6} />
+        <motion.span
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: [0, 1, 1, 0], y: [4, 0, 0, -2] }}
+          transition={{ duration: 1.2, times: [0, 0.35, 0.75, 1] }}
+          className="font-mono text-[10px] tracking-[0.3em] uppercase text-muted-foreground"
+        >
+          Closing the notebook
+        </motion.span>
+      </motion.div>
+    </motion.div>
   );
 }
