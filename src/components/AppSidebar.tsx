@@ -928,6 +928,18 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <div className="flex flex-col items-center gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setSettingsOpen(true)}
+                    className="p-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    aria-label="Settings"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Settings</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <Link to="/trash" className="p-2 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors" aria-label="Trash">
                     <Trash2 className="h-4 w-4" />
                   </Link>
@@ -957,12 +969,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         )}
       </div>
 
+      {/* Settings Modal */}
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+
       {/* Create Notebook Modal */}
       <CreateNotebookDialog
         open={newNotebookOpen}
         onOpenChange={setNewNotebookOpen}
         onCreate={async (name, emoji) => { await createNotebook(name, emoji); }}
       />
+
 
       {/* Confirm Sub-Notebook nesting */}
       <ConfirmDialog
