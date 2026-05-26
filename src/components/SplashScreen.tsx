@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen } from "lucide-react";
+
 
 interface SplashScreenProps {
   onComplete: () => void;
