@@ -54,13 +54,13 @@ export function OnboardingHelp() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
               transition={{ duration: 0.25 }}
-              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground shadow-md shadow-primary/30"
+              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-foreground/80"
             >
               <span>Confused? Click here</span>
               <motion.span
                 animate={{ x: [0, 4, 0] }}
                 transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                className="inline-flex"
+                className="inline-flex text-primary"
               >
                 <ArrowRight className="h-3.5 w-3.5" />
               </motion.span>
