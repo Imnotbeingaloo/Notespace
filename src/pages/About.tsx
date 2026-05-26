@@ -286,9 +286,12 @@ export default function AboutPage() {
               <Sparkles className="h-3.5 w-3.5 text-accent" />
               Our Story
             </div>
-            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
-              We're building the notebook <span className="text-primary">you always wanted</span>
-            </h1>
+            <AnimatedHeading
+              as="h1"
+              className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight max-w-4xl mx-auto"
+              text="We're building the notebook you always wanted"
+              delay={0.1}
+            />
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Notebook Archive was created for thinkers — students, researchers, writers, and anyone who believes better tools lead to better ideas. We're a small, passionate team on a mission to make knowledge management feel effortless.
             </p>
