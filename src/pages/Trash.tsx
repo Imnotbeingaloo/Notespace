@@ -58,6 +58,13 @@ function TrashPageContent() {
     permanentlyDeleteNote,
   } = useNotebooks();
 
+  // Return to last opened notebook if available, else home
+  const goBackToApp = useCallback(() => {
+    const lastNb = typeof window !== "undefined" ? localStorage.getItem("activeNotebookId") : null;
+    navigate(lastNb ? `/app?notebook=${lastNb}` : "/app");
+  }, [navigate]);
+
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmTitle, setConfirmTitle] = useState("");
   const [confirmDesc, setConfirmDesc] = useState("");
@@ -195,11 +202,13 @@ function TrashPageContent() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate("/app")}
+              onClick={goBackToApp}
               className="shrink-0 rounded-xl hover:bg-muted"
+              title="Back to your last notebook"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
+
             <div className="flex-1">
               <h1 className="text-3xl font-sans font-bold text-foreground flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-destructive/10 flex items-center justify-center">
@@ -292,12 +301,13 @@ function TrashPageContent() {
             </p>
             <Button
               variant="outline"
-              onClick={() => navigate("/app")}
+              onClick={goBackToApp}
               className="mt-6 rounded-xl gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Notebooks
+              Back to your notebook
             </Button>
+
           </motion.div>
         )}
 

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X, Settings } from "lucide-react";
+import { useProfile } from "@/hooks/use-profile";
+import { SettingsDialog } from "@/components/SettingsDialog";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,6 +32,8 @@ interface AppSidebarProps {
 
 export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome }: AppSidebarProps) {
   const { signOut, user } = useAuth();
+  const { profile } = useProfile();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const {
     notebooks,
     trashedNotebooks,
@@ -885,6 +889,20 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       <div className="p-2 border-t border-sidebar-border mt-auto flex flex-col gap-1">
         {!collapsed ? (
           <>
+            {profile?.display_name && (
+              <div className="px-3 py-1.5 mb-0.5">
+                <p className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground">Signed in as</p>
+                <p className="text-xs font-semibold text-foreground truncate">{profile.display_name}</p>
+              </div>
+            )}
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg transition-colors"
+              title="Settings"
+            >
+              <Settings className="h-4 w-4" />
+              <span className="flex-1 text-left">Settings</span>
+            </button>
             <Link
               to="/trash"
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
@@ -908,6 +926,18 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         ) : (
           <TooltipProvider delayDuration={200}>
             <div className="flex flex-col items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setSettingsOpen(true)}
+                    className="p-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    aria-label="Settings"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Settings</TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link to="/trash" className="p-2 rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors" aria-label="Trash">
@@ -939,12 +969,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         )}
       </div>
 
+      {/* Settings Modal */}
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+
       {/* Create Notebook Modal */}
       <CreateNotebookDialog
         open={newNotebookOpen}
         onOpenChange={setNewNotebookOpen}
         onCreate={async (name, emoji) => { await createNotebook(name, emoji); }}
       />
+
 
       {/* Confirm Sub-Notebook nesting */}
       <ConfirmDialog
