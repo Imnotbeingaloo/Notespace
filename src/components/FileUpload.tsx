@@ -16,6 +16,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
   const { activeNote, activeNotebookId, updateNote } = useNotebooks();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
 
   if (!activeNote || !activeNotebookId) return null;
 
