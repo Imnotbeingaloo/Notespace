@@ -481,6 +481,8 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
           }
         }}
       />
+
+      <NamePromptDialog open={namePromptOpen} onOpenChange={handleNamePromptChange} />
     </div>
   );
 }
