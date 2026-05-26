@@ -10,6 +10,7 @@ import Landing from "./pages/Landing";
 import AppPage from "./pages/Index";
 import AuthPage from "./pages/Auth";
 import PricingPage from "./pages/Pricing";
+import FeaturesPage from "./pages/Features";
 import AboutPage from "./pages/About";
 import HowItWorksPage from "./pages/HowItWorks";
 import TrashPage from "./pages/Trash";
