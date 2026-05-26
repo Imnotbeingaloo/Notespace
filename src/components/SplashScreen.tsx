@@ -46,14 +46,14 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
             className="absolute w-80 h-80 rounded-full bg-primary blur-3xl"
           />
 
-          <motion.div
-            className="relative z-10 flex items-center justify-center"
+          <motion.img
+            src="/logo.png"
+            alt="Notebook Archive"
+            className="relative z-10 h-20 w-20 object-contain"
             initial={{ scale: 0.3, opacity: 0, rotate: fast ? 0 : -15 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             transition={{ duration: fast ? 0.3 : 0.7, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <BookOpen className="h-20 w-20 text-primary" strokeWidth={1.5} />
-          </motion.div>
+          />
 
           {!fast && (
             <>
