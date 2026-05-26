@@ -18,6 +18,16 @@ const AuthPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    if (mode === "signup" && !displayName.trim()) {
+      setError("Please enter your name.");
+      return;
+    }
+
     setLoading(true);
 
     if (mode === "login") {
@@ -25,7 +35,7 @@ const AuthPage = () => {
       if (error) setError(error.message);
       else navigate("/app");
     } else {
-      const { error } = await signUp(email, password, displayName);
+      const { error } = await signUp(email, password, displayName.trim());
       if (error) setError(error.message);
       else setCheckEmail(true);
     }
