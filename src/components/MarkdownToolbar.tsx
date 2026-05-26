@@ -68,14 +68,63 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
+  const { user } = useAuth();
+  const { activeNote, activeNotebookId, updateNote } = useNotebooks();
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   const insertImage = useCallback(() => {
-    focusEditor(editorRef.current);
-    const url = prompt("Enter image URL:");
-    if (!url) return;
-    const html = `<img src="${url}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`;
-    document.execCommand("insertHTML", false, html);
-    editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
-  }, [editorRef]);
+    imageInputRef.current?.click();
+  }, []);
+
+  const handleImageUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !activeNote || !activeNotebookId) {
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      // Fall back to URL prompt for non-images
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      const url = prompt("Enter image URL:");
+      if (!url) return;
+      focusEditor(editorRef.current);
+      document.execCommand("insertHTML", false, `<img src="${url}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`);
+      editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+    if (!validateFile(file)) {
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      return;
+    }
+    setUploadingImage(true);
+    try {
+      const path = buildStoragePath(user.id, activeNote.id, file.name);
+      const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+      if (error) throw error;
+      const { data: signedUrlData } = await supabase.storage
+        .from("note-attachments")
+        .createSignedUrl(path, 60 * 60 * 24 * 7);
+      const fileUrl = signedUrlData?.signedUrl || "";
+
+      const newAttachments = [
+        ...(activeNote.attachments || []),
+        { name: file.name, url: fileUrl, path, type: file.type, size: file.size },
+      ];
+      await updateNote(activeNotebookId, activeNote.id, { attachments: newAttachments });
+
+      focusEditor(editorRef.current);
+      const html = `<img src="${fileUrl}" alt="${file.name}" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`;
+      document.execCommand("insertHTML", false, html);
+      editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+      toast({ title: "Image inserted", description: file.name });
+    } catch (err: any) {
+      toast({ title: "Image upload failed", description: err.message || "Try again.", variant: "destructive" as any });
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = "";
+    }
+  }, [user, activeNote, activeNotebookId, updateNote, editorRef]);
 
   const insertDivider = useCallback(() => {
     focusEditor(editorRef.current);
