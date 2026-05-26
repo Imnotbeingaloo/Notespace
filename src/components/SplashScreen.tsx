@@ -7,6 +7,10 @@ interface SplashScreenProps {
 }
 
 export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
+  const [isDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("app-theme") === "dark" || document.documentElement.classList.contains("dark");
+  });
   const [phase, setPhase] = useState<"logo" | "text" | "done">("logo");
 
   useEffect(() => {
