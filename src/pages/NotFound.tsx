@@ -15,6 +15,7 @@ const NotFound = () => {
       <SeoHead
         title="404 — Page Not Found | Notebook Archive"
         description="The page you're looking for doesn't exist."
+        path="/404"
       />
       <div className="max-w-lg w-full text-center flex flex-col items-center gap-6">
         <img
