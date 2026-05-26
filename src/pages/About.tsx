@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
+import { AnimatedHeading } from "@/components/AnimatedHeading";
 
 const values = [
   { icon: Heart, title: "User-First Design", description: "Every feature is designed around how people actually think and write. No bloat, no clutter — just clarity. We obsess over every interaction to make sure it feels natural." },
