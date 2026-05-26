@@ -7,6 +7,8 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useProfile } from "@/hooks/use-profile";
+import { NamePromptDialog } from "@/components/NamePromptDialog";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
@@ -21,6 +23,7 @@ const PAGE_SIZE = 9;
 export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote }: HomeViewProps) {
   const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
   const navigate = useNavigate();
+  const { profile, loading: profileLoading } = useProfile();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
   const [visible, setVisible] = useState(PAGE_SIZE);
@@ -29,10 +32,29 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
   const [pageError, setPageError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<null | { id: string; name: string }>(null);
+  const [namePromptOpen, setNamePromptOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
+
+  // First-run name prompt: open once if no display_name and user hasn't skipped it
+  useEffect(() => {
+    if (profileLoading) return;
+    if (profile?.display_name) return;
+    const skipped = typeof window !== "undefined" && localStorage.getItem("namePromptDismissed");
+    if (skipped) return;
+    setNamePromptOpen(true);
+  }, [profile?.display_name, profileLoading]);
+
+  const handleNamePromptChange = (open: boolean) => {
+    setNamePromptOpen(open);
+    if (!open && !profile?.display_name) {
+      // remember they dismissed so we don't badger them every visit
+      localStorage.setItem("namePromptDismissed", "1");
+    }
+  };
+
 
   const lastUpdated = useCallback((nb: any) => {
     if (!nb.notes?.length) return nb.updated_at || nb.created_at;
@@ -197,7 +219,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
             ◆ Your Library
           </p>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-foreground tracking-tight">
-            Welcome back.
+            {profile?.display_name ? `Welcome back, ${profile.display_name}.` : "Welcome back."}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-3 max-w-xl">
             {notebooks.length} {notebooks.length === 1 ? "notebook" : "notebooks"} · {totalNotes}{" "}
