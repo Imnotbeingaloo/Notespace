@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const EXPLAIN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/explain-topic`;
 
@@ -19,6 +20,11 @@ export function AIExplainPanel() {
 
   const handleExplain = async () => {
     if (!activeNote) return;
+    const plain = (activeNote.content || "").replace(/<[^>]*>/g, "").trim();
+    if (!plain) {
+      toast.error("Notebook is empty — write something first.");
+      return;
+    }
     setOpen(true);
     setExplanation("");
     setError("");
