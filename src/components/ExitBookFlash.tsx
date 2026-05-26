@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
 
 /**
- * Richer "leaving the app" splash — a book opens, glows, and fades out.
- * Driven by framer-motion so it stays smooth while Landing hydrates.
+ * "Leaving the app" splash — book mark visible the entire time, then a quick
+ * fade. Coordinated with AnimatePresence: onDone fires right as the icon
+ * finishes its arc so the exit fade is the only thing between splash and page.
  */
 export function ExitBookFlash({ onDone }: { onDone: () => void }) {
   useEffect(() => {
-    // Hard fallback in case the exit animation never fires.
-    const t = window.setTimeout(onDone, 1600);
+    const t = window.setTimeout(onDone, 850);
     return () => clearTimeout(t);
   }, [onDone]);
 
@@ -19,35 +19,28 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
       className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none overflow-hidden"
-      style={{ background: "radial-gradient(ellipse at center, #14141f 0%, #08080d 100%)" }}
+      style={{ background: "radial-gradient(ellipse at center, #1a1a26 0%, #0a0a12 100%)" }}
     >
-      {/* Soft radial wash */}
       <motion.div
         initial={{ opacity: 0, scale: 0.6 }}
-        animate={{ opacity: [0, 0.7, 0], scale: [0.6, 1.6, 2.2] }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        className="absolute h-96 w-96 rounded-full bg-primary/15 blur-3xl"
+        animate={{ opacity: 0.55, scale: 1.8 }}
+        transition={{ duration: 0.85, ease: "easeOut" }}
+        className="absolute h-96 w-96 rounded-full bg-primary/25 blur-3xl"
       />
 
-      {/* Book mark */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.7, y: 12, rotate: -4 }}
-        animate={{
-          opacity: [0, 1, 1, 0],
-          scale: [0.7, 1, 1.05, 1.15],
-          y: [12, 0, -2, -8],
-          rotate: [-4, 0, 0, 2],
-        }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], times: [0, 0.3, 0.75, 1] }}
+        initial={{ opacity: 0, scale: 0.85, y: 10 }}
+        animate={{ opacity: 1, scale: 1.05, y: -2 }}
+        transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
         className="relative flex flex-col items-center gap-3"
       >
         <BookOpen className="h-14 w-14 text-primary" strokeWidth={1.6} />
         <motion.span
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: [0, 1, 1, 0], y: [4, 0, 0, -2] }}
-          transition={{ duration: 1.2, times: [0, 0.35, 0.75, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
           className="font-mono text-[10px] tracking-[0.3em] uppercase text-muted-foreground"
         >
           Closing the notebook

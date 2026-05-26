@@ -11,26 +11,38 @@ import { PageHeader } from "@/components/PageHeader";
 const groups = [
   {
     title: "Writing",
+    kicker: "The canvas",
+    blurb:
+      "Long-form writing should feel like thinking out loud. The editor stays out of your way until you need it — and then every tool is one keystroke away.",
+    stat: { value: "12+", label: "formatting tools, all keyboard-driven" },
     items: [
-      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, and a refined toolbar built for long-form thinking." },
-      { Icon: Wand2, name: "AI explanations", desc: "Highlight any phrase and ask for a streaming, source-aware explanation in a side panel." },
-      { Icon: Layers, name: "Templates", desc: "Lectures, meetings, research — start with structure instead of a blank page." },
+      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a refined toolbar built for long-form thinking. Real-time word, character, and reading-time counts." },
+      { Icon: Wand2, name: "AI explanations", desc: "Highlight any phrase, click Explain, and watch a streaming, source-aware answer unfold in a side panel — without ever leaving your note." },
+      { Icon: Layers, name: "Templates", desc: "Start lectures, meetings, weekly reviews, or research notes from a refined skeleton instead of an empty page." },
     ],
   },
   {
     title: "Organization",
+    kicker: "The system",
+    blurb:
+      "Notes are only useful if you can find them again. Tags aggregate across every notebook, search is instant, and the planner keeps your study sessions honest.",
+    stat: { value: "⌘K", label: "global search from anywhere" },
     items: [
-      { Icon: Tag, name: "Smart tags", desc: "A live tag cloud that aggregates across every notebook so nothing gets lost." },
-      { Icon: Search, name: "Global search", desc: "Cross-notebook full-text search with ⌘K and clickable tag chips." },
-      { Icon: Timer, name: "Study planner", desc: "Plan sessions, track streaks, and keep momentum with a built-in Pomodoro." },
+      { Icon: Tag, name: "Smart tags", desc: "Inline `#tags` aggregate into a live cloud in the sidebar — click any chip to jump straight to every note that mentions it." },
+      { Icon: Search, name: "Global search", desc: "Cross-notebook full-text search with fuzzy matching, recent-notes shortlist, and instant deep links to the matched line." },
+      { Icon: Timer, name: "Study planner", desc: "Plan sessions per notebook, track day streaks, and stay focused with a built-in Pomodoro that lives quietly in the corner." },
     ],
   },
   {
     title: "Sharing & Trust",
+    kicker: "The foundation",
+    blurb:
+      "Your notes are yours. Everything is private by default, hardened against prompt injection, and only leaves your account when you explicitly share it.",
+    stat: { value: "RLS", label: "row-level security on every table" },
     items: [
-      { Icon: Share2, name: "Public share links", desc: "Publish read-only views with secure tokens — revoke any time." },
-      { Icon: Lock, name: "Private by default", desc: "Row-level security, JWT auth, and private buckets with signed URLs." },
-      { Icon: Sparkles, name: "Focus mode", desc: "A distraction-free canvas with the Pomodoro tucked in for deep work." },
+      { Icon: Share2, name: "Public share links", desc: "Publish a read-only view via a secure token. Recipients see a polished public page — and you can revoke access in one click." },
+      { Icon: Lock, name: "Private by default", desc: "JWT auth, signed-URL file storage, and strict row-level security mean nobody but you reads your notes — not even our AI without consent." },
+      { Icon: Sparkles, name: "Focus mode", desc: "A distraction-free canvas that hides the sidebar and chrome. The Pomodoro can tag along if you want it; otherwise it stays out of sight." },
     ],
   },
 ];
@@ -100,48 +112,83 @@ export default function FeaturesPage() {
 
       <AnimatedDivider />
 
-      {/* Feature groups */}
+      {/* Feature groups — editorial zigzag */}
       <section className="py-20">
-        <div className="container mx-auto px-6 max-w-6xl">
-          {groups.map((group, gIdx) => (
-            <div key={group.title} className={gIdx > 0 ? "mt-20" : ""}>
-              <motion.h2
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-2 text-center"
-              >
-                {group.title}
-              </motion.h2>
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-                className="h-px w-16 bg-primary mx-auto mb-10"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {group.items.map((item, i) => (
+        <div className="container mx-auto px-6 max-w-6xl space-y-24 md:space-y-32">
+          {groups.map((group, gIdx) => {
+            const reverse = gIdx % 2 === 1;
+            return (
+              <div key={group.title} className="relative">
+                <div className={`grid gap-10 md:gap-14 lg:gap-20 md:grid-cols-12 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}>
+                  {/* Left column — narrative */}
                   <motion.div
-                    key={item.name}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 0.5, delay: i * 0.08 }}
-                    whileHover={{ y: -3 }}
-                    className="rounded-2xl border border-border bg-card p-6 hover:shadow-lg hover:shadow-primary/5 transition-shadow"
+                    initial={{ opacity: 0, x: reverse ? 30 : -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="md:col-span-5"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                      <item.Icon className="h-5 w-5 text-primary" />
+                    <div className="inline-flex items-center gap-2 mb-4">
+                      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-primary">
+                        {String(gIdx + 1).padStart(2, "0")} · {group.kicker}
+                      </span>
                     </div>
-                    <h3 className="font-serif text-base font-bold text-foreground mb-2">{item.name}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                    <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-5 leading-[1.1]">
+                      {group.title}
+                    </h2>
+                    <p className="text-base text-muted-foreground leading-relaxed mb-7">
+                      {group.blurb}
+                    </p>
+                    <div className="inline-flex items-baseline gap-3 rounded-2xl border border-border bg-card/60 px-5 py-4">
+                      <span className="font-serif text-3xl md:text-4xl font-bold text-primary leading-none">
+                        {group.stat.value}
+                      </span>
+                      <span className="text-xs text-muted-foreground max-w-[14ch] leading-snug">
+                        {group.stat.label}
+                      </span>
+                    </div>
                   </motion.div>
-                ))}
+
+                  {/* Right column — feature list (vertical, no plain card grid) */}
+                  <motion.div
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, margin: "-60px" }}
+                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } } }}
+                    className="md:col-span-7 relative"
+                  >
+                    <div className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-primary/40 via-border to-transparent hidden sm:block" />
+                    <ul className="space-y-5">
+                      {group.items.map((item) => (
+                        <motion.li
+                          key={item.name}
+                          variants={{
+                            hidden: { opacity: 0, y: 18 },
+                            show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                          }}
+                          className="group relative flex gap-4 rounded-2xl border border-border bg-card/40 hover:bg-card hover:border-primary/30 transition-all duration-300 p-5 hover:shadow-lg hover:shadow-primary/5"
+                        >
+                          <div className="relative shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center ring-4 ring-background group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                              <item.Icon className="h-5 w-5" />
+                            </div>
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-serif text-lg font-bold text-foreground mb-1.5 leading-tight">
+                              {item.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {item.desc}
+                            </p>
+                          </div>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
