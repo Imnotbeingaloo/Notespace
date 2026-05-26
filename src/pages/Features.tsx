@@ -185,6 +185,15 @@ export default function FeaturesPage() {
                             <p className="text-sm text-muted-foreground leading-relaxed">
                               {item.desc}
                             </p>
+                            {item.deepLink && (
+                              <Link
+                                to={user ? item.deepLink : "/auth"}
+                                className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:gap-2 transition-all"
+                              >
+                                {item.linkLabel}
+                                <ArrowRight className="h-3 w-3" />
+                              </Link>
+                            )}
                           </div>
                         </motion.li>
                       ))}
