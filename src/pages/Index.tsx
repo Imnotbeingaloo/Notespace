@@ -186,8 +186,9 @@ function AppContent() {
                     onClick={() => {
                       setFocusMode((p) => {
                         const next = !p;
-                        // Focus Mode auto-opens the Pomodoro timer; exiting Focus closes it.
-                        setPomodoroOpen(next);
+                        // When Pomodoro is enabled, Focus Mode auto-opens / closes it.
+                        if (pomodoroEnabled) setPomodoroOpen(next);
+                        else setPomodoroOpen(false);
                         return next;
                       });
                     }}
@@ -199,10 +200,10 @@ function AppContent() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode (includes Pomodoro)"}</p>
+                  <p>{focusMode ? "Exit Focus Mode" : pomodoroEnabled ? "Focus Mode (includes Pomodoro)" : "Focus Mode"}</p>
                 </TooltipContent>
               </Tooltip>
-              {!focusMode && (
+              {pomodoroEnabled && !focusMode && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
