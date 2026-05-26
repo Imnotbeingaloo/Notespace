@@ -30,7 +30,7 @@ export function OnboardingHelp() {
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom">
-          <p>Confused? Quick tour</p>
+          <p>Confused? Click here</p>
         </TooltipContent>
       </Tooltip>
 

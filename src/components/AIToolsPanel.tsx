@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -20,6 +21,11 @@ export function AIToolsPanel() {
 
   const runTool = async (toolMode: ToolMode) => {
     if (!activeNote) return;
+    const plain = (activeNote.content || "").replace(/<[^>]*>/g, "").trim();
+    if (!plain) {
+      toast.error("Notebook is empty — write something first.");
+      return;
+    }
     setMode(toolMode);
     setOpen(true);
     setResult("");
