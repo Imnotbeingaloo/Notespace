@@ -403,6 +403,7 @@ export default function HowItWorksPage() {
       </section>
 
       <Footer />
-    </div>
+      </main>
+    </>
   );
 }

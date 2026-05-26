@@ -447,6 +447,7 @@ export default function AboutPage() {
       </section>
 
       <Footer />
-    </div>
+      </main>
+    </>
   );
 }
