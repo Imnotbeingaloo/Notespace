@@ -30,6 +30,7 @@ function AppContent() {
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
+  const [pomodoroEnabled] = usePomodoroEnabled();
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const urlNotebook = searchParams.get("notebook");
