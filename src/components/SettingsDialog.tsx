@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, Lock, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check } from "lucide-react";
+import { User as UserIcon, Lock, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Timer } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePomodoroEnabled } from "@/hooks/use-pomodoro-enabled";
 
 interface SettingsDialogProps {
   open: boolean;
