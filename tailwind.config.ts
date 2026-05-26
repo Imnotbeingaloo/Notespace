@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
-        serif: ["Playfair Display", "Merriweather", "Georgia", "serif"],
+        serif: ["Merriweather", "Georgia", "serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
