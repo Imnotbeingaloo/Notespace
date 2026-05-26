@@ -81,24 +81,30 @@ export function PomodoroTimer({ onClose }: { onClose: () => void }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className="fixed bottom-4 right-4 z-50 w-72 rounded-2xl border border-border bg-card shadow-2xl shadow-black/10 overflow-hidden"
+      initial={{ opacity: 0, scale: 0.94, y: 12 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.94, y: 12 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed bottom-5 right-5 z-50 w-[300px] rounded-3xl border border-border/80 bg-card/95 backdrop-blur-xl shadow-2xl shadow-primary/10 overflow-hidden ring-1 ring-foreground/[0.02]"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
-        <div className="flex items-center gap-2">
-          <Timer className="h-4 w-4 text-primary" />
-          <span className="text-xs font-bold text-foreground">Pomodoro</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-            {sessions} session{sessions !== 1 ? "s" : ""}
-          </span>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
-            <X className="h-3 w-3" />
-          </Button>
+      {/* Subtle gradient header band */}
+      <div className="relative">
+        <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-primary/[0.06] to-transparent pointer-events-none" />
+        <div className="relative flex items-center justify-between px-4 py-3 border-b border-border/60">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Timer className="h-3.5 w-3.5 text-primary" />
+            </div>
+            <span className="text-[11px] font-semibold tracking-wide text-foreground uppercase">Pomodoro</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] font-medium text-muted-foreground bg-muted/70 px-1.5 py-0.5 rounded-full">
+              {sessions} session{sessions !== 1 ? "s" : ""}
+            </span>
+            <Button variant="ghost" size="icon" className="h-6 w-6 rounded-lg" onClick={onClose}>
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
         </div>
       </div>
 
