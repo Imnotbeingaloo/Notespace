@@ -181,7 +181,14 @@ function AppContent() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => setFocusMode((p) => !p)}
+                    onClick={() => {
+                      setFocusMode((p) => {
+                        const next = !p;
+                        // Focus Mode auto-opens the Pomodoro timer; exiting Focus closes it.
+                        setPomodoroOpen(next);
+                        return next;
+                      });
+                    }}
                     variant={focusMode ? "default" : "ghost"}
                     size="icon"
                     className="h-8 w-8 rounded-xl shrink-0"
@@ -190,24 +197,26 @@ function AppContent() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</p>
+                  <p>{focusMode ? "Exit Focus Mode" : "Focus Mode (includes Pomodoro)"}</p>
                 </TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => setPomodoroOpen((p) => !p)}
-                    variant={pomodoroOpen ? "default" : "ghost"}
-                    size="icon"
-                    className="h-8 w-8 rounded-xl shrink-0"
-                  >
-                    <Timer className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{pomodoroOpen ? "Close Pomodoro" : "Pomodoro Timer"}</p>
-                </TooltipContent>
-              </Tooltip>
+              {!focusMode && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => setPomodoroOpen((p) => !p)}
+                      variant={pomodoroOpen ? "default" : "ghost"}
+                      size="icon"
+                      className="h-8 w-8 rounded-xl shrink-0"
+                    >
+                      <Timer className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{pomodoroOpen ? "Close Pomodoro" : "Pomodoro Timer"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button

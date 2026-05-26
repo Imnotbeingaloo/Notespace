@@ -16,6 +16,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
   const { activeNote, activeNotebookId, updateNote } = useNotebooks();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
 
   if (!activeNote || !activeNotebookId) return null;
 
@@ -25,11 +26,15 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     const files = e.target.files;
     if (!files || !user) return;
     setUploading(true);
+    const fileList = Array.from(files);
+    setProgress({ current: 0, total: fileList.length, name: fileList[0]?.name || "" });
 
     const newAttachments = [...attachments];
     let markdownInserts: string[] = [];
 
-    for (const file of Array.from(files)) {
+    for (let idx = 0; idx < fileList.length; idx++) {
+      const file = fileList[idx];
+      setProgress({ current: idx, total: fileList.length, name: file.name });
       if (!validateFile(file)) continue;
 
       // If it's an HTML or MD file, read content and insert into note
@@ -92,6 +97,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     }
 
     setUploading(false);
+    setProgress(null);
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -145,9 +151,25 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
       >
         {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Paperclip className="h-5 w-5" />}
       </button>
-      <span className="text-sm text-muted-foreground select-none">
-        {uploading ? "Uploading..." : "Attach files or drag & drop"}
-      </span>
+      <div className="flex flex-col gap-1 min-w-0 flex-1 max-w-[260px]">
+        <span className="text-sm text-muted-foreground select-none truncate">
+          {uploading && progress
+            ? `Uploading ${progress.current + 1}/${progress.total} — ${progress.name}`
+            : uploading
+              ? "Uploading…"
+              : "Attach files or drag & drop"}
+        </span>
+        {uploading && progress && (
+          <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
+            <motion.div
+              className="h-full bg-primary"
+              initial={{ width: 0 }}
+              animate={{ width: `${((progress.current + 0.5) / progress.total) * 100}%` }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+          </div>
+        )}
+      </div>
       <input ref={inputRef} type="file" multiple className="hidden" onChange={handleUpload} />
 
       <AnimatePresence>

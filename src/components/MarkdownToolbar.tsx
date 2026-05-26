@@ -2,13 +2,18 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Bold, Italic, Heading1, Heading2, Heading3,
-  Quote, Code, Link2, Image, Strikethrough, Minus, Highlighter } from
+  Quote, Code, Link2, Image, Strikethrough, Minus, Highlighter, Loader2 } from
 "lucide-react";
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
 import { TableInsert } from "@/components/TableInsert";
 import { TableEditToolbar } from "@/components/TableEditToolbar";
 import { Search } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
+import { useNotebooks } from "@/context/NotebookContext";
+import { validateFile, buildStoragePath } from "@/lib/file-validation";
+import { toast } from "@/hooks/use-toast";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -63,14 +68,63 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
+  const { user } = useAuth();
+  const { activeNote, activeNotebookId, updateNote } = useNotebooks();
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   const insertImage = useCallback(() => {
-    focusEditor(editorRef.current);
-    const url = prompt("Enter image URL:");
-    if (!url) return;
-    const html = `<img src="${url}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`;
-    document.execCommand("insertHTML", false, html);
-    editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
-  }, [editorRef]);
+    imageInputRef.current?.click();
+  }, []);
+
+  const handleImageUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !activeNote || !activeNotebookId) {
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      // Fall back to URL prompt for non-images
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      const url = prompt("Enter image URL:");
+      if (!url) return;
+      focusEditor(editorRef.current);
+      document.execCommand("insertHTML", false, `<img src="${url}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`);
+      editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+    if (!validateFile(file)) {
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      return;
+    }
+    setUploadingImage(true);
+    try {
+      const path = buildStoragePath(user.id, activeNote.id, file.name);
+      const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+      if (error) throw error;
+      const { data: signedUrlData } = await supabase.storage
+        .from("note-attachments")
+        .createSignedUrl(path, 60 * 60 * 24 * 7);
+      const fileUrl = signedUrlData?.signedUrl || "";
+
+      const newAttachments = [
+        ...(activeNote.attachments || []),
+        { name: file.name, url: fileUrl, path, type: file.type, size: file.size },
+      ];
+      await updateNote(activeNotebookId, activeNote.id, { attachments: newAttachments });
+
+      focusEditor(editorRef.current);
+      const html = `<img src="${fileUrl}" alt="${file.name}" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`;
+      document.execCommand("insertHTML", false, html);
+      editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+      toast({ title: "Image inserted", description: file.name });
+    } catch (err: any) {
+      toast({ title: "Image upload failed", description: err.message || "Try again.", variant: "destructive" as any });
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = "";
+    }
+  }, [user, activeNote, activeNotebookId, updateNote, editorRef]);
 
   const insertDivider = useCallback(() => {
     focusEditor(editorRef.current);
@@ -89,7 +143,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "blockquote") },
     { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
     { icon: Link2, label: "Link", action: insertLink },
-    { icon: Image, label: "Image", action: insertImage },
+    { icon: uploadingImage ? Loader2 : Image, label: uploadingImage ? "Uploading image…" : "Image (upload or URL)", action: insertImage },
     { icon: Minus, label: "Divider", action: insertDivider },
   ];
 
@@ -120,6 +174,13 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
 
   return (
     <div className="relative flex items-center">
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageUpload}
+      />
       {canScrollLeft && (
         <button
           type="button"
@@ -141,7 +202,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
             }}
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
             title={a.label}>
-              <a.icon className="h-4 w-4" />
+              <a.icon className={`h-4 w-4 ${a.icon === Loader2 ? "animate-spin" : ""}`} />
             </button>
             {separatorAfter.has(i) &&
           <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
