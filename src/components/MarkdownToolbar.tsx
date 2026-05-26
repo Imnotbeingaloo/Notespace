@@ -174,6 +174,13 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
 
   return (
     <div className="relative flex items-center">
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageUpload}
+      />
       {canScrollLeft && (
         <button
           type="button"
