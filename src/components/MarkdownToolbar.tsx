@@ -143,7 +143,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "blockquote") },
     { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
     { icon: Link2, label: "Link", action: insertLink },
-    { icon: Image, label: "Image", action: insertImage },
+    { icon: uploadingImage ? Loader2 : Image, label: uploadingImage ? "Uploading image…" : "Image (upload or URL)", action: insertImage },
     { icon: Minus, label: "Divider", action: insertDivider },
   ];
 
