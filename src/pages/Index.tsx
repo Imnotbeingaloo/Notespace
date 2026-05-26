@@ -6,7 +6,7 @@ import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { CalendarDays, Loader2, Crosshair, Minimize2, Timer } from "lucide-react";
+import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -189,7 +189,7 @@ function AppContent() {
                     className="h-8 w-8 rounded-xl shrink-0"
                     aria-label={focusMode ? "Exit Focus Mode" : "Enter Focus Mode"}
                   >
-                    {focusMode ? <Minimize2 className="h-4 w-4" /> : <Crosshair className="h-4 w-4" />}
+                    {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">

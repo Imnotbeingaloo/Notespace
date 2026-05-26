@@ -27,6 +27,7 @@ const navLinks = [
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
 ];
 
+
 export default function LandingPage() {
   const { user } = useAuth();
   const location = useLocation();
@@ -143,8 +144,10 @@ export default function LandingPage() {
 
   return (
     <>
-      {showExitSplash && <ExitBookFlash onDone={() => setShowExitSplash(false)} />}
-      <div className="min-h-screen bg-background" style={showExitSplash ? { visibility: "hidden" } : undefined}>
+      <AnimatePresence>
+        {showExitSplash && <ExitBookFlash key="exit-splash" onDone={() => setShowExitSplash(false)} />}
+      </AnimatePresence>
+      <div className="min-h-screen bg-background">
       {/* ── Floating Navbar ── */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}

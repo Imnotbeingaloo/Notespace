@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table, Search, Crosshair, Timer } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table, Search, Maximize2, Timer, ArrowRight } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { AnimatePresence, motion } from "framer-motion";
 
 const toolbarTips = [
   { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind the selected text — great for marking key passages you'll come back to." },
@@ -12,26 +12,24 @@ const toolbarTips = [
   { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections — useful between topics or before a summary." },
   { Icon: Table, title: "Table", body: "Pick a size from the popover. Once inserted, the table edit toolbar appears for adding rows, columns, or deleting cells." },
   { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search & replace. Supports regex via the toggle." },
-  { Icon: Crosshair, title: "Focus Mode", body: "Top bar button — hides the sidebar and chrome so only your note remains. Click again to exit." },
+  { Icon: Maximize2, title: "Focus Mode", body: "Top bar button — hides the sidebar and chrome so only your note remains. Click again to exit." },
   { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
 ];
 
 export function OnboardingHelp() {
   const [open, setOpen] = useState(false);
-  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [hintOpen, setHintOpen] = useState(false);
   const idleTimerRef = useRef<number | null>(null);
   const dismissedRef = useRef(false);
 
-  // Show the tooltip automatically after 5s of inactivity (once per session).
   useEffect(() => {
     if (dismissedRef.current) return;
     const reset = () => {
       if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
       idleTimerRef.current = window.setTimeout(() => {
         if (!dismissedRef.current && !open) {
-          setTooltipOpen(true);
-          // Auto-hide after 6s
-          window.setTimeout(() => setTooltipOpen(false), 6000);
+          setHintOpen(true);
+          window.setTimeout(() => setHintOpen(false), 6000);
           dismissedRef.current = true;
         }
       }, 5000);
@@ -47,22 +45,39 @@ export function OnboardingHelp() {
 
   return (
     <>
-      <Tooltip open={tooltipOpen || undefined} onOpenChange={setTooltipOpen}>
-        <TooltipTrigger asChild>
-          <Button
-            onClick={() => { setOpen(true); setTooltipOpen(false); dismissedRef.current = true; }}
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
-            aria-label="Help"
-          >
-            <HelpCircle className="h-4 w-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" className="bg-primary text-primary-foreground font-medium">
-          <p>Confused? Click here</p>
-        </TooltipContent>
-      </Tooltip>
+      <div className="relative flex items-center">
+        <AnimatePresence>
+          {hintOpen && (
+            <motion.div
+              key="hint"
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 8 }}
+              transition={{ duration: 0.25 }}
+              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground shadow-md shadow-primary/30"
+            >
+              <span>Confused? Click here</span>
+              <motion.span
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                className="inline-flex"
+              >
+                <ArrowRight className="h-3.5 w-3.5" />
+              </motion.span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <Button
+          onClick={() => { setOpen(true); setHintOpen(false); dismissedRef.current = true; }}
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
+          aria-label="Help"
+        >
+          <HelpCircle className="h-4 w-4" />
+        </Button>
+      </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
