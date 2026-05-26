@@ -20,7 +20,8 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background pointer-events-none overflow-hidden"
+      className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none overflow-hidden"
+      style={{ background: "radial-gradient(ellipse at center, #14141f 0%, #08080d 100%)" }}
     >
       {/* Soft radial wash */}
       <motion.div
