@@ -57,7 +57,8 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
           {!fast && (
             <>
               <motion.span
-                className="font-serif text-2xl font-bold text-foreground mt-5 relative z-10"
+                className="font-serif text-2xl font-bold mt-5 relative z-10"
+                style={{ color: isDark ? "#ffffff" : "#000000" }}
                 initial={{ opacity: 0, y: 12 }}
                 animate={phase !== "logo" ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
