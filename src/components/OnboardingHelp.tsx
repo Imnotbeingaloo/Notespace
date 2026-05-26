@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table, Search, Maximize2, Timer, ArrowRight } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table, Search, Maximize2, Timer, ArrowRight, ArrowUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const toolbarTips = [
   { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind the selected text — great for marking key passages you'll come back to." },
@@ -16,45 +18,130 @@ const toolbarTips = [
   { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
 ];
 
+const DISMISS_KEY = "onboarding-hint-dismissed";
+const IDLE_MS = 5000;
+const SHOW_MS = 3500;
+const REPEAT_MIN_MS = 5000;
+const REPEAT_MAX_MS = 10000;
+
 export function OnboardingHelp() {
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [hintOpen, setHintOpen] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
   const idleTimerRef = useRef<number | null>(null);
+  const hideTimerRef = useRef<number | null>(null);
+  const repeatTimerRef = useRef<number | null>(null);
   const dismissedRef = useRef(false);
+  const openRef = useRef(false);
+
+  // Initialize from storage
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(DISMISS_KEY) === "1") {
+        dismissedRef.current = true;
+        setDontShowAgain(true);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => { openRef.current = open; }, [open]);
+
+  const clearAllTimers = () => {
+    if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
+    if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+    if (repeatTimerRef.current) window.clearTimeout(repeatTimerRef.current);
+  };
 
   useEffect(() => {
     if (dismissedRef.current) return;
-    const reset = () => {
-      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = window.setTimeout(() => {
-        if (!dismissedRef.current && !open) {
-          setHintOpen(true);
-          window.setTimeout(() => setHintOpen(false), 6000);
-          dismissedRef.current = true;
-        }
-      }, 5000);
+
+    const showHint = () => {
+      if (dismissedRef.current || openRef.current) {
+        scheduleNext();
+        return;
+      }
+      setHintOpen(true);
+      if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = window.setTimeout(() => {
+        setHintOpen(false);
+        scheduleNext();
+      }, SHOW_MS);
     };
+
+    const scheduleNext = () => {
+      if (dismissedRef.current) return;
+      if (repeatTimerRef.current) window.clearTimeout(repeatTimerRef.current);
+      const delay = REPEAT_MIN_MS + Math.random() * (REPEAT_MAX_MS - REPEAT_MIN_MS);
+      repeatTimerRef.current = window.setTimeout(() => {
+        // require idle from this point
+        armIdle();
+      }, delay);
+    };
+
+    const armIdle = () => {
+      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = window.setTimeout(showHint, IDLE_MS);
+    };
+
+    const onActivity = () => {
+      if (dismissedRef.current) return;
+      // Only reset the idle countdown if a hint isn't currently displayed
+      if (!hideTimerRef.current || !document) {
+        // proceed
+      }
+      if (idleTimerRef.current) {
+        window.clearTimeout(idleTimerRef.current);
+        armIdle();
+      }
+    };
+
     const events = ["mousemove", "keydown", "scroll", "click", "touchstart"];
-    events.forEach((e) => window.addEventListener(e, reset, { passive: true }));
-    reset();
+    events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
+    armIdle();
+
     return () => {
-      events.forEach((e) => window.removeEventListener(e, reset));
-      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
+      events.forEach((e) => window.removeEventListener(e, onActivity));
+      clearAllTimers();
     };
-  }, [open]);
+  }, []);
+
+  const dismissForever = () => {
+    dismissedRef.current = true;
+    try { localStorage.setItem(DISMISS_KEY, "1"); } catch {}
+    setHintOpen(false);
+    clearAllTimers();
+  };
+
+  const undismiss = () => {
+    dismissedRef.current = false;
+    try { localStorage.removeItem(DISMISS_KEY); } catch {}
+  };
+
+  const handleHelpClick = () => {
+    setOpen(true);
+    setHintOpen(false);
+    dismissForever();
+  };
+
+  const handleDontShowToggle = (checked: boolean) => {
+    setDontShowAgain(checked);
+    if (checked) dismissForever();
+    else undismiss();
+  };
 
   return (
     <>
       <div className="relative flex items-center">
         <AnimatePresence>
-          {hintOpen && (
+          {hintOpen && !isMobile && (
             <motion.div
-              key="hint"
+              key="hint-desktop"
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
               transition={{ duration: 0.25 }}
-              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-foreground/80"
+              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-foreground/80 pointer-events-none"
             >
               <span>Confused? Click here</span>
               <motion.span
@@ -66,10 +153,31 @@ export function OnboardingHelp() {
               </motion.span>
             </motion.div>
           )}
+          {hintOpen && isMobile && (
+            <motion.div
+              key="hint-mobile"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25 }}
+              className="absolute top-full right-0 mt-2 flex flex-col items-center gap-1 pointer-events-none z-50"
+            >
+              <motion.span
+                animate={{ y: [0, -3, 0] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                className="inline-flex text-primary"
+              >
+                <ArrowUp className="h-3.5 w-3.5" />
+              </motion.span>
+              <span className="whitespace-nowrap rounded-md bg-popover/95 backdrop-blur px-2 py-1 text-[11px] font-medium text-foreground shadow-md border border-border">
+                Confused? Tap here
+              </span>
+            </motion.div>
+          )}
         </AnimatePresence>
 
         <Button
-          onClick={() => { setOpen(true); setHintOpen(false); dismissedRef.current = true; }}
+          onClick={handleHelpClick}
           variant="ghost"
           size="icon"
           className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
@@ -100,6 +208,12 @@ export function OnboardingHelp() {
               </li>
             ))}
           </ul>
+          <div className="mt-4 flex items-center gap-2 border-t border-border pt-3">
+            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
+            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
+              Don't show the "Confused? Click here" hint again
+            </label>
+          </div>
         </DialogContent>
       </Dialog>
     </>
