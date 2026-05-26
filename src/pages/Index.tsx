@@ -236,8 +236,8 @@ function AppContent() {
                   <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
                 </TooltipContent>
               </Tooltip>
-              <OnboardingHelp />
               <KeyboardShortcuts />
+              <OnboardingHelp />
             </div>
           </div>
         </TooltipProvider>
