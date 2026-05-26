@@ -21,7 +21,7 @@ const editorLines = [
 ];
 
 const navLinks = [
-  { label: "Features", href: "#features", isAnchor: true },
+  { label: "Features", href: "/features", isAnchor: false },
   { label: "Pricing", href: "/pricing", isAnchor: false },
   { label: "About", href: "/about", isAnchor: false },
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
