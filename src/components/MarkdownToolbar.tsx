@@ -2,13 +2,18 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Bold, Italic, Heading1, Heading2, Heading3,
-  Quote, Code, Link2, Image, Strikethrough, Minus, Highlighter } from
+  Quote, Code, Link2, Image, Strikethrough, Minus, Highlighter, Loader2 } from
 "lucide-react";
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
 import { TableInsert } from "@/components/TableInsert";
 import { TableEditToolbar } from "@/components/TableEditToolbar";
 import { Search } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
+import { useNotebooks } from "@/context/NotebookContext";
+import { validateFile, buildStoragePath } from "@/lib/file-validation";
+import { toast } from "@/hooks/use-toast";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
