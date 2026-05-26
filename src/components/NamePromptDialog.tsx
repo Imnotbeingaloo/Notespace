@@ -61,15 +61,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
             placeholder="Your name or nickname"
             className="w-full px-4 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           />
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              disabled={saving}
-              className="px-4 py-2 text-sm rounded-lg text-muted-foreground hover:bg-muted transition-colors"
-            >
-              Skip for now
-            </button>
+          <div className="flex justify-end">
             <button
               type="button"
               onClick={handleSave}
