@@ -143,24 +143,40 @@ export default function FeaturesPage() {
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, margin: "-60px" }}
-                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } } }}
+                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.18, delayChildren: 0.1 } } }}
                     className="md:col-span-7 relative"
                   >
-                    <div className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-primary/40 via-border to-transparent hidden sm:block" />
-                    <ul className="space-y-5">
-                      {group.items.map((item) => (
+                    <ul className="relative space-y-5">
+                      {/* Connector line — sits behind icons, capped to the icon column width */}
+                      <div
+                        aria-hidden
+                        className="absolute left-[27px] top-6 bottom-6 w-[2px] rounded-full bg-border/70 hidden sm:block"
+                        style={{ zIndex: 0 }}
+                      />
+                      {group.items.map((item, iIdx) => (
                         <motion.li
                           key={item.name}
                           variants={{
-                            hidden: { opacity: 0, y: 18 },
-                            show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                            hidden: { opacity: 0, y: 20 },
+                            show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
                           }}
-                          className="group relative flex gap-4 rounded-2xl border border-border bg-card/40 hover:bg-card hover:border-primary/30 transition-all duration-300 p-5 hover:shadow-lg hover:shadow-primary/5"
+                          className="group relative flex gap-4 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all duration-500 p-5 hover:shadow-lg hover:shadow-primary/5"
+                          style={{ zIndex: 1 }}
                         >
                           <div className="relative shrink-0">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center ring-4 ring-background group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            <motion.div
+                              initial={{ backgroundColor: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))", scale: 0.85 }}
+                              whileInView={{
+                                backgroundColor: "hsl(var(--primary))",
+                                color: "hsl(var(--primary-foreground))",
+                                scale: 1,
+                              }}
+                              viewport={{ once: true, margin: "-40px" }}
+                              transition={{ duration: 0.7, delay: 0.25 + iIdx * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                              className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10"
+                            >
                               <item.Icon className="h-5 w-5" />
-                            </div>
+                            </motion.div>
                           </div>
                           <div className="min-w-0">
                             <h3 className="font-serif text-lg font-bold text-foreground mb-1.5 leading-tight">
