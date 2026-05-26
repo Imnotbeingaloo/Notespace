@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Search, Tag, Timer, FileText, Share2, Lock, Layers, Wand2 } from "lucide-react";
+import { ArrowRight, Sparkles, Tag, Timer, FileText, Share2, Lock, Layers, Wand2, BookOpen, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
@@ -14,7 +14,6 @@ const groups = [
     kicker: "The canvas",
     blurb:
       "Long-form writing should feel like thinking out loud. The editor stays out of your way until you need it — and then every tool is one keystroke away.",
-    stat: { value: "12+", label: "formatting tools, all keyboard-driven" },
     items: [
       { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a refined toolbar built for long-form thinking. Real-time word, character, and reading-time counts." },
       { Icon: Wand2, name: "AI explanations", desc: "Highlight any phrase, click Explain, and watch a streaming, source-aware answer unfold in a side panel — without ever leaving your note." },
@@ -25,24 +24,22 @@ const groups = [
     title: "Organization",
     kicker: "The system",
     blurb:
-      "Notes are only useful if you can find them again. Tags aggregate across every notebook, search is instant, and the planner keeps your study sessions honest.",
-    stat: { value: "⌘K", label: "global search from anywhere" },
+      "Notes are only useful if you can find them again. Tags aggregate across every notebook, sessions are planned, and a Pomodoro keeps you honest about deep work.",
     items: [
       { Icon: Tag, name: "Smart tags", desc: "Inline `#tags` aggregate into a live cloud in the sidebar — click any chip to jump straight to every note that mentions it." },
-      { Icon: Search, name: "Global search", desc: "Cross-notebook full-text search with fuzzy matching, recent-notes shortlist, and instant deep links to the matched line." },
-      { Icon: Timer, name: "Study planner", desc: "Plan sessions per notebook, track day streaks, and stay focused with a built-in Pomodoro that lives quietly in the corner." },
+      { Icon: Timer, name: "Pomodoro timer", desc: "A quiet 25/5 timer that lives in the corner of your workspace. Start a focused sprint, take a real break, and watch your sessions stack up." },
+      { Icon: BookOpen, name: "Study planner", desc: "Plan sessions per notebook, track day streaks, and get gentle reminders so revision actually happens." },
     ],
   },
   {
     title: "Sharing & Trust",
     kicker: "The foundation",
     blurb:
-      "Your notes are yours. Everything is private by default, hardened against prompt injection, and only leaves your account when you explicitly share it.",
-    stat: { value: "RLS", label: "row-level security on every table" },
+      "Your notes are yours. Everything is private by default, hardened against prompt injection, and only leaves your account when you explicitly share or export it.",
     items: [
       { Icon: Share2, name: "Public share links", desc: "Publish a read-only view via a secure token. Recipients see a polished public page — and you can revoke access in one click." },
       { Icon: Lock, name: "Private by default", desc: "JWT auth, signed-URL file storage, and strict row-level security mean nobody but you reads your notes — not even our AI without consent." },
-      { Icon: Sparkles, name: "Focus mode", desc: "A distraction-free canvas that hides the sidebar and chrome. The Pomodoro can tag along if you want it; otherwise it stays out of sight." },
+      { Icon: Download, name: "Export anywhere", desc: "Take your work with you any time. One-click export to Markdown or PDF — no lock-in, no proprietary formats, ever." },
     ],
   },
 ];
