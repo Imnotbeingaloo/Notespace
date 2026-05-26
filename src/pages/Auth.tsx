@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Mail, Lock, User, ArrowRight, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { BookOpen, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +8,7 @@ const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
+  
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
@@ -23,10 +23,6 @@ const AuthPage = () => {
       setError("Password must be at least 6 characters.");
       return;
     }
-    if (mode === "signup" && !displayName.trim()) {
-      setError("Please enter your name.");
-      return;
-    }
 
     setLoading(true);
 
@@ -35,9 +31,12 @@ const AuthPage = () => {
       if (error) setError(error.message);
       else navigate("/app");
     } else {
-      const { error } = await signUp(email, password, displayName.trim());
+      const { error } = await signUp(email, password);
       if (error) setError(error.message);
-      else setCheckEmail(true);
+      else {
+        try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+        setCheckEmail(true);
+      }
     }
     setLoading(false);
   };
@@ -96,28 +95,7 @@ const AuthPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <AnimatePresence mode="wait">
-              {mode === "signup" && (
-                <motion.div
-                  key="name"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                >
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <input
-                      type="text"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                      placeholder="Your name"
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
