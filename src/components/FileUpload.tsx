@@ -26,11 +26,15 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     const files = e.target.files;
     if (!files || !user) return;
     setUploading(true);
+    const fileList = Array.from(files);
+    setProgress({ current: 0, total: fileList.length, name: fileList[0]?.name || "" });
 
     const newAttachments = [...attachments];
     let markdownInserts: string[] = [];
 
-    for (const file of Array.from(files)) {
+    for (let idx = 0; idx < fileList.length; idx++) {
+      const file = fileList[idx];
+      setProgress({ current: idx, total: fileList.length, name: file.name });
       if (!validateFile(file)) continue;
 
       // If it's an HTML or MD file, read content and insert into note
