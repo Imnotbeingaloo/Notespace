@@ -199,7 +199,13 @@ export function OnboardingHelp() {
               The buttons that aren't obvious — what each one actually does.
             </DialogDescription>
           </DialogHeader>
-          <ul className="mt-2 space-y-2">
+          <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
+            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
+            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
+              Don't show the "Confused? Click here" hint again
+            </label>
+          </div>
+          <ul className="mt-4 space-y-2">
             {toolbarTips.map(({ Icon, title, body }) => (
               <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
                 <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
@@ -212,12 +218,6 @@ export function OnboardingHelp() {
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex items-center gap-2 border-t border-border pt-3">
-            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
-            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
-              Don't show the "Confused? Click here" hint again
-            </label>
-          </div>
         </DialogContent>
       </Dialog>
     </>
