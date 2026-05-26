@@ -195,7 +195,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
             }}
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
             title={a.label}>
-              <a.icon className="h-4 w-4" />
+              <a.icon className={`h-4 w-4 ${a.icon === Loader2 ? "animate-spin" : ""}`} />
             </button>
             {separatorAfter.has(i) &&
           <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
