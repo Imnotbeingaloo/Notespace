@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { OnboardingHelp } from "@/components/OnboardingHelp";
 import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
