@@ -13,7 +13,7 @@ interface WordCountGoalProps {
 }
 
 const GOAL_KEY = "daily-word-goal";
-const COUNT_KEY = "daily-word-count-date";
+const WORDS_TODAY_KEY = "daily-words-written";
 const CELEBRATED_KEY = "daily-goal-celebrated";
 const STREAK_KEY = "writing-streak";
 
@@ -25,6 +25,22 @@ function getYesterday() {
   const d = new Date();
   d.setDate(d.getDate() - 1);
   return d.toISOString().slice(0, 10);
+}
+
+interface WordsTodayData {
+  date: string;
+  count: number;
+}
+
+function loadWordsToday(): WordsTodayData {
+  try {
+    const saved = localStorage.getItem(WORDS_TODAY_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed.date === getToday()) return parsed;
+    }
+  } catch {}
+  return { date: getToday(), count: 0 };
 }
 
 interface StreakData {
@@ -44,6 +60,7 @@ function saveStreak(data: StreakData) {
   localStorage.setItem(STREAK_KEY, JSON.stringify(data));
 }
 
+
 export function WordCountGoal({ content }: WordCountGoalProps) {
   const [goal, setGoal] = useState(() => {
     const saved = localStorage.getItem(GOAL_KEY);
@@ -54,15 +71,9 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   const hasCelebrated = useRef(false);
   const [streak, setStreak] = useState<StreakData>(loadStreak);
 
-  // Track daily baseline
-  const [baseline, setBaseline] = useState(() => {
-    const saved = localStorage.getItem(COUNT_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed.date === getToday()) return parsed.baseline as number;
-    }
-    return 0;
-  });
+  // Track words written today as accumulated positive deltas (works across notes)
+  const [wordsTodayData, setWordsTodayData] = useState<WordsTodayData>(loadWordsToday);
+  const prevWordCountRef = useRef<number | null>(null);
 
   // Check if already celebrated today
   useEffect(() => {
@@ -76,7 +87,6 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
     const today = getToday();
     const yesterday = getYesterday();
     if (s.lastCompletedDate && s.lastCompletedDate !== today && s.lastCompletedDate !== yesterday) {
-      // Streak broken
       const reset = { count: 0, lastCompletedDate: "" };
       saveStreak(reset);
       setStreak(reset);
@@ -89,19 +99,35 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
     return text.split(/\s+/).filter(Boolean).length;
   }, [content]);
 
-  // Set baseline on first load of the day
+  // Accumulate words written today via deltas. Large jumps (note switch/load) are ignored.
   useEffect(() => {
-    const saved = localStorage.getItem(COUNT_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed.date === getToday()) return;
-    }
-    const newBaseline = wordCount;
-    setBaseline(newBaseline);
-    localStorage.setItem(COUNT_KEY, JSON.stringify({ date: getToday(), baseline: newBaseline }));
-  }, []);
+    const prev = prevWordCountRef.current;
+    prevWordCountRef.current = wordCount;
+    if (prev === null) return; // first mount / note load
+    const delta = wordCount - prev;
+    // Only count realistic typing bursts (1..50 words at once). Skip pastes/note switches.
+    if (delta <= 0 || delta > 50) return;
+    setWordsTodayData((cur) => {
+      const today = getToday();
+      const base = cur.date === today ? cur.count : 0;
+      const next = { date: today, count: base + delta };
+      localStorage.setItem(WORDS_TODAY_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, [wordCount]);
 
-  const wordsToday = Math.max(0, wordCount - baseline);
+  // Roll over at midnight if stale
+  useEffect(() => {
+    if (wordsTodayData.date !== getToday()) {
+      const fresh = { date: getToday(), count: 0 };
+      setWordsTodayData(fresh);
+      localStorage.setItem(WORDS_TODAY_KEY, JSON.stringify(fresh));
+      hasCelebrated.current = false;
+    }
+  }, [wordsTodayData.date]);
+
+  const wordsToday = wordsTodayData.date === getToday() ? wordsTodayData.count : 0;
+
   const progress = goal > 0 ? Math.min(100, Math.round((wordsToday / goal) * 100)) : 0;
   const isComplete = goal > 0 && wordsToday >= goal;
 
