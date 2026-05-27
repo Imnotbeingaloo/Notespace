@@ -148,14 +148,17 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
     if (completed) {
       toast.success("🎉 Session completed!");
       if (wasFirstCompletion) {
-        // Fire confetti!
         hasEverCompleted.current = true;
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { x: 0.7, y: 0.4 },
-          colors: ["hsl(142, 71%, 45%)", "hsl(48, 96%, 53%)", "hsl(262, 83%, 58%)", "hsl(0, 84%, 60%)"],
-        });
+        // Full-screen celebration
+        const colors = ["hsl(142, 71%, 45%)", "hsl(48, 96%, 53%)", "hsl(262, 83%, 58%)", "hsl(0, 84%, 60%)", "hsl(174, 72%, 56%)"];
+        const end = Date.now() + 1500;
+        const frame = () => {
+          confetti({ particleCount: 5, angle: 60, spread: 70, origin: { x: 0, y: 0.8 }, colors });
+          confetti({ particleCount: 5, angle: 120, spread: 70, origin: { x: 1, y: 0.8 }, colors });
+          confetti({ particleCount: 4, spread: 120, startVelocity: 45, origin: { x: 0.5, y: 0.2 }, colors });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        };
+        frame();
       }
     }
   };
