@@ -123,16 +123,18 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const hasEverCompleted = useRef(false);
-
-  // Track if user has already completed something before this session
-  useEffect(() => {
-    if (totalCompleted > 0) hasEverCompleted.current = true;
-  }, []);
+  const STUDY_CELEBRATED_KEY = "study-celebrated-date";
 
   const toggleComplete = async (plan: StudyPlan) => {
     const completed = !plan.completed;
-    const wasFirstCompletion = completed && totalCompleted === 0 && !hasEverCompleted.current;
+    const today = format(new Date(), "yyyy-MM-dd");
+    // Count tasks already completed today (excluding this one)
+    const completedTodayBefore = plans.filter(
+      (p) => p.completed && p.scheduled_date === today && p.id !== plan.id
+    ).length;
+    const alreadyCelebratedToday = localStorage.getItem(STUDY_CELEBRATED_KEY) === today;
+    const isFirstOfDay = completed && completedTodayBefore === 0 && !alreadyCelebratedToday;
+
     await supabase
       .from("study_plans" as any)
       .update({
@@ -147,8 +149,8 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
     );
     if (completed) {
       toast.success("🎉 Session completed!");
-      if (wasFirstCompletion) {
-        hasEverCompleted.current = true;
+      if (isFirstOfDay) {
+        localStorage.setItem(STUDY_CELEBRATED_KEY, today);
         // Full-screen celebration
         const colors = ["hsl(142, 71%, 45%)", "hsl(48, 96%, 53%)", "hsl(262, 83%, 58%)", "hsl(0, 84%, 60%)", "hsl(174, 72%, 56%)"];
         const end = Date.now() + 1500;
@@ -162,6 +164,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
       }
     }
   };
+
 
   const deletePlan = async (id: string) => {
     await supabase.from("study_plans" as any).delete().eq("id", id);
