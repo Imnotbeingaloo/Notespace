@@ -123,15 +123,26 @@ export function OnboardingHelp() {
   };
 
   const handleHelpClick = () => {
+    // Sync checkbox state from storage every time the dialog opens
+    try {
+      setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1");
+    } catch {}
     setOpen(true);
     setHintOpen(false);
-    dismissForever();
+    // Stop the hint loop for this session, but DON'T mark dismissed forever —
+    // the user controls that via the checkbox below.
+    dismissedRef.current = true;
+    clearAllTimers();
   };
 
   const handleDontShowToggle = (checked: boolean) => {
     setDontShowAgain(checked);
     if (checked) dismissForever();
-    else undismiss();
+    else {
+      undismiss();
+      // Re-arm hint loop so the user sees it again later in this session
+      dismissedRef.current = false;
+    }
   };
 
   return (
