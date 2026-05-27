@@ -13,7 +13,7 @@ interface WordCountGoalProps {
 }
 
 const GOAL_KEY = "daily-word-goal";
-const COUNT_KEY = "daily-word-count-date";
+const WORDS_TODAY_KEY = "daily-words-written";
 const CELEBRATED_KEY = "daily-goal-celebrated";
 const STREAK_KEY = "writing-streak";
 
@@ -25,6 +25,22 @@ function getYesterday() {
   const d = new Date();
   d.setDate(d.getDate() - 1);
   return d.toISOString().slice(0, 10);
+}
+
+interface WordsTodayData {
+  date: string;
+  count: number;
+}
+
+function loadWordsToday(): WordsTodayData {
+  try {
+    const saved = localStorage.getItem(WORDS_TODAY_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed.date === getToday()) return parsed;
+    }
+  } catch {}
+  return { date: getToday(), count: 0 };
 }
 
 interface StreakData {
@@ -43,6 +59,7 @@ function loadStreak(): StreakData {
 function saveStreak(data: StreakData) {
   localStorage.setItem(STREAK_KEY, JSON.stringify(data));
 }
+
 
 export function WordCountGoal({ content }: WordCountGoalProps) {
   const [goal, setGoal] = useState(() => {
