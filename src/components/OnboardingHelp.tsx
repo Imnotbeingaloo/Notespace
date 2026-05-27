@@ -218,10 +218,10 @@ export function OnboardingHelp() {
             </label>
           </div>
           <ul className="mt-4 space-y-2">
-            {toolbarTips.map(({ Icon, title, body }) => (
+            {toolbarTips.map(({ Icon, glyph, title, body }) => (
               <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
                 <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  <Icon className="h-4 w-4" />
+                  {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-foreground">{title}</p>
