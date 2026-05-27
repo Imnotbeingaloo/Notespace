@@ -1,21 +1,22 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table, Search, Maximize2, Timer, ArrowRight, ArrowUp, Sigma, Edit3, Type } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, ArrowUp, TableProperties } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const toolbarTips = [
+type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
+
+const toolbarTips: Tip[] = [
   { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind the selected text — great for marking key passages you'll come back to." },
   { Icon: Code, title: "Inline code", body: "Wraps the selected text in a monospaced code style. Use for variable names, file paths, or short snippets." },
   { Icon: Link2, title: "Insert link", body: "Highlight any text first and click this — the title pre-fills with what you selected and you just paste the URL." },
   { Icon: ImageIcon, title: "Insert image", body: "Opens your file picker. Images upload to your private storage and embed inline. PNG, JPG, WEBP up to 10MB." },
   { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections — useful between topics or before a summary." },
-  { Icon: Table, title: "Table", body: "Pick a size from the popover. Once inserted, the table edit toolbar appears for adding rows, columns, or deleting cells." },
-  { Icon: Edit3, title: "Edit table", body: "When the cursor is inside a table, the table toolbar appears next to the main one — add/remove rows & columns, delete the whole table, all inline." },
-  { Icon: Sigma, title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor — no shortcuts to memorise." },
-  { Icon: Type, title: "Punctuation & smart quotes", body: "Inserts em-dashes, ellipses, curly quotes, and other typographic characters that are awkward to type on a normal keyboard." },
+  { Icon: Table2, title: "Table", body: "Pick a size from the popover. Once inserted, the table edit toolbar appears for adding rows, columns, or deleting cells." },
+  { Icon: TableProperties, title: "Edit table", body: "When the cursor is inside a table, the table toolbar appears next to the main one — add/remove rows & columns, delete the whole table, all inline." },
+  { glyph: "Ω", title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor — no shortcuts to memorise." },
   { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search & replace. Supports regex via the toggle." },
   { Icon: Maximize2, title: "Focus Mode", body: "Top bar button — hides the sidebar and chrome so only your note remains. Click again to exit." },
   { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
@@ -122,15 +123,26 @@ export function OnboardingHelp() {
   };
 
   const handleHelpClick = () => {
+    // Sync checkbox state from storage every time the dialog opens
+    try {
+      setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1");
+    } catch {}
     setOpen(true);
     setHintOpen(false);
-    dismissForever();
+    // Stop the hint loop for this session, but DON'T mark dismissed forever —
+    // the user controls that via the checkbox below.
+    dismissedRef.current = true;
+    clearAllTimers();
   };
 
   const handleDontShowToggle = (checked: boolean) => {
     setDontShowAgain(checked);
     if (checked) dismissForever();
-    else undismiss();
+    else {
+      undismiss();
+      // Re-arm hint loop so the user sees it again later in this session
+      dismissedRef.current = false;
+    }
   };
 
   return (
@@ -206,10 +218,10 @@ export function OnboardingHelp() {
             </label>
           </div>
           <ul className="mt-4 space-y-2">
-            {toolbarTips.map(({ Icon, title, body }) => (
+            {toolbarTips.map(({ Icon, glyph, title, body }) => (
               <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
                 <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  <Icon className="h-4 w-4" />
+                  {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-foreground">{title}</p>

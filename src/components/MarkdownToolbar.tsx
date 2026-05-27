@@ -45,16 +45,13 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     focusEditor(editorRef.current);
     const sel = window.getSelection();
     if (!sel || sel.rangeCount === 0) return;
-    const range = sel.getRangeAt(0);
-    const selected = range.toString();
-    const el = document.createElement(tag);
-    el.textContent = selected || "code";
-    range.deleteContents();
-    range.insertNode(el);
-    range.setStartAfter(el);
-    range.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(range);
+    const selected = sel.toString();
+    const safe = (selected || "code")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    // Use execCommand so the action stays on the browser's native undo stack
+    document.execCommand("insertHTML", false, `<${tag}>${safe}</${tag}>`);
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 

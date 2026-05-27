@@ -134,21 +134,11 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
 
       const duration = 2000;
       const end = Date.now() + duration;
+      const colors = ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b", "#a78bfa"];
       const frame = () => {
-        confetti({
-          particleCount: 3,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0, y: 0.8 },
-          colors: ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b"],
-        });
-        confetti({
-          particleCount: 3,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1, y: 0.8 },
-          colors: ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b"],
-        });
+        confetti({ particleCount: 5, angle: 60, spread: 70, origin: { x: 0, y: 0.8 }, colors });
+        confetti({ particleCount: 5, angle: 120, spread: 70, origin: { x: 1, y: 0.8 }, colors });
+        confetti({ particleCount: 4, spread: 120, startVelocity: 45, origin: { x: 0.5, y: 0.2 }, colors });
         if (Date.now() < end) requestAnimationFrame(frame);
       };
       frame();
