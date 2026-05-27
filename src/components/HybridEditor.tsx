@@ -30,6 +30,11 @@ function createTurndown() {
     hr: "---",
     bulletListMarker: "-",
     codeBlockStyle: "fenced",
+    // Preserve empty paragraphs / line spacing instead of collapsing them
+    blankReplacement: (_content, node: any) => {
+      if (node.nodeName === "P" || node.nodeName === "DIV") return "\n\n&nbsp;\n\n";
+      return "";
+    },
   });
 
   td.addRule("checkbox", {
