@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import confetti from "canvas-confetti";
+import { toast } from "sonner";
 
 interface WordCountGoalProps {
   content: string;
@@ -17,14 +18,21 @@ const WORDS_TODAY_KEY = "daily-words-written";
 const CELEBRATED_KEY = "daily-goal-celebrated";
 const STREAK_KEY = "writing-streak";
 
+function formatLocalDate(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function getToday() {
-  return new Date().toISOString().slice(0, 10);
+  return formatLocalDate(new Date());
 }
 
 function getYesterday() {
   const d = new Date();
   d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0, 10);
+  return formatLocalDate(d);
 }
 
 interface WordsTodayData {
@@ -116,14 +124,21 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
     });
   }, [wordCount]);
 
-  // Roll over at midnight if stale
+  // Roll over at midnight (local) if stale - check every 30s
   useEffect(() => {
-    if (wordsTodayData.date !== getToday()) {
-      const fresh = { date: getToday(), count: 0 };
-      setWordsTodayData(fresh);
-      localStorage.setItem(WORDS_TODAY_KEY, JSON.stringify(fresh));
-      hasCelebrated.current = false;
-    }
+    const check = () => {
+      const today = getToday();
+      if (wordsTodayData.date !== today) {
+        const fresh = { date: today, count: 0 };
+        setWordsTodayData(fresh);
+        localStorage.setItem(WORDS_TODAY_KEY, JSON.stringify(fresh));
+        hasCelebrated.current = false;
+        localStorage.removeItem(CELEBRATED_KEY);
+      }
+    };
+    check();
+    const interval = setInterval(check, 30000);
+    return () => clearInterval(interval);
   }, [wordsTodayData.date]);
 
   const wordsToday = wordsTodayData.date === getToday() ? wordsTodayData.count : 0;
@@ -158,16 +173,17 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
       saveStreak(newStreak);
       setStreak(newStreak);
 
-      const duration = 2000;
+      const duration = 2500;
       const end = Date.now() + duration;
       const colors = ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b", "#a78bfa"];
       const frame = () => {
-        confetti({ particleCount: 5, angle: 60, spread: 70, origin: { x: 0, y: 0.8 }, colors });
-        confetti({ particleCount: 5, angle: 120, spread: 70, origin: { x: 1, y: 0.8 }, colors });
-        confetti({ particleCount: 4, spread: 120, startVelocity: 45, origin: { x: 0.5, y: 0.2 }, colors });
+        confetti({ particleCount: 6, angle: 60, spread: 75, origin: { x: 0, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
+        confetti({ particleCount: 6, angle: 120, spread: 75, origin: { x: 1, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
+        confetti({ particleCount: 5, spread: 130, startVelocity: 50, origin: { x: 0.5, y: 0.15 }, colors, zIndex: 99999, scalar: 1.1 });
         if (Date.now() < end) requestAnimationFrame(frame);
       };
       frame();
+      toast.success(`🎯 Daily goal reached! ${goal.toLocaleString()} words written today.`);
     }
   }, [isComplete]);
 
