@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import confetti from "canvas-confetti";
+import { toast } from "sonner";
 
 interface WordCountGoalProps {
   content: string;
