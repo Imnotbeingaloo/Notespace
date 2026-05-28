@@ -171,9 +171,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
   useEffect(() => {
     fetchUpcomingPlans();
-    // Poll for study plan updates every 30 seconds
+    // Poll periodically as backup
     const interval = setInterval(fetchUpcomingPlans, 30000);
-    return () => clearInterval(interval);
+    // Instant refresh on local changes from StudyPlanner
+    const handler = () => fetchUpcomingPlans();
+    window.addEventListener("study-plans-changed", handler);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("study-plans-changed", handler);
+    };
   }, [fetchUpcomingPlans]);
 
   const getDayLabel = (dateStr: string) => {
