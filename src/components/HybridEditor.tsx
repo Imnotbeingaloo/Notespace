@@ -3,6 +3,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import TurndownService from "turndown";
 import { FloatingToolbar } from "@/components/FloatingToolbar";
+import { usePaperStyle } from "@/hooks/use-paper-style";
 
 export interface HybridEditorHandle {
   insertAtCursor: (text: string) => void;
@@ -78,6 +79,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
     const lastMdRef = useRef(content);
     const isTypingRef = useRef(false);
     const [selectionRect, setSelectionRect] = useState<DOMRect | null>(null);
+    const [paperStyle] = usePaperStyle();
 
     // Set HTML content from markdown
     const setHtmlFromMd = useCallback((md: string) => {
