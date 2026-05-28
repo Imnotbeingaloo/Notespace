@@ -123,14 +123,21 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
     });
   }, [wordCount]);
 
-  // Roll over at midnight if stale
+  // Roll over at midnight (local) if stale - check every 30s
   useEffect(() => {
-    if (wordsTodayData.date !== getToday()) {
-      const fresh = { date: getToday(), count: 0 };
-      setWordsTodayData(fresh);
-      localStorage.setItem(WORDS_TODAY_KEY, JSON.stringify(fresh));
-      hasCelebrated.current = false;
-    }
+    const check = () => {
+      const today = getToday();
+      if (wordsTodayData.date !== today) {
+        const fresh = { date: today, count: 0 };
+        setWordsTodayData(fresh);
+        localStorage.setItem(WORDS_TODAY_KEY, JSON.stringify(fresh));
+        hasCelebrated.current = false;
+        localStorage.removeItem(CELEBRATED_KEY);
+      }
+    };
+    check();
+    const interval = setInterval(check, 30000);
+    return () => clearInterval(interval);
   }, [wordsTodayData.date]);
 
   const wordsToday = wordsTodayData.date === getToday() ? wordsTodayData.count : 0;
