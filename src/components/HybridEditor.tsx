@@ -3,6 +3,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import TurndownService from "turndown";
 import { FloatingToolbar } from "@/components/FloatingToolbar";
+import { usePaperStyle } from "@/hooks/use-paper-style";
 
 export interface HybridEditorHandle {
   insertAtCursor: (text: string) => void;
@@ -78,6 +79,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
     const lastMdRef = useRef(content);
     const isTypingRef = useRef(false);
     const [selectionRect, setSelectionRect] = useState<DOMRect | null>(null);
+    const [paperStyle] = usePaperStyle();
 
     // Set HTML content from markdown
     const setHtmlFromMd = useCallback((md: string) => {
@@ -212,7 +214,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           data-placeholder={placeholder}
-          className="wysiwyg-editor w-full min-h-[350px] bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border"
+          className={`wysiwyg-editor w-full min-h-[350px] bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}
         />
       </div>
     );
