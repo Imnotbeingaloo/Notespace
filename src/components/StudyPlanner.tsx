@@ -152,24 +152,25 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
       toast.success("🎉 Session completed!");
       if (isFirstOfDay) {
         localStorage.setItem(STUDY_CELEBRATED_KEY, today);
-        // Full-screen celebration
         const colors = ["hsl(142, 71%, 45%)", "hsl(48, 96%, 53%)", "hsl(262, 83%, 58%)", "hsl(0, 84%, 60%)", "hsl(174, 72%, 56%)"];
-        const end = Date.now() + 1500;
+        const end = Date.now() + 1800;
         const frame = () => {
-          confetti({ particleCount: 5, angle: 60, spread: 70, origin: { x: 0, y: 0.8 }, colors });
-          confetti({ particleCount: 5, angle: 120, spread: 70, origin: { x: 1, y: 0.8 }, colors });
-          confetti({ particleCount: 4, spread: 120, startVelocity: 45, origin: { x: 0.5, y: 0.2 }, colors });
+          confetti({ particleCount: 6, angle: 60, spread: 75, origin: { x: 0, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
+          confetti({ particleCount: 6, angle: 120, spread: 75, origin: { x: 1, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
+          confetti({ particleCount: 5, spread: 130, startVelocity: 50, origin: { x: 0.5, y: 0.15 }, colors, zIndex: 99999, scalar: 1.1 });
           if (Date.now() < end) requestAnimationFrame(frame);
         };
         frame();
       }
     }
+    window.dispatchEvent(new CustomEvent("study-plans-changed"));
   };
 
 
   const deletePlan = async (id: string) => {
     await supabase.from("study_plans" as any).delete().eq("id", id);
     setPlans((prev) => prev.filter((p) => p.id !== id));
+    window.dispatchEvent(new CustomEvent("study-plans-changed"));
   };
 
   // Count sessions per day for the week dots
