@@ -172,16 +172,17 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
       saveStreak(newStreak);
       setStreak(newStreak);
 
-      const duration = 2000;
+      const duration = 2500;
       const end = Date.now() + duration;
       const colors = ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b", "#a78bfa"];
       const frame = () => {
-        confetti({ particleCount: 5, angle: 60, spread: 70, origin: { x: 0, y: 0.8 }, colors });
-        confetti({ particleCount: 5, angle: 120, spread: 70, origin: { x: 1, y: 0.8 }, colors });
-        confetti({ particleCount: 4, spread: 120, startVelocity: 45, origin: { x: 0.5, y: 0.2 }, colors });
+        confetti({ particleCount: 6, angle: 60, spread: 75, origin: { x: 0, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
+        confetti({ particleCount: 6, angle: 120, spread: 75, origin: { x: 1, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
+        confetti({ particleCount: 5, spread: 130, startVelocity: 50, origin: { x: 0.5, y: 0.15 }, colors, zIndex: 99999, scalar: 1.1 });
         if (Date.now() < end) requestAnimationFrame(frame);
       };
       frame();
+      toast.success(`🎯 Daily goal reached! ${goal.toLocaleString()} words written today.`);
     }
   }, [isComplete]);
 
