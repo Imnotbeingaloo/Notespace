@@ -1,22 +1,24 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, Lock, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { usePaperStyle } from "@/hooks/use-paper-style";
 
 interface SettingsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-type Tab = "personal" | "password" | "appearance" | "data";
+type Tab = "personal" | "preferences" | "appearance" | "data";
 
 const TABS: { id: Tab; label: string; Icon: typeof UserIcon }[] = [
   { id: "personal", label: "Personal", Icon: UserIcon },
-  { id: "password", label: "Password", Icon: Lock },
+  { id: "preferences", label: "Preferences", Icon: SlidersHorizontal },
   { id: "appearance", label: "Appearance", Icon: Palette },
   { id: "data", label: "Data & Export", Icon: Database },
 ];
@@ -26,14 +28,14 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { user } = useAuth();
   const { profile, updateDisplayName, markPasswordChanged, daysSincePasswordChange, refresh } = useProfile();
   const { theme, setTheme } = useTheme();
-  
+  const [paperStyle, setPaperStyle] = usePaperStyle();
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
   const [savingName, setSavingName] = useState(false);
   useEffect(() => { setName(profile?.display_name ?? ""); }, [profile?.display_name]);
 
-  // Password
+  // Password (inside Personal now)
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [pwSaving, setPwSaving] = useState(false);
@@ -135,7 +137,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           {/* Content */}
           <section className="flex-1 p-6 sm:p-8 overflow-y-auto">
             {tab === "personal" && (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 <div>
                   <h3 className="font-serif text-lg font-bold text-foreground">Personal</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">How we refer to you across the app.</p>
@@ -171,54 +173,82 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   />
                   <p className="text-[11px] text-muted-foreground mt-1">Email is permanent for now. Contact support to change it.</p>
                 </div>
+
+                {/* Password section moved into Personal */}
+                <div className="pt-4 border-t border-border space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-muted-foreground" />
+                    <h4 className="font-serif text-base font-bold text-foreground">Password</h4>
+                  </div>
+                  <p className="text-xs text-muted-foreground -mt-2">You can change your password once every 30 days.</p>
+                  {!canChangePassword && (
+                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+                      Next password change available in <strong>{passwordCooldownDays} day{passwordCooldownDays === 1 ? "" : "s"}</strong>.
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">New password</label>
+                    <input
+                      type="password"
+                      value={newPw}
+                      onChange={(e) => setNewPw(e.target.value)}
+                      minLength={6}
+                      placeholder="••••••••"
+                      disabled={!canChangePassword}
+                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Confirm new password</label>
+                    <input
+                      type="password"
+                      value={confirmPw}
+                      onChange={(e) => setConfirmPw(e.target.value)}
+                      minLength={6}
+                      placeholder="••••••••"
+                      disabled={!canChangePassword}
+                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                    />
+                  </div>
+                  <button
+                    onClick={handleChangePassword}
+                    disabled={!canChangePassword || pwSaving || !newPw || !confirmPw}
+                    className="px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {pwSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                    Update password
+                  </button>
+                </div>
               </div>
             )}
 
-            {tab === "password" && (
+            {tab === "preferences" && (
               <div className="space-y-5">
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-foreground">Password</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    You can change your password once every 30 days.
-                  </p>
+                  <h3 className="font-serif text-lg font-bold text-foreground">Preferences</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">Tweak how your writing surface feels.</p>
                 </div>
-                {!canChangePassword && (
-                  <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
-                    Next password change available in <strong>{passwordCooldownDays} day{passwordCooldownDays === 1 ? "" : "s"}</strong>.
+
+                <div className="rounded-xl border border-border p-4 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <BookOpen className="h-5 w-5 text-primary" />
                   </div>
-                )}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">New password</label>
-                  <input
-                    type="password"
-                    value={newPw}
-                    onChange={(e) => setNewPw(e.target.value)}
-                    minLength={6}
-                    placeholder="••••••••"
-                    disabled={!canChangePassword}
-                    className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <h4 className="text-sm font-semibold text-foreground">Classic notebook paper</h4>
+                      <Switch
+                        checked={paperStyle}
+                        onCheckedChange={(v) => {
+                          setPaperStyle(v);
+                          toast.success(v ? "Notebook paper enabled" : "Notebook paper disabled");
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Show classic ruled lines and a red margin on the writing surface — like an actual notebook page.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Confirm new password</label>
-                  <input
-                    type="password"
-                    value={confirmPw}
-                    onChange={(e) => setConfirmPw(e.target.value)}
-                    minLength={6}
-                    placeholder="••••••••"
-                    disabled={!canChangePassword}
-                    className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                  />
-                </div>
-                <button
-                  onClick={handleChangePassword}
-                  disabled={!canChangePassword || pwSaving || !newPw || !confirmPw}
-                  className="px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
-                >
-                  {pwSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  Update password
-                </button>
               </div>
             )}
 

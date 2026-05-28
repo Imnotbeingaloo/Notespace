@@ -124,17 +124,19 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const STUDY_CELEBRATED_KEY = "study-celebrated-date";
+  const STUDY_CELEBRATED_TASKS_KEY = "study-celebrated-task-ids";
+
+  const loadCelebratedTaskIds = (): Set<string> => {
+    try { return new Set(JSON.parse(localStorage.getItem(STUDY_CELEBRATED_TASKS_KEY) || "[]")); } catch { return new Set(); }
+  };
+  const saveCelebratedTaskIds = (ids: Set<string>) => {
+    localStorage.setItem(STUDY_CELEBRATED_TASKS_KEY, JSON.stringify(Array.from(ids)));
+  };
 
   const toggleComplete = async (plan: StudyPlan) => {
     const completed = !plan.completed;
-    const today = format(new Date(), "yyyy-MM-dd");
-    // Count tasks already completed today (excluding this one)
-    const completedTodayBefore = plans.filter(
-      (p) => p.completed && p.scheduled_date === today && p.id !== plan.id
-    ).length;
-    const alreadyCelebratedToday = localStorage.getItem(STUDY_CELEBRATED_KEY) === today;
-    const isFirstOfDay = completed && completedTodayBefore === 0 && !alreadyCelebratedToday;
+    const celebrated = loadCelebratedTaskIds();
+    const shouldCelebrate = completed && !celebrated.has(plan.id);
 
     await supabase
       .from("study_plans" as any)
@@ -150,14 +152,15 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
     );
     if (completed) {
       toast.success("🎉 Session completed!");
-      if (isFirstOfDay) {
-        localStorage.setItem(STUDY_CELEBRATED_KEY, today);
+      if (shouldCelebrate) {
+        celebrated.add(plan.id);
+        saveCelebratedTaskIds(celebrated);
         const colors = ["hsl(142, 71%, 45%)", "hsl(48, 96%, 53%)", "hsl(262, 83%, 58%)", "hsl(0, 84%, 60%)", "hsl(174, 72%, 56%)"];
         const end = Date.now() + 1800;
         const frame = () => {
-          confetti({ particleCount: 6, angle: 60, spread: 75, origin: { x: 0, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
-          confetti({ particleCount: 6, angle: 120, spread: 75, origin: { x: 1, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1 });
-          confetti({ particleCount: 5, spread: 130, startVelocity: 50, origin: { x: 0.5, y: 0.15 }, colors, zIndex: 99999, scalar: 1.1 });
+          confetti({ particleCount: 6, angle: 60, spread: 75, origin: { x: 0, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: false });
+          confetti({ particleCount: 6, angle: 120, spread: 75, origin: { x: 1, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: false });
+          confetti({ particleCount: 5, spread: 130, startVelocity: 50, origin: { x: 0.5, y: 0.15 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: false });
           if (Date.now() < end) requestAnimationFrame(frame);
         };
         frame();
@@ -165,6 +168,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
     }
     window.dispatchEvent(new CustomEvent("study-plans-changed"));
   };
+
 
 
   const deletePlan = async (id: string) => {
