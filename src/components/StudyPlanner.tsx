@@ -120,6 +120,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
       setNewRemind(false);
       setShowAdd(false);
       toast.success("Study session added!");
+      window.dispatchEvent(new CustomEvent("study-plans-changed"));
     }
   };
 
