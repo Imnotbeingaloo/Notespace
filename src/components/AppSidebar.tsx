@@ -386,15 +386,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         if (canAcceptNote) {
                           setNoteDropTargetNb(nb.id);
                           // Auto-expand the notebook so user can choose a position
-          <input
-            ref={sidebarUploadRef}
-            type="file"
-            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.epub,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,application/epub+zip,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            className="hidden"
-            onChange={handleSidebarUpload}
-          />
-
+                          if (expandedNotebook !== nb.id) setExpandedNotebook(nb.id);
+                        }
+                      }
+                    }}
+                    onDragLeave={() => {
                       setDragOverNotebookId(null);
+                      setNoteDropTargetNb(null);
+
                       setNoteDropTargetNb(null);
                       // Cross-notebook note move
                       if (dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id) {
