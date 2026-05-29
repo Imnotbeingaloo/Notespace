@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB — attach-files inside a note
+const MAX_SIDEBAR_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB — sidebar upload
 
 // Strict allow-list. HTML, SVG, and executables are intentionally excluded
 // because they can carry active content (scripts) that could be rendered later.
@@ -10,6 +11,7 @@ const ALLOWED_MIME = [
   "image/gif",
   "image/webp",
   "application/pdf",
+  "application/epub+zip",
   "text/plain",
   "text/markdown",
   "text/csv",
@@ -21,7 +23,7 @@ const ALLOWED_MIME = [
 
 const ALLOWED_EXT = [
   ".png", ".jpg", ".jpeg", ".gif", ".webp",
-  ".pdf",
+  ".pdf", ".epub",
   ".txt", ".md", ".markdown", ".csv", ".json",
   ".doc", ".docx", ".xls", ".xlsx",
 ];
@@ -43,14 +45,10 @@ export function sanitizeFileName(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, "_");
 }
 
-export function validateFile(file: File): boolean {
-  if (file.size > MAX_FILE_SIZE) {
-    toast.error(`"${file.name}" exceeds the 10 MB limit.`);
-    return false;
-  }
+function checkTypeAllowed(file: File): boolean {
   const ext = getExt(file.name);
   if (BLOCKED_EXT.includes(ext)) {
-    toast.error(`"${ext}" files are not allowed (security).`);
+    toast.error(`"${ext}" files are not allowed for security reasons.`);
     return false;
   }
   const mimeOk = file.type && ALLOWED_MIME.includes(file.type);
@@ -60,6 +58,24 @@ export function validateFile(file: File): boolean {
     return false;
   }
   return true;
+}
+
+// Attach-files inside a note: 10 MB cap.
+export function validateFile(file: File): boolean {
+  if (file.size > MAX_FILE_SIZE) {
+    toast.error(`"${file.name}" exceeds the 10 MB limit for inline attachments.`);
+    return false;
+  }
+  return checkTypeAllowed(file);
+}
+
+// Sidebar uploads (whole-file imports): 1 GB cap.
+export function validateSidebarFile(file: File): boolean {
+  if (file.size > MAX_SIDEBAR_FILE_SIZE) {
+    toast.error(`"${file.name}" exceeds the 1 GB upload limit.`);
+    return false;
+  }
+  return checkTypeAllowed(file);
 }
 
 export function isTextDocument(file: File): boolean {
@@ -100,11 +116,15 @@ export async function fileToBase64(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
-      // Strip data:...;base64, prefix
       const comma = result.indexOf(",");
       resolve(comma === -1 ? result : result.slice(comma + 1));
     };
     reader.onerror = () => reject(reader.error);
     reader.readAsDataURL(file);
   });
+}
+
+export function friendlyUploadMessage(file: File): string {
+  const tenMB = 10 * 1024 * 1024;
+  return file.size > tenMB ? "Uploading… this may take a moment" : "Uploading… just a sec";
 }

@@ -849,7 +849,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         {/* File upload */}
         {!focusMode && !isOverrideActive && (
           <div className="shrink-0 border-t border-border">
-            <FileUpload onInsertMarkdown={handleInsertMarkdown} />
+            <FileUpload onInsertMarkdown={handleInsertMarkdown} onSaveSelection={() => hybridEditorRef.current?.saveSelection()} />
+
           </div>
         )}
 
