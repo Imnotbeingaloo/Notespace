@@ -307,12 +307,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <div className="flex flex-col gap-0.5 mb-2">
             <button
               onClick={() => sidebarUploadRef.current?.click()}
-              disabled={sidebarUploading}
-              title="Upload files into the current note. Allowed: images, PDF, DOC/DOCX, XLSX, TXT, MD, CSV, JSON (max 10 MB)."
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn disabled:opacity-60"
+              title="Upload a file (PDF, EPUB, DOCX, TXT, MD, CSV, JSON, images — up to 1 GB)."
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
-              {sidebarUploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-              {sidebarUploading ? "Uploading…" : "Upload"}
+              <Upload className="h-3.5 w-3.5" />
+              Upload
             </button>
             <button
               onClick={() => setNewNotebookOpen(true)}
@@ -343,21 +342,20 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               to="/app/temporary"
               title="Open a temporary workspace — auto-deletes after 24h."
               className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors"
-            <button
-              onClick={() => sidebarUploadRef.current?.click()}
-              title="Upload a file (PDF, EPUB, DOCX, TXT, MD, CSV, JSON, images — up to 1 GB)."
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
-              <Upload className="h-3.5 w-3.5" />
-              Upload
-            </button>
+              <ScratchIcon className="h-3.5 w-3.5" />
+              Temporary Note
+            </Link>
+          </div>
 
+          <input
+            ref={sidebarUploadRef}
             type="file"
-            multiple
-            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.epub,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,application/epub+zip,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             className="hidden"
             onChange={handleSidebarUpload}
           />
+
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
