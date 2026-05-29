@@ -393,8 +393,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     onDragLeave={() => {
                       setDragOverNotebookId(null);
                       setNoteDropTargetNb(null);
-
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragOverNotebookId(null);
                       setNoteDropTargetNb(null);
+
                       // Cross-notebook note move
                       if (dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id) {
                         const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
