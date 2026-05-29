@@ -10,6 +10,7 @@ export interface HybridEditorHandle {
   getValue: () => string;
   getEditorElement: () => HTMLDivElement | null;
   setContent: (md: string) => void;
+  saveSelection: () => void;
 }
 
 interface HybridEditorProps {
@@ -24,6 +25,10 @@ marked.setOptions({
   gfm: true,
 });
 
+// Sentinel used to round-trip intentional empty paragraphs through markdown.
+// Plain `&nbsp;` collapses; this token is unambiguous and easy to detect on re-render.
+const BLANK_LINE_TOKEN = "&#8203;\u200B";
+
 // Configure turndown for clean markdown output
 function createTurndown() {
   const td = new TurndownService({
@@ -31,9 +36,11 @@ function createTurndown() {
     hr: "---",
     bulletListMarker: "-",
     codeBlockStyle: "fenced",
-    // Preserve empty paragraphs / line spacing instead of collapsing them
+    // Preserve empty paragraphs / line spacing instead of collapsing them.
     blankReplacement: (_content, node: any) => {
-      if (node.nodeName === "P" || node.nodeName === "DIV") return "\n\n&nbsp;\n\n";
+      if (node.nodeName === "P" || node.nodeName === "DIV") {
+        return `\n\n${BLANK_LINE_TOKEN}\n\n`;
+      }
       return "";
     },
   });
@@ -53,6 +60,16 @@ function createTurndown() {
     replacement: (content) => `~~${content}~~`,
   });
 
+  // Treat paragraphs that contain only the zero-width sentinel as blank lines.
+  td.addRule("blank-paragraph", {
+    filter: (node) => {
+      if (node.nodeName !== "P") return false;
+      const text = (node.textContent || "").replace(/\u200B|\u00A0/g, "").trim();
+      return text.length === 0;
+    },
+    replacement: () => `\n\n${BLANK_LINE_TOKEN}\n\n`,
+  });
+
   return td;
 }
 
@@ -60,8 +77,12 @@ const turndown = createTurndown();
 
 function markdownToHtml(md: string): string {
   if (!md) return "";
-  const raw = marked.parse(md, { async: false }) as string;
-  return DOMPurify.sanitize(raw, { ADD_ATTR: ["target"] });
+  // Convert the blank-line sentinel back into real empty paragraphs the browser will render.
+  const normalized = md.replace(/&#8203;\u200B/g, "\u200B");
+  const raw = marked.parse(normalized, { async: false }) as string;
+  const cleaned = DOMPurify.sanitize(raw, { ADD_ATTR: ["target"] });
+  // Replace paragraphs that contain only the zero-width char with explicit <br> blank lines.
+  return cleaned.replace(/<p>\s*\u200B\s*<\/p>/g, "<p><br></p>");
 }
 
 function htmlToMarkdown(html: string): string {
@@ -78,6 +99,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
     const editorRef = useRef<HTMLDivElement>(null);
     const lastMdRef = useRef(content);
     const isTypingRef = useRef(false);
+    const savedRangeRef = useRef<Range | null>(null);
     const [selectionRect, setSelectionRect] = useState<DOMRect | null>(null);
     const [paperStyle] = usePaperStyle();
 
@@ -112,25 +134,29 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       onChange(md);
     }, [onChange]);
 
-    // Track selection for floating toolbar
+    // Track selection for floating toolbar AND remember the last caret position
+    // inside the editor so we can restore it after the user clicks attach/upload buttons.
     const handleSelectionChange = useCallback(() => {
       const sel = window.getSelection();
-      if (!sel || sel.isCollapsed || !editorRef.current) {
+      if (!sel || !editorRef.current) {
         setSelectionRect(null);
         return;
       }
-      // Check selection is within our editor
       if (!editorRef.current.contains(sel.anchorNode)) {
+        setSelectionRect(null);
+        return;
+      }
+      // Always remember the latest range while focus is in the editor.
+      if (sel.rangeCount > 0) {
+        savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+      }
+      if (sel.isCollapsed) {
         setSelectionRect(null);
         return;
       }
       const range = sel.getRangeAt(0);
       const rect = range.getBoundingClientRect();
-      if (rect.width > 0) {
-        setSelectionRect(rect);
-      } else {
-        setSelectionRect(null);
-      }
+      setSelectionRect(rect.width > 0 ? rect : null);
     }, []);
 
     useEffect(() => {
@@ -138,18 +164,45 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       return () => document.removeEventListener("selectionchange", handleSelectionChange);
     }, [handleSelectionChange]);
 
+    const restoreSelection = useCallback(() => {
+      const el = editorRef.current;
+      const range = savedRangeRef.current;
+      if (!el) return;
+      el.focus();
+      if (range && el.contains(range.startContainer)) {
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    }, []);
+
     useImperativeHandle(ref, () => ({
       insertAtCursor: (text: string) => {
         const el = editorRef.current;
         if (!el) return;
-        el.focus();
+        restoreSelection();
 
         const imgMatch = text.match(/!\[([^\]]*)\]\(([^)]+)\)/);
         if (imgMatch) {
           const html = `<img src="${imgMatch[2]}" alt="${imgMatch[1]}" class="rounded-2xl border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`;
           document.execCommand("insertHTML", false, html);
+        } else if (text.includes("\n")) {
+          // Preserve newlines by inserting them as <br>s so multi-line snippets land correctly at the caret.
+          const safe = text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\n/g, "<br>");
+          document.execCommand("insertHTML", false, safe);
         } else {
           document.execCommand("insertText", false, text);
+        }
+        // Re-capture the new caret position after insertion.
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          savedRangeRef.current = sel.getRangeAt(0).cloneRange();
         }
         emitChange();
       },
@@ -162,6 +215,12 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         lastMdRef.current = md;
         isTypingRef.current = false;
         setHtmlFromMd(md);
+      },
+      saveSelection: () => {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && editorRef.current?.contains(sel.anchorNode)) {
+          savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+        }
       },
     }));
 

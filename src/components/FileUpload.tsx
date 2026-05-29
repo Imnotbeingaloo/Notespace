@@ -4,14 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { validateFile, buildStoragePath, isTextDocument, isHtmlFile, stripHtmlTags } from "@/lib/file-validation";
-import { toast } from "@/hooks/use-toast";
+import {
+  validateFile,
+  buildStoragePath,
+  isTextDocument,
+  isHtmlFile,
+  stripHtmlTags,
+} from "@/lib/file-validation";
+import { toast } from "sonner";
 
 interface FileUploadProps {
   onInsertMarkdown?: (markdown: string) => void;
+  onSaveSelection?: () => void;
 }
 
-export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
+export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProps) {
   const { user } = useAuth();
   const { activeNote, activeNotebookId, updateNote } = useNotebooks();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -22,6 +29,13 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
 
   const attachments = activeNote.attachments || [];
 
+  const openPicker = () => {
+    // Save the editor caret position BEFORE focus leaves the editor, so the
+    // inserted attachment lands exactly where the user was last typing.
+    onSaveSelection?.();
+    inputRef.current?.click();
+  };
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || !user) return;
@@ -30,70 +44,70 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     setProgress({ current: 0, total: fileList.length, name: fileList[0]?.name || "" });
 
     const newAttachments = [...attachments];
-    let markdownInserts: string[] = [];
 
     for (let idx = 0; idx < fileList.length; idx++) {
       const file = fileList[idx];
       setProgress({ current: idx, total: fileList.length, name: file.name });
       if (!validateFile(file)) continue;
 
-      // If it's an HTML or MD file, read content and insert into note
+      // Plain text-ish docs: read and insert content at the cursor.
       if (isTextDocument(file)) {
-        const text = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.readAsText(file);
-        });
-
-        const content = isHtmlFile(file) ? stripHtmlTags(text) : text;
-        const separator = activeNote.content ? "\n\n---\n\n" : "";
-        const newContent = (activeNote.content || "") + separator + `## Imported: ${file.name}\n\n${content}`;
-
-        await updateNote(activeNotebookId, activeNote.id, { content: newContent });
-
-        if (onInsertMarkdown) {
-          onInsertMarkdown(""); // trigger re-render
+        try {
+          const text = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsText(file);
+          });
+          const content = isHtmlFile(file) ? stripHtmlTags(text) : text;
+          onInsertMarkdown?.(`\n\n## Imported: ${file.name}\n\n${content}\n`);
+          toast.success(`Imported "${file.name}"`);
+        } catch (err: any) {
+          toast.error(`Could not read "${file.name}": ${err?.message || "unknown error"}`);
         }
-        toast({
-          title: "Document imported",
-          description: `"${file.name}" content has been added to your note.`,
-        });
         continue;
       }
 
-      const path = buildStoragePath(user.id, activeNote.id, file.name);
-      const { error } = await supabase.storage.from("note-attachments").upload(path, file);
-      if (error) {
-        console.error("Upload error:", error);
-        continue;
-      }
-      const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
-      const fileUrl = signedUrlData?.signedUrl || '';
-      const att = {
-        name: file.name,
-        url: fileUrl,
-        path: path,
-        type: file.type,
-        size: file.size,
-      };
-      newAttachments.push(att);
+      // Binary file: upload to storage, verify success, insert link at caret.
+      try {
+        const path = buildStoragePath(user.id, activeNote.id, file.name);
+        const { error } = await supabase.storage
+          .from("note-attachments")
+          .upload(path, file, { upsert: false });
+        if (error) throw error;
 
-      // For images, insert at cursor position via onInsertMarkdown
-      if (file.type.startsWith("image/")) {
-        markdownInserts.push(`![${file.name}](${fileUrl})`);
+        const { data: signedUrlData, error: signErr } = await supabase.storage
+          .from("note-attachments")
+          .createSignedUrl(path, 60 * 60 * 24 * 7);
+        if (signErr || !signedUrlData?.signedUrl) {
+          throw signErr || new Error("Could not generate file URL");
+        }
+
+        const fileUrl = signedUrlData.signedUrl;
+        const att = {
+          name: file.name,
+          url: fileUrl,
+          path,
+          type: file.type,
+          size: file.size,
+        };
+        newAttachments.push(att);
+
+        if (file.type.startsWith("image/")) {
+          onInsertMarkdown?.(`![${file.name}](${fileUrl})`);
+        } else {
+          onInsertMarkdown?.(`[📎 ${file.name}](${fileUrl})`);
+        }
+        toast.success(`Attached "${file.name}"`);
+      } catch (err: any) {
+        console.error("Upload error:", err);
+        toast.error(`Upload failed for "${file.name}": ${err?.message || "unknown error"}`);
       }
     }
 
-    // Save attachments metadata
-    await updateNote(activeNotebookId, activeNote.id, { attachments: newAttachments });
-
-    // Insert image markdown into content
-    if (markdownInserts.length > 0 && onInsertMarkdown) {
-      onInsertMarkdown(markdownInserts.join("\n"));
-      toast({
-        title: "Image added",
-        description: "Switch to Preview mode to see it rendered.",
-      });
+    // Save attachments metadata once.
+    if (newAttachments.length !== attachments.length) {
+      await updateNote(activeNotebookId, activeNote.id, { attachments: newAttachments });
     }
 
     setUploading(false);
@@ -126,9 +140,9 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
         if (data?.signedUrl) url = data.signedUrl;
       }
       const win = window.open(url, "_blank", "noopener,noreferrer");
-      if (!win) toast({ title: "Popup blocked", description: "Allow popups to preview attachments." });
+      if (!win) toast.error("Popup blocked — allow popups to preview attachments.");
     } catch (err: any) {
-      toast({ title: "Preview failed", description: err.message || "Could not open this file." });
+      toast.error(err.message || "Could not open this file.");
     }
   };
 
@@ -144,7 +158,8 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
     <div className="flex items-center gap-3 px-4 py-3">
       <button
         type="button"
-        onClick={() => inputRef.current?.click()}
+        onMouseDown={() => onSaveSelection?.()}
+        onClick={openPicker}
         disabled={uploading}
         className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
         title={uploading ? "Uploading..." : "Attach files"}
@@ -156,7 +171,7 @@ export function FileUpload({ onInsertMarkdown }: FileUploadProps) {
           {uploading && progress
             ? `Uploading ${progress.current + 1}/${progress.total} — ${progress.name}`
             : uploading
-              ? "Uploading…"
+              ? "Uploading your files…"
               : "Attach files or drag & drop"}
         </span>
         {uploading && progress && (

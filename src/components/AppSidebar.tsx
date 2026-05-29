@@ -21,6 +21,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { SidebarUploadDialog } from "@/components/SidebarUploadDialog";
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -82,6 +83,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
   const sidebarUploadRef = useRef<HTMLInputElement>(null);
   const [sidebarUploading, setSidebarUploading] = useState(false);
+  const [pendingUploadFile, setPendingUploadFile] = useState<File | null>(null);
+
   const [editingNotebook, setEditingNotebook] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmoji, setEditEmoji] = useState("");
@@ -236,53 +239,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
 
 
-  const handleSidebarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || !user) return;
-    setSidebarUploading(true);
-
-    let nbId = activeNotebookId;
-    let noteId = activeNoteId;
-
-    if (!nbId) {
-      await createNotebook("My Notebook");
-      setSidebarUploading(false);
-      return;
-    }
-
-    if (!noteId) {
-      await createNote(nbId);
-      setSidebarUploading(false);
-      return;
-    }
-
-    const currentNotebook = notebooks.find(n => n.id === nbId);
-    const currentNote = currentNotebook?.notes.find(n => n.id === noteId);
-    if (!currentNote) { setSidebarUploading(false); return; }
-
-    const existingAttachments = currentNote.attachments || [];
-    const newAttachments = [...existingAttachments];
-    let contentAppend = "";
-
-    for (const file of Array.from(files)) {
-      if (!validateFile(file)) continue;
-      const path = buildStoragePath(user.id, noteId, file.name);
-      const { error } = await supabase.storage.from("note-attachments").upload(path, file);
-      if (error) { console.error("Upload error:", error); continue; }
-      const { data: publicUrlData } = supabase.storage.from("note-attachments").getPublicUrl(path);
-      const fileUrl = publicUrlData?.publicUrl || '';
-      newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
-      if (file.type.startsWith("image/")) {
-        contentAppend += `\n![${file.name}](${fileUrl})\n`;
-      }
-    }
-
-    const contentUpdate = contentAppend ? { content: (currentNote.content || "") + contentAppend } : {};
-    await updateNote(nbId, noteId, { attachments: newAttachments, ...contentUpdate });
-
-    setSidebarUploading(false);
+  // Sidebar upload: open the destination chooser dialog with the picked file.
+  const handleSidebarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    setPendingUploadFile(file);
+    // Allow the user to pick the same file again later.
     if (sidebarUploadRef.current) sidebarUploadRef.current.value = "";
   };
+
+
 
   // (Inline create form removed; we now use the CreateNotebookDialog modal.)
 
@@ -342,12 +308,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <div className="flex flex-col gap-0.5 mb-2">
             <button
               onClick={() => sidebarUploadRef.current?.click()}
-              disabled={sidebarUploading}
-              title="Upload files into the current note. Allowed: images, PDF, DOC/DOCX, XLSX, TXT, MD, CSV, JSON (max 10 MB)."
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn disabled:opacity-60"
+              title="Upload a file (PDF, EPUB, DOCX, TXT, MD, CSV, JSON, images — up to 1 GB)."
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
             >
-              {sidebarUploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-              {sidebarUploading ? "Uploading…" : "Upload"}
+              <Upload className="h-3.5 w-3.5" />
+              Upload
             </button>
             <button
               onClick={() => setNewNotebookOpen(true)}
@@ -387,11 +352,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <input
             ref={sidebarUploadRef}
             type="file"
-            multiple
-            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.epub,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,application/epub+zip,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             className="hidden"
             onChange={handleSidebarUpload}
           />
+
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
@@ -426,11 +391,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         }
                       }
                     }}
-                    onDragLeave={() => { setDragOverNotebookId(null); setNoteDropTargetNb(null); }}
+                    onDragLeave={() => {
+                      setDragOverNotebookId(null);
+                      setNoteDropTargetNb(null);
+                    }}
                     onDrop={(e) => {
                       e.preventDefault();
                       setDragOverNotebookId(null);
                       setNoteDropTargetNb(null);
+
                       // Cross-notebook note move
                       if (dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id) {
                         const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
