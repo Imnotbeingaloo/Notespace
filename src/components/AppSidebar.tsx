@@ -21,6 +21,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { SidebarUploadDialog } from "@/components/SidebarUploadDialog";
 
 interface AppSidebarProps {
   collapsed: boolean;
