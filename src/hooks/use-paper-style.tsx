@@ -7,9 +7,14 @@ export function getPaperStyle(): boolean {
   try { return localStorage.getItem(KEY) === "true"; } catch { return false; }
 }
 
-export function setPaperStyle(enabled: boolean) {
+export function setPaperStyle(enabled: boolean, options?: { reload?: boolean }) {
   localStorage.setItem(KEY, String(enabled));
   window.dispatchEvent(new CustomEvent(EVT, { detail: enabled }));
+  // Reload so the editor mounts cleanly with (or without) the ruled-paper styles applied.
+  if (options?.reload !== false) {
+    // Small delay so the toggle UI can complete its visual change before the reload.
+    setTimeout(() => window.location.reload(), 150);
+  }
 }
 
 export function usePaperStyle() {

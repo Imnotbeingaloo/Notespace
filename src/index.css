@@ -352,15 +352,38 @@
 
 /* Classic ruled-notebook paper style (opt-in via Settings → Preferences) */
 .notebook-paper {
+  --paper-bg: hsl(40 45% 96%);
+  --paper-rule: hsl(210 75% 55% / 0.32);
+  --paper-margin: hsl(0 70% 55% / 0.55);
+  background-color: var(--paper-bg);
   background-image:
-    linear-gradient(to bottom, transparent calc(1.75rem - 1px), hsl(var(--border) / 0.6) 1.75rem),
-    linear-gradient(to right, transparent 2.25rem, hsl(0 70% 60% / 0.4) 2.25rem, hsl(0 70% 60% / 0.4) calc(2.25rem + 1px), transparent calc(2.25rem + 1px));
-  background-size: 100% 1.75rem, 100% 100%;
-  background-position: 0 0.5rem, 0 0;
+    /* Red vertical margin line */
+    linear-gradient(to right,
+      transparent 0,
+      transparent 3.25rem,
+      var(--paper-margin) 3.25rem,
+      var(--paper-margin) calc(3.25rem + 1.5px),
+      transparent calc(3.25rem + 1.5px)),
+    /* Blue horizontal ruled lines (every 2rem) */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(2rem - 1px),
+      var(--paper-rule) calc(2rem - 1px),
+      var(--paper-rule) 2rem);
   background-attachment: local;
-  background-repeat: repeat-y, no-repeat;
-  padding-left: 2.75rem !important;
-  line-height: 1.75rem !important;
+  background-repeat: no-repeat, repeat-y;
+  background-size: 100% 100%, 100% 2rem;
+  background-position: 0 0, 0 0.5rem;
+  padding-left: 4rem !important;
+  padding-top: 0.5rem !important;
+  line-height: 2rem !important;
+  border-radius: 0.5rem;
+}
+.dark .notebook-paper {
+  --paper-bg: hsl(220 22% 14%);
+  --paper-rule: hsl(210 90% 70% / 0.28);
+  --paper-margin: hsl(0 85% 65% / 0.55);
 }
 .notebook-paper p,
 .notebook-paper li,
@@ -368,7 +391,9 @@
 .notebook-paper h2,
 .notebook-paper h3,
 .notebook-paper blockquote {
-  line-height: 1.75rem !important;
+  line-height: 2rem !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  background: transparent !important;
 }
+
