@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Upload, BookOpen, FolderPlus, CheckCircle2, AlertCircle, FileText } from "lucide-react";
+import { Loader2, BookOpen, FolderPlus, CheckCircle2, AlertCircle, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,8 +9,10 @@ import {
   validateSidebarFile,
   buildStoragePath,
   isTextDocument,
+  isPdfFile,
   friendlyUploadMessage,
 } from "@/lib/file-validation";
+import { extractPdfText } from "@/lib/pdf-extract";
 import {
   Dialog,
   DialogContent,
@@ -117,9 +119,27 @@ export function SidebarUploadDialog({ open, file, onClose }: SidebarUploadDialog
     setProgress(100);
   }
 
+  async function uploadPdfDoc(targetNotebookId: string, targetNoteId: string) {
+    if (!file) throw new Error("No file.");
+    setProgress(20);
+    const { text, pageCount, isScanned } = await extractPdfText(file, (p) => setProgress(20 + Math.round(p * 0.6)));
+    if (isScanned || !text.trim()) {
+      // Fall back to attaching the binary if we couldn't read it.
+      await uploadBinary(targetNotebookId, targetNoteId);
+      return;
+    }
+    setProgress(90);
+    await updateNote(targetNotebookId, targetNoteId, {
+      content: `# ${file.name}\n\n_Extracted from ${pageCount} page${pageCount === 1 ? "" : "s"}_\n\n${text}`,
+    });
+    setProgress(100);
+  }
+
   async function performUpload(targetNotebookId: string, targetNoteId: string) {
     if (isTextDocument(file!)) {
       await uploadTextDoc(targetNotebookId, targetNoteId);
+    } else if (isPdfFile(file!)) {
+      await uploadPdfDoc(targetNotebookId, targetNoteId);
     } else {
       await uploadBinary(targetNotebookId, targetNoteId);
     }
