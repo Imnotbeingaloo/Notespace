@@ -64,10 +64,10 @@ function checkTypeAllowed(file: File): boolean {
   return true;
 }
 
-// Attach-files inside a note: 10 MB cap.
+// Attach-files inside a note: 100 MB cap (covers small videos & PDFs).
 export function validateFile(file: File): boolean {
   if (file.size > MAX_FILE_SIZE) {
-    toast.error(`"${file.name}" exceeds the 10 MB limit for inline attachments.`);
+    toast.error(`"${file.name}" exceeds the 100 MB limit for inline attachments.`);
     return false;
   }
   return checkTypeAllowed(file);
