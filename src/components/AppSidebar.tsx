@@ -941,6 +941,13 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       {/* Settings Modal */}
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 
+      {/* Sidebar Upload Dialog (PDF / TXT / DOCX / images → notebook or note) */}
+      <SidebarUploadDialog
+        open={!!pendingUploadFile}
+        file={pendingUploadFile}
+        onClose={() => setPendingUploadFile(null)}
+      />
+
       {/* Create Notebook Modal */}
       <CreateNotebookDialog
         open={newNotebookOpen}
