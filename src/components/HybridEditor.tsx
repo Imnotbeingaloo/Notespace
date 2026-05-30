@@ -185,11 +185,15 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         restoreSelection();
 
         const imgMatch = text.match(/!\[([^\]]*)\]\(([^)]+)\)/);
+        const fileLinkMatch = !imgMatch && /^\[📎[^\]]*\]\([^)]+\)$/.test(text.trim());
         if (imgMatch) {
-          const html = `<img src="${imgMatch[2]}" alt="${imgMatch[1]}" class="rounded-2xl border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`;
+          // Image followed by two blank lines so the user can keep typing below.
+          const html = `<img src="${imgMatch[2]}" alt="${imgMatch[1]}" class="rounded-2xl border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" /><p><br></p><p><br></p>`;
           document.execCommand("insertHTML", false, html);
+        } else if (fileLinkMatch) {
+          const safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          document.execCommand("insertHTML", false, `${safe}<p><br></p><p><br></p>`);
         } else if (text.includes("\n")) {
-          // Preserve newlines by inserting them as <br>s so multi-line snippets land correctly at the caret.
           const safe = text
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -199,7 +203,6 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         } else {
           document.execCommand("insertText", false, text);
         }
-        // Re-capture the new caret position after insertion.
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0) {
           savedRangeRef.current = sel.getRangeAt(0).cloneRange();

@@ -1,6 +1,6 @@
 // PDF text extraction using pdfjs-dist. Worker loaded via Vite ?url import.
 import * as pdfjs from "pdfjs-dist";
-// @ts-expect-error - Vite worker URL import
+// @ts-ignore - Vite worker URL import
 import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
 (pdfjs as any).GlobalWorkerOptions.workerSrc = workerUrl;
