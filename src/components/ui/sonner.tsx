@@ -13,21 +13,22 @@ const Toaster = ({ ...props }: ToasterProps) => {
       position="bottom-right"
       closeButton
       visibleToasts={4}
-      gap={12}
+      gap={14}
       expand={false}
+      offset={20}
       className="toaster group"
       toastOptions={{
         unstyled: false,
         classNames: {
           toast:
-            "group toast pointer-events-auto relative overflow-hidden !rounded-2xl !border !border-border/60 !bg-background/95 backdrop-blur-xl !text-foreground !shadow-[0_18px_50px_-18px_rgba(0,0,0,0.45)] !px-4 !py-3 !gap-3 !font-sans !text-sm !min-h-[60px] !w-[360px] max-w-[calc(100vw-2rem)] data-[type=success]:!border-emerald-500/40 data-[type=error]:!border-rose-500/40 data-[type=info]:!border-sky-500/40 data-[type=warning]:!border-amber-500/40 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-primary/70 data-[type=success]:before:bg-emerald-500 data-[type=error]:before:bg-rose-500 data-[type=info]:before:bg-sky-500 data-[type=warning]:before:bg-amber-500",
-          title: "!font-semibold !text-[13.5px] tracking-tight",
-          description: "!text-muted-foreground !text-xs leading-relaxed",
-          actionButton: "!bg-primary !text-primary-foreground !rounded-lg !px-3 !py-1.5 !text-xs !font-medium",
-          cancelButton: "!bg-muted !text-muted-foreground !rounded-lg",
+            "group pointer-events-auto relative !rounded-xl !border !border-border/70 !bg-card !text-card-foreground !shadow-lg !px-4 !py-3 !gap-3 !font-sans !text-sm !w-[340px] max-w-[calc(100vw-2rem)] data-[type=success]:!border-emerald-500/50 data-[type=error]:!border-rose-500/50 data-[type=warning]:!border-amber-500/50 data-[type=info]:!border-sky-500/50",
+          title: "!font-semibold !text-[13.5px] tracking-tight !leading-snug",
+          description: "!text-muted-foreground !text-xs !leading-relaxed !mt-0.5",
+          actionButton: "!bg-primary !text-primary-foreground !rounded-md !px-3 !py-1.5 !text-xs !font-medium",
+          cancelButton: "!bg-muted !text-muted-foreground !rounded-md",
           closeButton:
-            "!bg-background !border !border-border !text-muted-foreground hover:!text-foreground !rounded-full !left-auto !right-2 !top-2",
-          icon: "!text-primary shrink-0",
+            "!bg-card !border !border-border/70 !text-muted-foreground hover:!text-foreground !rounded-full !left-auto !right-2 !top-2 !h-5 !w-5",
+          icon: "!shrink-0 data-[type=success]:!text-emerald-500 data-[type=error]:!text-rose-500 data-[type=warning]:!text-amber-500 data-[type=info]:!text-sky-500",
         },
       }}
       {...props}

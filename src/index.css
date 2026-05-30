@@ -357,28 +357,26 @@
   --paper-margin: hsl(0 70% 55% / 0.55);
   background-color: var(--paper-bg);
   background-image:
-    /* Red vertical margin line */
     linear-gradient(to right,
       transparent 0,
       transparent 3.25rem,
       var(--paper-margin) 3.25rem,
       var(--paper-margin) calc(3.25rem + 1.5px),
       transparent calc(3.25rem + 1.5px)),
-    /* Blue horizontal ruled lines (every 2rem) */
     repeating-linear-gradient(
       to bottom,
       transparent 0,
       transparent calc(2rem - 1px),
       var(--paper-rule) calc(2rem - 1px),
       var(--paper-rule) 2rem);
-  background-attachment: local;
-  background-repeat: no-repeat, repeat-y;
+  background-repeat: no-repeat, repeat;
   background-size: 100% 100%, 100% 2rem;
-  background-position: 0 0, 0 0.5rem;
+  background-position: 0 0, 0 0;
   padding-left: 4rem !important;
-  padding-top: 0.5rem !important;
+  padding-top: 0 !important;
   line-height: 2rem !important;
-  border-radius: 0.5rem;
+  border-radius: 0;
+  min-height: calc(100vh - 180px);
 }
 .dark .notebook-paper {
   --paper-bg: hsl(220 22% 14%);
@@ -396,4 +394,5 @@
   margin-bottom: 0 !important;
   background: transparent !important;
 }
+
 

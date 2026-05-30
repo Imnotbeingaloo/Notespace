@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB — attach-files inside a note
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB — attach-files inside a note (covers small videos / PDFs)
 const MAX_SIDEBAR_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB — sidebar upload
 
 // Strict allow-list. HTML, SVG, and executables are intentionally excluded
@@ -19,6 +19,9 @@ const ALLOWED_MIME = [
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "video/mp4",
+  "video/quicktime",
+  "video/webm",
 ];
 
 const ALLOWED_EXT = [
@@ -26,6 +29,7 @@ const ALLOWED_EXT = [
   ".pdf", ".epub",
   ".txt", ".md", ".markdown", ".csv", ".json",
   ".doc", ".docx", ".xls", ".xlsx",
+  ".mp4", ".mov", ".webm",
 ];
 
 const BLOCKED_EXT = [
@@ -60,10 +64,10 @@ function checkTypeAllowed(file: File): boolean {
   return true;
 }
 
-// Attach-files inside a note: 10 MB cap.
+// Attach-files inside a note: 100 MB cap (covers small videos & PDFs).
 export function validateFile(file: File): boolean {
   if (file.size > MAX_FILE_SIZE) {
-    toast.error(`"${file.name}" exceeds the 10 MB limit for inline attachments.`);
+    toast.error(`"${file.name}" exceeds the 100 MB limit for inline attachments.`);
     return false;
   }
   return checkTypeAllowed(file);

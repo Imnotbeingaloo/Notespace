@@ -8,9 +8,11 @@ import {
   validateFile,
   buildStoragePath,
   isTextDocument,
+  isPdfFile,
   isHtmlFile,
   stripHtmlTags,
 } from "@/lib/file-validation";
+import { extractPdfText } from "@/lib/pdf-extract";
 import { toast } from "sonner";
 
 interface FileUploadProps {
@@ -20,7 +22,7 @@ interface FileUploadProps {
 
 export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProps) {
   const { user } = useAuth();
-  const { activeNote, activeNotebookId, updateNote } = useNotebooks();
+  const { activeNote, activeNotebookId, updateNote, createNotebook, createNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
@@ -67,6 +69,42 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
         }
         continue;
       }
+
+      // PDFs: extract text. If > 5 pages, spin up a brand-new notebook with the contents.
+      if (isPdfFile(file)) {
+        try {
+          toast.info(`Reading "${file.name}"…`);
+          const { text, pageCount, isScanned } = await extractPdfText(file);
+          if (isScanned || !text.trim()) {
+            // No useful text — fall through to binary upload.
+            toast.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
+          } else if (pageCount > 5) {
+            const baseName = file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported PDF";
+            const nbId = await createNotebook(baseName);
+            if (nbId) {
+              const noteId = await createNote(nbId, file.name);
+              if (noteId) {
+                await updateNote(nbId, noteId, { content: `# ${file.name}\n\n${text}` });
+                setActiveNotebookId(nbId);
+                setActiveNoteId(noteId);
+                toast.success(`"${file.name}" had ${pageCount} pages — created a new notebook for it.`);
+                continue;
+              }
+            }
+            toast.error(`Could not create a notebook for "${file.name}".`);
+            continue;
+          } else {
+            onInsertMarkdown?.(`\n\n## ${file.name}\n\n${text}\n`);
+            toast.success(`Imported "${file.name}" (${pageCount} page${pageCount === 1 ? "" : "s"})`);
+            continue;
+          }
+        } catch (err: any) {
+          console.error("PDF parse error:", err);
+          toast.error(`Couldn't read "${file.name}". Attaching as a link instead.`);
+          // Fall through to binary upload
+        }
+      }
+
 
       // Binary file: upload to storage, verify success, insert link at caret.
       try {
