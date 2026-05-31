@@ -1,5 +1,7 @@
 import { useTheme } from "next-themes";
-import { Toaster as Sonner, toast } from "sonner";
+import { Toaster as Sonner, toast as baseToast } from "sonner";
+import type { ExternalToast } from "sonner";
+import { queuedToast, MAX_VISIBLE_TOASTS } from "@/lib/toast-queue";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -10,18 +12,18 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       duration={3500}
       theme={theme as ToasterProps["theme"]}
-      position="bottom-right"
+      position="top-right"
       closeButton
-      visibleToasts={4}
-      gap={14}
-      expand={false}
-      offset={20}
+      visibleToasts={MAX_VISIBLE_TOASTS}
+      gap={12}
+      expand
+      offset={{ top: 20, right: 20, bottom: 20, left: 20 }}
       className="toaster group"
       toastOptions={{
         unstyled: false,
         classNames: {
           toast:
-            "group pointer-events-auto relative !rounded-xl !border !border-border/70 !bg-card !text-card-foreground !shadow-lg !px-4 !py-3 !gap-3 !font-sans !text-sm !w-[340px] max-w-[calc(100vw-2rem)] data-[type=success]:!border-emerald-500/50 data-[type=error]:!border-rose-500/50 data-[type=warning]:!border-amber-500/50 data-[type=info]:!border-sky-500/50",
+            "group pointer-events-auto relative !rounded-xl !border !border-border/80 !bg-card !text-card-foreground !shadow-2xl !px-4 !py-3 !gap-3 !font-sans !text-sm !w-[360px] max-w-[calc(100vw-2rem)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-primary data-[type=success]:!border-primary/50 data-[type=error]:!border-destructive/55 data-[type=warning]:!border-accent/60 data-[type=info]:!border-primary/50 data-[type=success]:before:bg-primary data-[type=error]:before:bg-destructive data-[type=warning]:before:bg-accent data-[type=info]:before:bg-primary",
           title: "!font-semibold !text-[13.5px] tracking-tight !leading-snug",
           description: "!text-muted-foreground !text-xs !leading-relaxed !mt-0.5",
           actionButton: "!bg-primary !text-primary-foreground !rounded-md !px-3 !py-1.5 !text-xs !font-medium",
@@ -35,5 +37,22 @@ const Toaster = ({ ...props }: ToasterProps) => {
     />
   );
 };
+
+const toast = Object.assign(
+  (message: React.ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
+  {
+    success: (message: React.ReactNode, options?: ExternalToast) => queuedToast("success", message, options),
+    info: (message: React.ReactNode, options?: ExternalToast) => queuedToast("info", message, options),
+    warning: (message: React.ReactNode, options?: ExternalToast) => queuedToast("warning", message, options),
+    error: (message: React.ReactNode, options?: ExternalToast) => queuedToast("error", message, options),
+    loading: (message: React.ReactNode, options?: ExternalToast) => baseToast.loading(message, options),
+    dismiss: baseToast.dismiss,
+    promise: baseToast.promise,
+    custom: baseToast.custom,
+    message: (message: React.ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
+    getHistory: baseToast.getHistory,
+    getToasts: baseToast.getToasts,
+  }
+);
 
 export { Toaster, toast };
