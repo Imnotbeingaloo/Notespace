@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Sparkles, Loader2 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 interface NamePromptDialogProps {
   open: boolean;

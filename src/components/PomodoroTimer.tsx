@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Timer, Play, Pause, RotateCcw, Coffee, Brain, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 type PomodoroPhase = "work" | "break" | "longBreak";
 

@@ -13,7 +13,7 @@ import {
   stripHtmlTags,
 } from "@/lib/file-validation";
 import { extractPdfText } from "@/lib/pdf-extract";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 interface FileUploadProps {
   onInsertMarkdown?: (markdown: string) => void;
@@ -22,7 +22,7 @@ interface FileUploadProps {
 
 export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProps) {
   const { user } = useAuth();
-  const { activeNote, activeNotebookId, updateNote, createNotebook, createNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
+  const { notebooks, activeNote, activeNotebookId, updateNote, createNotebook, createNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
@@ -30,6 +30,17 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
   if (!activeNote || !activeNotebookId) return null;
 
   const attachments = activeNote.attachments || [];
+
+  const uniqueNotebookName = (base: string) => {
+    const existing = new Set(notebooks.map((n) => n.name.trim().toLowerCase()));
+    let candidate = base;
+    let i = 2;
+    while (existing.has(candidate.trim().toLowerCase())) {
+      candidate = `${base} ${i}`;
+      i += 1;
+    }
+    return candidate;
+  };
 
   const openPicker = () => {
     // Save the editor caret position BEFORE focus leaves the editor, so the
@@ -75,11 +86,13 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
         try {
           toast.info(`Reading "${file.name}"…`);
           const { text, pageCount, isScanned } = await extractPdfText(file);
+          console.info("[upload-diagnostics] Inline PDF extraction finished", { fileName: file.name, pageCount, isScanned, textLength: text.length });
           if (isScanned || !text.trim()) {
             // No useful text — fall through to binary upload.
             toast.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
           } else if (pageCount > 5) {
-            const baseName = file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported PDF";
+            toast.info(`"${file.name}" has ${pageCount} pages — creating a new notebook note for it.`, { duration: 6000 });
+            const baseName = uniqueNotebookName(file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported PDF");
             const nbId = await createNotebook(baseName);
             if (nbId) {
               const noteId = await createNote(nbId, file.name);

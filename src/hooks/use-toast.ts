@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import { toast as sonnerToast } from "@/components/ui/sonner";
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
 const TOAST_LIMIT = 1;
@@ -135,6 +135,14 @@ function dispatch(action: Action) {
 type Toast = Omit<ToasterToast, "id">;
 
 function toast({ ...props }: Toast) {
+  const description = props.description;
+  const action = props.action as React.ReactNode | undefined;
+  if (props.variant === "destructive") {
+    sonnerToast.error(props.title || "Something went wrong", { description, action });
+  } else {
+    sonnerToast(props.title || "Notification", { description, action });
+  }
+
   const id = genId();
 
   const update = (props: ToasterToast) =>

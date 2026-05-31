@@ -6,8 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import confetti from "canvas-confetti";
-import { toast } from "sonner";
+import { fireNotebookConfetti } from "@/lib/confetti";
+import { toast } from "@/components/ui/sonner";
 
 interface WordCountGoalProps {
   content: string;
@@ -173,16 +173,7 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
       saveStreak(newStreak);
       setStreak(newStreak);
 
-      const duration = 2500;
-      const end = Date.now() + duration;
-      const colors = ["#2dd4bf", "#14b8a6", "#0d9488", "#fbbf24", "#f59e0b", "#a78bfa"];
-      const frame = () => {
-        confetti({ particleCount: 6, angle: 60, spread: 75, origin: { x: 0, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: true });
-        confetti({ particleCount: 6, angle: 120, spread: 75, origin: { x: 1, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: true });
-        confetti({ particleCount: 5, spread: 130, startVelocity: 50, origin: { x: 0.5, y: 0.15 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: true });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      };
-      frame();
+      fireNotebookConfetti("word-goal");
       toast.success(`🎯 Daily goal reached! ${goal.toLocaleString()} words written today.`);
     }
   }, [isComplete]);

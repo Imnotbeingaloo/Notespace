@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, BookOpen, FolderPlus, CheckCircle2, AlertCircle, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -27,11 +27,12 @@ interface SidebarUploadDialogProps {
   open: boolean;
   file: File | null;
   onClose: () => void;
+  onProcessingChange?: (processing: boolean) => void;
 }
 
 type Stage = "choose" | "uploading" | "done" | "error";
 
-export function SidebarUploadDialog({ open, file, onClose }: SidebarUploadDialogProps) {
+export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }: SidebarUploadDialogProps) {
   const { user } = useAuth();
   const { notebooks, createNotebook, createNote, updateNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
   const [stage, setStage] = useState<Stage>("choose");
@@ -39,6 +40,15 @@ export function SidebarUploadDialog({ open, file, onClose }: SidebarUploadDialog
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [picking, setPicking] = useState<"new" | "existing" | null>(null);
+
+  useEffect(() => {
+    onProcessingChange?.(stage === "uploading");
+    return () => onProcessingChange?.(false);
+  }, [stage, onProcessingChange]);
+
+  useEffect(() => {
+    if (!open) onProcessingChange?.(false);
+  }, [open, onProcessingChange]);
 
   useEffect(() => {
     if (open && file) {
@@ -65,6 +75,17 @@ export function SidebarUploadDialog({ open, file, onClose }: SidebarUploadDialog
     () => activeNotebooks.filter((n) => n.name.toLowerCase().includes(search.toLowerCase())),
     [activeNotebooks, search]
   );
+
+  function uniqueNotebookName(base: string) {
+    const existing = new Set(activeNotebooks.map((n) => n.name.trim().toLowerCase()));
+    let candidate = base;
+    let i = 2;
+    while (existing.has(candidate.trim().toLowerCase())) {
+      candidate = `${base} ${i}`;
+      i += 1;
+    }
+    return candidate;
+  }
 
   if (!file) return null;
 
@@ -123,6 +144,10 @@ export function SidebarUploadDialog({ open, file, onClose }: SidebarUploadDialog
     if (!file) throw new Error("No file.");
     setProgress(20);
     const { text, pageCount, isScanned } = await extractPdfText(file, (p) => setProgress(20 + Math.round(p * 0.6)));
+    console.info("[upload-diagnostics] PDF extraction finished", { fileName: file.name, pageCount, isScanned, textLength: text.length });
+    if (pageCount > 5) {
+      toast.info(`"${file.name}" has ${pageCount} pages — importing it as a full notebook note.`, { duration: 6000 });
+    }
     if (isScanned || !text.trim()) {
       // Fall back to attaching the binary if we couldn't read it.
       await uploadBinary(targetNotebookId, targetNoteId);
@@ -151,7 +176,7 @@ export function SidebarUploadDialog({ open, file, onClose }: SidebarUploadDialog
     setStage("uploading");
     setProgress(5);
     try {
-      const baseName = file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported";
+      const baseName = uniqueNotebookName(file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported");
       const newNbId = await createNotebook(baseName);
       if (!newNbId) throw new Error("Could not create notebook.");
       const newNoteId = await createNote(newNbId, file.name);
