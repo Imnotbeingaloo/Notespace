@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, BookOpen, FolderPlus, CheckCircle2, AlertCircle, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";

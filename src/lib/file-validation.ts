@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB — attach-files inside a note (covers small videos / PDFs)
 const MAX_SIDEBAR_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB — sidebar upload

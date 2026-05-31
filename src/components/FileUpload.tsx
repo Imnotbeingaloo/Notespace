@@ -13,7 +13,7 @@ import {
   stripHtmlTags,
 } from "@/lib/file-validation";
 import { extractPdfText } from "@/lib/pdf-extract";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 interface FileUploadProps {
   onInsertMarkdown?: (markdown: string) => void;
