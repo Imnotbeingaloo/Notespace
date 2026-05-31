@@ -954,6 +954,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         open={!!pendingUploadFile}
         file={pendingUploadFile}
         onClose={() => setPendingUploadFile(null)}
+        onProcessingChange={setSidebarUploadProcessing}
       />
 
       {/* Create Notebook Modal */}
