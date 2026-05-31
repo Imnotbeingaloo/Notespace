@@ -155,15 +155,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
       if (shouldCelebrate) {
         celebrated.add(plan.id);
         saveCelebratedTaskIds(celebrated);
-        const colors = ["hsl(142, 71%, 45%)", "hsl(48, 96%, 53%)", "hsl(262, 83%, 58%)", "hsl(0, 84%, 60%)", "hsl(174, 72%, 56%)"];
-        const end = Date.now() + 1800;
-        const frame = () => {
-          confetti({ particleCount: 6, angle: 60, spread: 75, origin: { x: 0, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: true });
-          confetti({ particleCount: 6, angle: 120, spread: 75, origin: { x: 1, y: 0.85 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: true });
-          confetti({ particleCount: 5, spread: 130, startVelocity: 50, origin: { x: 0.5, y: 0.15 }, colors, zIndex: 99999, scalar: 1.1, disableForReducedMotion: true });
-          if (Date.now() < end) requestAnimationFrame(frame);
-        };
-        frame();
+        fireNotebookConfetti("study-planner");
       }
     }
     window.dispatchEvent(new CustomEvent("study-plans-changed"));
