@@ -1023,21 +1023,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           }
         }}
       />
-
-      {/* Upload progress dialog */}
-      <Dialog open={sidebarUploading}>
-        <DialogContent className="sm:max-w-sm" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              Uploading files…
-            </DialogTitle>
-            <DialogDescription>
-              Validating and saving your files. Allowed: images, PDF, DOC/DOCX, XLSX, TXT, MD, CSV, JSON. Max 10 MB each. HTML, SVG, scripts and archives are blocked for safety.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </motion.aside>
   );
 }
