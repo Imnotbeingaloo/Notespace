@@ -1,6 +1,7 @@
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast as baseToast } from "sonner";
 import type { ExternalToast } from "sonner";
+import type { ReactNode } from "react";
 import { queuedToast, MAX_VISIBLE_TOASTS } from "@/lib/toast-queue";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
@@ -39,17 +40,17 @@ const Toaster = ({ ...props }: ToasterProps) => {
 };
 
 const toast = Object.assign(
-  (message: React.ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
+  (message: ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
   {
-    success: (message: React.ReactNode, options?: ExternalToast) => queuedToast("success", message, options),
-    info: (message: React.ReactNode, options?: ExternalToast) => queuedToast("info", message, options),
-    warning: (message: React.ReactNode, options?: ExternalToast) => queuedToast("warning", message, options),
-    error: (message: React.ReactNode, options?: ExternalToast) => queuedToast("error", message, options),
-    loading: (message: React.ReactNode, options?: ExternalToast) => baseToast.loading(message, options),
+    success: (message: ReactNode, options?: ExternalToast) => queuedToast("success", message, options),
+    info: (message: ReactNode, options?: ExternalToast) => queuedToast("info", message, options),
+    warning: (message: ReactNode, options?: ExternalToast) => queuedToast("warning", message, options),
+    error: (message: ReactNode, options?: ExternalToast) => queuedToast("error", message, options),
+    loading: (message: ReactNode, options?: ExternalToast) => baseToast.loading(message, options),
     dismiss: baseToast.dismiss,
     promise: baseToast.promise,
     custom: baseToast.custom,
-    message: (message: React.ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
+    message: (message: ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
     getHistory: baseToast.getHistory,
     getToasts: baseToast.getToasts,
   }
