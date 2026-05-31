@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, Loader2, RotateCcw, Tag, CalendarDays, X, Settings } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, RotateCcw, Tag, CalendarDays, X, Settings } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { ScratchIcon } from "@/components/ScratchIcon";
@@ -20,7 +20,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { SidebarUploadDialog } from "@/components/SidebarUploadDialog";
 
 interface AppSidebarProps {
@@ -82,8 +81,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(null);
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
   const sidebarUploadRef = useRef<HTMLInputElement>(null);
-  const [sidebarUploading, setSidebarUploading] = useState(false);
   const [pendingUploadFile, setPendingUploadFile] = useState<File | null>(null);
+  const [sidebarUploadProcessing, setSidebarUploadProcessing] = useState(false);
 
   const [editingNotebook, setEditingNotebook] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
@@ -307,12 +306,21 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           {/* Actions */}
           <div className="flex flex-col gap-0.5 mb-2">
             <button
-              onClick={() => sidebarUploadRef.current?.click()}
+              onClick={() => !sidebarUploadProcessing && sidebarUploadRef.current?.click()}
+              disabled={sidebarUploadProcessing}
               title="Upload a file (PDF, EPUB, DOCX, TXT, MD, CSV, JSON, images — up to 1 GB)."
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn"
+              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn disabled:cursor-wait disabled:opacity-70"
             >
-              <Upload className="h-3.5 w-3.5" />
-              Upload
+              {sidebarUploadProcessing ? (
+                <span className="inline-flex h-3.5 w-3.5 items-center justify-center gap-0.5" aria-hidden="true">
+                  <span className="h-1 w-1 rounded-full bg-current animate-bounce [animation-delay:-0.24s]" />
+                  <span className="h-1 w-1 rounded-full bg-current animate-bounce [animation-delay:-0.12s]" />
+                  <span className="h-1 w-1 rounded-full bg-current animate-bounce" />
+                </span>
+              ) : (
+                <Upload className="h-3.5 w-3.5" />
+              )}
+              {sidebarUploadProcessing ? "Processing" : "Upload"}
             </button>
             <button
               onClick={() => setNewNotebookOpen(true)}
@@ -352,7 +360,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <input
             ref={sidebarUploadRef}
             type="file"
-            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.epub,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,image/*,application/pdf,application/epub+zip,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.epub,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,.mp4,.mov,.webm,image/*,video/mp4,video/quicktime,video/webm,application/pdf,application/epub+zip,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             className="hidden"
             onChange={handleSidebarUpload}
           />
