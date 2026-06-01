@@ -62,6 +62,7 @@ const App = () => (
           <AuthProvider>
             <ScrollToTop />
             <ThemeController />
+            <PaperStyleTransitionOverlay />
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/app" element={<AppPage />} />
