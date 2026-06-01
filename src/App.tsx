@@ -18,6 +18,18 @@ import NotFound from "./pages/NotFound";
 import { lazy, Suspense } from "react";
 const SharedNotePage = lazy(() => import("./pages/SharedNote"));
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { usePaperStyleTransition } from "@/hooks/use-paper-style";
+import { LoadingScreen } from "@/components/LoadingScreen";
+
+function PaperStyleTransitionOverlay() {
+  const transitioning = usePaperStyleTransition();
+  if (!transitioning) return null;
+  return (
+    <div className="fixed inset-0 z-[2147483646] bg-background/95 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200">
+      <LoadingScreen label="Switching paper style…" />
+    </div>
+  );
+}
 
 const queryClient = new QueryClient();
 
@@ -50,6 +62,7 @@ const App = () => (
           <AuthProvider>
             <ScrollToTop />
             <ThemeController />
+            <PaperStyleTransitionOverlay />
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/app" element={<AppPage />} />

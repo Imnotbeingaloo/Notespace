@@ -352,7 +352,7 @@
 
 /* Classic ruled-notebook paper style (opt-in via Settings → Preferences) */
 .notebook-paper {
-  --paper-bg: hsl(40 45% 96%);
+  --paper-bg: transparent;
   --paper-rule: hsl(210 75% 55% / 0.32);
   --paper-margin: hsl(0 70% 55% / 0.55);
   background-color: var(--paper-bg);
@@ -372,15 +372,19 @@
   background-repeat: no-repeat, repeat;
   background-size: 100% 100%, 100% 2rem;
   background-position: 0 0, 0 0;
+  background-attachment: local, local;
   padding-left: 4rem !important;
   padding-top: 0 !important;
+  padding-right: 0 !important;
+  margin: 0 !important;
   line-height: 2rem !important;
   border-radius: 0;
-  min-height: calc(100vh - 180px);
+  min-height: 100%;
+  width: 100%;
 }
 .dark .notebook-paper {
-  --paper-bg: hsl(220 22% 14%);
-  --paper-rule: hsl(210 90% 70% / 0.28);
+  --paper-bg: transparent;
+  --paper-rule: hsl(210 90% 70% / 0.32);
   --paper-margin: hsl(0 85% 65% / 0.55);
 }
 .notebook-paper p,

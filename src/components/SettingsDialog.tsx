@@ -36,6 +36,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   useEffect(() => { setName(profile?.display_name ?? ""); }, [profile?.display_name]);
 
   // Password (inside Personal now)
+  const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [pwSaving, setPwSaving] = useState(false);
@@ -67,9 +68,22 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
       toast.error(`You can change your password again in ${passwordCooldownDays} day${passwordCooldownDays === 1 ? "" : "s"}.`);
       return;
     }
-    if (newPw.length < 6) { toast.error("Password must be at least 6 characters"); return; }
+    if (!currentPw) { toast.error("Enter your current password"); return; }
+    if (newPw.length < 6) { toast.error("New password must be at least 6 characters"); return; }
     if (newPw !== confirmPw) { toast.error("Passwords don't match"); return; }
+    if (newPw === currentPw) { toast.error("New password must be different from current"); return; }
+    if (!user?.email) { toast.error("No email on account"); return; }
     setPwSaving(true);
+    // Verify current password via reauth
+    const { error: signInErr } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPw,
+    });
+    if (signInErr) {
+      setPwSaving(false);
+      toast.error("Current password is incorrect");
+      return;
+    }
     const { error } = await supabase.auth.updateUser({ password: newPw });
     if (error) {
       setPwSaving(false);
@@ -78,7 +92,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     }
     await markPasswordChanged();
     setPwSaving(false);
-    setNewPw(""); setConfirmPw("");
+    setCurrentPw(""); setNewPw(""); setConfirmPw("");
     toast.success("Password changed. Next change available in 30 days.");
   };
 
@@ -187,6 +201,18 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </div>
                   )}
                   <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Current password</label>
+                    <input
+                      type="password"
+                      value={currentPw}
+                      onChange={(e) => setCurrentPw(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      disabled={!canChangePassword}
+                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                    />
+                  </div>
+                  <div>
                     <label className="block text-sm font-medium text-foreground mb-1.5">New password</label>
                     <input
                       type="password"
@@ -194,6 +220,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                       onChange={(e) => setNewPw(e.target.value)}
                       minLength={6}
                       placeholder="••••••••"
+                      autoComplete="new-password"
                       disabled={!canChangePassword}
                       className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                     />
@@ -212,7 +239,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   </div>
                   <button
                     onClick={handleChangePassword}
-                    disabled={!canChangePassword || pwSaving || !newPw || !confirmPw}
+                    disabled={!canChangePassword || pwSaving || !currentPw || !newPw || !confirmPw}
                     className="px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
                     {pwSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
