@@ -13,7 +13,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       duration={3500}
       theme={theme as ToasterProps["theme"]}
-      position="top-right"
+      position="bottom-right"
       closeButton
       visibleToasts={MAX_VISIBLE_TOASTS}
       gap={12}
@@ -24,13 +24,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
         unstyled: false,
         classNames: {
           toast:
-            "group pointer-events-auto relative !rounded-xl !border !border-border/80 !bg-card !text-card-foreground !shadow-2xl !px-4 !py-3 !gap-3 !font-sans !text-sm !w-[360px] max-w-[calc(100vw-2rem)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-primary data-[type=success]:!border-primary/50 data-[type=error]:!border-destructive/55 data-[type=warning]:!border-accent/60 data-[type=info]:!border-primary/50 data-[type=success]:before:bg-primary data-[type=error]:before:bg-destructive data-[type=warning]:before:bg-accent data-[type=info]:before:bg-primary",
+            "group pointer-events-auto relative !rounded-xl !border !border-border/80 !bg-card !text-card-foreground !shadow-2xl !pl-4 !pr-10 !py-3 !gap-3 !font-sans !text-sm !w-[360px] max-w-[calc(100vw-2rem)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-primary data-[type=success]:!border-primary/50 data-[type=error]:!border-destructive/55 data-[type=warning]:!border-accent/60 data-[type=info]:!border-primary/50 data-[type=success]:before:bg-primary data-[type=error]:before:bg-destructive data-[type=warning]:before:bg-accent data-[type=info]:before:bg-primary",
           title: "!font-semibold !text-[13.5px] tracking-tight !leading-snug",
           description: "!text-muted-foreground !text-xs !leading-relaxed !mt-0.5",
           actionButton: "!bg-primary !text-primary-foreground !rounded-md !px-3 !py-1.5 !text-xs !font-medium",
           cancelButton: "!bg-muted !text-muted-foreground !rounded-md",
           closeButton:
-            "!bg-card !border !border-border/70 !text-muted-foreground hover:!text-foreground !rounded-full !left-auto !right-2 !top-2 !h-5 !w-5",
+            "!bg-card !border !border-border/80 !text-muted-foreground hover:!text-foreground hover:!bg-muted !rounded-full !left-auto !right-3 !top-1/2 !-translate-y-1/2 !h-7 !w-7 !flex !items-center !justify-center !transition-colors focus-visible:!outline-none focus-visible:!ring-2 focus-visible:!ring-ring [&>svg]:!h-3.5 [&>svg]:!w-3.5",
           icon: "!shrink-0 data-[type=success]:!text-emerald-500 data-[type=error]:!text-rose-500 data-[type=warning]:!text-amber-500 data-[type=info]:!text-sky-500",
         },
       }}
