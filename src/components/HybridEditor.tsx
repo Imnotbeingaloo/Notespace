@@ -87,8 +87,11 @@ function markdownToHtml(md: string): string {
   const normalized = md.replace(/&#8203;\u200B/g, "\u200B");
   const raw = marked.parse(normalized, { async: false }) as string;
   const cleaned = DOMPurify.sanitize(raw, { ADD_ATTR: ["target"] });
-  // Replace paragraphs that contain only the zero-width char with explicit <br> blank lines.
-  return cleaned.replace(/<p>\s*\u200B\s*<\/p>/g, "<p><br></p>");
+  // Replace paragraphs that contain only zero-width chars (one or many) with
+  // explicit <br> blank lines so consecutive Enters survive a round trip.
+  return cleaned
+    .replace(/<p>(?:\s|\u200B)+<\/p>/g, "<p><br></p>")
+    .replace(/<p>\s*(?:\u200B\s*)+<\/p>/g, "<p><br></p>");
 }
 
 function htmlToMarkdown(html: string): string {
