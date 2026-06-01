@@ -261,8 +261,13 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       emitChange();
     }, [emitChange]);
 
+    // When notebook-paper is active, drop the wrapper's horizontal padding so the
+    // ruled lines and red margin fill the writing area edge-to-edge.
+    const wrapperClass = paperStyle
+      ? "w-full min-h-[400px] relative"
+      : "w-full px-3 sm:px-8 py-4 sm:py-6 min-h-[400px] relative";
     return (
-      <div className="w-full px-3 sm:px-8 py-4 sm:py-6 min-h-[400px] relative">
+      <div className={wrapperClass}>
         <FloatingToolbar
           selectionRect={selectionRect}
           onAction={handleToolbarAction}
