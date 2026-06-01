@@ -60,12 +60,18 @@ function createTurndown() {
     replacement: (content) => `~~${content}~~`,
   });
 
-  // Treat paragraphs that contain only the zero-width sentinel as blank lines.
+  // Treat any paragraph- or div-level node that contains only zero-width / nbsp
+  // characters (or an empty <br>) as an intentional blank line. This guarantees
+  // that pressing Enter to create vertical space survives the markdown round-trip.
   td.addRule("blank-paragraph", {
     filter: (node) => {
-      if (node.nodeName !== "P") return false;
+      if (node.nodeName !== "P" && node.nodeName !== "DIV") return false;
+      const children = Array.from(node.childNodes);
+      const onlyBr = children.length > 0 && children.every(
+        (c) => c.nodeName === "BR" || (c.nodeType === 3 && !((c.textContent || "").replace(/\u200B|\u00A0|\s/g, "")))
+      );
       const text = (node.textContent || "").replace(/\u200B|\u00A0/g, "").trim();
-      return text.length === 0;
+      return onlyBr || text.length === 0;
     },
     replacement: () => `\n\n${BLANK_LINE_TOKEN}\n\n`,
   });
