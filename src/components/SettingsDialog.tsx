@@ -201,6 +201,18 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </div>
                   )}
                   <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Current password</label>
+                    <input
+                      type="password"
+                      value={currentPw}
+                      onChange={(e) => setCurrentPw(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      disabled={!canChangePassword}
+                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                    />
+                  </div>
+                  <div>
                     <label className="block text-sm font-medium text-foreground mb-1.5">New password</label>
                     <input
                       type="password"
@@ -208,6 +220,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                       onChange={(e) => setNewPw(e.target.value)}
                       minLength={6}
                       placeholder="••••••••"
+                      autoComplete="new-password"
                       disabled={!canChangePassword}
                       className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                     />
