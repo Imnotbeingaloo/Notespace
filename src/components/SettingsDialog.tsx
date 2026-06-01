@@ -239,7 +239,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   </div>
                   <button
                     onClick={handleChangePassword}
-                    disabled={!canChangePassword || pwSaving || !newPw || !confirmPw}
+                    disabled={!canChangePassword || pwSaving || !currentPw || !newPw || !confirmPw}
                     className="px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                   >
                     {pwSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
