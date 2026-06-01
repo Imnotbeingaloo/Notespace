@@ -68,9 +68,22 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
       toast.error(`You can change your password again in ${passwordCooldownDays} day${passwordCooldownDays === 1 ? "" : "s"}.`);
       return;
     }
-    if (newPw.length < 6) { toast.error("Password must be at least 6 characters"); return; }
+    if (!currentPw) { toast.error("Enter your current password"); return; }
+    if (newPw.length < 6) { toast.error("New password must be at least 6 characters"); return; }
     if (newPw !== confirmPw) { toast.error("Passwords don't match"); return; }
+    if (newPw === currentPw) { toast.error("New password must be different from current"); return; }
+    if (!user?.email) { toast.error("No email on account"); return; }
     setPwSaving(true);
+    // Verify current password via reauth
+    const { error: signInErr } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPw,
+    });
+    if (signInErr) {
+      setPwSaving(false);
+      toast.error("Current password is incorrect");
+      return;
+    }
     const { error } = await supabase.auth.updateUser({ password: newPw });
     if (error) {
       setPwSaving(false);
@@ -79,7 +92,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     }
     await markPasswordChanged();
     setPwSaving(false);
-    setNewPw(""); setConfirmPw("");
+    setCurrentPw(""); setNewPw(""); setConfirmPw("");
     toast.success("Password changed. Next change available in 30 days.");
   };
 
