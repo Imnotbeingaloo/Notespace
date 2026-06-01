@@ -16,10 +16,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
       position="bottom-right"
       closeButton
       visibleToasts={MAX_VISIBLE_TOASTS}
-      gap={12}
+      gap={14}
       expand
       offset={{ top: 20, right: 20, bottom: 20, left: 20 }}
+      mobileOffset={{ bottom: 16, left: 16, right: 16, top: 16 }}
       className="toaster group"
+      aria-label="Notifications"
+      hotkey={["altKey", "KeyT"]}
       toastOptions={{
         unstyled: false,
         classNames: {
