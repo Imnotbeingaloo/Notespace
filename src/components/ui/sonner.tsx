@@ -16,15 +16,18 @@ const Toaster = ({ ...props }: ToasterProps) => {
       position="bottom-right"
       closeButton
       visibleToasts={MAX_VISIBLE_TOASTS}
-      gap={12}
+      gap={14}
       expand
       offset={{ top: 20, right: 20, bottom: 20, left: 20 }}
+      mobileOffset={{ bottom: 16, left: 16, right: 16, top: 16 }}
       className="toaster group"
+      aria-label="Notifications"
+      hotkey={["altKey", "KeyT"]}
       toastOptions={{
         unstyled: false,
         classNames: {
           toast:
-            "group pointer-events-auto relative !rounded-xl !border !border-border/80 !bg-card !text-card-foreground !shadow-2xl !pl-4 !pr-10 !py-3 !gap-3 !font-sans !text-sm !w-[360px] max-w-[calc(100vw-2rem)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-primary data-[type=success]:!border-primary/50 data-[type=error]:!border-destructive/55 data-[type=warning]:!border-accent/60 data-[type=info]:!border-primary/50 data-[type=success]:before:bg-primary data-[type=error]:before:bg-destructive data-[type=warning]:before:bg-accent data-[type=info]:before:bg-primary",
+            "group pointer-events-auto relative !rounded-xl !border !border-border/80 !bg-card !text-card-foreground !shadow-2xl !pl-4 !pr-10 !py-3 !gap-3 !font-sans !text-sm !w-[min(360px,calc(100vw-2rem))] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-primary data-[type=success]:!border-primary/50 data-[type=error]:!border-destructive/55 data-[type=warning]:!border-accent/60 data-[type=info]:!border-primary/50 data-[type=success]:before:bg-primary data-[type=error]:before:bg-destructive data-[type=warning]:before:bg-accent data-[type=info]:before:bg-primary",
           title: "!font-semibold !text-[13.5px] tracking-tight !leading-snug",
           description: "!text-muted-foreground !text-xs !leading-relaxed !mt-0.5",
           actionButton: "!bg-primary !text-primary-foreground !rounded-md !px-3 !py-1.5 !text-xs !font-medium",

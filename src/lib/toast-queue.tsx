@@ -2,7 +2,7 @@ import * as React from "react";
 import { toast as sonnerToast, type ExternalToast } from "sonner";
 
 const MAX_VISIBLE_TOASTS = 4;
-const TOAST_SPACING_MS = 120;
+const TOAST_SPACING_MS = 60;
 
 type ToastKind = "message" | "success" | "info" | "warning" | "error" | "loading";
 

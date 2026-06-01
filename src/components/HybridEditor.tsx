@@ -60,12 +60,18 @@ function createTurndown() {
     replacement: (content) => `~~${content}~~`,
   });
 
-  // Treat paragraphs that contain only the zero-width sentinel as blank lines.
+  // Treat any paragraph- or div-level node that contains only zero-width / nbsp
+  // characters (or an empty <br>) as an intentional blank line. This guarantees
+  // that pressing Enter to create vertical space survives the markdown round-trip.
   td.addRule("blank-paragraph", {
     filter: (node) => {
-      if (node.nodeName !== "P") return false;
+      if (node.nodeName !== "P" && node.nodeName !== "DIV") return false;
+      const children = Array.from(node.childNodes);
+      const onlyBr = children.length > 0 && children.every(
+        (c) => c.nodeName === "BR" || (c.nodeType === 3 && !((c.textContent || "").replace(/\u200B|\u00A0|\s/g, "")))
+      );
       const text = (node.textContent || "").replace(/\u200B|\u00A0/g, "").trim();
-      return text.length === 0;
+      return onlyBr || text.length === 0;
     },
     replacement: () => `\n\n${BLANK_LINE_TOKEN}\n\n`,
   });
@@ -81,8 +87,11 @@ function markdownToHtml(md: string): string {
   const normalized = md.replace(/&#8203;\u200B/g, "\u200B");
   const raw = marked.parse(normalized, { async: false }) as string;
   const cleaned = DOMPurify.sanitize(raw, { ADD_ATTR: ["target"] });
-  // Replace paragraphs that contain only the zero-width char with explicit <br> blank lines.
-  return cleaned.replace(/<p>\s*\u200B\s*<\/p>/g, "<p><br></p>");
+  // Replace paragraphs that contain only zero-width chars (one or many) with
+  // explicit <br> blank lines so consecutive Enters survive a round trip.
+  return cleaned
+    .replace(/<p>(?:\s|\u200B)+<\/p>/g, "<p><br></p>")
+    .replace(/<p>\s*(?:\u200B\s*)+<\/p>/g, "<p><br></p>");
 }
 
 function htmlToMarkdown(html: string): string {
@@ -261,8 +270,13 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       emitChange();
     }, [emitChange]);
 
+    // When notebook-paper is active, drop the wrapper's horizontal padding so the
+    // ruled lines and red margin fill the writing area edge-to-edge.
+    const wrapperClass = paperStyle
+      ? "w-full min-h-[400px] relative"
+      : "w-full px-3 sm:px-8 py-4 sm:py-6 min-h-[400px] relative";
     return (
-      <div className="w-full px-3 sm:px-8 py-4 sm:py-6 min-h-[400px] relative">
+      <div className={wrapperClass}>
         <FloatingToolbar
           selectionRect={selectionRect}
           onAction={handleToolbarAction}
