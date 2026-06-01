@@ -3,23 +3,29 @@ import { useEffect, useState } from "react";
 const KEY = "notebook-paper-style";
 const EVT = "notebook-paper-style-changed";
 const EVT_TRANSITION = "notebook-paper-style-transition";
+const MIN_OVERLAY_MS = 450; // ensures the overlay never just "flashes"
+
+let transitionEndTimer: number | null = null;
 
 export function getPaperStyle(): boolean {
   try { return localStorage.getItem(KEY) === "true"; } catch { return false; }
 }
 
 export function setPaperStyle(enabled: boolean) {
-  // Fire a transition event first so listeners can show a loading screen.
+  // Cancel any pending "end transition" so rapid toggles don't flicker.
+  if (transitionEndTimer !== null) {
+    window.clearTimeout(transitionEndTimer);
+    transitionEndTimer = null;
+  }
   window.dispatchEvent(new CustomEvent(EVT_TRANSITION, { detail: true }));
-  // Defer the actual change a tick so the overlay paints before re-render.
   window.setTimeout(() => {
     localStorage.setItem(KEY, String(enabled));
     window.dispatchEvent(new CustomEvent(EVT, { detail: enabled }));
-    // End transition shortly after the new style applies.
-    window.setTimeout(() => {
+    transitionEndTimer = window.setTimeout(() => {
+      transitionEndTimer = null;
       window.dispatchEvent(new CustomEvent(EVT_TRANSITION, { detail: false }));
-    }, 600);
-  }, 50);
+    }, MIN_OVERLAY_MS);
+  }, 30);
 }
 
 export function usePaperStyle() {

@@ -23,10 +23,36 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 
 function PaperStyleTransitionOverlay() {
   const transitioning = usePaperStyleTransition();
+  // Block background scroll and swallow stray key events while the overlay is up.
+  useEffect(() => {
+    if (!transitioning) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      // Don't let Escape/Tab leak to the editor underneath.
+      if (e.key === "Escape" || e.key === "Tab") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey, true);
+    };
+  }, [transitioning]);
   if (!transitioning) return null;
   return (
-    <div className="fixed inset-0 z-[2147483646] bg-background/95 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Switching notebook paper style"
+      tabIndex={-1}
+      className="fixed inset-0 z-[2147483646] bg-background/95 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200 outline-none"
+    >
       <LoadingScreen label="Switching paper style…" />
+      <span className="sr-only">Applying the new notebook paper style, please wait.</span>
     </div>
   );
 }

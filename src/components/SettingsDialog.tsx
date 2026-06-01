@@ -64,36 +64,26 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const canChangePassword = passwordCooldownDays === 0;
 
   const handleChangePassword = async () => {
-    if (!canChangePassword) {
-      toast.error(`You can change your password again in ${passwordCooldownDays} day${passwordCooldownDays === 1 ? "" : "s"}.`);
-      return;
-    }
-    if (!currentPw) { toast.error("Enter your current password"); return; }
-    if (newPw.length < 6) { toast.error("New password must be at least 6 characters"); return; }
-    if (newPw !== confirmPw) { toast.error("Passwords don't match"); return; }
-    if (newPw === currentPw) { toast.error("New password must be different from current"); return; }
-    if (!user?.email) { toast.error("No email on account"); return; }
     setPwSaving(true);
-    // Verify current password via reauth
-    const { error: signInErr } = await supabase.auth.signInWithPassword({
-      email: user.email,
-      password: currentPw,
+    const { changePassword } = await import("@/lib/password-change");
+    const result = await changePassword({
+      email: user?.email,
+      currentPw,
+      newPw,
+      confirmPw,
+      canChange: canChangePassword,
+      cooldownDays: passwordCooldownDays,
+      signInWithPassword: (args) => supabase.auth.signInWithPassword(args),
+      updateUser: (args) => supabase.auth.updateUser(args),
+      markPasswordChanged,
     });
-    if (signInErr) {
-      setPwSaving(false);
-      toast.error("Current password is incorrect");
-      return;
-    }
-    const { error } = await supabase.auth.updateUser({ password: newPw });
-    if (error) {
-      setPwSaving(false);
-      toast.error(error.message);
-      return;
-    }
-    await markPasswordChanged();
     setPwSaving(false);
+    if (!result.ok) {
+      toast.error(result.message);
+      return;
+    }
     setCurrentPw(""); setNewPw(""); setConfirmPw("");
-    toast.success("Password changed. Next change available in 30 days.");
+    toast.success(result.message);
   };
 
   const handleExportAll = async () => {
