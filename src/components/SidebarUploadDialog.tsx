@@ -148,7 +148,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     }
     if (isPdfFile(f)) {
       onProgress(10);
-      const { text, pageCount, isScanned } = await extractPdfText(f, (p) => onProgress(10 + Math.round(p * 80)));
+      const { text, pageCount, isScanned } = await extractPdfText(f, (p) => onProgress(10 + Math.round(p * 0.8)));
       console.info("[upload-diagnostics] PDF prepared", { name: f.name, pageCount, isScanned, textLength: text.length });
       if (isScanned || !text.trim()) {
         return prepareBinary(f, userId, onProgress);
