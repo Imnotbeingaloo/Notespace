@@ -23,7 +23,7 @@ describe("changePassword reauth flow", () => {
     const res = await changePassword(deps);
 
     expect(res.ok).toBe(false);
-    if (!res.ok) {
+    if (res.ok === false) {
       expect(res.field).toBe("current");
       expect(res.message).toMatch(/incorrect/i);
     }
@@ -37,7 +37,7 @@ describe("changePassword reauth flow", () => {
     });
     const res = await changePassword(deps);
     expect(res.ok).toBe(false);
-    if (!res.ok) expect(res.message).toMatch(/too many attempts/i);
+    if (res.ok === false) expect(res.message).toMatch(/too many attempts/i);
   });
 
   it("allows update only after successful reauth", async () => {
@@ -67,7 +67,7 @@ describe("changePassword reauth flow", () => {
     const signInWithPassword = vi.fn(async () => ({ error: null }));
     const res = await changePassword(baseDeps({ currentPw: "", signInWithPassword, updateUser }));
     expect(res.ok).toBe(false);
-    if (!res.ok) expect(res.field).toBe("current");
+    if (res.ok === false) expect(res.field).toBe("current");
     expect(signInWithPassword).not.toHaveBeenCalled();
     expect(updateUser).not.toHaveBeenCalled();
   });
@@ -78,20 +78,20 @@ describe("changePassword reauth flow", () => {
       baseDeps({ confirmPw: "different", signInWithPassword })
     );
     expect(res.ok).toBe(false);
-    if (!res.ok) expect(res.field).toBe("confirm");
+    if (res.ok === false) expect(res.field).toBe("confirm");
     expect(signInWithPassword).not.toHaveBeenCalled();
   });
 
   it("rejects reuse of the current password", async () => {
     const res = await changePassword(baseDeps({ newPw: "correct-pass", confirmPw: "correct-pass" }));
     expect(res.ok).toBe(false);
-    if (!res.ok) expect(res.field).toBe("new");
+    if (res.ok === false) expect(res.field).toBe("new");
   });
 
   it("respects the 30-day cooldown", async () => {
     const res = await changePassword(baseDeps({ canChange: false, cooldownDays: 12 }));
     expect(res.ok).toBe(false);
-    if (!res.ok) {
+    if (res.ok === false) {
       expect(res.field).toBe("cooldown");
       expect(res.message).toMatch(/12 days/);
     }
@@ -103,6 +103,6 @@ describe("changePassword reauth flow", () => {
     });
     const res = await changePassword(deps);
     expect(res.ok).toBe(false);
-    if (!res.ok) expect(res.message).toMatch(/data breach/i);
+    if (res.ok === false) expect(res.message).toMatch(/data breach/i);
   });
 });
