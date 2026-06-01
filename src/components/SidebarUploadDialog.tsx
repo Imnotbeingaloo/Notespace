@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, BookOpen, FolderPlus, CheckCircle2, AlertCircle, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "@/components/ui/sonner";
@@ -30,41 +30,79 @@ interface SidebarUploadDialogProps {
   onProcessingChange?: (processing: boolean) => void;
 }
 
-type Stage = "choose" | "uploading" | "done" | "error";
+type Stage = "choose" | "attaching" | "done" | "error";
+
+/**
+ * Pre-processed payload — populated by the background upload that fires as soon
+ * as the user picks a file. By the time they choose a destination, the heavy
+ * work (storage upload OR PDF extraction OR text read) is already finished.
+ */
+interface PreparedPayload {
+  kind: "binary" | "text" | "pdf";
+  body: string;
+  attachments?: { name: string; url: string; path: string; type: string; size: number }[];
+  pageCount?: number;
+}
 
 export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }: SidebarUploadDialogProps) {
   const { user } = useAuth();
   const { notebooks, createNotebook, createNote, updateNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
   const [stage, setStage] = useState<Stage>("choose");
-  const [progress, setProgress] = useState(0);
+  const [bgProgress, setBgProgress] = useState(0);
+  const [bgReady, setBgReady] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [picking, setPicking] = useState<"new" | "existing" | null>(null);
+  const preparedRef = useRef<PreparedPayload | null>(null);
+  const prepErrorRef = useRef<Error | null>(null);
 
   useEffect(() => {
-    onProcessingChange?.(stage === "uploading");
+    onProcessingChange?.(stage === "attaching" || (stage === "choose" && !bgReady));
     return () => onProcessingChange?.(false);
-  }, [stage, onProcessingChange]);
+  }, [stage, bgReady, onProcessingChange]);
 
   useEffect(() => {
     if (!open) onProcessingChange?.(false);
   }, [open, onProcessingChange]);
 
+  // Kick off the upload immediately when the dialog opens with a file.
   useEffect(() => {
-    if (open && file) {
-      // Validate up-front so the user gets a clear error before choosing a destination.
-      if (!validateSidebarFile(file)) {
-        setErrorMsg("This file isn't allowed. See the toast above for details.");
-        setStage("error");
-      } else {
-        setStage("choose");
-        setProgress(0);
-        setErrorMsg(null);
-        setPicking(null);
-        setSearch("");
-      }
+    if (!open || !file || !user) return;
+    if (!validateSidebarFile(file)) {
+      setErrorMsg("This file isn't allowed. See the toast above for details.");
+      setStage("error");
+      return;
     }
-  }, [open, file]);
+    setStage("choose");
+    setPicking(null);
+    setSearch("");
+    setErrorMsg(null);
+    setBgProgress(0);
+    setBgReady(false);
+    preparedRef.current = null;
+    prepErrorRef.current = null;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const payload = await prepareFile(file, user.id, (p) => {
+          if (!cancelled) setBgProgress(p);
+        });
+        if (cancelled) return;
+        preparedRef.current = payload;
+        setBgReady(true);
+        if (payload.kind === "pdf" && (payload.pageCount ?? 0) > 5) {
+          toast.info(`"${file.name}" has ${payload.pageCount} pages — we'll import the full extracted text.`, { duration: 6000 });
+        }
+      } catch (e: any) {
+        if (cancelled) return;
+        prepErrorRef.current = e;
+        setErrorMsg(e?.message || "We couldn't prepare this file.");
+        setStage("error");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [open, file, user]);
 
   const activeNotebooks = useMemo(
     () => notebooks.filter((n) => !n.deleted_at),
@@ -91,102 +129,101 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
 
   const message = friendlyUploadMessage(file);
 
-  async function uploadBinary(targetNotebookId: string, targetNoteId: string) {
-    if (!user || !file) throw new Error("Not signed in.");
-    setProgress(15);
-    const path = buildStoragePath(user.id, targetNoteId, file.name);
+  /** Heavy lifting that happens BEFORE the user has chosen a destination. */
+  async function prepareFile(
+    f: File,
+    userId: string,
+    onProgress: (p: number) => void,
+  ): Promise<PreparedPayload> {
+    if (isTextDocument(f)) {
+      onProgress(20);
+      const text = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(f);
+      });
+      onProgress(100);
+      return { kind: "text", body: `# ${f.name}\n\n${text}\n\n` };
+    }
+    if (isPdfFile(f)) {
+      onProgress(10);
+      const { text, pageCount, isScanned } = await extractPdfText(f, (p) => onProgress(10 + Math.round(p * 80)));
+      console.info("[upload-diagnostics] PDF prepared", { name: f.name, pageCount, isScanned, textLength: text.length });
+      if (isScanned || !text.trim()) {
+        return prepareBinary(f, userId, onProgress);
+      }
+      onProgress(100);
+      return {
+        kind: "pdf",
+        pageCount,
+        body: `# ${f.name}\n\n_Extracted from ${pageCount} page${pageCount === 1 ? "" : "s"}_\n\n${text}\n\n`,
+      };
+    }
+    return prepareBinary(f, userId, onProgress);
+  }
+
+  async function prepareBinary(
+    f: File,
+    userId: string,
+    onProgress: (p: number) => void,
+  ): Promise<PreparedPayload> {
+    onProgress(15);
+    // Stage under a temporary noteId — we'll associate it with the real note when the user picks.
+    const stagingNoteId = `staging-${crypto.randomUUID()}`;
+    const path = buildStoragePath(userId, stagingNoteId, f.name);
     const { error } = await supabase.storage
       .from("note-attachments")
-      .upload(path, file, { upsert: false });
+      .upload(path, f, { upsert: false });
     if (error) throw error;
-    setProgress(70);
+    onProgress(75);
     const { data: signed, error: signErr } = await supabase.storage
       .from("note-attachments")
       .createSignedUrl(path, 60 * 60 * 24 * 7);
     if (signErr || !signed?.signedUrl) {
       throw signErr || new Error("Could not generate a URL for the uploaded file.");
     }
-    setProgress(90);
-    const link = file.type.startsWith("image/")
-      ? `![${file.name}](${signed.signedUrl})`
-      : `[📎 ${file.name}](${signed.signedUrl})`;
-    const body = `# ${file.name}\n\n${link}\n`;
-    await updateNote(targetNotebookId, targetNoteId, {
-      content: body,
-      attachments: [{
-        name: file.name,
-        url: signed.signedUrl,
-        path,
-        type: file.type,
-        size: file.size,
-      }],
-    });
-    setProgress(100);
+    onProgress(100);
+    const link = f.type.startsWith("image/")
+      ? `![${f.name}](${signed.signedUrl})`
+      : `[📎 ${f.name}](${signed.signedUrl})`;
+    return {
+      kind: "binary",
+      body: `# ${f.name}\n\n${link}\n\n\n`,
+      attachments: [{ name: f.name, url: signed.signedUrl, path, type: f.type, size: f.size }],
+    };
   }
 
-  async function uploadTextDoc(targetNotebookId: string, targetNoteId: string) {
-    if (!file) throw new Error("No file.");
-    setProgress(40);
-    const text = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsText(file);
-    });
-    setProgress(85);
+  async function attachPreparedTo(targetNotebookId: string, targetNoteId: string) {
+    const payload = preparedRef.current;
+    if (!payload) throw new Error("Upload isn't ready yet — please try again in a moment.");
     await updateNote(targetNotebookId, targetNoteId, {
-      content: `# ${file.name}\n\n${text}`,
+      content: payload.body,
+      ...(payload.attachments ? { attachments: payload.attachments } : {}),
     });
-    setProgress(100);
-  }
-
-  async function uploadPdfDoc(targetNotebookId: string, targetNoteId: string) {
-    if (!file) throw new Error("No file.");
-    setProgress(20);
-    const { text, pageCount, isScanned } = await extractPdfText(file, (p) => setProgress(20 + Math.round(p * 0.6)));
-    console.info("[upload-diagnostics] PDF extraction finished", { fileName: file.name, pageCount, isScanned, textLength: text.length });
-    if (pageCount > 5) {
-      toast.info(`"${file.name}" has ${pageCount} pages — importing it as a full notebook note.`, { duration: 6000 });
-    }
-    if (isScanned || !text.trim()) {
-      // Fall back to attaching the binary if we couldn't read it.
-      await uploadBinary(targetNotebookId, targetNoteId);
-      return;
-    }
-    setProgress(90);
-    await updateNote(targetNotebookId, targetNoteId, {
-      content: `# ${file.name}\n\n_Extracted from ${pageCount} page${pageCount === 1 ? "" : "s"}_\n\n${text}`,
-    });
-    setProgress(100);
-  }
-
-  async function performUpload(targetNotebookId: string, targetNoteId: string) {
-    if (isTextDocument(file!)) {
-      await uploadTextDoc(targetNotebookId, targetNoteId);
-    } else if (isPdfFile(file!)) {
-      await uploadPdfDoc(targetNotebookId, targetNoteId);
-    } else {
-      await uploadBinary(targetNotebookId, targetNoteId);
-    }
   }
 
   async function handleNewNotebook() {
     if (!file) return;
     setPicking("new");
-    setStage("uploading");
-    setProgress(5);
+    setStage("attaching");
     try {
       const baseName = uniqueNotebookName(file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported");
       const newNbId = await createNotebook(baseName);
       if (!newNbId) throw new Error("Could not create notebook.");
       const newNoteId = await createNote(newNbId, file.name);
       if (!newNoteId) throw new Error("Could not create note.");
-      await performUpload(newNbId, newNoteId);
+      // Wait for prep if user was extra fast.
+      while (!bgReady && !prepErrorRef.current) {
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      if (prepErrorRef.current) throw prepErrorRef.current;
+      await attachPreparedTo(newNbId, newNoteId);
       setActiveNotebookId(newNbId);
       setActiveNoteId(newNoteId);
       setStage("done");
       toast.success(`Added "${file.name}" to a new notebook`);
-      setTimeout(onClose, 900);
+      setTimeout(onClose, 700);
     } catch (e: any) {
       console.error(e);
       setErrorMsg(e?.message || "Upload failed.");
@@ -198,17 +235,20 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
   async function handleExistingNotebook(nbId: string) {
     if (!file) return;
     setPicking("existing");
-    setStage("uploading");
-    setProgress(5);
+    setStage("attaching");
     try {
       const newNoteId = await createNote(nbId, file.name);
       if (!newNoteId) throw new Error("Could not create note.");
-      await performUpload(nbId, newNoteId);
+      while (!bgReady && !prepErrorRef.current) {
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      if (prepErrorRef.current) throw prepErrorRef.current;
+      await attachPreparedTo(nbId, newNoteId);
       setActiveNotebookId(nbId);
       setActiveNoteId(newNoteId);
       setStage("done");
       toast.success(`Added "${file.name}" to existing notebook`);
-      setTimeout(onClose, 900);
+      setTimeout(onClose, 700);
     } catch (e: any) {
       console.error(e);
       setErrorMsg(e?.message || "Upload failed.");
@@ -217,12 +257,14 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     }
   }
 
+  const busy = stage === "attaching";
+
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o && stage !== "uploading") onClose(); }}>
+    <Dialog open={open} onOpenChange={(o) => { if (!o && !busy) onClose(); }}>
       <DialogContent
         className="sm:max-w-md"
-        onPointerDownOutside={(e) => { if (stage === "uploading") e.preventDefault(); }}
-        onEscapeKeyDown={(e) => { if (stage === "uploading") e.preventDefault(); }}
+        onPointerDownOutside={(e) => { if (busy) e.preventDefault(); }}
+        onEscapeKeyDown={(e) => { if (busy) e.preventDefault(); }}
       >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -230,12 +272,34 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
             <span className="truncate">{file.name}</span>
           </DialogTitle>
           <DialogDescription>
-            {stage === "choose" && "Where should this file go?"}
-            {stage === "uploading" && message}
+            {stage === "choose" && (bgReady ? "Ready — where should this go?" : message)}
+            {stage === "attaching" && "Attaching to your notebook…"}
             {stage === "done" && "Done!"}
             {stage === "error" && (errorMsg || "Something went wrong.")}
           </DialogDescription>
         </DialogHeader>
+
+        {/* Background-upload progress bar — visible while prep is running so the user
+            knows the upload is already happening even before they pick a destination. */}
+        {stage === "choose" && !bgReady && (
+          <div className="space-y-1.5 -mt-1">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Uploading in the background
+              </span>
+              <span>{bgProgress}%</span>
+            </div>
+            <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
+              <motion.div
+                className="h-full bg-primary"
+                initial={{ width: 0 }}
+                animate={{ width: `${bgProgress}%` }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              />
+            </div>
+          </div>
+        )}
 
         <AnimatePresence mode="wait">
           {stage === "choose" && picking === null && (
@@ -312,26 +376,16 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
             </motion.div>
           )}
 
-          {stage === "uploading" && (
+          {stage === "attaching" && (
             <motion.div
               key="up"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="space-y-3 py-2"
+              className="flex items-center gap-2 text-sm text-foreground py-2"
             >
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <span>{message}</span>
-              </div>
-              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                <motion.div
-                  className="h-full bg-primary"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                />
-              </div>
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              <span>Attaching to your notebook…</span>
             </motion.div>
           )}
 
@@ -362,7 +416,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={onClose}>Close</Button>
-                <Button size="sm" onClick={() => setStage("choose")}>Try again</Button>
+                <Button size="sm" onClick={() => { setStage("choose"); setBgReady(false); setBgProgress(0); }}>Try again</Button>
               </div>
             </motion.div>
           )}
