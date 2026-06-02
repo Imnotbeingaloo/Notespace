@@ -19,7 +19,7 @@ import { lazy, Suspense } from "react";
 const SharedNotePage = lazy(() => import("./pages/SharedNote"));
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { usePaperStyleTransition } from "@/hooks/use-paper-style";
-import { LoadingScreen } from "@/components/LoadingScreen";
+import { PaperStyleSwitcher } from "@/components/PaperStyleSwitcher";
 
 function PaperStyleTransitionOverlay() {
   const transitioning = usePaperStyleTransition();
