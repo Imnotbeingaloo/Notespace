@@ -267,10 +267,11 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         onEscapeKeyDown={(e) => { if (busy) e.preventDefault(); }}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-primary" />
-            <span className="truncate">{file.name}</span>
+          <DialogTitle className="flex items-center gap-2 pr-8 min-w-0">
+            <FileText className="h-4 w-4 text-primary flex-shrink-0" />
+            <span className="truncate block min-w-0 flex-1">{file.name}</span>
           </DialogTitle>
+
           <DialogDescription>
             {stage === "choose" && (bgReady ? "Ready — where should this go?" : message)}
             {stage === "attaching" && "Attaching to your notebook…"}
