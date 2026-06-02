@@ -499,6 +499,44 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     };
   }, [activeNote?.id, isOverrideActive]);
 
+  // Refresh stale signed URLs (older notes used a 7-day expiry). Files in storage
+  // are permanent — we just regenerate a fresh long-lived signed URL on load.
+  useEffect(() => {
+    if (!activeNote || !activeNotebookId || isOverrideActive) return;
+    const attachments = activeNote.attachments || [];
+    if (!attachments.length) return;
+    let cancelled = false;
+    (async () => {
+      let content = activeNote.content || "";
+      let changed = false;
+      const refreshedAtts: any[] = [];
+      for (const att of attachments) {
+        if (!att?.path) { refreshedAtts.push(att); continue; }
+        const { data, error } = await supabase.storage
+          .from("note-attachments")
+          .createSignedUrl(att.path, 60 * 60 * 24 * 365 * 10);
+        if (error || !data?.signedUrl) { refreshedAtts.push(att); continue; }
+        const fresh = data.signedUrl;
+        if (att.url && att.url !== fresh) {
+          // Replace any occurrence of the old URL in the markdown.
+          if (content.includes(att.url)) {
+            content = content.split(att.url).join(fresh);
+            changed = true;
+          }
+        }
+        refreshedAtts.push({ ...att, url: fresh });
+      }
+      if (cancelled) return;
+      if (changed) {
+        await updateNote(activeNotebookId, activeNote.id, { content, attachments: refreshedAtts });
+        hybridEditorRef.current?.setContent(content);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeNote?.id]);
+
+
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
