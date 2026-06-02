@@ -51,7 +51,7 @@ function PaperStyleTransitionOverlay() {
       tabIndex={-1}
       className="fixed inset-0 z-[2147483646] bg-background/95 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200 outline-none"
     >
-      <LoadingScreen label="Switching paper style…" />
+      <PaperStyleSwitcher />
       <span className="sr-only">Applying the new notebook paper style, please wait.</span>
     </div>
   );
