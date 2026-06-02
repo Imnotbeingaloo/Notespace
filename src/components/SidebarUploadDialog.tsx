@@ -179,7 +179,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     onProgress(75);
     const { data: signed, error: signErr } = await supabase.storage
       .from("note-attachments")
-      .createSignedUrl(path, 60 * 60 * 24 * 7);
+      .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
     if (signErr || !signed?.signedUrl) {
       throw signErr || new Error("Could not generate a URL for the uploaded file.");
     }
