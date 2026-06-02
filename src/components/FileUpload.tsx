@@ -129,7 +129,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
 
         const { data: signedUrlData, error: signErr } = await supabase.storage
           .from("note-attachments")
-          .createSignedUrl(path, 60 * 60 * 24 * 7);
+          .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
         if (signErr || !signedUrlData?.signedUrl) {
           throw signErr || new Error("Could not generate file URL");
         }

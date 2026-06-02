@@ -143,7 +143,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
       if (error) throw error;
       const { data: signedUrlData } = await supabase.storage
         .from("note-attachments")
-        .createSignedUrl(path, 60 * 60 * 24 * 7);
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
       const fileUrl = signedUrlData?.signedUrl || "";
 
       const newAttachments = [

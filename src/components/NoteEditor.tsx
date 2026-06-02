@@ -606,7 +606,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         const path = buildStoragePath(user.id, activeNote.id, file.name);
         const { error } = await supabase.storage.from("note-attachments").upload(path, file);
         if (error) { console.error("Drop upload error:", error); continue; }
-        const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
+        const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
         const fileUrl = signedUrlData?.signedUrl || '';
         newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
         if (file.type.startsWith("image/")) {
