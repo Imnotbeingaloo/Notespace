@@ -514,11 +514,18 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const handleInsertMarkdown = useCallback(
     (markdown: string) => {
       if (!markdown) return;
-      // Insert at cursor position in the hybrid editor
       hybridEditorRef.current?.insertAtCursor(markdown);
+      // Persist IMMEDIATELY so attachments survive navigation/refresh
+      // (the editor's onChange would otherwise wait 500ms for the debounce).
+      if (activeNotebookId && activeNote) {
+        const latest = hybridEditorRef.current?.getValue() ?? "";
+        clearTimeout(debounceRef.current);
+        updateNote(activeNotebookId, activeNote.id, { content: latest });
+      }
     },
-    []
+    [activeNotebookId, activeNote?.id, updateNote]
   );
+
 
   const handleToolbarChange = useCallback(
     (content: string) => {
