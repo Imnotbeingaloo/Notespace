@@ -144,7 +144,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         reader.readAsText(f);
       });
       onProgress(100);
-      return { kind: "text", body: `# ${f.name}\n\n${text}\n\n` };
+      return { kind: "text", body: `${text}\n\n` };
     }
     if (isPdfFile(f)) {
       onProgress(10);
@@ -157,7 +157,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
       return {
         kind: "pdf",
         pageCount,
-        body: `# ${f.name}\n\n_Extracted from ${pageCount} page${pageCount === 1 ? "" : "s"}_\n\n${text}\n\n`,
+        body: `${text}\n\n`,
       };
     }
     return prepareBinary(f, userId, onProgress);
@@ -189,7 +189,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
       : `[📎 ${f.name}](${signed.signedUrl})`;
     return {
       kind: "binary",
-      body: `# ${f.name}\n\n${link}\n\n\n`,
+      body: `${link}\n\n\n`,
       attachments: [{ name: f.name, url: signed.signedUrl, path, type: f.type, size: f.size }],
     };
   }

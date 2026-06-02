@@ -73,7 +73,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             reader.readAsText(file);
           });
           const content = isHtmlFile(file) ? stripHtmlTags(text) : text;
-          onInsertMarkdown?.(`\n\n## Imported: ${file.name}\n\n${content}\n`);
+          onInsertMarkdown?.(`\n\n${content}\n\n`);
           toast.success(`Imported "${file.name}"`);
         } catch (err: any) {
           toast.error(`Could not read "${file.name}": ${err?.message || "unknown error"}`);
@@ -97,7 +97,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             if (nbId) {
               const noteId = await createNote(nbId, file.name);
               if (noteId) {
-                await updateNote(nbId, noteId, { content: `# ${file.name}\n\n${text}` });
+                await updateNote(nbId, noteId, { content: `${text}\n\n` });
                 setActiveNotebookId(nbId);
                 setActiveNoteId(noteId);
                 toast.success(`"${file.name}" had ${pageCount} pages — created a new notebook for it.`);
@@ -107,7 +107,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             toast.error(`Could not create a notebook for "${file.name}".`);
             continue;
           } else {
-            onInsertMarkdown?.(`\n\n## ${file.name}\n\n${text}\n`);
+            onInsertMarkdown?.(`\n\n${text}\n\n`);
             toast.success(`Imported "${file.name}" (${pageCount} page${pageCount === 1 ? "" : "s"})`);
             continue;
           }
