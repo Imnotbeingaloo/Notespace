@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { Switch } from "@/components/ui/switch";
 import { usePaperStyle } from "@/hooks/use-paper-style";
+import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 interface SettingsDialogProps {
   open: boolean;
