@@ -16,10 +16,12 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
+import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
+  const [tempNotesEnabled] = useTempNotesEnabled();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -252,7 +254,7 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
-                onCreateScratchNote={() => navigate("/app/temporary")}
+                onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={async () => {
                   setOpening(true);
                   try {

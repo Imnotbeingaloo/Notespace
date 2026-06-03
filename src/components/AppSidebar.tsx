@@ -21,6 +21,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SidebarUploadDialog } from "@/components/SidebarUploadDialog";
+import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -34,6 +35,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const { signOut, user } = useAuth();
   const { profile } = useProfile();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [tempNotesEnabled] = useTempNotesEnabled();
+  const [simpleNotesOpen, setSimpleNotesOpen] = useState(false);
+  const [simpleNotesQuery, setSimpleNotesQuery] = useState("");
   const {
     notebooks,
     trashedNotebooks,
@@ -347,14 +351,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <Plus className="h-3.5 w-3.5" />
               {promoteDropActive ? "Drop to make notebook" : "New Notebook"}
             </button>
-            <Link
-              to="/app/temporary"
-              title="Open a temporary workspace — auto-deletes after 24h."
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors"
-            >
-              <ScratchIcon className="h-3.5 w-3.5" />
-              Temporary Note
-            </Link>
+            {tempNotesEnabled && (
+              <Link
+                to="/app/temporary"
+                title="Open a temporary workspace — auto-deletes after 24h."
+                className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors active:scale-[0.98]"
+              >
+                <ScratchIcon className="h-3.5 w-3.5" />
+                Temporary Note
+              </Link>
+            )}
           </div>
 
           <input
@@ -646,6 +652,94 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           ))}
         </div>
       )}
+
+      {/* Simple Notes — quick search/filter */}
+      {!collapsed && (() => {
+        const simpleNb = notebooks.find((n) => n.name === "Simple Notes" && n.emoji === "📝");
+        if (!simpleNb) return null;
+        const q = simpleNotesQuery.trim().toLowerCase();
+        const matches = q
+          ? simpleNb.notes.filter((n) =>
+              n.title.toLowerCase().includes(q) || (n.content || "").toLowerCase().includes(q)
+            )
+          : simpleNb.notes;
+        return (
+          <div className="px-2 space-y-1 mb-1 border-t border-sidebar-border pt-2">
+            <button
+              onClick={() => setSimpleNotesOpen((p) => !p)}
+              className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg"
+              aria-expanded={simpleNotesOpen}
+              aria-controls="simple-notes-panel"
+            >
+              <FileText className="h-3.5 w-3.5" />
+              <span className="flex-1 text-left text-xs font-semibold uppercase tracking-wider">Simple Notes</span>
+              <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{simpleNb.notes.length}</span>
+              <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${simpleNotesOpen ? "rotate-90" : ""}`} />
+            </button>
+            <AnimatePresence initial={false}>
+              {simpleNotesOpen && (
+                <motion.div
+                  id="simple-notes-panel"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-1 pb-2 pt-1 space-y-1">
+                    <div className="relative">
+                      <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none" />
+                      <Input
+                        value={simpleNotesQuery}
+                        onChange={(e) => setSimpleNotesQuery(e.target.value)}
+                        placeholder="Search simple notes…"
+                        aria-label="Search simple notes"
+                        className="h-7 pl-7 pr-7 text-xs"
+                      />
+                      {simpleNotesQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setSimpleNotesQuery("")}
+                          aria-label="Clear search"
+                          className="absolute right-1.5 top-1/2 -translate-y-1/2 p-0.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-56 overflow-y-auto scrollbar-thin space-y-0.5">
+                      {matches.length === 0 ? (
+                        <p className="text-[11px] text-muted-foreground px-2 py-2 text-center">
+                          {q ? "No matches." : "No simple notes yet."}
+                        </p>
+                      ) : (
+                        matches.map((note) => (
+                          <button
+                            key={note.id}
+                            onClick={() => {
+                              setActiveNotebookId(simpleNb.id);
+                              setActiveNoteId(note.id);
+                              onSelectNote?.();
+                            }}
+                            className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] text-left transition-colors active:scale-[0.98] ${
+                              activeNoteId === note.id
+                                ? "bg-primary/10 text-foreground font-medium"
+                                : "text-muted-foreground notebook-hover"
+                            }`}
+                          >
+                            <FileText className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate flex-1">{note.title || "Untitled"}</span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })()}
 
       {/* Smart Tags & Study Planner - above footer */}
       {!collapsed && (
