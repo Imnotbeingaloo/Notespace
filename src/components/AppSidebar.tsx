@@ -210,6 +210,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [promoteDropActive, setPromoteDropActive] = useState(false);
   const [pendingMoveNote, setPendingMoveNote] = useState<null | { noteId: string; fromNbId: string; toNbId: string; noteTitle: string; toNbName: string }>(null);
   const [pendingPromoteNote, setPendingPromoteNote] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
+  const [pendingSimpleMove, setPendingSimpleMove] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
+  const [simpleDropActive, setSimpleDropActive] = useState(false);
   const [trashExpanded, setTrashExpanded] = useState(false);
 
   // Confirm dialog state
