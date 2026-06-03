@@ -62,6 +62,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     permanentlyDeleteNote,
     refreshData,
     createScratchNote,
+    ensureSimpleNotebook,
   } = useNotebooks();
 
   // Top-level vs nested notebooks
@@ -209,6 +210,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [promoteDropActive, setPromoteDropActive] = useState(false);
   const [pendingMoveNote, setPendingMoveNote] = useState<null | { noteId: string; fromNbId: string; toNbId: string; noteTitle: string; toNbName: string }>(null);
   const [pendingPromoteNote, setPendingPromoteNote] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
+  const [pendingSimpleMove, setPendingSimpleMove] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
+  const [simpleDropActive, setSimpleDropActive] = useState(false);
   const [trashExpanded, setTrashExpanded] = useState(false);
 
   // Confirm dialog state
@@ -628,6 +631,31 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               ))}
             </AnimatePresence>
           </div>
+
+          {/* Drop-to-Simple-Notes zone (only visible while dragging a note) */}
+          {dragNoteId && (
+            <div
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setSimpleDropActive(true); }}
+              onDragLeave={() => setSimpleDropActive(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setSimpleDropActive(false);
+                if (dragNoteId && dragNoteFromNb) {
+                  const nb = notebooks.find((n) => n.id === dragNoteFromNb);
+                  const note = nb?.notes.find((n) => n.id === dragNoteId);
+                  if (note) setPendingSimpleMove({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
+                  setDragNoteId(null); setDragNoteFromNb(null);
+                }
+              }}
+              className={`mt-2 mx-1 rounded-lg border border-dashed text-[11px] text-center py-3 px-2 transition-colors ${
+                simpleDropActive
+                  ? "border-primary/60 bg-primary/10 text-primary"
+                  : "border-border/60 text-muted-foreground"
+              }`}
+            >
+              {simpleDropActive ? "Drop to move into Simple Notes" : "Drop here to make it a Simple Note"}
+            </div>
+          )}
 
         </div>
       )}
@@ -1115,6 +1143,24 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           if (pendingPromoteNote) {
             await promoteNoteToNotebook(pendingPromoteNote.fromNbId, pendingPromoteNote.noteId);
             setPendingPromoteNote(null);
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!pendingSimpleMove}
+        onOpenChange={(o) => !o && setPendingSimpleMove(null)}
+        title="Move to Simple Notes?"
+        description={pendingSimpleMove ? `Move "${pendingSimpleMove.title}" into your Simple Notes?` : ""}
+        confirmLabel="Move to Simple Notes"
+        destructive={false}
+        onConfirm={async () => {
+          if (pendingSimpleMove) {
+            const simpleId = await ensureSimpleNotebook();
+            if (simpleId && simpleId !== pendingSimpleMove.fromNbId) {
+              await moveNoteToNotebook(pendingSimpleMove.fromNbId, pendingSimpleMove.noteId, simpleId);
+            }
+            setPendingSimpleMove(null);
           }
         }}
       />

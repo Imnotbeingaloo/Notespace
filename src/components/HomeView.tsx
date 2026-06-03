@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,8 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
@@ -24,6 +26,7 @@ const PAGE_SIZE = 9;
 export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
   const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
   const navigate = useNavigate();
+  const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
@@ -230,27 +233,63 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
           {/* Quick actions row — separated from the notebook grid */}
           <div className="flex flex-wrap items-center gap-2 mt-6">
             {onCreateNotebook && (
-              <button
-                onClick={onCreateNotebook}
-                data-testid="home-create-notebook"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
-              >
-                <Plus className="h-4 w-4" />
-                New Notebook
-              </button>
+              tempEnabled && onCreateSimpleNote ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      data-testid="home-create-menu"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Create
+                      <ChevronDown className="h-3.5 w-3.5 opacity-80" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem onClick={onCreateNotebook}>
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      New Notebook
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={onCreateSimpleNote}>
+                      <StickyNote className="h-4 w-4 mr-2" />
+                      New Simple Note
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <button
+                  onClick={onCreateNotebook}
+                  data-testid="home-create-notebook"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                >
+                  <Plus className="h-4 w-4" />
+                  New Notebook
+                </button>
+              )
             )}
-            {onCreateSimpleNote && (
+            {tempEnabled && onCreateScratchNote ? (
               <button
-                onClick={onCreateSimpleNote}
-                data-testid="home-create-simple"
-                title="Create a lightweight standalone note"
-                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/40 bg-primary/[0.06] text-primary text-sm font-medium hover:bg-primary/[0.12] transition-all duration-150 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+                onClick={onCreateScratchNote}
+                data-testid="home-create-temporary"
+                title="Open a temporary workspace — auto-deletes after 24h."
+                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/[0.07] text-amber-600 dark:text-amber-400 text-sm font-medium hover:bg-amber-500/[0.13] transition-all duration-150 active:scale-[0.97]"
               >
-                <StickyNote className="h-4 w-4 transition-transform duration-200 group-hover:rotate-[-3deg]" />
-                Simple Note
+                <ScratchIcon className="h-4 w-4 transition-transform duration-200 group-hover:rotate-[-3deg]" />
+                Temporary Note
               </button>
+            ) : (
+              onCreateSimpleNote && (
+                <button
+                  onClick={onCreateSimpleNote}
+                  data-testid="home-create-simple"
+                  title="Create a lightweight standalone note"
+                  className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/40 bg-primary/[0.06] text-primary text-sm font-medium hover:bg-primary/[0.12] transition-all duration-150 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+                >
+                  <StickyNote className="h-4 w-4 transition-transform duration-200 group-hover:rotate-[-3deg]" />
+                  Simple Note
+                </button>
+              )
             )}
-            {/* Temporary Note button moved to sidebar; Home now uses the permanent "Simple Note". */}
 
           </div>
 
