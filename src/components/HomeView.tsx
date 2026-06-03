@@ -239,6 +239,17 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                 New Notebook
               </button>
             )}
+            {onCreateSimpleNote && (
+              <button
+                onClick={onCreateSimpleNote}
+                data-testid="home-create-simple"
+                title="Create a lightweight standalone note"
+                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/40 bg-primary/[0.06] text-primary text-sm font-medium hover:bg-primary/[0.12] transition-colors"
+              >
+                <StickyNote className="h-4 w-4" />
+                Simple Note
+              </button>
+            )}
             {onCreateScratchNote && (
               <button
                 onClick={onCreateScratchNote}
