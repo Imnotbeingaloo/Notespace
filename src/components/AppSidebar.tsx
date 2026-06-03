@@ -21,6 +21,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SidebarUploadDialog } from "@/components/SidebarUploadDialog";
+import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 interface AppSidebarProps {
   collapsed: boolean;
