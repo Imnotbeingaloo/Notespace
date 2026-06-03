@@ -14,13 +14,14 @@ interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
   onCreateNotebook?: () => void;
   onCreateScratchNote?: () => void;
+  onCreateSimpleNote?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
   const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
   const navigate = useNavigate();
   const { profile, loading: profileLoading } = useProfile();
