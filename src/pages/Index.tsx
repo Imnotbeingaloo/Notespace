@@ -21,6 +21,7 @@ import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 import { useNotebooks } from "@/context/NotebookContext";
 
 function AppContent() {
+  const [tempNotesEnabled] = useTempNotesEnabled();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     if (typeof window === "undefined") return true;
