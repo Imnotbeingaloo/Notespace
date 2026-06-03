@@ -250,18 +250,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                 Simple Note
               </button>
             )}
-            {onCreateScratchNote && (
-              <button
-                onClick={onCreateScratchNote}
-                data-testid="home-create-scratch"
-                className="hidden"
-                aria-hidden="true"
-                tabIndex={-1}
-              >
-                <ScratchIcon className="h-4 w-4" />
-                Temporary Note
-              </button>
-            )}
+            {/* Temporary Note button moved to sidebar; Home now uses the permanent "Simple Note". */}
 
           </div>
 
