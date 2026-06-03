@@ -355,6 +355,37 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     return !!nb && nb.name === "Scratch" && nb.emoji === "✏️";
   }, [allNotebooks]);
 
+  const ensureSimpleNotebook = useCallback(async (): Promise<string | null> => {
+    if (!user) return null;
+    const existing = allNotebooks.find((n) => !n.deleted_at && n.name === "Simple Notes" && n.emoji === "📝");
+    if (existing) return existing.id;
+    const id = await createNotebook("Simple Notes", "📝");
+    return id;
+  }, [user, allNotebooks, createNotebook]);
+
+  const createSimpleNote = useCallback(async (): Promise<{ notebookId: string; noteId: string } | null> => {
+    if (!user) return null;
+    const nbId = await ensureSimpleNotebook();
+    if (!nbId) return null;
+    const { data, error } = await supabase
+      .from("notes")
+      .insert({ notebook_id: nbId, user_id: user.id, title: "Simple note", content: "" })
+      .select()
+      .single();
+    if (error || !data) return null;
+    const note: Note = { ...(data as any), attachments: [], tags: [], deleted_at: null };
+    setAllNotebooks((prev) => prev.map((n) => n.id === nbId ? { ...n, notes: [...n.notes, note] } : n));
+    setActiveNotebookId(nbId);
+    setActiveNoteId(data.id);
+    return { notebookId: nbId, noteId: data.id };
+  }, [user, ensureSimpleNotebook]);
+
+  const isSimpleNotebook = useCallback((notebookId: string | null) => {
+    if (!notebookId) return false;
+    const nb = allNotebooks.find((n) => n.id === notebookId);
+    return !!nb && nb.name === "Simple Notes" && nb.emoji === "📝";
+  }, [allNotebooks]);
+
   const moveNoteToNotebook = useCallback(async (fromNotebookId: string, noteId: string, toNotebookId: string): Promise<boolean> => {
     if (fromNotebookId === toNotebookId) return true;
     const { error } = await supabase.from("notes").update({ notebook_id: toNotebookId } as any).eq("id", noteId);
