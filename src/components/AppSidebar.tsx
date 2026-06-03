@@ -35,6 +35,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const { signOut, user } = useAuth();
   const { profile } = useProfile();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [tempNotesEnabled] = useTempNotesEnabled();
+  const [simpleNotesOpen, setSimpleNotesOpen] = useState(false);
+  const [simpleNotesQuery, setSimpleNotesQuery] = useState("");
   const {
     notebooks,
     trashedNotebooks,
