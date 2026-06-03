@@ -268,6 +268,28 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </p>
                   </div>
                 </div>
+
+                <div className="rounded-xl border border-border p-4 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
+                    <Clock className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <h4 className="text-sm font-semibold text-foreground">Temporary Notes</h4>
+                      <Switch
+                        checked={tempNotesEnabled}
+                        onCheckedChange={(v) => {
+                          setTempNotesEnabled(v);
+                          toast.success(v ? "Temporary Notes enabled" : "Temporary Notes disabled");
+                        }}
+                        aria-label="Toggle Temporary Notes"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Show the Temporary Note entry in the sidebar and Home. Temporary notes auto-delete after 24 hours.
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 
