@@ -12,20 +12,9 @@ export function getPaperStyle(): boolean {
 }
 
 export function setPaperStyle(enabled: boolean) {
-  // Cancel any pending "end transition" so rapid toggles don't flicker.
-  if (transitionEndTimer !== null) {
-    window.clearTimeout(transitionEndTimer);
-    transitionEndTimer = null;
-  }
-  window.dispatchEvent(new CustomEvent(EVT_TRANSITION, { detail: true }));
-  window.setTimeout(() => {
-    localStorage.setItem(KEY, String(enabled));
-    window.dispatchEvent(new CustomEvent(EVT, { detail: enabled }));
-    transitionEndTimer = window.setTimeout(() => {
-      transitionEndTimer = null;
-      window.dispatchEvent(new CustomEvent(EVT_TRANSITION, { detail: false }));
-    }, MIN_OVERLAY_MS);
-  }, 30);
+  // Apply instantly — no transition overlay.
+  try { localStorage.setItem(KEY, String(enabled)); } catch {}
+  window.dispatchEvent(new CustomEvent(EVT, { detail: enabled }));
 }
 
 export function usePaperStyle() {
