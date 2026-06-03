@@ -25,6 +25,17 @@ function scheduleDrain() {
   }, TOAST_SPACING_MS);
 }
 
+// Per-type durations: errors/warnings stay visible longer for readability
+// while still respecting any explicit `duration` passed in options.
+const DEFAULT_DURATION: Record<ToastKind, number> = {
+  message: 3500,
+  success: 3500,
+  info: 4000,
+  warning: 6000,
+  error: 6500,
+  loading: 6000,
+};
+
 function drainQueue() {
   if (typeof window === "undefined") return;
   if (visibleCount >= MAX_VISIBLE_TOASTS) return;
@@ -33,6 +44,8 @@ function drainQueue() {
 
   visibleCount += 1;
   const options: ExternalToast = {
+    duration: DEFAULT_DURATION[next.kind],
+    closeButton: true,
     ...next.options,
     onAutoClose: (toast) => {
       visibleCount = Math.max(0, visibleCount - 1);
