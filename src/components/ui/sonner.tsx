@@ -23,6 +23,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       aria-label="Notifications"
       hotkey={["altKey", "KeyT"]}
+      closeButtonAriaLabel="Dismiss notification"
+      pauseWhenPageIsHidden
       toastOptions={{
         unstyled: false,
         classNames: {
