@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,13 +14,14 @@ interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
   onCreateNotebook?: () => void;
   onCreateScratchNote?: () => void;
+  onCreateSimpleNote?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
   const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
   const navigate = useNavigate();
   const { profile, loading: profileLoading } = useProfile();
@@ -238,16 +239,18 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                 New Notebook
               </button>
             )}
-            {onCreateScratchNote && (
+            {onCreateSimpleNote && (
               <button
-                onClick={onCreateScratchNote}
-                data-testid="home-create-scratch"
-                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/[0.06] text-amber-700 dark:text-amber-300 text-sm font-medium hover:bg-amber-500/[0.12] transition-colors"
+                onClick={onCreateSimpleNote}
+                data-testid="home-create-simple"
+                title="Create a lightweight standalone note"
+                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/40 bg-primary/[0.06] text-primary text-sm font-medium hover:bg-primary/[0.12] transition-colors"
               >
-                <ScratchIcon className="h-4 w-4" />
-                Temporary Note
+                <StickyNote className="h-4 w-4" />
+                Simple Note
               </button>
             )}
+            {/* Temporary Note button moved to sidebar; Home now uses the permanent "Simple Note". */}
 
           </div>
 

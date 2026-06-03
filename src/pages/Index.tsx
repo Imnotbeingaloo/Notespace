@@ -50,7 +50,7 @@ function AppContent() {
     }
     prevIsMobileRef.current = isMobile;
   }, [isMobile]);
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createSimpleNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
@@ -253,6 +253,21 @@ function AppContent() {
                 onOpenNotebook={openNotebookFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
                 onCreateScratchNote={() => navigate("/app/temporary")}
+                onCreateSimpleNote={async () => {
+                  setOpening(true);
+                  try {
+                    const result = await createSimpleNote();
+                    if (result) {
+                      setShowHome(false);
+                      const next = new URLSearchParams(searchParams);
+                      next.set("notebook", result.notebookId);
+                      next.set("note", result.noteId);
+                      setSearchParams(next, { replace: true });
+                    }
+                  } finally {
+                    window.setTimeout(() => setOpening(false), 400);
+                  }
+                }}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
