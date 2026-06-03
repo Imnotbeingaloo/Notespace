@@ -50,7 +50,7 @@ function AppContent() {
     }
     prevIsMobileRef.current = isMobile;
   }, [isMobile]);
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createSimpleNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
