@@ -3,9 +3,6 @@ import { useEffect, useState } from "react";
 const KEY = "notebook-paper-style";
 const EVT = "notebook-paper-style-changed";
 const EVT_TRANSITION = "notebook-paper-style-transition";
-const MIN_OVERLAY_MS = 2400; // 2.4s — long enough to feel intentional, not jarring
-
-let transitionEndTimer: number | null = null;
 
 export function getPaperStyle(): boolean {
   try { return localStorage.getItem(KEY) === "true"; } catch { return false; }
