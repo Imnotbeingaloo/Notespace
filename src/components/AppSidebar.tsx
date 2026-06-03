@@ -351,14 +351,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <Plus className="h-3.5 w-3.5" />
               {promoteDropActive ? "Drop to make notebook" : "New Notebook"}
             </button>
-            <Link
-              to="/app/temporary"
-              title="Open a temporary workspace — auto-deletes after 24h."
-              className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors"
-            >
-              <ScratchIcon className="h-3.5 w-3.5" />
-              Temporary Note
-            </Link>
+            {tempNotesEnabled && (
+              <Link
+                to="/app/temporary"
+                title="Open a temporary workspace — auto-deletes after 24h."
+                className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors active:scale-[0.98]"
+              >
+                <ScratchIcon className="h-3.5 w-3.5" />
+                Temporary Note
+              </Link>
+            )}
           </div>
 
           <input
