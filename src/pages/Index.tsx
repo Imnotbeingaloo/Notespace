@@ -253,7 +253,7 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
-                onCreateScratchNote={() => navigate("/app/temporary")}
+                onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={async () => {
                   setOpening(true);
                   try {
