@@ -632,6 +632,31 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             </AnimatePresence>
           </div>
 
+          {/* Drop-to-Simple-Notes zone (only visible while dragging a note) */}
+          {dragNoteId && (
+            <div
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setSimpleDropActive(true); }}
+              onDragLeave={() => setSimpleDropActive(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setSimpleDropActive(false);
+                if (dragNoteId && dragNoteFromNb) {
+                  const nb = notebooks.find((n) => n.id === dragNoteFromNb);
+                  const note = nb?.notes.find((n) => n.id === dragNoteId);
+                  if (note) setPendingSimpleMove({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
+                  setDragNoteId(null); setDragNoteFromNb(null);
+                }
+              }}
+              className={`mt-2 mx-1 rounded-lg border border-dashed text-[11px] text-center py-3 px-2 transition-colors ${
+                simpleDropActive
+                  ? "border-primary/60 bg-primary/10 text-primary"
+                  : "border-border/60 text-muted-foreground"
+              }`}
+            >
+              {simpleDropActive ? "Drop to move into Simple Notes" : "Drop here to make it a Simple Note"}
+            </div>
+          )}
+
         </div>
       )}
 
