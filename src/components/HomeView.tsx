@@ -26,6 +26,7 @@ const PAGE_SIZE = 9;
 export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
   const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
   const navigate = useNavigate();
+  const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
