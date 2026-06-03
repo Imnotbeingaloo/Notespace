@@ -1146,6 +1146,24 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           }
         }}
       />
+
+      <ConfirmDialog
+        open={!!pendingSimpleMove}
+        onOpenChange={(o) => !o && setPendingSimpleMove(null)}
+        title="Move to Simple Notes?"
+        description={pendingSimpleMove ? `Move "${pendingSimpleMove.title}" into your Simple Notes?` : ""}
+        confirmLabel="Move to Simple Notes"
+        destructive={false}
+        onConfirm={async () => {
+          if (pendingSimpleMove) {
+            const simpleId = await ensureSimpleNotebook();
+            if (simpleId && simpleId !== pendingSimpleMove.fromNbId) {
+              await moveNoteToNotebook(pendingSimpleMove.fromNbId, pendingSimpleMove.noteId, simpleId);
+            }
+            setPendingSimpleMove(null);
+          }
+        }}
+      />
     </motion.aside>
   );
 }
