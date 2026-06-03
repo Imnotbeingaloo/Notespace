@@ -30,6 +30,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { profile, updateDisplayName, markPasswordChanged, daysSincePasswordChange, refresh } = useProfile();
   const { theme, setTheme } = useTheme();
   const [paperStyle, setPaperStyle] = usePaperStyle();
+  const [tempNotesEnabled, setTempNotesEnabled] = useTempNotesEnabled();
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
