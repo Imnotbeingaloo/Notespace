@@ -193,7 +193,23 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </div>
                   )}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Current password</label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-sm font-medium text-foreground">Current password</label>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!user?.email) { toast.error("No email on file"); return; }
+                          const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+                            redirectTo: `${window.location.origin}/auth?reset=1`,
+                          });
+                          if (error) toast.error(error.message);
+                          else toast.success("Reset link sent — check your inbox.");
+                        }}
+                        className="text-[11px] text-primary/80 hover:text-primary hover:underline underline-offset-2 transition-colors"
+                      >
+                        Forgot your password?
+                      </button>
+                    </div>
                     <input
                       type="password"
                       value={currentPw}

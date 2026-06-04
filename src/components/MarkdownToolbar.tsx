@@ -9,6 +9,7 @@ import { AlignmentPicker } from "@/components/AlignmentPicker";
 import { TableInsert } from "@/components/TableInsert";
 import { TableEditToolbar } from "@/components/TableEditToolbar";
 import { Search } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -171,15 +172,49 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
+  // Apply highlight ONLY when there is a selection so it doesn't leak into newly typed text.
+  const applyHighlight = useCallback((color: string) => {
+    focusEditor(editorRef.current);
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+      toast({ title: "Select some text first", description: "Highlighting only applies to a selection." });
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    const span = document.createElement("span");
+    span.style.backgroundColor = color;
+    span.style.borderRadius = "2px";
+    span.style.padding = "0 2px";
+    try {
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      const after = document.createRange();
+      after.setStartAfter(span);
+      after.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(after);
+    } catch {/* ignore */}
+    editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+  }, [editorRef]);
+
+  const HIGHLIGHT_COLORS = [
+    { name: "Yellow", value: "#fde68a" },
+    { name: "Green", value: "#bbf7d0" },
+    { name: "Blue", value: "#bfdbfe" },
+    { name: "Pink", value: "#fbcfe8" },
+    { name: "Purple", value: "#ddd6fe" },
+    { name: "Orange", value: "#fed7aa" },
+  ];
+
   const actions: FormatAction[] = [
     { icon: Bold, label: "Bold", action: () => exec("bold") },
     { icon: Italic, label: "Italic", action: () => exec("italic") },
     { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
-    { icon: Highlighter, label: "Highlight", action: () => exec("hiliteColor", "#fef08a") },
-    { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "h1") },
-    { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "h2") },
-    { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "h3") },
-    { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "blockquote") },
+    { icon: Highlighter, label: "Highlight", action: () => {} },
+    { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "<h1>") },
+    { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "<h2>") },
+    { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "<h3>") },
+    { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "<blockquote>") },
     { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
     { icon: Link2, label: "Link", action: insertLink },
     { icon: uploadingImage ? Loader2 : Image, label: uploadingImage ? "Uploading image…" : "Image (upload or URL)", action: insertImage },
@@ -240,16 +275,46 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
       <div ref={scrollRef} className="flex items-center gap-0.5 px-2 py-2 overflow-x-auto scrollbar-none">
         {actions.map((a, i) =>
         <div key={a.label} className="contents">
-            <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              a.action();
-            }}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-            title={a.label}>
-              <a.icon className={`h-4 w-4 ${a.icon === Loader2 ? "animate-spin" : ""}`} />
-            </button>
+            {a.label === "Highlight" ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+                    title="Highlight color"
+                  >
+                    <Highlighter className="h-4 w-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-2" align="start" sideOffset={6} onOpenAutoFocus={(e) => e.preventDefault()}>
+                  <div className="flex items-center gap-1.5">
+                    {HIGHLIGHT_COLORS.map((c) => (
+                      <button
+                        key={c.value}
+                        type="button"
+                        onMouseDown={(e) => { e.preventDefault(); applyHighlight(c.value); }}
+                        className="h-6 w-6 rounded-md border border-border hover:scale-110 transition-transform"
+                        style={{ backgroundColor: c.value }}
+                        title={c.name}
+                        aria-label={`Highlight ${c.name}`}
+                      />
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  a.action();
+                }}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+                title={a.label}>
+                <a.icon className={`h-4 w-4 ${a.icon === Loader2 ? "animate-spin" : ""}`} />
+              </button>
+            )}
             {separatorAfter.has(i) &&
           <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
           }

@@ -38,17 +38,18 @@ export function ThemeToggle({ asSidebarButton = false }: ThemeToggleProps) {
       <TooltipTrigger asChild>
         <Button
           variant="ghost"
+          size="icon"
           onClick={toggle}
-          className="h-8 gap-2 rounded-xl px-3 text-xs font-medium"
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          className="h-9 w-9 rounded-lg"
         >
           <div className="relative h-4 w-4">
             <Sun className="absolute inset-0 h-4 w-4 transition-all duration-300 ease-in-out rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute inset-0 h-4 w-4 transition-all duration-300 ease-in-out rotate-90 scale-0 dark:rotate-0 dark:scale-100" />
           </div>
-          <span className="hidden sm:inline">{isDark ? "Light Mode" : "Dark Mode"}</span>
         </Button>
       </TooltipTrigger>
-      <TooltipContent side="bottom">
+      <TooltipContent side="right">
         <p>{isDark ? "Switch to light mode" : "Switch to dark mode"}</p>
       </TooltipContent>
     </Tooltip>

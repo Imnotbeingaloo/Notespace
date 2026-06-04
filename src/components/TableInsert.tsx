@@ -17,16 +17,16 @@ export function TableInsert({ editorRef }: TableInsertProps) {
     if (!editorRef.current) return;
     editorRef.current.focus();
 
-    // Build HTML table
+    const bodyRows = Math.max(1, rows);
     let html = '<table style="border-collapse:collapse;width:100%"><thead><tr>';
     for (let c = 0; c < cols; c++) {
       html += `<th style="border:1px solid hsl(var(--border));padding:8px 12px;text-align:left">Header ${c + 1}</th>`;
     }
     html += "</tr></thead><tbody>";
-    for (let r = 0; r < rows; r++) {
+    for (let r = 0; r < bodyRows; r++) {
       html += "<tr>";
       for (let c = 0; c < cols; c++) {
-        html += `<td style="border:1px solid hsl(var(--border));padding:8px 12px">Cell</td>`;
+        html += `<td style="border:1px solid hsl(var(--border));padding:8px 12px">&nbsp;</td>`;
       }
       html += "</tr>";
     }
@@ -46,10 +46,12 @@ export function TableInsert({ editorRef }: TableInsertProps) {
       html += `<th style="border:1px solid hsl(var(--border));padding:8px 12px;text-align:left">Header ${ci + 1}</th>`;
     }
     html += "</tr></thead><tbody>";
-    for (let ri = 0; ri <= r; ri++) {
+    // Always render at least 1 body row so the table doesn't look empty after insertion.
+    const bodyRows = Math.max(1, r + 1);
+    for (let ri = 0; ri < bodyRows; ri++) {
       html += "<tr>";
       for (let ci = 0; ci <= c; ci++) {
-        html += `<td style="border:1px solid hsl(var(--border));padding:8px 12px">Cell</td>`;
+        html += `<td style="border:1px solid hsl(var(--border));padding:8px 12px">&nbsp;</td>`;
       }
       html += "</tr>";
     }
