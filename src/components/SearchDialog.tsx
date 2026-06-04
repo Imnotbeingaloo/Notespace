@@ -80,7 +80,7 @@ export function SearchDialog() {
         <Search className="h-3 w-3" />
         <span>Search…</span>
         <kbd className="ml-auto pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-          ⌘K
+          {typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? "⌘K" : "Ctrl+K"}
         </kbd>
       </button>
 
