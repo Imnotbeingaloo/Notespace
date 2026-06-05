@@ -258,10 +258,37 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
       const items = e.clipboardData.items;
       for (let i = 0; i < items.length; i++) {
-        if (items[i].type.startsWith("image/")) return;
+        if (items[i].type.startsWith("image/")) return; // let the browser handle image paste
+      }
+      // Prefer HTML so structure (lists, headings, bold, links, tables) is preserved.
+      const html = e.clipboardData.getData("text/html");
+      const text = e.clipboardData.getData("text/plain");
+      if (html && html.trim()) {
+        e.preventDefault();
+        // Strip Office/Google Docs cruft, then sanitize.
+        const cleanedSource = html
+          .replace(/<!--[\s\S]*?-->/g, "")
+          .replace(/<(meta|style|script|link)[\s\S]*?<\/\1>/gi, "")
+          .replace(/<(meta|link)[^>]*>/gi, "")
+          .replace(/\sclass="[^"]*"/g, "")
+          .replace(/\sstyle="[^"]*"/g, "");
+        const safe = DOMPurify.sanitize(cleanedSource, {
+          ALLOWED_TAGS: [
+            "p","br","strong","em","b","i","u","s","del","mark","sub","sup",
+            "h1","h2","h3","h4","h5","h6",
+            "ul","ol","li",
+            "blockquote","pre","code",
+            "a","hr",
+            "table","thead","tbody","tr","th","td",
+            "span","div",
+          ],
+          ALLOWED_ATTR: ["href","target","rel","colspan","rowspan"],
+        });
+        document.execCommand("insertHTML", false, safe);
+        emitChange();
+        return;
       }
       e.preventDefault();
-      const text = e.clipboardData.getData("text/plain");
       if (text) {
         document.execCommand("insertText", false, text);
         emitChange();
