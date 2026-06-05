@@ -306,6 +306,34 @@
   user-select: text;
 }
 
+/* Heading sizes inside the WYSIWYG editor (Tailwind preflight resets headings,
+   and the typography plugin isn't registered, so set sizes explicitly so the
+   H1/H2/H3 toolbar buttons produce visible size changes). */
+.wysiwyg-editor h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1rem 0 0.5rem;
+}
+.wysiwyg-editor h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.9rem 0 0.45rem;
+}
+.wysiwyg-editor h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0.8rem 0 0.4rem;
+}
+.wysiwyg-editor blockquote {
+  border-left: 3px solid hsl(var(--primary) / 0.4);
+  padding-left: 1rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0.75rem 0;
+}
+
 .wysiwyg-editor img {
   border-radius: 1rem;
   border: 1px solid hsl(var(--border));

@@ -9,9 +9,13 @@ export function getPaperStyle(): boolean {
 }
 
 export function setPaperStyle(enabled: boolean) {
-  // Apply instantly — no transition overlay.
+  // Brief transition overlay so the swap feels intentional.
+  try { window.dispatchEvent(new CustomEvent(EVT_TRANSITION, { detail: true })); } catch {}
   try { localStorage.setItem(KEY, String(enabled)); } catch {}
   window.dispatchEvent(new CustomEvent(EVT, { detail: enabled }));
+  window.setTimeout(() => {
+    try { window.dispatchEvent(new CustomEvent(EVT_TRANSITION, { detail: false })); } catch {}
+  }, 900);
 }
 
 export function usePaperStyle() {
