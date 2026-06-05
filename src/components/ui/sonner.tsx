@@ -13,7 +13,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       duration={3500}
       theme={theme as ToasterProps["theme"]}
-      position="bottom-right"
+      position="bottom-left"
       closeButton
       visibleToasts={3}
       gap={10}

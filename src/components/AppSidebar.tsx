@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, RotateCcw, Tag, CalendarDays, X, Settings } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, RotateCcw, Tag, CalendarDays, X, Settings, PanelLeftOpen } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { ScratchIcon } from "@/components/ScratchIcon";
@@ -297,9 +297,27 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         </AnimatePresence>
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors"
+          aria-label={collapsed ? "Open sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Open sidebar" : "Collapse sidebar"}
+          className={
+            collapsed
+              ? "group relative h-9 w-9 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center mx-auto"
+              : "p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors"
+          }
         >
-          <Menu className="h-4 w-4" />
+          {collapsed ? (
+            <>
+              <img
+                src="/logo.png"
+                alt=""
+                aria-hidden="true"
+                className="h-6 w-6 object-contain transition-opacity duration-150 group-hover:opacity-0"
+              />
+              <PanelLeftOpen className="absolute inset-0 m-auto h-4 w-4 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+            </>
+          ) : (
+            <Menu className="h-4 w-4" />
+          )}
         </button>
       </div>
 
