@@ -332,11 +332,32 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [allNotebooks]);
 
 
+  // Returns a title that's unique within the given notebook by appending " (n)" as needed.
+  const uniqueTitleIn = useCallback(
+    (notebookId: string, desired: string, excludeNoteId?: string): string => {
+      const nb = allNotebooks.find((n) => n.id === notebookId);
+      const base = (desired || "Untitled Note").trim() || "Untitled Note";
+      if (!nb) return base;
+      const taken = new Set(
+        nb.notes
+          .filter((n) => !n.deleted_at && n.id !== excludeNoteId)
+          .map((n) => n.title.trim().toLowerCase())
+      );
+      if (!taken.has(base.toLowerCase())) return base;
+      let i = 2;
+      while (taken.has(`${base} (${i})`.toLowerCase())) i += 1;
+      return `${base} (${i})`;
+    },
+    [allNotebooks]
+  );
+
   const createNote = useCallback(async (notebookId: string, title?: string, content?: string): Promise<string | null> => {
     if (!user) return null;
+    const requested = (title || "Untitled Note").trim() || "Untitled Note";
+    const finalTitle = uniqueTitleIn(notebookId, requested);
     const { data } = await supabase
       .from("notes")
-      .insert({ notebook_id: notebookId, user_id: user.id, title: title || "Untitled Note", content: content || "" })
+      .insert({ notebook_id: notebookId, user_id: user.id, title: finalTitle, content: content || "" })
       .select()
       .single();
     if (data) {
@@ -345,10 +366,13 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb)
       );
       setActiveNoteId(data.id);
+      if (finalTitle !== requested) {
+        toast(`Renamed to "${finalTitle}" — that title was already used in this notebook.`);
+      }
       return data.id;
     }
     return null;
-  }, [user]);
+  }, [user, uniqueTitleIn]);
 
   const isScratchNotebook = useCallback((notebookId: string | null) => {
     if (!notebookId) return false;
