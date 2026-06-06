@@ -306,6 +306,9 @@ function AppContent() {
         }}
       />
 
+      {/* Global duplicate-title prompt (note move/rename) */}
+      <RenameDuplicateDialog />
+
       {/* Temporary-note FAB removed — entry points are sidebar + home button + route */}
     </div>
   );
