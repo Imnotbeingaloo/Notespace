@@ -259,9 +259,10 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     if (!user) return null;
     const nbId = await ensureScratchNotebook();
     if (!nbId) return null;
+    const title = uniqueTitleIn(nbId, "Scratch note");
     const { data, error } = await supabase
       .from("notes")
-      .insert({ notebook_id: nbId, user_id: user.id, title: "Scratch note", content: "" })
+      .insert({ notebook_id: nbId, user_id: user.id, title, content: "" })
       .select()
       .single();
     if (error || !data) return null;
@@ -270,7 +271,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     setActiveNotebookId(nbId);
     setActiveNoteId(data.id);
     return { notebookId: nbId, noteId: data.id };
-  }, [user, ensureScratchNotebook]);
+  }, [user, ensureScratchNotebook, uniqueTitleIn]);
 
   // Soft delete notebook
   const deleteNotebook = useCallback(async (id: string) => {
