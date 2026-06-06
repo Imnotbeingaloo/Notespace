@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/components/ui/sonner";
+import { promptRenameForDuplicate } from "@/components/RenameDuplicateDialog";
 
 export interface Attachment {
   name: string;
@@ -208,6 +209,25 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     return data.id;
   }, [user, allNotebooks]);
 
+  // Returns a title that's unique within the given notebook by appending " (n)" as needed.
+  const uniqueTitleIn = useCallback(
+    (notebookId: string, desired: string, excludeNoteId?: string): string => {
+      const nb = allNotebooks.find((n) => n.id === notebookId);
+      const base = (desired || "Untitled Note").trim() || "Untitled Note";
+      if (!nb) return base;
+      const taken = new Set(
+        nb.notes
+          .filter((n) => !n.deleted_at && n.id !== excludeNoteId)
+          .map((n) => n.title.trim().toLowerCase())
+      );
+      if (!taken.has(base.toLowerCase())) return base;
+      let i = 2;
+      while (taken.has(`${base} (${i})`.toLowerCase())) i += 1;
+      return `${base} (${i})`;
+    },
+    [allNotebooks]
+  );
+
 
   const nestNotebook = useCallback(async (childId: string, parentId: string): Promise<boolean> => {
     if (childId === parentId) return false;
@@ -258,9 +278,10 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     if (!user) return null;
     const nbId = await ensureScratchNotebook();
     if (!nbId) return null;
+    const title = uniqueTitleIn(nbId, "Scratch note");
     const { data, error } = await supabase
       .from("notes")
-      .insert({ notebook_id: nbId, user_id: user.id, title: "Scratch note", content: "" })
+      .insert({ notebook_id: nbId, user_id: user.id, title, content: "" })
       .select()
       .single();
     if (error || !data) return null;
@@ -269,7 +290,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     setActiveNotebookId(nbId);
     setActiveNoteId(data.id);
     return { notebookId: nbId, noteId: data.id };
-  }, [user, ensureScratchNotebook]);
+  }, [user, ensureScratchNotebook, uniqueTitleIn]);
 
   // Soft delete notebook
   const deleteNotebook = useCallback(async (id: string) => {
@@ -331,11 +352,15 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [allNotebooks]);
 
 
+
+
   const createNote = useCallback(async (notebookId: string, title?: string, content?: string): Promise<string | null> => {
     if (!user) return null;
+    const requested = (title || "Untitled Note").trim() || "Untitled Note";
+    const finalTitle = uniqueTitleIn(notebookId, requested);
     const { data } = await supabase
       .from("notes")
-      .insert({ notebook_id: notebookId, user_id: user.id, title: title || "Untitled Note", content: content || "" })
+      .insert({ notebook_id: notebookId, user_id: user.id, title: finalTitle, content: content || "" })
       .select()
       .single();
     if (data) {
@@ -344,10 +369,13 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb)
       );
       setActiveNoteId(data.id);
+      if (finalTitle !== requested) {
+        toast(`Renamed to "${finalTitle}" — that title was already used in this notebook.`);
+      }
       return data.id;
     }
     return null;
-  }, [user]);
+  }, [user, uniqueTitleIn]);
 
   const isScratchNotebook = useCallback((notebookId: string | null) => {
     if (!notebookId) return false;
@@ -367,9 +395,10 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     if (!user) return null;
     const nbId = await ensureSimpleNotebook();
     if (!nbId) return null;
+    const title = uniqueTitleIn(nbId, "Simple note");
     const { data, error } = await supabase
       .from("notes")
-      .insert({ notebook_id: nbId, user_id: user.id, title: "Simple note", content: "" })
+      .insert({ notebook_id: nbId, user_id: user.id, title, content: "" })
       .select()
       .single();
     if (error || !data) return null;
@@ -378,7 +407,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     setActiveNotebookId(nbId);
     setActiveNoteId(data.id);
     return { notebookId: nbId, noteId: data.id };
-  }, [user, ensureSimpleNotebook]);
+  }, [user, ensureSimpleNotebook, uniqueTitleIn]);
 
   const isSimpleNotebook = useCallback((notebookId: string | null) => {
     if (!notebookId) return false;
@@ -388,23 +417,48 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const moveNoteToNotebook = useCallback(async (fromNotebookId: string, noteId: string, toNotebookId: string): Promise<boolean> => {
     if (fromNotebookId === toNotebookId) return true;
-    const { error } = await supabase.from("notes").update({ notebook_id: toNotebookId } as any).eq("id", noteId);
+
+    // Duplicate-title guard: if the destination already has a note with this title,
+    // prompt the user to pick a new name before completing the move.
+    const sourceNb = allNotebooks.find((n) => n.id === fromNotebookId);
+    const note = sourceNb?.notes.find((n) => n.id === noteId);
+    const destNb = allNotebooks.find((n) => n.id === toNotebookId);
+    let finalTitle = note?.title ?? "";
+    if (note && destNb) {
+      const takenList = destNb.notes
+        .filter((n) => !n.deleted_at && n.id !== noteId)
+        .map((n) => n.title);
+      const takenLower = new Set(takenList.map((t) => t.trim().toLowerCase()));
+      if (takenLower.has(note.title.trim().toLowerCase())) {
+        const newName = await promptRenameForDuplicate(note.title, takenList);
+        if (!newName) {
+          toast("Move cancelled — a note with that name already exists in the destination.");
+          return false;
+        }
+        finalTitle = newName;
+      }
+    }
+
+    const updates: Record<string, unknown> = { notebook_id: toNotebookId };
+    if (finalTitle && note && finalTitle !== note.title) updates.title = finalTitle;
+    const { error } = await supabase.from("notes").update(updates as any).eq("id", noteId);
     if (error) {
       toast.error("Could not move note.");
       return false;
     }
     setAllNotebooks((prev) => {
-      const sourceNb = prev.find((n) => n.id === fromNotebookId);
-      const note = sourceNb?.notes.find((n) => n.id === noteId);
-      if (!note) return prev;
+      const src = prev.find((n) => n.id === fromNotebookId);
+      const n0 = src?.notes.find((n) => n.id === noteId);
+      if (!n0) return prev;
+      const moved = { ...n0, title: finalTitle || n0.title };
       return prev.map((n) => {
         if (n.id === fromNotebookId) return { ...n, notes: n.notes.filter((x) => x.id !== noteId) };
-        if (n.id === toNotebookId) return { ...n, notes: [...n.notes, note] };
+        if (n.id === toNotebookId) return { ...n, notes: [...n.notes, moved] };
         return n;
       });
     });
     return true;
-  }, []);
+  }, [allNotebooks]);
 
   const deleteNote = useCallback(async (notebookId: string, noteId: string) => {
     const now = new Date().toISOString();
@@ -458,6 +512,35 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         setOverrideState((cur) => cur ? { ...cur, note: { ...cur.note, ...updates, updated_at: new Date().toISOString() } } : cur);
         return;
       }
+
+      // Duplicate-title guard: a notebook cannot contain two notes with the same title.
+      if (typeof updates.title === "string") {
+        const desired = updates.title.trim();
+        if (desired) {
+          const nb = allNotebooks.find((n) => n.id === notebookId);
+          const clash = nb?.notes.some(
+            (n) => !n.deleted_at && n.id !== noteId && n.title.trim().toLowerCase() === desired.toLowerCase()
+          );
+          if (clash) {
+            const takenList = (nb?.notes || [])
+              .filter((n) => !n.deleted_at && n.id !== noteId)
+              .map((n) => n.title);
+            const newName = await promptRenameForDuplicate(desired, takenList);
+            if (!newName) {
+              // User cancelled — drop the title change so the saved title stays put.
+              const { title: _drop, ...rest } = updates;
+              updates = rest;
+              window.dispatchEvent(new CustomEvent("lovable:note-title-revert", { detail: { noteId } }));
+            } else {
+              updates = { ...updates, title: newName };
+            }
+          } else {
+            updates = { ...updates, title: desired };
+          }
+        }
+      }
+
+      if (Object.keys(updates).length === 0) return;
       await supabase.from("notes").update(updates as any).eq("id", noteId);
       setAllNotebooks((prev) =>
         prev.map((nb) =>
@@ -467,7 +550,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         )
       );
     },
-    [override]
+    [override, allNotebooks]
   );
 
   const reorderNotes = useCallback(

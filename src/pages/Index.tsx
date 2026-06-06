@@ -16,6 +16,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
+import { RenameDuplicateDialog } from "@/components/RenameDuplicateDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 import { useNotebooks } from "@/context/NotebookContext";
@@ -304,6 +305,9 @@ function AppContent() {
           }
         }}
       />
+
+      {/* Global duplicate-title prompt (note move/rename) */}
+      <RenameDuplicateDialog />
 
       {/* Temporary-note FAB removed — entry points are sidebar + home button + route */}
     </div>
