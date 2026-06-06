@@ -272,8 +272,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       transition={{ duration: 0.25, ease: "easeInOut" }}
       className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-sidebar-border">
+      {/* Header — collapsed state matches the editor topbar height (48px + 1px border)
+          so the horizontal divider continues flush across the entire app width. */}
+      <div
+        className={
+          collapsed
+            ? "flex items-center justify-center h-12 px-1 border-b border-sidebar-border"
+            : "flex items-center justify-between p-3 border-b border-sidebar-border"
+        }
+      >
         <AnimatePresence>
           {!collapsed && (
             <motion.div
@@ -301,7 +308,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           title={collapsed ? "Open sidebar" : "Collapse sidebar"}
           className={
             collapsed
-              ? "group relative h-9 w-9 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center mx-auto"
+              ? "group relative h-10 w-10 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
               : "p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors"
           }
         >
@@ -311,9 +318,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 src="/logo.png"
                 alt=""
                 aria-hidden="true"
-                className="h-6 w-6 object-contain transition-opacity duration-150 group-hover:opacity-0"
+                className="h-8 w-8 object-contain transition-opacity duration-150 group-hover:opacity-0"
               />
-              <PanelLeftOpen className="absolute inset-0 m-auto h-4 w-4 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+              <PanelLeftOpen className="absolute inset-0 m-auto h-5 w-5 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
             </>
           ) : (
             <Menu className="h-4 w-4" />
