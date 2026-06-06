@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/components/ui/sonner";
+import { promptRenameForDuplicate } from "@/components/RenameDuplicateDialog";
 
 export interface Attachment {
   name: string;
