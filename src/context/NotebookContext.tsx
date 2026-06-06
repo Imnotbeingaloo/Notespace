@@ -209,6 +209,25 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     return data.id;
   }, [user, allNotebooks]);
 
+  // Returns a title that's unique within the given notebook by appending " (n)" as needed.
+  const uniqueTitleIn = useCallback(
+    (notebookId: string, desired: string, excludeNoteId?: string): string => {
+      const nb = allNotebooks.find((n) => n.id === notebookId);
+      const base = (desired || "Untitled Note").trim() || "Untitled Note";
+      if (!nb) return base;
+      const taken = new Set(
+        nb.notes
+          .filter((n) => !n.deleted_at && n.id !== excludeNoteId)
+          .map((n) => n.title.trim().toLowerCase())
+      );
+      if (!taken.has(base.toLowerCase())) return base;
+      let i = 2;
+      while (taken.has(`${base} (${i})`.toLowerCase())) i += 1;
+      return `${base} (${i})`;
+    },
+    [allNotebooks]
+  );
+
 
   const nestNotebook = useCallback(async (childId: string, parentId: string): Promise<boolean> => {
     if (childId === parentId) return false;
