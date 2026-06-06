@@ -512,6 +512,35 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         setOverrideState((cur) => cur ? { ...cur, note: { ...cur.note, ...updates, updated_at: new Date().toISOString() } } : cur);
         return;
       }
+
+      // Duplicate-title guard: a notebook cannot contain two notes with the same title.
+      if (typeof updates.title === "string") {
+        const desired = updates.title.trim();
+        if (desired) {
+          const nb = allNotebooks.find((n) => n.id === notebookId);
+          const clash = nb?.notes.some(
+            (n) => !n.deleted_at && n.id !== noteId && n.title.trim().toLowerCase() === desired.toLowerCase()
+          );
+          if (clash) {
+            const takenList = (nb?.notes || [])
+              .filter((n) => !n.deleted_at && n.id !== noteId)
+              .map((n) => n.title);
+            const newName = await promptRenameForDuplicate(desired, takenList);
+            if (!newName) {
+              // User cancelled — drop the title change so the saved title stays put.
+              const { title: _drop, ...rest } = updates;
+              updates = rest;
+              window.dispatchEvent(new CustomEvent("lovable:note-title-revert", { detail: { noteId } }));
+            } else {
+              updates = { ...updates, title: newName };
+            }
+          } else {
+            updates = { ...updates, title: desired };
+          }
+        }
+      }
+
+      if (Object.keys(updates).length === 0) return;
       await supabase.from("notes").update(updates as any).eq("id", noteId);
       setAllNotebooks((prev) =>
         prev.map((nb) =>
@@ -521,7 +550,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         )
       );
     },
-    [override]
+    [override, allNotebooks]
   );
 
   const reorderNotes = useCallback(
