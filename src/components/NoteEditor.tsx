@@ -470,6 +470,25 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     return () => window.removeEventListener("keydown", handler);
   }, [findReplaceOpen, onFindReplaceChange]);
 
+  // Sync the (uncontrolled) title input whenever the saved title diverges —
+  // e.g. NotebookContext rewrote it after a duplicate-name prompt, or the user
+  // cancelled the prompt and we need to revert the input to the saved title.
+  useEffect(() => {
+    if (activeNote && titleRef.current && titleRef.current.value !== activeNote.title) {
+      titleRef.current.value = activeNote.title;
+    }
+  }, [activeNote?.title]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { noteId?: string } | undefined;
+      if (!detail || !activeNote || detail.noteId !== activeNote.id) return;
+      if (titleRef.current) titleRef.current.value = activeNote.title;
+    };
+    window.addEventListener("lovable:note-title-revert", handler as EventListener);
+    return () => window.removeEventListener("lovable:note-title-revert", handler as EventListener);
+  }, [activeNote?.id, activeNote?.title]);
+
   useEffect(() => {
     if (activeNote && titleRef.current) titleRef.current.value = activeNote.title;
     if (activeNote && contentRef.current) contentRef.current.value = activeNote.content;
