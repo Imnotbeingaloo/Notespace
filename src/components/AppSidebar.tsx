@@ -987,12 +987,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 </TooltipTrigger>
                 <TooltipContent side="right">Trash{trashCount > 0 ? ` (${trashCount})` : ""}</TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div><ThemeToggle /></div>
-                </TooltipTrigger>
-                <TooltipContent side="right">Theme</TooltipContent>
-              </Tooltip>
+              <ThemeToggle />
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
