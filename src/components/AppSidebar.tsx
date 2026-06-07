@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, RotateCcw, Tag, CalendarDays, X, Settings, PanelLeftOpen } from "lucide-react";
+import { Plus, BookOpen, Trash2, ChevronRight, Menu, FileText, LogOut, Upload, Home, Pencil, Search as SearchIcon, RotateCcw, Tag, CalendarDays, X, Settings } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { ScratchIcon } from "@/components/ScratchIcon";
