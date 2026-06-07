@@ -45,7 +45,6 @@ function drainQueue() {
   visibleCount += 1;
   const options: ExternalToast = {
     duration: DEFAULT_DURATION[next.kind],
-    closeButton: true,
     ...next.options,
     onAutoClose: (toast) => {
       visibleCount = Math.max(0, visibleCount - 1);
