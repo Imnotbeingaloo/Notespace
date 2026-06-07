@@ -306,25 +306,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           onClick={onToggle}
           aria-label={collapsed ? "Open sidebar" : "Collapse sidebar"}
           title={collapsed ? "Open sidebar" : "Collapse sidebar"}
-          className={
-            collapsed
-              ? "group relative h-10 w-10 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
-              : "p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors"
-          }
+          className="p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
         >
-          {collapsed ? (
-            <>
-              <img
-                src="/logo.png"
-                alt=""
-                aria-hidden="true"
-                className="h-8 w-8 object-contain transition-opacity duration-150 group-hover:opacity-0"
-              />
-              <PanelLeftOpen className="absolute inset-0 m-auto h-5 w-5 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
-            </>
-          ) : (
-            <Menu className="h-4 w-4" />
-          )}
+          <Menu className="h-4 w-4" />
         </button>
       </div>
 
@@ -687,6 +671,25 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
       {collapsed && (
         <div className="flex-1 flex flex-col items-center py-3 gap-2">
+          <motion.button
+            onClick={() => onOpenHome?.()}
+            initial={{ opacity: 0, scale: 0.6, y: -6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+            whileHover={{ scale: 1.08, rotate: -3 }}
+            whileTap={{ scale: 0.94 }}
+            className="mb-1 p-1.5 rounded-xl notebook-hover"
+            title="Home — Notebook Archive"
+            aria-label="Home"
+          >
+            <motion.img
+              src="/logo.png"
+              alt="Notebook Archive"
+              className="h-9 w-9 object-contain"
+              animate={{ y: [0, -2, 0] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.button>
           {notebooks.map((nb) => (
             <button
               key={nb.id}
@@ -984,12 +987,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 </TooltipTrigger>
                 <TooltipContent side="right">Trash{trashCount > 0 ? ` (${trashCount})` : ""}</TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div><ThemeToggle /></div>
-                </TooltipTrigger>
-                <TooltipContent side="right">Theme</TooltipContent>
-              </Tooltip>
+              <ThemeToggle />
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button

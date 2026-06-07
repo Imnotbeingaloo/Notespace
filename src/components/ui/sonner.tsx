@@ -14,7 +14,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
       duration={3500}
       theme={theme as ToasterProps["theme"]}
       position="bottom-left"
-      closeButton
       visibleToasts={3}
       gap={10}
       offset={{ top: 20, right: 20, bottom: 20, left: 20 }}
@@ -24,17 +23,17 @@ const Toaster = ({ ...props }: ToasterProps) => {
       hotkey={["altKey", "KeyT"]}
       pauseWhenPageIsHidden
       toastOptions={{
-        unstyled: false,
+        unstyled: true,
         classNames: {
           toast:
-            "group pointer-events-auto !rounded-xl !border !border-border/70 !bg-card !text-card-foreground !shadow-xl !p-4 !gap-3 !font-sans !text-sm !w-[min(360px,calc(100vw-2rem))] data-[type=success]:!border-primary/40 data-[type=error]:!border-destructive/50 data-[type=warning]:!border-accent/50",
-          title: "!font-semibold !text-[13.5px] tracking-tight !leading-snug",
-          description: "!text-muted-foreground !text-xs !leading-relaxed !mt-0.5",
-          actionButton: "!bg-primary !text-primary-foreground !rounded-md !px-3 !py-1.5 !text-xs !font-medium",
-          cancelButton: "!bg-muted !text-muted-foreground !rounded-md",
-          closeButton:
-            "!bg-card !border !border-border/70 !text-muted-foreground hover:!text-foreground hover:!bg-muted !rounded-full !left-auto !right-2 !top-2 !translate-y-0 !h-6 !w-6 !flex !items-center !justify-center !transition-colors focus-visible:!outline-none focus-visible:!ring-2 focus-visible:!ring-ring [&>svg]:!h-3 [&>svg]:!w-3",
-          icon: "!shrink-0 data-[type=success]:!text-emerald-500 data-[type=error]:!text-rose-500 data-[type=warning]:!text-amber-500 data-[type=info]:!text-sky-500",
+            "group pointer-events-auto flex items-start gap-3 w-[min(360px,calc(100vw-2rem))] rounded-lg border border-border bg-card text-card-foreground shadow-md px-4 py-3 font-sans text-sm",
+          title: "font-medium text-[13.5px] leading-snug text-foreground",
+          description: "text-muted-foreground text-xs leading-relaxed mt-1",
+          actionButton:
+            "ml-auto inline-flex items-center rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:opacity-90",
+          cancelButton:
+            "inline-flex items-center rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-muted/80",
+          icon: "shrink-0 mt-0.5 [&_svg]:h-4 [&_svg]:w-4",
         },
       }}
       {...props}
