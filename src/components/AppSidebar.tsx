@@ -306,25 +306,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           onClick={onToggle}
           aria-label={collapsed ? "Open sidebar" : "Collapse sidebar"}
           title={collapsed ? "Open sidebar" : "Collapse sidebar"}
-          className={
-            collapsed
-              ? "group relative h-10 w-10 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
-              : "p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors"
-          }
+          className="p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
         >
-          {collapsed ? (
-            <>
-              <img
-                src="/logo.png"
-                alt=""
-                aria-hidden="true"
-                className="h-8 w-8 object-contain transition-opacity duration-150 group-hover:opacity-0"
-              />
-              <PanelLeftOpen className="absolute inset-0 m-auto h-5 w-5 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
-            </>
-          ) : (
-            <Menu className="h-4 w-4" />
-          )}
+          <Menu className="h-4 w-4" />
         </button>
       </div>
 
