@@ -445,18 +445,18 @@
     repeating-linear-gradient(
       to bottom,
       transparent 0,
-      transparent calc(2rem - 1px),
-      var(--paper-rule) calc(2rem - 1px),
-      var(--paper-rule) 2rem);
+      transparent calc(1.75rem - 1px),
+      var(--paper-rule) calc(1.75rem - 1px),
+      var(--paper-rule) 1.75rem);
   background-repeat: no-repeat, repeat;
-  background-size: 100% 100%, 100% 2rem;
+  background-size: 100% 100%, 100% 1.75rem;
   background-position: 0 0, 0 0;
   background-attachment: local, local;
   padding-left: 4rem !important;
   padding-top: 0 !important;
   padding-right: 0 !important;
   margin: 0 !important;
-  line-height: 2rem !important;
+  line-height: 1.75rem !important;
   border-radius: 0;
   min-height: calc(100vh - 8rem);
   width: 100%;
@@ -472,7 +472,7 @@
 .notebook-paper h2,
 .notebook-paper h3,
 .notebook-paper blockquote {
-  line-height: 2rem !important;
+  line-height: 1.75rem !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   background: transparent !important;
