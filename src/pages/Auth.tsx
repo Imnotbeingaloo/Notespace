@@ -226,13 +226,28 @@ const AuthPage = () => {
             </div>
 
             {error && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-sm text-destructive"
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive space-y-2"
+                role="alert"
               >
-                {error}
-              </motion.p>
+                <p className="leading-snug">{error}</p>
+                {errorAction === "signup" && mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("signup");
+                      setError("");
+                      setErrorAction(null);
+                    }}
+                    className="inline-flex items-center gap-1 text-xs font-medium underline-offset-2 hover:underline"
+                  >
+                    Create an account with this email
+                    <ArrowRight className="h-3 w-3" />
+                  </button>
+                )}
+              </motion.div>
             )}
 
             <button
