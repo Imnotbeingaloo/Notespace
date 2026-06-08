@@ -20,9 +20,46 @@ const AuthPage = () => {
     if (!authLoading && user) navigate("/", { replace: true });
   }, [user, authLoading, navigate]);
 
+  // Map raw Supabase error messages to friendly, specific guidance.
+  // Note: Supabase intentionally returns a generic "Invalid login credentials"
+  // for both "wrong password" and "no such account" to prevent email enumeration.
+  // We surface both possibilities and offer a one-tap path to Sign Up.
+  const friendlyError = (raw: string): { message: string; suggestSignup?: boolean } => {
+    const m = raw.toLowerCase();
+    if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
+      return {
+        message:
+          "We couldn't sign you in with those details. Either this email isn't registered yet, or the password doesn't match. If you're new, create an account — otherwise double-check your password.",
+        suggestSignup: true,
+      };
+    }
+    if (m.includes("email not confirmed") || m.includes("not confirmed")) {
+      return { message: "Please confirm your email first — check your inbox for the verification link." };
+    }
+    if (m.includes("user already registered") || m.includes("already registered") || m.includes("already exists")) {
+      return { message: "An account with this email already exists. Try signing in instead." };
+    }
+    if (m.includes("rate limit") || m.includes("too many")) {
+      return { message: "Too many attempts. Please wait a moment and try again." };
+    }
+    if (m.includes("password") && m.includes("weak")) {
+      return { message: "That password is too weak. Pick something longer or harder to guess." };
+    }
+    if (m.includes("password") && (m.includes("pwned") || m.includes("compromised") || m.includes("hibp"))) {
+      return { message: "This password has appeared in a known data breach. Please choose a different one." };
+    }
+    if (m.includes("network") || m.includes("failed to fetch")) {
+      return { message: "Network hiccup — please check your connection and try again." };
+    }
+    return { message: raw };
+  };
+
+  const [errorAction, setErrorAction] = useState<null | "signup">(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setErrorAction(null);
 
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
@@ -33,12 +70,17 @@ const AuthPage = () => {
 
     if (mode === "login") {
       const { error } = await signIn(email, password);
-      if (error) setError(error.message);
-      else navigate("/app");
+      if (error) {
+        const f = friendlyError(error.message);
+        setError(f.message);
+        if (f.suggestSignup) setErrorAction("signup");
+      } else navigate("/app");
     } else {
       const { error } = await signUp(email, password);
-      if (error) setError(error.message);
-      else {
+      if (error) {
+        const f = friendlyError(error.message);
+        setError(f.message);
+      } else {
         try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
         setCheckEmail(true);
       }
@@ -184,13 +226,28 @@ const AuthPage = () => {
             </div>
 
             {error && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-sm text-destructive"
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive space-y-2"
+                role="alert"
               >
-                {error}
-              </motion.p>
+                <p className="leading-snug">{error}</p>
+                {errorAction === "signup" && mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("signup");
+                      setError("");
+                      setErrorAction(null);
+                    }}
+                    className="inline-flex items-center gap-1 text-xs font-medium underline-offset-2 hover:underline"
+                  >
+                    Create an account with this email
+                    <ArrowRight className="h-3 w-3" />
+                  </button>
+                )}
+              </motion.div>
             )}
 
             <button
