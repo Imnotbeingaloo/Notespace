@@ -82,31 +82,33 @@ function ThemeController() {
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <ScrollToTop />
-            <ThemeController />
-            <PaperStyleTransitionOverlay />
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/app" element={<AppPage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/features" element={<FeaturesPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/how-it-works" element={<HowItWorksPage />} />
-              <Route path="/trash" element={<TrashPage />} />
-              <Route path="/app/temporary" element={<TemporaryWorkspacePage />} />
-              <Route path="/shared/:token" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><SharedNotePage /></Suspense>} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <MotionConfig reducedMotion="user">
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Sonner />
+          <BrowserRouter>
+            <AuthProvider>
+              <ScrollToTop />
+              <ThemeController />
+              <PaperStyleTransitionOverlay />
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/app" element={<AppPage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/features" element={<FeaturesPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/how-it-works" element={<HowItWorksPage />} />
+                <Route path="/trash" element={<TrashPage />} />
+                <Route path="/app/temporary" element={<TemporaryWorkspacePage />} />
+                <Route path="/shared/:token" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><SharedNotePage /></Suspense>} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </MotionConfig>
   </ThemeProvider>
 );
 
