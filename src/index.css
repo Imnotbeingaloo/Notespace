@@ -479,3 +479,21 @@
 }
 
 
+
+/* ============= Reduced motion preferences ============= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Framer Motion respects this via useReducedMotion(); for elements we can't
+     reach via JS, neutralize transforms so morph animations cross-fade only. */
+  .reduce-motion-safe {
+    transform: none !important;
+    animation: none !important;
+  }
+}
