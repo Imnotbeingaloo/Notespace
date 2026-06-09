@@ -250,10 +250,12 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                   <DropdownMenuTrigger asChild>
                     <button
                       data-testid="home-create-menu"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                      className="inline-flex w-48 items-center justify-between px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
                     >
-                      <Plus className="h-4 w-4" />
-                      Create
+                      <span className="inline-flex items-center gap-2">
+                        <Plus className="h-4 w-4" />
+                        Create
+                      </span>
                       <ChevronDown className="h-3.5 w-3.5 opacity-80" />
                     </button>
                   </DropdownMenuTrigger>
@@ -264,7 +266,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={onCreateSimpleNote}>
                       <StickyNote className="h-4 w-4 mr-2" />
-                      New Simple Note
+                      New Note
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
