@@ -21,16 +21,22 @@ const AuthPage = () => {
   }, [user, authLoading, navigate]);
 
   // Map raw Supabase error messages to friendly, specific guidance.
-  // Note: Supabase intentionally returns a generic "Invalid login credentials"
-  // for both "wrong password" and "no such account" to prevent email enumeration.
-  // We surface both possibilities and offer a one-tap path to Sign Up.
-  const friendlyError = (raw: string): { message: string; suggestSignup?: boolean } => {
+  // Supabase returns the same "Invalid login credentials" for both wrong
+  // password and unknown email. We treat that case as "probably unknown email"
+  // and auto-switch to Sign Up so the user can finish onboarding in one tap.
+  const friendlyError = (
+    raw: string,
+    mode: "login" | "signup"
+  ): { message: string; autoSwitchToSignup?: boolean } => {
     const m = raw.toLowerCase();
-    if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
+    if (m.includes("network") || m.includes("failed to fetch") || m.includes("timeout") || m.includes("fetch")) {
+      return { message: "We're experiencing a database sync issue right now. Please try again in a few moments." };
+    }
+    if (mode === "login" && (m.includes("invalid login credentials") || m.includes("invalid_credentials"))) {
       return {
         message:
-          "We couldn't sign you in with those details. Either this email isn't registered yet, or the password doesn't match. If you're new, create an account — otherwise double-check your password.",
-        suggestSignup: true,
+          "We couldn't find an account with this email — we've switched you to Sign Up so you can create one. If you already have an account, the password you entered didn't match.",
+        autoSwitchToSignup: true,
       };
     }
     if (m.includes("email not confirmed") || m.includes("not confirmed")) {
@@ -48,18 +54,12 @@ const AuthPage = () => {
     if (m.includes("password") && (m.includes("pwned") || m.includes("compromised") || m.includes("hibp"))) {
       return { message: "This password has appeared in a known data breach. Please choose a different one." };
     }
-    if (m.includes("network") || m.includes("failed to fetch")) {
-      return { message: "Network hiccup — please check your connection and try again." };
-    }
     return { message: raw };
   };
-
-  const [errorAction, setErrorAction] = useState<null | "signup">(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setErrorAction(null);
 
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
@@ -71,22 +71,32 @@ const AuthPage = () => {
     if (mode === "login") {
       const { error } = await signIn(email, password);
       if (error) {
-        const f = friendlyError(error.message);
+        const f = friendlyError(error.message, "login");
         setError(f.message);
-        if (f.suggestSignup) setErrorAction("signup");
-      } else navigate("/app");
+        if (f.autoSwitchToSignup) {
+          // Preserve email + password and flip to Sign Up mode automatically.
+          setMode("signup");
+        }
+      } else {
+        try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
+        navigate("/app");
+      }
     } else {
       const { error } = await signUp(email, password);
       if (error) {
-        const f = friendlyError(error.message);
+        const f = friendlyError(error.message, "signup");
         setError(f.message);
       } else {
-        try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+        try {
+          localStorage.setItem("pendingNamePrompt", "1");
+          sessionStorage.setItem("welcomeVariant", "new");
+        } catch {}
         setCheckEmail(true);
       }
     }
     setLoading(false);
   };
+
 
   const [verifying, setVerifying] = useState(false);
   const [verifyError, setVerifyError] = useState("");
@@ -229,26 +239,13 @@ const AuthPage = () => {
               <motion.div
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive space-y-2"
+                className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive"
                 role="alert"
               >
                 <p className="leading-snug">{error}</p>
-                {errorAction === "signup" && mode === "login" && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMode("signup");
-                      setError("");
-                      setErrorAction(null);
-                    }}
-                    className="inline-flex items-center gap-1 text-xs font-medium underline-offset-2 hover:underline"
-                  >
-                    Create an account with this email
-                    <ArrowRight className="h-3 w-3" />
-                  </button>
-                )}
               </motion.div>
             )}
+
 
             <button
               type="submit"
