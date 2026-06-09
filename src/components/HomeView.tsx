@@ -9,6 +9,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
+import { WelcomeBackDialog } from "@/components/WelcomeBackDialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
