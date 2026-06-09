@@ -38,6 +38,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
   const [retrying, setRetrying] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<null | { id: string; name: string }>(null);
   const [namePromptOpen, setNamePromptOpen] = useState(false);
+  const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -49,6 +50,15 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
     if (profileLoading) return;
     if (profile?.display_name) {
       setNamePromptOpen(false);
+      // Returning users: show "Nice to see you again" once per session.
+      try {
+        const variant = sessionStorage.getItem("welcomeVariant");
+        const shown = sessionStorage.getItem("welcomeShown");
+        if (variant === "returning" && !shown) {
+          sessionStorage.setItem("welcomeShown", "1");
+          setWelcomeBackOpen(true);
+        }
+      } catch {}
       return;
     }
     setNamePromptOpen(true);
@@ -58,6 +68,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
     if (!open && !profile?.display_name) return;
     setNamePromptOpen(open);
   };
+
 
 
 
