@@ -300,7 +300,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                   className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/40 bg-primary/[0.06] text-primary text-sm font-medium hover:bg-primary/[0.12] transition-all duration-150 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
                 >
                   <StickyNote className="h-4 w-4 transition-transform duration-200 group-hover:rotate-[-3deg]" />
-                  Simple Note
+                  New Note
                 </button>
               )
             )}
