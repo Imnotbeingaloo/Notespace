@@ -54,6 +54,24 @@ function AppContent() {
     prevIsMobileRef.current = isMobile;
   }, [isMobile]);
   const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createSimpleNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
+
+  // Dynamic browser tab title — reflects the current note / notebook / view
+  useEffect(() => {
+    const base = "Notebook Archive";
+    let title = base;
+    if (showHome) {
+      title = `Home · ${base}`;
+    } else if (activeNote?.title && activeNotebook?.name) {
+      title = `${activeNote.title} — ${activeNotebook.name} · ${base}`;
+    } else if (activeNotebook?.name) {
+      title = `${activeNotebook.name} · ${base}`;
+    }
+    document.title = title;
+    return () => {
+      document.title = base;
+    };
+  }, [showHome, activeNote?.title, activeNotebook?.name]);
+
   const hydratingDeepLink = !!urlNotebook && notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const deepLinkMissing = !!urlNotebook && !notebooksLoading && !notebooks.find((n) => n.id === urlNotebook);
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
