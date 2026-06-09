@@ -537,6 +537,12 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
       />
 
       <NamePromptDialog open={namePromptOpen} onOpenChange={handleNamePromptChange} />
+      <WelcomeBackDialog
+        name={profile?.display_name ?? ""}
+        open={welcomeBackOpen}
+        onOpenChange={setWelcomeBackOpen}
+      />
+
     </div>
   );
 }
