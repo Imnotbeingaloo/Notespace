@@ -250,7 +250,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                   <DropdownMenuTrigger asChild>
                     <button
                       data-testid="home-create-menu"
-                      className="inline-flex w-48 items-center justify-between px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                      className="inline-flex items-center gap-2 pl-4 pr-3 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
                     >
                       <span className="inline-flex items-center gap-2">
                         <Plus className="h-4 w-4" />
