@@ -31,18 +31,23 @@ export function PageHeader({ activePage }: PageHeaderProps) {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-4 inset-x-0 mx-auto z-50 w-[94%] max-w-5xl transition-all duration-500 rounded-2xl ${
+      className={`fixed top-4 inset-x-0 mx-auto z-50 w-[92%] max-w-5xl transition-all duration-500 rounded-2xl ${
         scrolled ? "border border-border bg-background/70 backdrop-blur-xl shadow-lg shadow-primary/5" : "bg-transparent"
       }`}
     >
-      <div className="flex items-center justify-between gap-3 md:gap-6 lg:gap-8 px-3 sm:px-5 lg:px-6 py-3 lg:py-4">
-        <Link to="/" className="flex items-center gap-2 min-w-0 shrink-0">
+      <div className="flex items-center justify-between gap-3 md:gap-6 px-3 sm:px-5 py-3">
+        <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0">
           <img
             src="/logo.png"
             alt="Notebook Archive"
+            width={32}
+            height={32}
+            loading="eager"
+            decoding="sync"
+            fetchPriority="high"
             className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0"
           />
-          <span className="font-serif text-base sm:text-lg md:text-xl font-bold text-foreground translate-y-[1px] whitespace-nowrap">
+          <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">
             Notebook Archive
           </span>
         </Link>
