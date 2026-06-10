@@ -38,7 +38,7 @@ export function ShufflerCard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-[1.5rem] md:rounded-[2rem] border border-border bg-card p-4 md:p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col h-full"
+      className="rounded-[1.5rem] md:rounded-[2rem] border border-border/80 bg-card p-4 md:p-6 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.18),0_2px_6px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_20px_45px_-15px_rgba(15,23,42,0.25),0_4px_10px_-2px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full"
     >
       <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
         <Brain className="h-5 w-5 text-primary" />
@@ -112,7 +112,7 @@ export function TypewriterCard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1 }}
-      className="rounded-[1.5rem] md:rounded-[2rem] border border-border bg-card p-4 md:p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col h-full"
+      className="rounded-[1.5rem] md:rounded-[2rem] border border-border/80 bg-card p-4 md:p-6 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.18),0_2px_6px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_20px_45px_-15px_rgba(15,23,42,0.25),0_4px_10px_-2px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full"
     >
       <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
         <ScanText className="h-5 w-5 text-accent" />
@@ -173,7 +173,7 @@ export function SchedulerCard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="rounded-[1.5rem] md:rounded-[2rem] border border-border bg-card p-4 md:p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col h-full"
+      className="rounded-[1.5rem] md:rounded-[2rem] border border-border/80 bg-card p-4 md:p-6 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.18),0_2px_6px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_20px_45px_-15px_rgba(15,23,42,0.25),0_4px_10px_-2px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full"
     >
       <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
         <Mic className="h-5 w-5 text-primary" />
