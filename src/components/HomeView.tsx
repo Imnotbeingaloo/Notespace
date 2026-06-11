@@ -250,16 +250,14 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                   <DropdownMenuTrigger asChild>
                     <button
                       data-testid="home-create-menu"
-                      className="inline-flex min-w-[10.5rem] items-center justify-between gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                      className="inline-flex w-[160px] max-w-[160px] items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
                     >
-                      <span className="inline-flex items-center gap-2">
-                        <Plus className="h-4 w-4" />
-                        Create
-                      </span>
-                      <ChevronDown className="h-3.5 w-3.5 opacity-80" />
+                      <Plus className="h-4 w-4" />
+                      <span>Create</span>
+                      <ChevronDown className="h-3.5 w-3.5 opacity-80 ml-0.5" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[10.5rem]">
+                  <DropdownMenuContent align="start" className="w-[160px]">
                     <DropdownMenuItem onClick={onCreateNotebook}>
                       <BookOpen className="h-4 w-4 mr-2" />
                       New Notebook
