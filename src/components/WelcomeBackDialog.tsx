@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Sparkles } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 interface WelcomeBackDialogProps {
   name: string;
@@ -10,9 +10,8 @@ interface WelcomeBackDialogProps {
 }
 
 /**
- * Lightweight "Nice to see you again, [Name]!" overlay shown once per
- * session right after a returning user signs in. Auto-dismisses into the
- * app after a brief, polished delay.
+ * Minimalist "Nice to see you again, [Name]" overlay shown once per session
+ * for returning users. Premium aesthetic matching the editor surface.
  */
 export function WelcomeBackDialog({ name, open, onOpenChange }: WelcomeBackDialogProps) {
   const reduceMotion = useReducedMotion();
@@ -24,7 +23,7 @@ export function WelcomeBackDialog({ name, open, onOpenChange }: WelcomeBackDialo
     if (open) {
       timer.current = window.setTimeout(
         () => onOpenChange(false),
-        reduceMotion ? 900 : 2200
+        reduceMotion ? 900 : 2400
       );
     }
     return () => {
@@ -36,41 +35,54 @@ export function WelcomeBackDialog({ name, open, onOpenChange }: WelcomeBackDialo
     <Dialog open={visible} onOpenChange={onOpenChange}>
       <DialogContent
         hideClose
-        className="sm:max-w-md p-0 overflow-hidden border-border/60 bg-card/95 backdrop-blur-xl shadow-2xl"
+        className="sm:max-w-[420px] p-0 overflow-hidden border border-border/40 bg-card/90 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.35)]"
       >
-        <div className="pointer-events-none absolute inset-0 opacity-70">
-          <div className="absolute -top-24 -right-16 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
-          <div className="absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-accent/20 blur-3xl" />
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
         </div>
-        <div className="relative px-7 py-8 text-center min-h-[220px] flex flex-col items-center justify-center">
+
+        <div className="relative px-8 py-10 text-center flex flex-col items-center">
           <AnimatePresence>
             <motion.div
               key="icon"
-              initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
-              animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              transition={{ duration: reduceMotion ? 0.1 : 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-xl shadow-primary/40 mb-5"
+              initial={{ scale: 0.7, opacity: 0, y: 6 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ duration: reduceMotion ? 0.1 : 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl border border-border/50 bg-background/60 shadow-inner"
             >
-              <Sparkles className="h-6 w-6 text-primary-foreground" />
+              <BookOpen className="h-5 w-5 text-primary" strokeWidth={1.75} />
             </motion.div>
           </AnimatePresence>
-          <motion.h2
+
+          <motion.p
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: reduceMotion ? 0 : 0.15, duration: 0.4 }}
-            className="font-serif text-2xl text-foreground tracking-tight"
+            transition={{ delay: 0.1, duration: 0.35 }}
+            className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-3"
           >
-            Nice to see you again,{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Welcome back
+          </motion.p>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: reduceMotion ? 0 : 0.18, duration: 0.4 }}
+            className="font-serif text-[1.6rem] leading-tight text-foreground tracking-tight"
+          >
+            Nice to see you again,
+            <br />
+            <span className="bg-gradient-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
               {name}
             </span>
-            !
           </motion.h2>
+
           <motion.div
-            className="mt-5 h-0.5 w-40 rounded-full bg-gradient-to-r from-transparent via-primary/60 to-transparent"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: reduceMotion ? 0.1 : 1.8, ease: "linear" }}
+            className="mt-7 h-px w-full max-w-[220px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+            initial={{ scaleX: 0, opacity: 0.4 }}
+            animate={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: reduceMotion ? 0.1 : 2.0, ease: "linear" }}
             style={{ transformOrigin: "left" }}
           />
         </div>
