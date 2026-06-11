@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Mail, Lock, ArrowRight, Loader2, ArrowLeft } from "lucide-react";
+import { BookOpen, Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+
+const BTN_PRESS = "transition-all duration-100 active:scale-95";
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
@@ -20,10 +23,6 @@ const AuthPage = () => {
     if (!authLoading && user) navigate("/", { replace: true });
   }, [user, authLoading, navigate]);
 
-  // Map raw Supabase error messages to friendly, specific guidance.
-  // Supabase returns the same "Invalid login credentials" for both wrong
-  // password and unknown email. We treat that case as "probably unknown email"
-  // and auto-switch to Sign Up so the user can finish onboarding in one tap.
   const friendlyError = (
     raw: string,
     mode: "login" | "signup"
@@ -73,10 +72,7 @@ const AuthPage = () => {
       if (error) {
         const f = friendlyError(error.message, "login");
         setError(f.message);
-        if (f.autoSwitchToSignup) {
-          // Preserve email + password and flip to Sign Up mode automatically.
-          setMode("signup");
-        }
+        if (f.autoSwitchToSignup) setMode("signup");
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
         navigate("/app");
@@ -92,14 +88,42 @@ const AuthPage = () => {
           sessionStorage.setItem("welcomeVariant", "new");
         } catch {}
         setCheckEmail(true);
+        setResendCountdown(45);
       }
     }
     setLoading(false);
   };
 
-
   const [verifying, setVerifying] = useState(false);
   const [verifyError, setVerifyError] = useState("");
+  const [resendCountdown, setResendCountdown] = useState(0);
+  const [resending, setResending] = useState(false);
+  const [resendNotice, setResendNotice] = useState("");
+
+  // Countdown ticker for resend throttle
+  useEffect(() => {
+    if (resendCountdown <= 0) return;
+    const t = setTimeout(() => setResendCountdown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCountdown]);
+
+  const handleResend = async () => {
+    if (resendCountdown > 0 || resending) return;
+    setResending(true);
+    setResendNotice("");
+    setVerifyError("");
+    try {
+      const { error } = await supabase.auth.resend({ type: "signup", email });
+      if (error) {
+        setVerifyError(friendlyError(error.message, "signup").message);
+      } else {
+        setResendNotice("Verification email sent again. Check your inbox.");
+        setResendCountdown(45);
+      }
+    } finally {
+      setResending(false);
+    }
+  };
 
   const handleVerified = async () => {
     setVerifyError("");
@@ -123,7 +147,7 @@ const AuthPage = () => {
       <div className="min-h-screen flex items-center justify-center bg-background px-4 relative">
         <button
           onClick={() => navigate("/")}
-          className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted"
+          className={`absolute left-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
         >
           <ArrowLeft className="h-4 w-4" />
           Back to website
@@ -143,19 +167,47 @@ const AuthPage = () => {
           <button
             onClick={handleVerified}
             disabled={verifying}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
           >
             {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <>I've verified — sign me in <ArrowRight className="h-4 w-4" /></>}
           </button>
+
           {verifyError && (
             <p className="mt-3 text-sm text-destructive">{verifyError}</p>
           )}
-          <button
-            onClick={() => { setCheckEmail(false); setVerifyError(""); }}
-            className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Use a different email
-          </button>
+          {resendNotice && (
+            <p className="mt-3 text-sm text-emerald-600 dark:text-emerald-400">{resendNotice}</p>
+          )}
+
+          <div className="mt-5 flex flex-col sm:flex-row gap-2">
+            <button
+              onClick={handleResend}
+              disabled={resendCountdown > 0 || resending}
+              className={`flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-lg border border-border bg-card text-foreground text-sm font-medium hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed ${BTN_PRESS}`}
+            >
+              {resending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <RotateCw className="h-3.5 w-3.5" />
+                  {resendCountdown > 0
+                    ? `Resend in ${resendCountdown}s`
+                    : "Didn't get an email? Send again"}
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => {
+                setCheckEmail(false);
+                setVerifyError("");
+                setResendNotice("");
+                setResendCountdown(0);
+              }}
+              className={`flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted text-sm font-medium ${BTN_PRESS}`}
+            >
+              Use a different email
+            </button>
+          </div>
         </motion.div>
       </div>
     );
@@ -165,7 +217,7 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-background px-4 relative">
       <button
         onClick={() => navigate("/")}
-        className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted"
+        className={`absolute left-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
       >
         <ArrowLeft className="h-4 w-4" />
         Back to website
@@ -190,7 +242,7 @@ const AuthPage = () => {
               <button
                 key={m}
                 onClick={() => { setMode(m); setError(""); }}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 active:scale-95 ${
                   mode === m
                     ? "bg-background text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -202,8 +254,6 @@ const AuthPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
-
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
               <div className="relative">
@@ -246,11 +296,10 @@ const AuthPage = () => {
               </motion.div>
             )}
 
-
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
             >
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
