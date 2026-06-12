@@ -86,12 +86,14 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
   const allFiltered = useMemo<LibraryItem[]>(() => {
     const q = query.trim().toLowerCase();
-    const items: LibraryItem[] = notebooks.flatMap((nb) => {
+    const items = notebooks.reduce<LibraryItem[]>((acc, nb) => {
       if (isSimpleNotebook(nb.id)) {
-        return nb.notes.map((note) => ({ kind: "note" as const, id: note.id, notebookId: nb.id, note }));
+        nb.notes.forEach((note) => acc.push({ kind: "note", id: note.id, notebookId: nb.id, note }));
+      } else {
+        acc.push({ kind: "notebook", id: nb.id, notebook: nb });
       }
-      return [{ kind: "notebook" as const, id: nb.id, notebook: nb }];
-    });
+      return acc;
+    }, []);
 
     const filtered = !q
       ? items
@@ -174,7 +176,9 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
         case "Enter":
         case " ":
           e.preventDefault();
-          onOpenNotebook(paged[idx].id);
+          const item = paged[idx];
+          if (item.kind === "note") onOpenNote?.(item.notebookId, item.note.id);
+          else onOpenNotebook(item.notebook.id);
           return;
         case "ArrowRight":
           next = Math.min(idx + 1, paged.length - 1);
