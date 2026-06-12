@@ -936,6 +936,6 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           onApplyEdit={handleAIEdit}
         />
       </motion.div>
-    </AnimatePresence>
+
   );
 }
