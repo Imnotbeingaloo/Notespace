@@ -16,12 +16,15 @@ export interface Note {
   id: string;
   title: string;
   content: string;
+  emoji?: string;
   attachments: Attachment[];
   tags: string[];
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
 }
+
+type NoteUpdates = Partial<Pick<Note, "title" | "content" | "attachments" | "tags" | "emoji">>;
 
 export interface Notebook {
   id: string;
@@ -50,12 +53,12 @@ interface NotebookContextType {
   createScratchNote: () => Promise<{ notebookId: string; noteId: string } | null>;
   isScratchNotebook: (notebookId: string | null) => boolean;
   ensureSimpleNotebook: () => Promise<string | null>;
-  createSimpleNote: () => Promise<{ notebookId: string; noteId: string } | null>;
+  createSimpleNote: (title?: string, emoji?: string) => Promise<{ notebookId: string; noteId: string } | null>;
   isSimpleNotebook: (notebookId: string | null) => boolean;
   moveNoteToNotebook: (fromNotebookId: string, noteId: string, toNotebookId: string) => Promise<boolean>;
-  createNote: (notebookId: string, title?: string, content?: string) => Promise<string | null>;
+  createNote: (notebookId: string, title?: string, content?: string, emoji?: string) => Promise<string | null>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
-  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
+  updateNote: (notebookId: string, noteId: string, updates: NoteUpdates) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
   restoreNotebook: (id: string) => Promise<void>;
   restoreNote: (notebookId: string, noteId: string) => Promise<void>;
@@ -65,13 +68,17 @@ interface NotebookContextType {
   activeNote: Note | null;
   loading: boolean;
   refreshData: () => Promise<void>;
-  setOverride: (override: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => void;
+  setOverride: (override: { note: Note; onUpdate: (updates: NoteUpdates) => void } | null) => void;
   isOverrideActive: boolean;
 }
 
 const NotebookContext = createContext<NotebookContextType | null>(null);
 
 const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+const SIMPLE_NOTES_NAME = "Notes";
+const SIMPLE_NOTES_EMOJI = "📝";
+const LEGACY_SIMPLE_NOTES_NAME = "Simple Notes";
+const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
 
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -83,7 +90,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     () => (typeof window !== "undefined" ? localStorage.getItem("activeNoteId") : null)
   );
   const [loading, setLoading] = useState(true);
-  const [override, setOverrideState] = useState<{ note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null>(null);
+  const [override, setOverrideState] = useState<{ note: Note; onUpdate: (updates: NoteUpdates) => void } | null>(null);
 
   const OVERRIDE_NB_ID = "__override__";
 
@@ -130,7 +137,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const setOverride = useCallback((next: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => {
+  const setOverride = useCallback((next: { note: Note; onUpdate: (updates: NoteUpdates) => void } | null) => {
     setOverrideState(next);
   }, []);
 
@@ -152,6 +159,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       ...nb,
       notes: (nts ?? []).filter((n: any) => n.notebook_id === nb.id).map((n: any) => ({
         ...n,
+        emoji: n.emoji || "📝",
         attachments: (n.attachments as Attachment[]) || [],
         tags: (n.tags as string[]) || [],
       })),
@@ -354,17 +362,18 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
 
 
-  const createNote = useCallback(async (notebookId: string, title?: string, content?: string): Promise<string | null> => {
+  const createNote = useCallback(async (notebookId: string, title?: string, content?: string, emoji?: string): Promise<string | null> => {
     if (!user) return null;
     const requested = (title || "Untitled Note").trim() || "Untitled Note";
     const finalTitle = uniqueTitleIn(notebookId, requested);
+    const finalEmoji = emoji || NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
     const { data } = await supabase
       .from("notes")
-      .insert({ notebook_id: notebookId, user_id: user.id, title: finalTitle, content: content || "" })
+      .insert({ notebook_id: notebookId, user_id: user.id, title: finalTitle, content: content || "", emoji: finalEmoji } as any)
       .select()
       .single();
     if (data) {
-      const note: Note = { ...data, attachments: (data.attachments as unknown as Attachment[]) || [], deleted_at: null };
+      const note: Note = { ...(data as any), emoji: (data as any).emoji || finalEmoji, attachments: (data.attachments as unknown as Attachment[]) || [], tags: ((data as any).tags as string[]) || [], deleted_at: null };
       setAllNotebooks((prev) =>
         prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb)
       );
@@ -385,34 +394,45 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const ensureSimpleNotebook = useCallback(async (): Promise<string | null> => {
     if (!user) return null;
-    const existing = allNotebooks.find((n) => !n.deleted_at && n.name === "Simple Notes" && n.emoji === "📝");
-    if (existing) return existing.id;
-    const id = await createNotebook("Simple Notes", "📝");
+    const existing = allNotebooks.find((n) => !n.deleted_at && (n.name === SIMPLE_NOTES_NAME || n.name === LEGACY_SIMPLE_NOTES_NAME) && n.emoji === SIMPLE_NOTES_EMOJI);
+    if (existing) {
+      if (existing.name !== SIMPLE_NOTES_NAME) {
+        await supabase.from("notebooks").update({ name: SIMPLE_NOTES_NAME } as any).eq("id", existing.id);
+        setAllNotebooks((prev) => prev.map((n) => n.id === existing.id ? { ...n, name: SIMPLE_NOTES_NAME } : n));
+      }
+      return existing.id;
+    }
+    const id = await createNotebook(SIMPLE_NOTES_NAME, SIMPLE_NOTES_EMOJI);
     return id;
   }, [user, allNotebooks, createNotebook]);
 
-  const createSimpleNote = useCallback(async (): Promise<{ notebookId: string; noteId: string } | null> => {
+  const createSimpleNote = useCallback(async (title?: string, emoji?: string): Promise<{ notebookId: string; noteId: string } | null> => {
     if (!user) return null;
     const nbId = await ensureSimpleNotebook();
     if (!nbId) return null;
-    const title = uniqueTitleIn(nbId, "Simple note");
+    const requested = (title || "Untitled Note").trim() || "Untitled Note";
+    const finalTitle = uniqueTitleIn(nbId, requested);
+    const finalEmoji = emoji || NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
     const { data, error } = await supabase
       .from("notes")
-      .insert({ notebook_id: nbId, user_id: user.id, title, content: "" })
+      .insert({ notebook_id: nbId, user_id: user.id, title: finalTitle, content: "", emoji: finalEmoji } as any)
       .select()
       .single();
     if (error || !data) return null;
-    const note: Note = { ...(data as any), attachments: [], tags: [], deleted_at: null };
+    const note: Note = { ...(data as any), emoji: (data as any).emoji || finalEmoji, attachments: [], tags: [], deleted_at: null };
     setAllNotebooks((prev) => prev.map((n) => n.id === nbId ? { ...n, notes: [...n.notes, note] } : n));
     setActiveNotebookId(nbId);
     setActiveNoteId(data.id);
+    if (finalTitle !== requested) {
+      toast(`Renamed to "${finalTitle}" — that title was already used in Notes.`);
+    }
     return { notebookId: nbId, noteId: data.id };
   }, [user, ensureSimpleNotebook, uniqueTitleIn]);
 
   const isSimpleNotebook = useCallback((notebookId: string | null) => {
     if (!notebookId) return false;
     const nb = allNotebooks.find((n) => n.id === notebookId);
-    return !!nb && nb.name === "Simple Notes" && nb.emoji === "📝";
+    return !!nb && (nb.name === SIMPLE_NOTES_NAME || nb.name === LEGACY_SIMPLE_NOTES_NAME) && nb.emoji === SIMPLE_NOTES_EMOJI;
   }, [allNotebooks]);
 
   const moveNoteToNotebook = useCallback(async (fromNotebookId: string, noteId: string, toNotebookId: string): Promise<boolean> => {
@@ -505,7 +525,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [activeNoteId, allNotebooks]);
 
   const updateNote = useCallback(
-    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => {
+    async (notebookId: string, noteId: string, updates: NoteUpdates) => {
       // Override path: temp notes don't live in `notes` table
       if (override && noteId === override.note.id) {
         override.onUpdate(updates);

@@ -63,21 +63,24 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     refreshData,
     createScratchNote,
     ensureSimpleNotebook,
+    isSimpleNotebook,
   } = useNotebooks();
 
   // Top-level vs nested notebooks
-  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id), [notebooks]);
+  const simpleNotebook = useMemo(() => notebooks.find((nb) => isSimpleNotebook(nb.id)) ?? null, [notebooks, isSimpleNotebook]);
+  const standaloneNotes = simpleNotebook?.notes ?? [];
+  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id && !isSimpleNotebook(nb.id)), [notebooks, isSimpleNotebook]);
   const childrenByParent = useMemo(() => {
     const map = new Map<string, typeof notebooks>();
     notebooks.forEach((nb) => {
-      if (nb.parent_id) {
+      if (nb.parent_id && !isSimpleNotebook(nb.id)) {
         const arr = map.get(nb.parent_id) || [];
         arr.push(nb);
         map.set(nb.parent_id, arr);
       }
     });
     return map;
-  }, [notebooks]);
+  }, [notebooks, isSimpleNotebook]);
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
   const [newNotebookOpen, setNewNotebookOpen] = useState(false);
@@ -386,6 +389,57 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
+            <AnimatePresence>
+              {standaloneNotes.map((note) => (
+                <motion.div
+                  key={note.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.2 }}
+                  onDragStartCapture={(e) => {
+                    if (!simpleNotebook) return;
+                    setDragNoteId(note.id);
+                    setDragNoteFromNb(simpleNotebook.id);
+                    (e as React.DragEvent<HTMLDivElement>).dataTransfer.effectAllowed = "move";
+                  }}
+                  onDragEnd={() => {
+                    setDragNoteId(null);
+                    setDragNoteFromNb(null);
+                    setDragOverNoteId(null);
+                  }}
+                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
+                    activeNoteId === note.id
+                      ? "bg-primary/10 text-foreground font-medium"
+                      : "text-sidebar-foreground notebook-hover"
+                  } ${dragNoteId === note.id ? "opacity-40" : ""}`}
+                  onClick={() => {
+                    if (!simpleNotebook) return;
+                    setActiveNotebookId(simpleNotebook.id);
+                    setActiveNoteId(note.id);
+                    onSelectNote?.();
+                  }}
+                >
+                  <span className="text-base leading-none">{note.emoji || "📝"}</span>
+                  <span className="truncate flex-1 text-sm">{note.title}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!simpleNotebook) return;
+                      showConfirm(
+                        "Move to Trash?",
+                        `"${note.title}" will be moved to Trash. You can restore it later.`,
+                        () => deleteNote(simpleNotebook.id, note.id),
+                        "Move to Trash"
+                      );
+                    }}
+                    className="opacity-0 group-hover/note:opacity-100 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
             <AnimatePresence>
               {topLevelNotebooks.map((nb) => (
                 <motion.div

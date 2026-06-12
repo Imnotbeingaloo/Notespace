@@ -15,17 +15,26 @@ import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
+  onOpenNote?: (notebookId: string, noteId: string) => void;
   onCreateNotebook?: () => void;
   onCreateScratchNote?: () => void;
   onCreateSimpleNote?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
+type LibraryItem =
+  | { kind: "notebook"; id: string; notebook: any }
+  | { kind: "note"; id: string; notebookId: string; note: any; deleteNotebookId?: string };
+
+const looksLikeStandaloneNoteWrapper = (nb: any) => {
+  const onlyNote = nb.notes?.length === 1 ? nb.notes[0] : null;
+  return !nb.parent_id && !!onlyNote && onlyNote.title?.trim().toLowerCase() === nb.name?.trim().toLowerCase();
+};
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
-  const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
+export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
+  const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData, isSimpleNotebook } = useNotebooks();
   const navigate = useNavigate();
   const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
@@ -36,7 +45,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
   const [loadingMore, setLoadingMore] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
-  const [pendingDelete, setPendingDelete] = useState<null | { id: string; name: string }>(null);
+  const [pendingDelete, setPendingDelete] = useState<null | { kind: "notebook"; id: string; name: string } | { kind: "note"; notebookId: string; noteId: string; name: string; deleteNotebookId?: string }>(null);
   const [namePromptOpen, setNamePromptOpen] = useState(false);
   const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -80,26 +89,39 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
     );
   }, []);
 
-  const allFiltered = useMemo(() => {
+  const allFiltered = useMemo<LibraryItem[]>(() => {
     const q = query.trim().toLowerCase();
+    const items = notebooks.reduce<LibraryItem[]>((acc, nb) => {
+      if (isSimpleNotebook(nb.id)) {
+        nb.notes.forEach((note) => acc.push({ kind: "note", id: note.id, notebookId: nb.id, note }));
+      } else if (looksLikeStandaloneNoteWrapper(nb)) {
+        acc.push({ kind: "note", id: nb.notes[0].id, notebookId: nb.id, note: { ...nb.notes[0], emoji: nb.notes[0].emoji || nb.emoji }, deleteNotebookId: nb.id });
+      } else {
+        acc.push({ kind: "notebook", id: nb.id, notebook: nb });
+      }
+      return acc;
+    }, []);
+
     const filtered = !q
-      ? [...notebooks]
-      : notebooks.filter(
-          (nb) =>
-            nb.name.toLowerCase().includes(q) ||
-            nb.notes.some(
-              (n) => n.title.toLowerCase().includes(q) || n.content?.toLowerCase().includes(q)
-            )
-        );
+      ? items
+      : items.filter((item) => {
+          if (item.kind === "note") {
+            return item.note.title.toLowerCase().includes(q) || item.note.content?.toLowerCase().includes(q);
+          }
+          const nb = item.notebook;
+          return nb.name.toLowerCase().includes(q) || nb.notes.some((n: any) => n.title.toLowerCase().includes(q) || n.content?.toLowerCase().includes(q));
+        });
 
     filtered.sort((a, b) => {
-      if (sort === "title") return a.name.localeCompare(b.name);
-      const aT = new Date(lastUpdated(a)).getTime();
-      const bT = new Date(lastUpdated(b)).getTime();
+      const aTitle = a.kind === "note" ? a.note.title : a.notebook.name;
+      const bTitle = b.kind === "note" ? b.note.title : b.notebook.name;
+      if (sort === "title") return aTitle.localeCompare(bTitle);
+      const aT = new Date(a.kind === "note" ? a.note.updated_at : lastUpdated(a.notebook)).getTime();
+      const bT = new Date(b.kind === "note" ? b.note.updated_at : lastUpdated(b.notebook)).getTime();
       return sort === "newest" ? bT - aT : aT - bT;
     });
     return filtered;
-  }, [notebooks, query, sort, lastUpdated]);
+  }, [notebooks, query, sort, lastUpdated, isSimpleNotebook]);
 
   const paged = useMemo(() => allFiltered.slice(0, visible), [allFiltered, visible]);
   const hasMore = visible < allFiltered.length;
@@ -161,7 +183,9 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
         case "Enter":
         case " ":
           e.preventDefault();
-          onOpenNotebook(paged[idx].id);
+          const item = paged[idx];
+          if (item.kind === "note") onOpenNote?.(item.notebookId, item.note.id);
+          else onOpenNotebook(item.notebook.id);
           return;
         case "ArrowRight":
           next = Math.min(idx + 1, paged.length - 1);
@@ -404,12 +428,18 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
               aria-label="Notebooks"
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
             >
-              {paged.map((nb, idx) => {
-                const noteCount = nb.notes?.length ?? 0;
-                const preview = nb.notes?.slice(0, 3) ?? [];
+              {paged.map((item, idx) => {
+                const isNote = item.kind === "note";
+                const nb = isNote ? null : item.notebook;
+                const note = isNote ? item.note : null;
+                const noteCount = isNote ? 1 : nb.notes?.length ?? 0;
+                const preview = isNote ? [] : nb.notes?.slice(0, 3) ?? [];
+                const title = isNote ? note.title : nb.name;
+                const emoji = isNote ? note.emoji || "📝" : nb.emoji;
+                const updatedAt = isNote ? note.updated_at : lastUpdated(nb);
                 return (
                   <motion.div
-                    key={nb.id}
+                    key={item.id}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: Math.min(idx * 0.03, 0.3), ease: [0.16, 1, 0.3, 1] }}
@@ -421,10 +451,14 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setPendingDelete({ id: nb.id, name: nb.name });
+                        setPendingDelete(
+                          isNote
+                            ? { kind: "note", notebookId: item.notebookId, noteId: note.id, name: title, deleteNotebookId: item.deleteNotebookId }
+                            : { kind: "notebook", id: nb.id, name: title }
+                        );
                       }}
                       className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus:opacity-100 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-all"
-                      aria-label={`Delete ${nb.name}`}
+                      aria-label={`Delete ${title}`}
                       title="Move to Trash"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -437,22 +471,25 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                       tabIndex={focusedIdx === idx ? 0 : -1}
                       onFocus={() => setFocusedIdx(idx)}
                       onKeyDown={(e) => onCardKeyDown(e, idx)}
-                      onClick={() => onOpenNotebook(nb.id)}
+                      onClick={() => {
+                        if (isNote) onOpenNote?.(item.notebookId, note.id);
+                        else onOpenNotebook(nb.id);
+                      }}
                       className="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-2xl"
                     >
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/20 opacity-70 group-hover:opacity-100 transition-opacity" />
                       <div className="p-5">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="text-3xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
-                            {nb.emoji}
+                            {emoji}
                           </div>
                           <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
-                            {noteCount} {noteCount === 1 ? "note" : "notes"}
+                            {isNote ? "note" : `${noteCount} ${noteCount === 1 ? "note" : "notes"}`}
                           </span>
                         </div>
 
                         <h3 className="font-serif font-bold text-base text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
-                          {nb.name}
+                          {title}
                         </h3>
 
                         {preview.length > 0 ? (
@@ -477,7 +514,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
                         )}
 
                         <div className="text-[10px] text-muted-foreground/70 font-mono pt-2 border-t border-border/60">
-                          Updated {formatDate(lastUpdated(nb))}
+                          Updated {formatDate(updatedAt)}
                         </div>
                       </div>
                     </button>
@@ -526,11 +563,15 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
         open={!!pendingDelete}
         onOpenChange={(o) => !o && setPendingDelete(null)}
         title="Move to Trash?"
-        description={pendingDelete ? `"${pendingDelete.name}" and all its notes will be moved to Trash. You can restore them later.` : ""}
+        description={pendingDelete ? (pendingDelete.kind === "note" ? `"${pendingDelete.name}" will be moved to Trash. You can restore it later.` : `"${pendingDelete.name}" and all its notes will be moved to Trash. You can restore them later.`) : ""}
         confirmLabel="Move to Trash"
         onConfirm={async () => {
           if (pendingDelete) {
-            await deleteNotebook(pendingDelete.id);
+            if (pendingDelete.kind === "note") {
+              if (pendingDelete.deleteNotebookId) await deleteNotebook(pendingDelete.deleteNotebookId);
+              else await deleteNote(pendingDelete.notebookId, pendingDelete.noteId);
+            }
+            else await deleteNotebook(pendingDelete.id);
             setPendingDelete(null);
           }
         }}
