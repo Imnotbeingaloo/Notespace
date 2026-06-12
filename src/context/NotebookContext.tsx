@@ -163,6 +163,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       ...nb,
       notes: (nts ?? []).filter((n: any) => n.notebook_id === nb.id).map((n: any) => ({
         ...n,
+        emoji: n.emoji || "📝",
         attachments: (n.attachments as Attachment[]) || [],
         tags: (n.tags as string[]) || [],
       })),
@@ -365,17 +366,18 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
 
 
-  const createNote = useCallback(async (notebookId: string, title?: string, content?: string): Promise<string | null> => {
+  const createNote = useCallback(async (notebookId: string, title?: string, content?: string, emoji?: string): Promise<string | null> => {
     if (!user) return null;
     const requested = (title || "Untitled Note").trim() || "Untitled Note";
     const finalTitle = uniqueTitleIn(notebookId, requested);
+    const finalEmoji = emoji || NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
     const { data } = await supabase
       .from("notes")
-      .insert({ notebook_id: notebookId, user_id: user.id, title: finalTitle, content: content || "" })
+      .insert({ notebook_id: notebookId, user_id: user.id, title: finalTitle, content: content || "", emoji: finalEmoji } as any)
       .select()
       .single();
     if (data) {
-      const note: Note = { ...data, attachments: (data.attachments as unknown as Attachment[]) || [], deleted_at: null };
+      const note: Note = { ...(data as any), emoji: (data as any).emoji || finalEmoji, attachments: (data.attachments as unknown as Attachment[]) || [], tags: ((data as any).tags as string[]) || [], deleted_at: null };
       setAllNotebooks((prev) =>
         prev.map((nb) => nb.id === notebookId ? { ...nb, notes: [...nb.notes, note] } : nb)
       );
