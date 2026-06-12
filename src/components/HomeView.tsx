@@ -556,11 +556,12 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
         open={!!pendingDelete}
         onOpenChange={(o) => !o && setPendingDelete(null)}
         title="Move to Trash?"
-        description={pendingDelete ? `"${pendingDelete.name}" and all its notes will be moved to Trash. You can restore them later.` : ""}
+        description={pendingDelete ? (pendingDelete.kind === "note" ? `"${pendingDelete.name}" will be moved to Trash. You can restore it later.` : `"${pendingDelete.name}" and all its notes will be moved to Trash. You can restore them later.`) : ""}
         confirmLabel="Move to Trash"
         onConfirm={async () => {
           if (pendingDelete) {
-            await deleteNotebook(pendingDelete.id);
+            if (pendingDelete.kind === "note") await deleteNote(pendingDelete.notebookId, pendingDelete.noteId);
+            else await deleteNotebook(pendingDelete.id);
             setPendingDelete(null);
           }
         }}
