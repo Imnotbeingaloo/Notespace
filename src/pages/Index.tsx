@@ -311,6 +311,33 @@ function AppContent() {
         }}
       />
 
+      {/* Create Note dialog — creates a standalone note (own notebook wrapper, user-named) */}
+      <CreateNotebookDialog
+        kind="note"
+        open={createNoteOpen}
+        onOpenChange={setCreateNoteOpen}
+        submitLabel="Create Note"
+        title="Create Note"
+        placeholder="e.g. Today's ideas"
+        onCreate={async (name, emoji) => {
+          setCreateNoteOpen(false);
+          setOpening(true);
+          try {
+            const nbId = await createNotebook(name, emoji);
+            if (nbId) {
+              const noteId = await createNote(nbId, name, "");
+              setShowHome(false);
+              const next = new URLSearchParams(searchParams);
+              next.set("notebook", nbId);
+              if (noteId) next.set("note", noteId);
+              setSearchParams(next, { replace: true });
+            }
+          } finally {
+            window.setTimeout(() => setOpening(false), 400);
+          }
+        }}
+      />
+
       {/* Global duplicate-title prompt (note move/rename) */}
       <RenameDuplicateDialog />
 
