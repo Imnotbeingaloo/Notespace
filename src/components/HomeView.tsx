@@ -15,17 +15,21 @@ import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
+  onOpenNote?: (notebookId: string, noteId: string) => void;
   onCreateNotebook?: () => void;
   onCreateScratchNote?: () => void;
   onCreateSimpleNote?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
+type LibraryItem =
+  | { kind: "notebook"; id: string; notebook: any }
+  | { kind: "note"; id: string; notebookId: string; note: any };
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
-  const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, loading, refreshData } = useNotebooks();
+export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
+  const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData, isSimpleNotebook } = useNotebooks();
   const navigate = useNavigate();
   const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
@@ -36,7 +40,7 @@ export function HomeView({ onOpenNotebook, onCreateNotebook, onCreateScratchNote
   const [loadingMore, setLoadingMore] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
-  const [pendingDelete, setPendingDelete] = useState<null | { id: string; name: string }>(null);
+  const [pendingDelete, setPendingDelete] = useState<null | { kind: "notebook"; id: string; name: string } | { kind: "note"; notebookId: string; noteId: string; name: string }>(null);
   const [namePromptOpen, setNamePromptOpen] = useState(false);
   const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
