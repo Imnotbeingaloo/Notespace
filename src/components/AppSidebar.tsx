@@ -662,7 +662,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   : "border-border/60 text-muted-foreground"
               }`}
             >
-              {simpleDropActive ? "Drop to move into Simple Notes" : "Drop here to make it a Simple Note"}
+              {simpleDropActive ? "Drop to move into Notes" : "Drop here to make it a standalone Note"}
             </div>
           )}
 
@@ -1087,9 +1087,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       <ConfirmDialog
         open={!!pendingSimpleMove}
         onOpenChange={(o) => !o && setPendingSimpleMove(null)}
-        title="Move to Simple Notes?"
-        description={pendingSimpleMove ? `Move "${pendingSimpleMove.title}" into your Simple Notes?` : ""}
-        confirmLabel="Move to Simple Notes"
+        title="Move to Notes?"
+        description={pendingSimpleMove ? `Move "${pendingSimpleMove.title}" into your Notes?` : ""}
+        confirmLabel="Move to Notes"
         destructive={false}
         onConfirm={async () => {
           if (pendingSimpleMove) {
