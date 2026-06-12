@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BookPlus, X } from "lucide-react";
+import { BookPlus, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+const DEFAULT_EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
 
 interface CreateNotebookDialogProps {
   open: boolean;
@@ -12,6 +13,10 @@ interface CreateNotebookDialogProps {
   onCreate: (name: string, emoji: string) => Promise<void> | void;
   parentName?: string | null;
   title?: string;
+  /** When "note", swap emoji palette/label/icon for a standalone note. */
+  kind?: "notebook" | "note";
+  submitLabel?: string;
+  placeholder?: string;
 }
 
 export function CreateNotebookDialog({
@@ -20,18 +25,23 @@ export function CreateNotebookDialog({
   onCreate,
   parentName,
   title,
+  kind = "notebook",
+  submitLabel,
+  placeholder,
 }: CreateNotebookDialogProps) {
+  const palette = kind === "note" ? NOTE_EMOJIS : DEFAULT_EMOJIS;
   const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState(EMOJIS[0]);
+  const [emoji, setEmoji] = useState(palette[0]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (open) {
       setName("");
-      setEmoji(EMOJIS[Math.floor(Math.random() * EMOJIS.length)]);
+      setEmoji(palette[Math.floor(Math.random() * palette.length)]);
       setSubmitting(false);
     }
-  }, [open]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, kind]);
 
   const handleSubmit = async () => {
     const trimmed = name.trim();
@@ -44,6 +54,11 @@ export function CreateNotebookDialog({
       setSubmitting(false);
     }
   };
+
+  const Icon = kind === "note" ? FileText : BookPlus;
+  const heading = title || (kind === "note" ? "Create Note" : "Create Notebook");
+  const cta = submitLabel || (kind === "note" ? "Create Note" : "Create Notebook");
+
 
   return (
     <AnimatePresence>
