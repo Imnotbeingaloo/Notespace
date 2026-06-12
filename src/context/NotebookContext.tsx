@@ -75,6 +75,14 @@ interface NotebookContextType {
 const NotebookContext = createContext<NotebookContextType | null>(null);
 
 const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+const SIMPLE_NOTES_NAME = "Notes";
+const SIMPLE_NOTES_EMOJI = "📝";
+const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
+
+const noteEmojiFrom = (note: Partial<Note> | null | undefined) => {
+  const maybe = (note as any)?.emoji;
+  return typeof maybe === "string" && maybe.trim() ? maybe : "📝";
+};
 
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -86,7 +94,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     () => (typeof window !== "undefined" ? localStorage.getItem("activeNoteId") : null)
   );
   const [loading, setLoading] = useState(true);
-  const [override, setOverrideState] = useState<{ note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null>(null);
+  const [override, setOverrideState] = useState<{ note: Note; onUpdate: (updates: NoteUpdates) => void } | null>(null);
 
   const OVERRIDE_NB_ID = "__override__";
 
@@ -133,7 +141,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const setOverride = useCallback((next: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => {
+  const setOverride = useCallback((next: { note: Note; onUpdate: (updates: NoteUpdates) => void } | null) => {
     setOverrideState(next);
   }, []);
 
