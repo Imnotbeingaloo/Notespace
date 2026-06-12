@@ -77,6 +77,7 @@ const NotebookContext = createContext<NotebookContextType | null>(null);
 const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
 const SIMPLE_NOTES_NAME = "Notes";
 const SIMPLE_NOTES_EMOJI = "📝";
+const LEGACY_SIMPLE_NOTES_NAME = "Simple Notes";
 const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
 
 const noteEmojiFrom = (note: Partial<Note> | null | undefined) => {
@@ -398,8 +399,14 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const ensureSimpleNotebook = useCallback(async (): Promise<string | null> => {
     if (!user) return null;
-    const existing = allNotebooks.find((n) => !n.deleted_at && n.name === SIMPLE_NOTES_NAME && n.emoji === SIMPLE_NOTES_EMOJI);
-    if (existing) return existing.id;
+    const existing = allNotebooks.find((n) => !n.deleted_at && (n.name === SIMPLE_NOTES_NAME || n.name === LEGACY_SIMPLE_NOTES_NAME) && n.emoji === SIMPLE_NOTES_EMOJI);
+    if (existing) {
+      if (existing.name !== SIMPLE_NOTES_NAME) {
+        await supabase.from("notebooks").update({ name: SIMPLE_NOTES_NAME } as any).eq("id", existing.id);
+        setAllNotebooks((prev) => prev.map((n) => n.id === existing.id ? { ...n, name: SIMPLE_NOTES_NAME } : n));
+      }
+      return existing.id;
+    }
     const id = await createNotebook(SIMPLE_NOTES_NAME, SIMPLE_NOTES_EMOJI);
     return id;
   }, [user, allNotebooks, createNotebook]);
@@ -430,7 +437,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const isSimpleNotebook = useCallback((notebookId: string | null) => {
     if (!notebookId) return false;
     const nb = allNotebooks.find((n) => n.id === notebookId);
-    return !!nb && nb.name === SIMPLE_NOTES_NAME && nb.emoji === SIMPLE_NOTES_EMOJI;
+    return !!nb && (nb.name === SIMPLE_NOTES_NAME || nb.name === LEGACY_SIMPLE_NOTES_NAME) && nb.emoji === SIMPLE_NOTES_EMOJI;
   }, [allNotebooks]);
 
   const moveNoteToNotebook = useCallback(async (fromNotebookId: string, noteId: string, toNotebookId: string): Promise<boolean> => {
