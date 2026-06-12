@@ -45,7 +45,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
   const [loadingMore, setLoadingMore] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
-  const [pendingDelete, setPendingDelete] = useState<null | { kind: "notebook"; id: string; name: string } | { kind: "note"; notebookId: string; noteId: string; name: string }>(null);
+  const [pendingDelete, setPendingDelete] = useState<null | { kind: "notebook"; id: string; name: string } | { kind: "note"; notebookId: string; noteId: string; name: string; deleteNotebookId?: string }>(null);
   const [namePromptOpen, setNamePromptOpen] = useState(false);
   const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -453,7 +453,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                         e.stopPropagation();
                         setPendingDelete(
                           isNote
-                            ? { kind: "note", notebookId: item.notebookId, noteId: note.id, name: title }
+                            ? { kind: "note", notebookId: item.notebookId, noteId: note.id, name: title, deleteNotebookId: item.deleteNotebookId }
                             : { kind: "notebook", id: nb.id, name: title }
                         );
                       }}
@@ -567,7 +567,10 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
         confirmLabel="Move to Trash"
         onConfirm={async () => {
           if (pendingDelete) {
-            if (pendingDelete.kind === "note") await deleteNote(pendingDelete.notebookId, pendingDelete.noteId);
+            if (pendingDelete.kind === "note") {
+              if (pendingDelete.deleteNotebookId) await deleteNotebook(pendingDelete.deleteNotebookId);
+              else await deleteNote(pendingDelete.notebookId, pendingDelete.noteId);
+            }
             else await deleteNotebook(pendingDelete.id);
             setPendingDelete(null);
           }
