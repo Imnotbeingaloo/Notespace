@@ -421,12 +421,18 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
               aria-label="Notebooks"
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
             >
-              {paged.map((nb, idx) => {
-                const noteCount = nb.notes?.length ?? 0;
-                const preview = nb.notes?.slice(0, 3) ?? [];
+              {paged.map((item, idx) => {
+                const isNote = item.kind === "note";
+                const nb = isNote ? null : item.notebook;
+                const note = isNote ? item.note : null;
+                const noteCount = isNote ? 1 : nb.notes?.length ?? 0;
+                const preview = isNote ? [] : nb.notes?.slice(0, 3) ?? [];
+                const title = isNote ? note.title : nb.name;
+                const emoji = isNote ? note.emoji || "📝" : nb.emoji;
+                const updatedAt = isNote ? note.updated_at : lastUpdated(nb);
                 return (
                   <motion.div
-                    key={nb.id}
+                    key={item.id}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: Math.min(idx * 0.03, 0.3), ease: [0.16, 1, 0.3, 1] }}
@@ -438,10 +444,14 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setPendingDelete({ id: nb.id, name: nb.name });
+                        setPendingDelete(
+                          isNote
+                            ? { kind: "note", notebookId: item.notebookId, noteId: note.id, name: title }
+                            : { kind: "notebook", id: nb.id, name: title }
+                        );
                       }}
                       className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus:opacity-100 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-all"
-                      aria-label={`Delete ${nb.name}`}
+                      aria-label={`Delete ${title}`}
                       title="Move to Trash"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -454,22 +464,25 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                       tabIndex={focusedIdx === idx ? 0 : -1}
                       onFocus={() => setFocusedIdx(idx)}
                       onKeyDown={(e) => onCardKeyDown(e, idx)}
-                      onClick={() => onOpenNotebook(nb.id)}
+                      onClick={() => {
+                        if (isNote) onOpenNote?.(item.notebookId, note.id);
+                        else onOpenNotebook(nb.id);
+                      }}
                       className="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-2xl"
                     >
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/20 opacity-70 group-hover:opacity-100 transition-opacity" />
                       <div className="p-5">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="text-3xl leading-none transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 origin-bottom-left">
-                            {nb.emoji}
+                            {emoji}
                           </div>
                           <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
-                            {noteCount} {noteCount === 1 ? "note" : "notes"}
+                            {isNote ? "note" : `${noteCount} ${noteCount === 1 ? "note" : "notes"}`}
                           </span>
                         </div>
 
                         <h3 className="font-serif font-bold text-base text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
-                          {nb.name}
+                          {title}
                         </h3>
 
                         {preview.length > 0 ? (
@@ -494,7 +507,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                         )}
 
                         <div className="text-[10px] text-muted-foreground/70 font-mono pt-2 border-t border-border/60">
-                          Updated {formatDate(lastUpdated(nb))}
+                          Updated {formatDate(updatedAt)}
                         </div>
                       </div>
                     </button>
