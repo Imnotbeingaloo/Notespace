@@ -275,21 +275,7 @@ function AppContent() {
                 onOpenNotebook={openNotebookFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
-                onCreateSimpleNote={async () => {
-                  setOpening(true);
-                  try {
-                    const result = await createSimpleNote();
-                    if (result) {
-                      setShowHome(false);
-                      const next = new URLSearchParams(searchParams);
-                      next.set("notebook", result.notebookId);
-                      next.set("note", result.noteId);
-                      setSearchParams(next, { replace: true });
-                    }
-                  } finally {
-                    window.setTimeout(() => setOpening(false), 400);
-                  }
-                }}
+                onCreateSimpleNote={() => setCreateNoteOpen(true)}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
