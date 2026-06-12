@@ -398,7 +398,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   exit={{ opacity: 0, x: -10 }}
                   transition={{ duration: 0.2 }}
                   draggable
-                  onDragStart={(e) => {
+                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => {
                     if (!simpleNotebook) return;
                     setDragNoteId(note.id);
                     setDragNoteFromNb(simpleNotebook.id);
