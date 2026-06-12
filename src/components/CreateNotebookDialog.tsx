@@ -126,7 +126,7 @@ export function CreateNotebookDialog({
                       handleSubmit();
                     }
                   }}
-                  placeholder="e.g. Quantum Physics"
+                  placeholder={placeholder || (kind === "note" ? "e.g. Meeting follow-ups" : "e.g. Quantum Physics")}
                   className="mt-1.5 h-10"
                   autoFocus
                   maxLength={80}
