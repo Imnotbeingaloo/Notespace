@@ -398,34 +398,39 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
   const ensureSimpleNotebook = useCallback(async (): Promise<string | null> => {
     if (!user) return null;
-    const existing = allNotebooks.find((n) => !n.deleted_at && n.name === "Simple Notes" && n.emoji === "📝");
+    const existing = allNotebooks.find((n) => !n.deleted_at && n.name === SIMPLE_NOTES_NAME && n.emoji === SIMPLE_NOTES_EMOJI);
     if (existing) return existing.id;
-    const id = await createNotebook("Simple Notes", "📝");
+    const id = await createNotebook(SIMPLE_NOTES_NAME, SIMPLE_NOTES_EMOJI);
     return id;
   }, [user, allNotebooks, createNotebook]);
 
-  const createSimpleNote = useCallback(async (): Promise<{ notebookId: string; noteId: string } | null> => {
+  const createSimpleNote = useCallback(async (title?: string, emoji?: string): Promise<{ notebookId: string; noteId: string } | null> => {
     if (!user) return null;
     const nbId = await ensureSimpleNotebook();
     if (!nbId) return null;
-    const title = uniqueTitleIn(nbId, "Simple note");
+    const requested = (title || "Untitled Note").trim() || "Untitled Note";
+    const finalTitle = uniqueTitleIn(nbId, requested);
+    const finalEmoji = emoji || NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
     const { data, error } = await supabase
       .from("notes")
-      .insert({ notebook_id: nbId, user_id: user.id, title, content: "" })
+      .insert({ notebook_id: nbId, user_id: user.id, title: finalTitle, content: "", emoji: finalEmoji } as any)
       .select()
       .single();
     if (error || !data) return null;
-    const note: Note = { ...(data as any), attachments: [], tags: [], deleted_at: null };
+    const note: Note = { ...(data as any), emoji: (data as any).emoji || finalEmoji, attachments: [], tags: [], deleted_at: null };
     setAllNotebooks((prev) => prev.map((n) => n.id === nbId ? { ...n, notes: [...n.notes, note] } : n));
     setActiveNotebookId(nbId);
     setActiveNoteId(data.id);
+    if (finalTitle !== requested) {
+      toast(`Renamed to "${finalTitle}" — that title was already used in Notes.`);
+    }
     return { notebookId: nbId, noteId: data.id };
   }, [user, ensureSimpleNotebook, uniqueTitleIn]);
 
   const isSimpleNotebook = useCallback((notebookId: string | null) => {
     if (!notebookId) return false;
     const nb = allNotebooks.find((n) => n.id === notebookId);
-    return !!nb && nb.name === "Simple Notes" && nb.emoji === "📝";
+    return !!nb && nb.name === SIMPLE_NOTES_NAME && nb.emoji === SIMPLE_NOTES_EMOJI;
   }, [allNotebooks]);
 
   const moveNoteToNotebook = useCallback(async (fromNotebookId: string, noteId: string, toNotebookId: string): Promise<boolean> => {
