@@ -12,11 +12,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
-      duration={3000}
+      duration={2200}
       theme={theme as ToasterProps["theme"]}
       position="bottom-right"
-      visibleToasts={3}
-      gap={10}
+      visibleToasts={4}
+      gap={8}
       expand
       offset={{ top: 16, right: 16, bottom: 16, left: 16 }}
       mobileOffset={{ bottom: 16, left: 16, right: 16, top: 16 }}
