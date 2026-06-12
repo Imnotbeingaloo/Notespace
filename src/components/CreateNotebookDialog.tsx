@@ -138,7 +138,7 @@ export function CreateNotebookDialog({
                   Cover emoji
                 </label>
                 <div className="mt-1.5 grid grid-cols-6 gap-1.5">
-                  {EMOJIS.map((em) => (
+                  {palette.map((em) => (
                     <button
                       key={em}
                       type="button"
