@@ -84,26 +84,35 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
     );
   }, []);
 
-  const allFiltered = useMemo(() => {
+  const allFiltered = useMemo<LibraryItem[]>(() => {
     const q = query.trim().toLowerCase();
+    const items: LibraryItem[] = notebooks.flatMap((nb) => {
+      if (isSimpleNotebook(nb.id)) {
+        return nb.notes.map((note) => ({ kind: "note" as const, id: note.id, notebookId: nb.id, note }));
+      }
+      return [{ kind: "notebook" as const, id: nb.id, notebook: nb }];
+    });
+
     const filtered = !q
-      ? [...notebooks]
-      : notebooks.filter(
-          (nb) =>
-            nb.name.toLowerCase().includes(q) ||
-            nb.notes.some(
-              (n) => n.title.toLowerCase().includes(q) || n.content?.toLowerCase().includes(q)
-            )
-        );
+      ? items
+      : items.filter((item) => {
+          if (item.kind === "note") {
+            return item.note.title.toLowerCase().includes(q) || item.note.content?.toLowerCase().includes(q);
+          }
+          const nb = item.notebook;
+          return nb.name.toLowerCase().includes(q) || nb.notes.some((n: any) => n.title.toLowerCase().includes(q) || n.content?.toLowerCase().includes(q));
+        });
 
     filtered.sort((a, b) => {
-      if (sort === "title") return a.name.localeCompare(b.name);
-      const aT = new Date(lastUpdated(a)).getTime();
-      const bT = new Date(lastUpdated(b)).getTime();
+      const aTitle = a.kind === "note" ? a.note.title : a.notebook.name;
+      const bTitle = b.kind === "note" ? b.note.title : b.notebook.name;
+      if (sort === "title") return aTitle.localeCompare(bTitle);
+      const aT = new Date(a.kind === "note" ? a.note.updated_at : lastUpdated(a.notebook)).getTime();
+      const bT = new Date(b.kind === "note" ? b.note.updated_at : lastUpdated(b.notebook)).getTime();
       return sort === "newest" ? bT - aT : aT - bT;
     });
     return filtered;
-  }, [notebooks, query, sort, lastUpdated]);
+  }, [notebooks, query, sort, lastUpdated, isSimpleNotebook]);
 
   const paged = useMemo(() => allFiltered.slice(0, visible), [allFiltered, visible]);
   const hasMore = visible < allFiltered.length;
