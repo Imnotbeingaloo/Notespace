@@ -80,11 +80,6 @@ const SIMPLE_NOTES_EMOJI = "📝";
 const LEGACY_SIMPLE_NOTES_NAME = "Simple Notes";
 const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
 
-const noteEmojiFrom = (note: Partial<Note> | null | undefined) => {
-  const maybe = (note as any)?.emoji;
-  return typeof maybe === "string" && maybe.trim() ? maybe : "📝";
-};
-
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [allNotebooks, setAllNotebooks] = useState<Notebook[]>([]);
