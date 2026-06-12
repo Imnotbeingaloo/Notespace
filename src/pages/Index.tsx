@@ -146,6 +146,21 @@ function AppContent() {
     [setActiveNotebookId, setActiveNoteId, notebooks, searchParams, setSearchParams]
   );
 
+  const openNoteFromHome = useCallback(
+    (notebookId: string, noteId: string) => {
+      setOpening(true);
+      setActiveNotebookId(notebookId);
+      setActiveNoteId(noteId);
+      setShowHome(false);
+      const next = new URLSearchParams(searchParams);
+      next.set("notebook", notebookId);
+      next.set("note", noteId);
+      setSearchParams(next, { replace: true });
+      window.setTimeout(() => setOpening(false), 500);
+    },
+    [setActiveNotebookId, setActiveNoteId, searchParams, setSearchParams]
+  );
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background relative">
       {/* Mobile overlay backdrop */}
@@ -273,6 +288,7 @@ function AppContent() {
             ) : showHome ? (
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
+                onOpenNote={openNoteFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={() => setCreateNoteOpen(true)}
@@ -311,7 +327,7 @@ function AppContent() {
         }}
       />
 
-      {/* Create Note dialog — creates a standalone note (own notebook wrapper, user-named) */}
+      {/* Create Note dialog — creates one standalone note in the Notes collection */}
       <CreateNotebookDialog
         kind="note"
         open={createNoteOpen}
@@ -323,13 +339,13 @@ function AppContent() {
           setCreateNoteOpen(false);
           setOpening(true);
           try {
-            const nbId = await createNotebook(name, emoji);
-            if (nbId) {
-              const noteId = await createNote(nbId, name, "");
+            const created = await createSimpleNote(name, emoji);
+            if (created) {
+              const { notebookId: nbId, noteId } = created;
               setShowHome(false);
               const next = new URLSearchParams(searchParams);
               next.set("notebook", nbId);
-              if (noteId) next.set("note", noteId);
+              next.set("note", noteId);
               setSearchParams(next, { replace: true });
             }
           } finally {
