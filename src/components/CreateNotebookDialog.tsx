@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BookPlus, X } from "lucide-react";
+import { BookPlus, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+const DEFAULT_EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
 
 interface CreateNotebookDialogProps {
   open: boolean;
@@ -12,6 +13,10 @@ interface CreateNotebookDialogProps {
   onCreate: (name: string, emoji: string) => Promise<void> | void;
   parentName?: string | null;
   title?: string;
+  /** When "note", swap emoji palette/label/icon for a standalone note. */
+  kind?: "notebook" | "note";
+  submitLabel?: string;
+  placeholder?: string;
 }
 
 export function CreateNotebookDialog({
@@ -20,18 +25,23 @@ export function CreateNotebookDialog({
   onCreate,
   parentName,
   title,
+  kind = "notebook",
+  submitLabel,
+  placeholder,
 }: CreateNotebookDialogProps) {
+  const palette = kind === "note" ? NOTE_EMOJIS : DEFAULT_EMOJIS;
   const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState(EMOJIS[0]);
+  const [emoji, setEmoji] = useState(palette[0]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (open) {
       setName("");
-      setEmoji(EMOJIS[Math.floor(Math.random() * EMOJIS.length)]);
+      setEmoji(palette[Math.floor(Math.random() * palette.length)]);
       setSubmitting(false);
     }
-  }, [open]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, kind]);
 
   const handleSubmit = async () => {
     const trimmed = name.trim();
@@ -44,6 +54,11 @@ export function CreateNotebookDialog({
       setSubmitting(false);
     }
   };
+
+  const Icon = kind === "note" ? FileText : BookPlus;
+  const heading = title || (kind === "note" ? "Create Note" : "Create Notebook");
+  const cta = submitLabel || (kind === "note" ? "Create Note" : "Create Notebook");
+
 
   return (
     <AnimatePresence>
@@ -75,11 +90,11 @@ export function CreateNotebookDialog({
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <BookPlus className="h-5 w-5 text-primary" />
+                  <Icon className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <h2 className="font-serif font-bold text-lg text-foreground">
-                    {title || "Create Notebook"}
+                    {heading}
                   </h2>
                   {parentName && (
                     <p className="text-xs text-muted-foreground">
@@ -111,7 +126,7 @@ export function CreateNotebookDialog({
                       handleSubmit();
                     }
                   }}
-                  placeholder="e.g. Quantum Physics"
+                  placeholder={placeholder || (kind === "note" ? "e.g. Meeting follow-ups" : "e.g. Quantum Physics")}
                   className="mt-1.5 h-10"
                   autoFocus
                   maxLength={80}
@@ -123,7 +138,7 @@ export function CreateNotebookDialog({
                   Cover emoji
                 </label>
                 <div className="mt-1.5 grid grid-cols-6 gap-1.5">
-                  {EMOJIS.map((em) => (
+                  {palette.map((em) => (
                     <button
                       key={em}
                       type="button"
@@ -150,7 +165,7 @@ export function CreateNotebookDialog({
                 Cancel
               </Button>
               <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
-                {submitting ? "Creating…" : "Create Notebook"}
+                {submitting ? "Creating…" : cta}
               </Button>
             </div>
           </motion.div>

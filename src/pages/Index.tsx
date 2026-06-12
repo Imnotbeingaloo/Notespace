@@ -53,7 +53,7 @@ function AppContent() {
     }
     prevIsMobileRef.current = isMobile;
   }, [isMobile]);
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createSimpleNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createSimpleNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook, createNote } = useNotebooks();
 
   // Dynamic browser tab title — reflects the current note / notebook / view
   useEffect(() => {
@@ -78,6 +78,7 @@ function AppContent() {
   const lastHydratedUrlRef = useRef<string | null>(null);
   const [scratchLeavePending, setScratchLeavePending] = useState<null | { fromNotebookId: string; noteId: string; targetView: () => void }>(null);
   const [createNotebookOpen, setCreateNotebookOpen] = useState(false);
+  const [createNoteOpen, setCreateNoteOpen] = useState(false);
 
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
@@ -274,21 +275,7 @@ function AppContent() {
                 onOpenNotebook={openNotebookFromHome}
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
-                onCreateSimpleNote={async () => {
-                  setOpening(true);
-                  try {
-                    const result = await createSimpleNote();
-                    if (result) {
-                      setShowHome(false);
-                      const next = new URLSearchParams(searchParams);
-                      next.set("notebook", result.notebookId);
-                      next.set("note", result.noteId);
-                      setSearchParams(next, { replace: true });
-                    }
-                  } finally {
-                    window.setTimeout(() => setOpening(false), 400);
-                  }
-                }}
+                onCreateSimpleNote={() => setCreateNoteOpen(true)}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
@@ -320,6 +307,33 @@ function AppContent() {
           if (id) {
             setCreateNotebookOpen(false);
             openNotebookFromHome(id);
+          }
+        }}
+      />
+
+      {/* Create Note dialog — creates a standalone note (own notebook wrapper, user-named) */}
+      <CreateNotebookDialog
+        kind="note"
+        open={createNoteOpen}
+        onOpenChange={setCreateNoteOpen}
+        submitLabel="Create Note"
+        title="Create Note"
+        placeholder="e.g. Today's ideas"
+        onCreate={async (name, emoji) => {
+          setCreateNoteOpen(false);
+          setOpening(true);
+          try {
+            const nbId = await createNotebook(name, emoji);
+            if (nbId) {
+              const noteId = await createNote(nbId, name, "");
+              setShowHome(false);
+              const next = new URLSearchParams(searchParams);
+              next.set("notebook", nbId);
+              if (noteId) next.set("note", noteId);
+              setSearchParams(next, { replace: true });
+            }
+          } finally {
+            window.setTimeout(() => setOpening(false), 400);
           }
         }}
       />
