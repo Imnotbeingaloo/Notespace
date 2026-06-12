@@ -63,21 +63,24 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     refreshData,
     createScratchNote,
     ensureSimpleNotebook,
+    isSimpleNotebook,
   } = useNotebooks();
 
   // Top-level vs nested notebooks
-  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id), [notebooks]);
+  const simpleNotebook = useMemo(() => notebooks.find((nb) => isSimpleNotebook(nb.id)) ?? null, [notebooks, isSimpleNotebook]);
+  const standaloneNotes = simpleNotebook?.notes ?? [];
+  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id && !isSimpleNotebook(nb.id)), [notebooks, isSimpleNotebook]);
   const childrenByParent = useMemo(() => {
     const map = new Map<string, typeof notebooks>();
     notebooks.forEach((nb) => {
-      if (nb.parent_id) {
+      if (nb.parent_id && !isSimpleNotebook(nb.id)) {
         const arr = map.get(nb.parent_id) || [];
         arr.push(nb);
         map.set(nb.parent_id, arr);
       }
     });
     return map;
-  }, [notebooks]);
+  }, [notebooks, isSimpleNotebook]);
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
   const [newNotebookOpen, setNewNotebookOpen] = useState(false);
