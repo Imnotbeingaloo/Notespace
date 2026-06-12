@@ -530,7 +530,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, [activeNoteId, allNotebooks]);
 
   const updateNote = useCallback(
-    async (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => {
+    async (notebookId: string, noteId: string, updates: NoteUpdates) => {
       // Override path: temp notes don't live in `notes` table
       if (override && noteId === override.note.id) {
         override.onUpdate(updates);
