@@ -16,12 +16,15 @@ export interface Note {
   id: string;
   title: string;
   content: string;
+  emoji?: string;
   attachments: Attachment[];
   tags: string[];
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
 }
+
+type NoteUpdates = Partial<Pick<Note, "title" | "content" | "attachments" | "tags" | "emoji">>;
 
 export interface Notebook {
   id: string;
@@ -50,12 +53,12 @@ interface NotebookContextType {
   createScratchNote: () => Promise<{ notebookId: string; noteId: string } | null>;
   isScratchNotebook: (notebookId: string | null) => boolean;
   ensureSimpleNotebook: () => Promise<string | null>;
-  createSimpleNote: () => Promise<{ notebookId: string; noteId: string } | null>;
+  createSimpleNote: (title?: string, emoji?: string) => Promise<{ notebookId: string; noteId: string } | null>;
   isSimpleNotebook: (notebookId: string | null) => boolean;
   moveNoteToNotebook: (fromNotebookId: string, noteId: string, toNotebookId: string) => Promise<boolean>;
-  createNote: (notebookId: string, title?: string, content?: string) => Promise<string | null>;
+  createNote: (notebookId: string, title?: string, content?: string, emoji?: string) => Promise<string | null>;
   deleteNote: (notebookId: string, noteId: string) => Promise<void>;
-  updateNote: (notebookId: string, noteId: string, updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => Promise<void>;
+  updateNote: (notebookId: string, noteId: string, updates: NoteUpdates) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
   restoreNotebook: (id: string) => Promise<void>;
   restoreNote: (notebookId: string, noteId: string) => Promise<void>;
@@ -65,7 +68,7 @@ interface NotebookContextType {
   activeNote: Note | null;
   loading: boolean;
   refreshData: () => Promise<void>;
-  setOverride: (override: { note: Note; onUpdate: (updates: Partial<Pick<Note, "title" | "content" | "attachments" | "tags">>) => void } | null) => void;
+  setOverride: (override: { note: Note; onUpdate: (updates: NoteUpdates) => void } | null) => void;
   isOverrideActive: boolean;
 }
 
