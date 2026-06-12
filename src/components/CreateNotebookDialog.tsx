@@ -90,11 +90,11 @@ export function CreateNotebookDialog({
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <BookPlus className="h-5 w-5 text-primary" />
+                  <Icon className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <h2 className="font-serif font-bold text-lg text-foreground">
-                    {title || "Create Notebook"}
+                    {heading}
                   </h2>
                   {parentName && (
                     <p className="text-xs text-muted-foreground">
