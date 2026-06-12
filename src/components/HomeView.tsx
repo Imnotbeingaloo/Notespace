@@ -24,7 +24,12 @@ interface HomeViewProps {
 type SortKey = "newest" | "oldest" | "title";
 type LibraryItem =
   | { kind: "notebook"; id: string; notebook: any }
-  | { kind: "note"; id: string; notebookId: string; note: any };
+  | { kind: "note"; id: string; notebookId: string; note: any; deleteNotebookId?: string };
+
+const looksLikeStandaloneNoteWrapper = (nb: any) => {
+  const onlyNote = nb.notes?.length === 1 ? nb.notes[0] : null;
+  return !nb.parent_id && !!onlyNote && onlyNote.title?.trim().toLowerCase() === nb.name?.trim().toLowerCase();
+};
 
 const PAGE_SIZE = 9;
 
@@ -89,6 +94,8 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
     const items = notebooks.reduce<LibraryItem[]>((acc, nb) => {
       if (isSimpleNotebook(nb.id)) {
         nb.notes.forEach((note) => acc.push({ kind: "note", id: note.id, notebookId: nb.id, note }));
+      } else if (looksLikeStandaloneNoteWrapper(nb)) {
+        acc.push({ kind: "note", id: nb.notes[0].id, notebookId: nb.id, note: { ...nb.notes[0], emoji: nb.notes[0].emoji || nb.emoji }, deleteNotebookId: nb.id });
       } else {
         acc.push({ kind: "notebook", id: nb.id, notebook: nb });
       }
