@@ -165,7 +165,7 @@ export function CreateNotebookDialog({
                 Cancel
               </Button>
               <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
-                {submitting ? "Creating…" : "Create Notebook"}
+                {submitting ? "Creating…" : cta}
               </Button>
             </div>
           </motion.div>
