@@ -12,11 +12,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
-      duration={2200}
+      duration={3000}
       theme={theme as ToasterProps["theme"]}
       position="bottom-right"
-      visibleToasts={4}
-      gap={8}
+      visibleToasts={MAX_VISIBLE_TOASTS}
+      gap={10}
       expand
       offset={{ top: 16, right: 16, bottom: 16, left: 16 }}
       mobileOffset={{ bottom: 16, left: 16, right: 16, top: 16 }}
@@ -37,14 +37,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
         classNames: {
           toast: [
             "group relative pointer-events-auto",
-            "flex items-start gap-3 w-[min(380px,calc(100vw-2rem))]",
-            "rounded-xl border-none px-4 py-3 pr-10 font-sans text-sm",
-            "backdrop-blur-md shadow-lg shadow-black/5",
-            "bg-primary/10 text-foreground",
-            "data-[type=success]:bg-emerald-500/10 data-[type=success]:text-emerald-700 dark:data-[type=success]:text-emerald-300",
-            "data-[type=error]:bg-rose-500/10 data-[type=error]:text-rose-700 dark:data-[type=error]:text-rose-300",
-            "data-[type=warning]:bg-yellow-500/10 data-[type=warning]:text-yellow-700 dark:data-[type=warning]:text-yellow-300",
-            "data-[type=info]:bg-sky-500/10 data-[type=info]:text-sky-700 dark:data-[type=info]:text-sky-300",
+            "flex min-h-[54px] items-start gap-3 w-[min(400px,calc(100vw-2rem))]",
+            "rounded-lg border border-border bg-popover px-4 py-3.5 pr-10 font-sans text-sm text-popover-foreground",
+            "shadow-lg shadow-black/10",
           ].join(" "),
           title: "font-medium text-[13.5px] leading-snug",
           description: "text-current/80 text-xs leading-relaxed mt-1",

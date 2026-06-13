@@ -1,8 +1,8 @@
 import * as React from "react";
 import { toast as sonnerToast, type ExternalToast } from "sonner";
 
-const MAX_VISIBLE_TOASTS = 3;
-const TOAST_SPACING_MS = 60;
+const MAX_VISIBLE_TOASTS = 4;
+const TOAST_SPACING_MS = 40;
 
 type ToastKind = "message" | "success" | "info" | "warning" | "error" | "loading";
 
@@ -28,12 +28,12 @@ function scheduleDrain() {
 // Per-type durations: errors/warnings stay visible longer for readability
 // while still respecting any explicit `duration` passed in options.
 const DEFAULT_DURATION: Record<ToastKind, number> = {
-  message: 3500,
-  success: 3500,
-  info: 4000,
-  warning: 6000,
-  error: 6500,
-  loading: 6000,
+  message: 3000,
+  success: 3000,
+  info: 3000,
+  warning: 3000,
+  error: 3000,
+  loading: 3000,
 };
 
 function drainQueue() {

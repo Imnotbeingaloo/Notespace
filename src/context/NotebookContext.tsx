@@ -14,6 +14,7 @@ export interface Attachment {
 
 export interface Note {
   id: string;
+  notebook_id: string | null;
   title: string;
   content: string;
   emoji?: string;
@@ -38,8 +39,9 @@ export interface Notebook {
 
 interface NotebookContextType {
   notebooks: Notebook[];
+  standaloneNotes: Note[];
   trashedNotebooks: Notebook[];
-  trashedNotes: { note: Note; notebookId: string; notebookName: string }[];
+  trashedNotes: { note: Note; notebookId: string | null; notebookName: string }[];
   activeNotebookId: string | null;
   activeNoteId: string | null;
   setActiveNotebookId: (id: string | null) => void;
@@ -52,18 +54,16 @@ interface NotebookContextType {
   ensureScratchNotebook: () => Promise<string | null>;
   createScratchNote: () => Promise<{ notebookId: string; noteId: string } | null>;
   isScratchNotebook: (notebookId: string | null) => boolean;
-  ensureSimpleNotebook: () => Promise<string | null>;
-  createSimpleNote: (title?: string, emoji?: string) => Promise<{ notebookId: string; noteId: string } | null>;
-  isSimpleNotebook: (notebookId: string | null) => boolean;
-  moveNoteToNotebook: (fromNotebookId: string, noteId: string, toNotebookId: string) => Promise<boolean>;
+  createStandaloneNote: (title?: string, emoji?: string) => Promise<{ notebookId: null; noteId: string } | null>;
+  moveNoteToNotebook: (fromNotebookId: string | null, noteId: string, toNotebookId: string | null) => Promise<boolean>;
   createNote: (notebookId: string, title?: string, content?: string, emoji?: string) => Promise<string | null>;
-  deleteNote: (notebookId: string, noteId: string) => Promise<void>;
-  updateNote: (notebookId: string, noteId: string, updates: NoteUpdates) => Promise<void>;
+  deleteNote: (notebookId: string | null, noteId: string) => Promise<void>;
+  updateNote: (notebookId: string | null, noteId: string, updates: NoteUpdates) => Promise<void>;
   reorderNotes: (notebookId: string, fromIndex: number, toIndex: number) => void;
   restoreNotebook: (id: string) => Promise<void>;
-  restoreNote: (notebookId: string, noteId: string) => Promise<void>;
+  restoreNote: (notebookId: string | null, noteId: string) => Promise<void>;
   permanentlyDeleteNotebook: (id: string) => Promise<void>;
-  permanentlyDeleteNote: (notebookId: string, noteId: string) => Promise<void>;
+  permanentlyDeleteNote: (notebookId: string | null, noteId: string) => Promise<void>;
   activeNotebook: Notebook | null;
   activeNote: Note | null;
   loading: boolean;
@@ -75,14 +75,14 @@ interface NotebookContextType {
 const NotebookContext = createContext<NotebookContextType | null>(null);
 
 const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
-const SIMPLE_NOTES_NAME = "Notes";
-const SIMPLE_NOTES_EMOJI = "📝";
-const LEGACY_SIMPLE_NOTES_NAME = "Simple Notes";
 const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
+const STANDALONE_NOTES_LABEL = "Notes";
+const SYSTEM_NOTE_CONTAINER_NAMES = new Set([STANDALONE_NOTES_LABEL, "Legacy Notes"]);
 
 export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [allNotebooks, setAllNotebooks] = useState<Notebook[]>([]);
+  const [allStandaloneNotes, setAllStandaloneNotes] = useState<Note[]>([]);
   const [activeNotebookId, setActiveNotebookIdRaw] = useState<string | null>(
     () => (typeof window !== "undefined" ? localStorage.getItem("activeNotebookId") : null)
   );
@@ -98,6 +98,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   const notebooks = allNotebooks
     .filter((nb) => !nb.deleted_at)
     .map((nb) => ({ ...nb, notes: nb.notes.filter((n) => !n.deleted_at) }));
+  const standaloneNotes = allStandaloneNotes.filter((n) => !n.deleted_at);
 
   // Trashed notebooks
   const trashedNotebooks = allNotebooks.filter((nb) => nb.deleted_at);
@@ -109,15 +110,25 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       nb.notes
         .filter((n) => n.deleted_at)
         .map((note) => ({ note, notebookId: nb.id, notebookName: nb.name }))
+    )
+    .concat(
+      allStandaloneNotes
+        .filter((note) => note.deleted_at)
+        .map((note) => ({ note, notebookId: null, notebookName: STANDALONE_NOTES_LABEL }))
     );
 
   const realActiveNotebook = notebooks.find((n) => n.id === activeNotebookId) ?? null;
-  const realActiveNote = realActiveNotebook?.notes.find((n) => n.id === activeNoteId) ?? null;
+  const standaloneActiveNote = !activeNotebookId
+    ? standaloneNotes.find((n) => n.id === activeNoteId) ?? null
+    : null;
+  const realActiveNote = realActiveNotebook?.notes.find((n) => n.id === activeNoteId) ?? standaloneActiveNote;
 
   // Override-aware getters
   const activeNotebook: Notebook | null = override
     ? { id: OVERRIDE_NB_ID, name: "Temporary", emoji: "⏳", notes: [override.note], created_at: override.note.created_at, deleted_at: null }
-    : realActiveNotebook;
+    : realActiveNotebook ?? (standaloneActiveNote
+      ? { id: STANDALONE_NOTES_LABEL, name: STANDALONE_NOTES_LABEL, emoji: standaloneActiveNote.emoji || "📝", notes: [standaloneActiveNote], created_at: standaloneActiveNote.created_at, deleted_at: null }
+      : null);
   const activeNote: Note | null = override ? override.note : realActiveNote;
   const effectiveActiveNotebookId = override ? OVERRIDE_NB_ID : activeNotebookId;
   const effectiveActiveNoteId = override ? override.note.id : activeNoteId;
@@ -142,7 +153,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const fetchData = useCallback(async () => {
-    if (!user) { setAllNotebooks([]); setLoading(false); return; }
+    if (!user) { setAllNotebooks([]); setAllStandaloneNotes([]); setLoading(false); return; }
     setLoading(true);
 
     const { data: nbs } = await supabase
@@ -155,20 +166,43 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       .select("*")
       .order("created_at", { ascending: true });
 
-    const merged: Notebook[] = (nbs ?? []).map((nb: any) => ({
+    const systemNoteContainerIds = new Set(
+      (nbs ?? [])
+        .filter((nb: any) => SYSTEM_NOTE_CONTAINER_NAMES.has(nb.name) && nb.emoji === "📝")
+        .map((nb: any) => nb.id)
+    );
+    const merged: Notebook[] = (nbs ?? [])
+      .filter((nb: any) => !systemNoteContainerIds.has(nb.id))
+      .map((nb: any) => ({
       ...nb,
       notes: (nts ?? []).filter((n: any) => n.notebook_id === nb.id).map((n: any) => ({
         ...n,
+        notebook_id: n.notebook_id ?? null,
         emoji: n.emoji || "📝",
         attachments: (n.attachments as Attachment[]) || [],
         tags: (n.tags as string[]) || [],
       })),
     }));
+    const looseNotes: Note[] = (nts ?? [])
+      .filter((n: any) => !n.notebook_id || systemNoteContainerIds.has(n.notebook_id))
+      .map((n: any) => ({
+        ...n,
+        notebook_id: systemNoteContainerIds.has(n.notebook_id) ? null : n.notebook_id ?? null,
+        emoji: n.emoji || "📝",
+        attachments: (n.attachments as Attachment[]) || [],
+        tags: (n.tags as string[]) || [],
+      }));
 
     setAllNotebooks(merged);
+    setAllStandaloneNotes(looseNotes);
     const active = merged.filter((nb) => !nb.deleted_at);
     // Validate persisted IDs still exist; otherwise fall back to first available
+    const persistedStandalone = (!activeNotebookId || systemNoteContainerIds.has(activeNotebookId)) && looseNotes.some((n) => n.id === activeNoteId && !n.deleted_at);
     const persistedNb = active.find((nb) => nb.id === activeNotebookId);
+    if (persistedStandalone) {
+      setActiveNotebookId(null);
+      return setLoading(false);
+    }
     if (!persistedNb && active.length > 0) {
       setActiveNotebookId(active[0].id);
       const firstNotes = active[0].notes.filter((n) => !n.deleted_at);
@@ -392,62 +426,58 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     return !!nb && nb.name === "Scratch" && nb.emoji === "✏️";
   }, [allNotebooks]);
 
-  const ensureSimpleNotebook = useCallback(async (): Promise<string | null> => {
-    if (!user) return null;
-    const existing = allNotebooks.find((n) => !n.deleted_at && (n.name === SIMPLE_NOTES_NAME || n.name === LEGACY_SIMPLE_NOTES_NAME) && n.emoji === SIMPLE_NOTES_EMOJI);
-    if (existing) {
-      if (existing.name !== SIMPLE_NOTES_NAME) {
-        await supabase.from("notebooks").update({ name: SIMPLE_NOTES_NAME } as any).eq("id", existing.id);
-        setAllNotebooks((prev) => prev.map((n) => n.id === existing.id ? { ...n, name: SIMPLE_NOTES_NAME } : n));
-      }
-      return existing.id;
-    }
-    const id = await createNotebook(SIMPLE_NOTES_NAME, SIMPLE_NOTES_EMOJI);
-    return id;
-  }, [user, allNotebooks, createNotebook]);
+  const uniqueStandaloneTitle = useCallback(
+    (desired: string, excludeNoteId?: string): string => {
+      const base = (desired || "Untitled Note").trim() || "Untitled Note";
+      const taken = new Set(
+        allStandaloneNotes
+          .filter((n) => !n.deleted_at && n.id !== excludeNoteId)
+          .map((n) => n.title.trim().toLowerCase())
+      );
+      if (!taken.has(base.toLowerCase())) return base;
+      let i = 2;
+      while (taken.has(`${base} (${i})`.toLowerCase())) i += 1;
+      return `${base} (${i})`;
+    },
+    [allStandaloneNotes]
+  );
 
-  const createSimpleNote = useCallback(async (title?: string, emoji?: string): Promise<{ notebookId: string; noteId: string } | null> => {
+  const createStandaloneNote = useCallback(async (title?: string, emoji?: string): Promise<{ notebookId: null; noteId: string } | null> => {
     if (!user) return null;
-    const nbId = await ensureSimpleNotebook();
-    if (!nbId) return null;
     const requested = (title || "Untitled Note").trim() || "Untitled Note";
-    const finalTitle = uniqueTitleIn(nbId, requested);
+    const finalTitle = uniqueStandaloneTitle(requested);
     const finalEmoji = emoji || NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
     const { data, error } = await supabase
       .from("notes")
-      .insert({ notebook_id: nbId, user_id: user.id, title: finalTitle, content: "", emoji: finalEmoji } as any)
+      .insert({ notebook_id: null, user_id: user.id, title: finalTitle, content: "", emoji: finalEmoji } as any)
       .select()
       .single();
     if (error || !data) return null;
-    const note: Note = { ...(data as any), emoji: (data as any).emoji || finalEmoji, attachments: [], tags: [], deleted_at: null };
-    setAllNotebooks((prev) => prev.map((n) => n.id === nbId ? { ...n, notes: [...n.notes, note] } : n));
-    setActiveNotebookId(nbId);
+    const note: Note = { ...(data as any), notebook_id: null, emoji: (data as any).emoji || finalEmoji, attachments: [], tags: [], deleted_at: null };
+    setAllStandaloneNotes((prev) => [...prev, note]);
+    setActiveNotebookId(null);
     setActiveNoteId(data.id);
     if (finalTitle !== requested) {
       toast(`Renamed to "${finalTitle}" — that title was already used in Notes.`);
     }
-    return { notebookId: nbId, noteId: data.id };
-  }, [user, ensureSimpleNotebook, uniqueTitleIn]);
+    return { notebookId: null, noteId: data.id };
+  }, [user, uniqueStandaloneTitle]);
 
-  const isSimpleNotebook = useCallback((notebookId: string | null) => {
-    if (!notebookId) return false;
-    const nb = allNotebooks.find((n) => n.id === notebookId);
-    return !!nb && (nb.name === SIMPLE_NOTES_NAME || nb.name === LEGACY_SIMPLE_NOTES_NAME) && nb.emoji === SIMPLE_NOTES_EMOJI;
-  }, [allNotebooks]);
-
-  const moveNoteToNotebook = useCallback(async (fromNotebookId: string, noteId: string, toNotebookId: string): Promise<boolean> => {
+  const moveNoteToNotebook = useCallback(async (fromNotebookId: string | null, noteId: string, toNotebookId: string | null): Promise<boolean> => {
     if (fromNotebookId === toNotebookId) return true;
 
     // Duplicate-title guard: if the destination already has a note with this title,
     // prompt the user to pick a new name before completing the move.
-    const sourceNb = allNotebooks.find((n) => n.id === fromNotebookId);
-    const note = sourceNb?.notes.find((n) => n.id === noteId);
-    const destNb = allNotebooks.find((n) => n.id === toNotebookId);
+    const sourceNb = fromNotebookId ? allNotebooks.find((n) => n.id === fromNotebookId) : null;
+    const note = fromNotebookId
+      ? sourceNb?.notes.find((n) => n.id === noteId)
+      : allStandaloneNotes.find((n) => n.id === noteId);
+    const destNb = toNotebookId ? allNotebooks.find((n) => n.id === toNotebookId) : null;
     let finalTitle = note?.title ?? "";
-    if (note && destNb) {
-      const takenList = destNb.notes
-        .filter((n) => !n.deleted_at && n.id !== noteId)
-        .map((n) => n.title);
+    if (note) {
+      const takenList = toNotebookId
+        ? (destNb?.notes ?? []).filter((n) => !n.deleted_at && n.id !== noteId).map((n) => n.title)
+        : allStandaloneNotes.filter((n) => !n.deleted_at && n.id !== noteId).map((n) => n.title);
       const takenLower = new Set(takenList.map((t) => t.trim().toLowerCase()));
       if (takenLower.has(note.title.trim().toLowerCase())) {
         const newName = await promptRenameForDuplicate(note.title, takenList);
@@ -466,24 +496,27 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       toast.error("Could not move note.");
       return false;
     }
-    setAllNotebooks((prev) => {
-      const src = prev.find((n) => n.id === fromNotebookId);
-      const n0 = src?.notes.find((n) => n.id === noteId);
-      if (!n0) return prev;
-      const moved = { ...n0, title: finalTitle || n0.title };
-      return prev.map((n) => {
+    const moved = note ? { ...note, notebook_id: toNotebookId, title: finalTitle || note.title } : null;
+    if (!moved) return false;
+    setAllStandaloneNotes((prev) =>
+      toNotebookId === null
+        ? [...prev.filter((n) => n.id !== noteId), moved]
+        : prev.filter((n) => n.id !== noteId)
+    );
+    setAllNotebooks((prev) =>
+      prev.map((n) => {
         if (n.id === fromNotebookId) return { ...n, notes: n.notes.filter((x) => x.id !== noteId) };
-        if (n.id === toNotebookId) return { ...n, notes: [...n.notes, moved] };
+        if (n.id === toNotebookId) return { ...n, notes: [...n.notes.filter((x) => x.id !== noteId), moved] };
         return n;
-      });
-    });
+      })
+    );
     return true;
-  }, [allNotebooks]);
+  }, [allNotebooks, allStandaloneNotes]);
 
-  const deleteNote = useCallback(async (notebookId: string, noteId: string) => {
+  const deleteNote = useCallback(async (notebookId: string | null, noteId: string) => {
     const now = new Date().toISOString();
-    const nb = allNotebooks.find((n) => n.id === notebookId);
-    const note = nb?.notes.find((n) => n.id === noteId);
+    const nb = notebookId ? allNotebooks.find((n) => n.id === notebookId) : null;
+    const note = notebookId ? nb?.notes.find((n) => n.id === noteId) : allStandaloneNotes.find((n) => n.id === noteId);
     // Optimistically soft-delete
     setAllNotebooks((prev) =>
       prev.map((n) =>
@@ -492,6 +525,9 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
           : n
       )
     );
+    if (!notebookId) {
+      setAllStandaloneNotes((prev) => prev.map((nt) => nt.id === noteId ? { ...nt, deleted_at: now } : nt));
+    }
     if (activeNoteId === noteId) setActiveNoteId(null);
 
     let undone = false;
@@ -508,6 +544,9 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
                 : n
             )
           );
+          if (!notebookId) {
+            setAllStandaloneNotes((prev) => prev.map((nt) => nt.id === noteId ? { ...nt, deleted_at: null } : nt));
+          }
           supabase.from("notes").update({ deleted_at: null } as any).eq("id", noteId).then(() => {});
         },
       },
@@ -522,10 +561,10 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         }
       },
     });
-  }, [activeNoteId, allNotebooks]);
+  }, [activeNoteId, allNotebooks, allStandaloneNotes]);
 
   const updateNote = useCallback(
-    async (notebookId: string, noteId: string, updates: NoteUpdates) => {
+    async (notebookId: string | null, noteId: string, updates: NoteUpdates) => {
       // Override path: temp notes don't live in `notes` table
       if (override && noteId === override.note.id) {
         override.onUpdate(updates);
@@ -537,12 +576,14 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       if (typeof updates.title === "string") {
         const desired = updates.title.trim();
         if (desired) {
-          const nb = allNotebooks.find((n) => n.id === notebookId);
-          const clash = nb?.notes.some(
+          const notePool = notebookId
+            ? allNotebooks.find((n) => n.id === notebookId)?.notes ?? []
+            : allStandaloneNotes;
+          const clash = notePool.some(
             (n) => !n.deleted_at && n.id !== noteId && n.title.trim().toLowerCase() === desired.toLowerCase()
           );
           if (clash) {
-            const takenList = (nb?.notes || [])
+            const takenList = notePool
               .filter((n) => !n.deleted_at && n.id !== noteId)
               .map((n) => n.title);
             const newName = await promptRenameForDuplicate(desired, takenList);
@@ -562,6 +603,10 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
 
       if (Object.keys(updates).length === 0) return;
       await supabase.from("notes").update(updates as any).eq("id", noteId);
+      if (!notebookId) {
+        setAllStandaloneNotes((prev) => prev.map((n) => n.id === noteId ? { ...n, ...updates, updated_at: new Date().toISOString() } : n));
+        return;
+      }
       setAllNotebooks((prev) =>
         prev.map((nb) =>
           nb.id === notebookId
@@ -570,7 +615,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         )
       );
     },
-    [override, allNotebooks]
+    [override, allNotebooks, allStandaloneNotes]
   );
 
   const reorderNotes = useCallback(
@@ -597,8 +642,12 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Restore note from trash
-  const restoreNote = useCallback(async (notebookId: string, noteId: string) => {
+  const restoreNote = useCallback(async (notebookId: string | null, noteId: string) => {
     await supabase.from("notes").update({ deleted_at: null } as any).eq("id", noteId);
+    if (!notebookId) {
+      setAllStandaloneNotes((prev) => prev.map((n) => n.id === noteId ? { ...n, deleted_at: null } : n));
+      return;
+    }
     setAllNotebooks((prev) =>
       prev.map((nb) =>
         nb.id === notebookId
@@ -615,8 +664,12 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Permanently delete note
-  const permanentlyDeleteNote = useCallback(async (notebookId: string, noteId: string) => {
+  const permanentlyDeleteNote = useCallback(async (notebookId: string | null, noteId: string) => {
     await supabase.from("notes").delete().eq("id", noteId);
+    if (!notebookId) {
+      setAllStandaloneNotes((prev) => prev.filter((n) => n.id !== noteId));
+      return;
+    }
     setAllNotebooks((prev) =>
       prev.map((nb) =>
         nb.id === notebookId ? { ...nb, notes: nb.notes.filter((n) => n.id !== noteId) } : nb
@@ -627,13 +680,13 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
   return (
     <NotebookContext.Provider
       value={{
-        notebooks, trashedNotebooks, trashedNotes,
+        notebooks, standaloneNotes, trashedNotebooks, trashedNotes,
         activeNotebookId: effectiveActiveNotebookId,
         activeNoteId: effectiveActiveNoteId,
         setActiveNotebookId, setActiveNoteId,
         createNotebook, deleteNotebook, updateNotebook, nestNotebook, promoteNoteToNotebook,
         ensureScratchNotebook, createScratchNote, isScratchNotebook,
-        ensureSimpleNotebook, createSimpleNote, isSimpleNotebook,
+        createStandaloneNote,
         moveNoteToNotebook,
         createNote, deleteNote, updateNote,
         reorderNotes, restoreNotebook, restoreNote, permanentlyDeleteNotebook, permanentlyDeleteNote,

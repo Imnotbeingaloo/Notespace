@@ -36,10 +36,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const { profile } = useProfile();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tempNotesEnabled] = useTempNotesEnabled();
-  const [simpleNotesOpen, setSimpleNotesOpen] = useState(false);
-  const [simpleNotesQuery, setSimpleNotesQuery] = useState("");
   const {
     notebooks,
+    standaloneNotes,
     trashedNotebooks,
     trashedNotes,
     activeNotebookId,
@@ -62,25 +61,21 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     permanentlyDeleteNote,
     refreshData,
     createScratchNote,
-    ensureSimpleNotebook,
-    isSimpleNotebook,
   } = useNotebooks();
 
   // Top-level vs nested notebooks
-  const simpleNotebook = useMemo(() => notebooks.find((nb) => isSimpleNotebook(nb.id)) ?? null, [notebooks, isSimpleNotebook]);
-  const standaloneNotes = simpleNotebook?.notes ?? [];
-  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id && !isSimpleNotebook(nb.id)), [notebooks, isSimpleNotebook]);
+  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id), [notebooks]);
   const childrenByParent = useMemo(() => {
     const map = new Map<string, typeof notebooks>();
     notebooks.forEach((nb) => {
-      if (nb.parent_id && !isSimpleNotebook(nb.id)) {
+      if (nb.parent_id) {
         const arr = map.get(nb.parent_id) || [];
         arr.push(nb);
         map.set(nb.parent_id, arr);
       }
     });
     return map;
-  }, [notebooks, isSimpleNotebook]);
+  }, [notebooks]);
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
   const [newNotebookOpen, setNewNotebookOpen] = useState(false);
@@ -211,9 +206,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [dragOverNoteId, setDragOverNoteId] = useState<string | null>(null);
   const [noteDropTargetNb, setNoteDropTargetNb] = useState<string | null>(null);
   const [promoteDropActive, setPromoteDropActive] = useState(false);
-  const [pendingMoveNote, setPendingMoveNote] = useState<null | { noteId: string; fromNbId: string; toNbId: string; noteTitle: string; toNbName: string }>(null);
+  const [pendingMoveNote, setPendingMoveNote] = useState<null | { noteId: string; fromNbId: string | null; toNbId: string; noteTitle: string; toNbName: string }>(null);
   const [pendingPromoteNote, setPendingPromoteNote] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
-  const [pendingSimpleMove, setPendingSimpleMove] = useState<null | { noteId: string; fromNbId: string; title: string }>(null);
+  const [pendingSimpleMove, setPendingSimpleMove] = useState<null | { noteId: string; fromNbId: string | null; title: string }>(null);
   const [simpleDropActive, setSimpleDropActive] = useState(false);
   const [trashExpanded, setTrashExpanded] = useState(false);
 
@@ -344,7 +339,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <button
               onClick={() => setNewNotebookOpen(true)}
               onDragOver={(e) => {
-                if (dragNoteId) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
+                if (dragNoteId && dragNoteFromNb) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
               }}
               onDragLeave={() => setPromoteDropActive(false)}
               onDrop={(e) => {
@@ -398,9 +393,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   exit={{ opacity: 0, x: -10 }}
                   transition={{ duration: 0.2 }}
                   onDragStartCapture={(e) => {
-                    if (!simpleNotebook) return;
                     setDragNoteId(note.id);
-                    setDragNoteFromNb(simpleNotebook.id);
+                    setDragNoteFromNb(null);
                     (e as React.DragEvent<HTMLDivElement>).dataTransfer.effectAllowed = "move";
                   }}
                   onDragEnd={() => {
@@ -414,8 +408,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       : "text-sidebar-foreground notebook-hover"
                   } ${dragNoteId === note.id ? "opacity-40" : ""}`}
                   onClick={() => {
-                    if (!simpleNotebook) return;
-                    setActiveNotebookId(simpleNotebook.id);
+                    setActiveNotebookId(null);
                     setActiveNoteId(note.id);
                     onSelectNote?.();
                   }}
@@ -425,11 +418,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (!simpleNotebook) return;
                       showConfirm(
                         "Move to Trash?",
                         `"${note.title}" will be moved to Trash. You can restore it later.`,
-                        () => deleteNote(simpleNotebook.id, note.id),
+                        () => deleteNote(null, note.id),
                         "Move to Trash"
                       );
                     }}
@@ -459,7 +451,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     onDragEnd={() => { setDraggedNotebookId(null); setDragOverNotebookId(null); }}
                     onDragOver={(e) => {
                       const canAcceptNotebook = draggedNotebookId && draggedNotebookId !== nb.id && !nb.parent_id;
-                      const canAcceptNote = dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id;
+                      const canAcceptNote = dragNoteId && dragNoteFromNb !== nb.id;
                       if (canAcceptNotebook || canAcceptNote) {
                         e.preventDefault();
                         e.dataTransfer.dropEffect = "move";
@@ -481,9 +473,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       setNoteDropTargetNb(null);
 
                       // Cross-notebook note move
-                      if (dragNoteId && dragNoteFromNb && dragNoteFromNb !== nb.id) {
-                        const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
-                        const note = sourceNb?.notes.find((n) => n.id === dragNoteId);
+                      if (dragNoteId && dragNoteFromNb !== nb.id) {
+                        const sourceNb = dragNoteFromNb ? notebooks.find((n) => n.id === dragNoteFromNb) : null;
+                        const note = dragNoteFromNb ? sourceNb?.notes.find((n) => n.id === dragNoteId) : standaloneNotes.find((n) => n.id === dragNoteId);
                         if (note) {
                           setPendingMoveNote({
                             noteId: dragNoteId,
@@ -696,7 +688,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           </div>
 
           {/* Drop-to-Simple-Notes zone (only visible while dragging a note) */}
-          {dragNoteId && (
+          {dragNoteId && dragNoteFromNb && (
             <div
               onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setSimpleDropActive(true); }}
               onDragLeave={() => setSimpleDropActive(false)}
@@ -1147,10 +1139,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         destructive={false}
         onConfirm={async () => {
           if (pendingSimpleMove) {
-            const simpleId = await ensureSimpleNotebook();
-            if (simpleId && simpleId !== pendingSimpleMove.fromNbId) {
-              await moveNoteToNotebook(pendingSimpleMove.fromNbId, pendingSimpleMove.noteId, simpleId);
-            }
+            await moveNoteToNotebook(pendingSimpleMove.fromNbId, pendingSimpleMove.noteId, null);
             setPendingSimpleMove(null);
           }
         }}
