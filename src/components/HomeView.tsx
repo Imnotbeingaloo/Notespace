@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -19,6 +18,7 @@ interface HomeViewProps {
   onCreateNotebook?: () => void;
   onCreateScratchNote?: () => void;
   onCreateSimpleNote?: () => void;
+  onExitToWebsite?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
@@ -33,9 +33,8 @@ const looksLikeStandaloneNoteWrapper = (nb: any) => {
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite }: HomeViewProps) {
   const { notebooks, standaloneNotes, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData } = useNotebooks();
-  const navigate = useNavigate();
   const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
   const [query, setQuery] = useState("");
@@ -222,7 +221,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             <div className="flex items-center gap-1 min-w-0">
               <button
                 type="button"
-                onClick={() => navigate("/", { state: { fromApp: true } })}
+                onClick={() => onExitToWebsite?.()}
                 className="flex items-center gap-2 min-w-0 group"
                 title="Back to website"
               >

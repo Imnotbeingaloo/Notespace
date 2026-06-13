@@ -293,6 +293,7 @@ function AppContent() {
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={() => setCreateNoteOpen(true)}
+                onExitToWebsite={handleExitToWebsite}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
