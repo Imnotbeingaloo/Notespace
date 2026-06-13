@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -15,16 +14,17 @@ import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
-  onOpenNote?: (notebookId: string, noteId: string) => void;
+  onOpenNote?: (notebookId: string | null, noteId: string) => void;
   onCreateNotebook?: () => void;
   onCreateScratchNote?: () => void;
   onCreateSimpleNote?: () => void;
+  onExitToWebsite?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
 type LibraryItem =
   | { kind: "notebook"; id: string; notebook: any }
-  | { kind: "note"; id: string; notebookId: string; note: any; deleteNotebookId?: string };
+  | { kind: "note"; id: string; notebookId: string | null; note: any; deleteNotebookId?: string };
 
 const looksLikeStandaloneNoteWrapper = (nb: any) => {
   const onlyNote = nb.notes?.length === 1 ? nb.notes[0] : null;
@@ -33,9 +33,8 @@ const looksLikeStandaloneNoteWrapper = (nb: any) => {
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote }: HomeViewProps) {
-  const { notebooks, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData, isSimpleNotebook } = useNotebooks();
-  const navigate = useNavigate();
+export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite }: HomeViewProps) {
+  const { notebooks, standaloneNotes, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData } = useNotebooks();
   const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
   const [query, setQuery] = useState("");
@@ -45,7 +44,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
   const [loadingMore, setLoadingMore] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
-  const [pendingDelete, setPendingDelete] = useState<null | { kind: "notebook"; id: string; name: string } | { kind: "note"; notebookId: string; noteId: string; name: string; deleteNotebookId?: string }>(null);
+  const [pendingDelete, setPendingDelete] = useState<null | { kind: "notebook"; id: string; name: string } | { kind: "note"; notebookId: string | null; noteId: string; name: string; deleteNotebookId?: string }>(null);
   const [namePromptOpen, setNamePromptOpen] = useState(false);
   const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -91,16 +90,14 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
   const allFiltered = useMemo<LibraryItem[]>(() => {
     const q = query.trim().toLowerCase();
-    const items = notebooks.reduce<LibraryItem[]>((acc, nb) => {
-      if (isSimpleNotebook(nb.id)) {
-        nb.notes.forEach((note) => acc.push({ kind: "note", id: note.id, notebookId: nb.id, note }));
-      } else if (looksLikeStandaloneNoteWrapper(nb)) {
-        acc.push({ kind: "note", id: nb.notes[0].id, notebookId: nb.id, note: { ...nb.notes[0], emoji: nb.notes[0].emoji || nb.emoji }, deleteNotebookId: nb.id });
+    const items: LibraryItem[] = standaloneNotes.map((note) => ({ kind: "note", id: note.id, notebookId: null, note }));
+    notebooks.forEach((nb) => {
+      if (looksLikeStandaloneNoteWrapper(nb)) {
+        items.push({ kind: "note", id: nb.notes[0].id, notebookId: nb.id, note: { ...nb.notes[0], emoji: nb.notes[0].emoji || nb.emoji }, deleteNotebookId: nb.id });
       } else {
-        acc.push({ kind: "notebook", id: nb.id, notebook: nb });
+        items.push({ kind: "notebook", id: nb.id, notebook: nb });
       }
-      return acc;
-    }, []);
+    });
 
     const filtered = !q
       ? items
@@ -121,7 +118,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
       return sort === "newest" ? bT - aT : aT - bT;
     });
     return filtered;
-  }, [notebooks, query, sort, lastUpdated, isSimpleNotebook]);
+  }, [notebooks, standaloneNotes, query, sort, lastUpdated]);
 
   const paged = useMemo(() => allFiltered.slice(0, visible), [allFiltered, visible]);
   const hasMore = visible < allFiltered.length;
@@ -224,7 +221,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             <div className="flex items-center gap-1 min-w-0">
               <button
                 type="button"
-                onClick={() => navigate("/", { state: { fromApp: true } })}
+                onClick={() => onExitToWebsite?.()}
                 className="flex items-center gap-2 min-w-0 group"
                 title="Back to website"
               >

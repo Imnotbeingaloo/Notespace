@@ -27,7 +27,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
 
-  if (!activeNote || !activeNotebookId) return null;
+  if (!activeNote) return null;
 
   const attachments = activeNote.attachments || [];
 

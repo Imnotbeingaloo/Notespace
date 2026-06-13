@@ -53,7 +53,7 @@ function AppContent() {
     }
     prevIsMobileRef.current = isMobile;
   }, [isMobile]);
-  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createSimpleNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook, createNote } = useNotebooks();
+  const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createStandaloneNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook, createNote } = useNotebooks();
 
   // Dynamic browser tab title — reflects the current note / notebook / view
   useEffect(() => {
@@ -107,9 +107,9 @@ function AppContent() {
   // Keep URL in sync when active selection changes (editor mode)
   useEffect(() => {
     if (showHome) return;
-    if (!activeNotebookId) return;
     const next = new URLSearchParams(searchParams);
-    next.set("notebook", activeNotebookId);
+    if (activeNotebookId) next.set("notebook", activeNotebookId);
+    else next.delete("notebook");
     if (activeNoteId) next.set("note", activeNoteId);
     else next.delete("note");
     if (next.toString() !== searchParams.toString()) {
@@ -147,13 +147,14 @@ function AppContent() {
   );
 
   const openNoteFromHome = useCallback(
-    (notebookId: string, noteId: string) => {
+    (notebookId: string | null, noteId: string) => {
       setOpening(true);
       setActiveNotebookId(notebookId);
       setActiveNoteId(noteId);
       setShowHome(false);
       const next = new URLSearchParams(searchParams);
-      next.set("notebook", notebookId);
+      if (notebookId) next.set("notebook", notebookId);
+      else next.delete("notebook");
       next.set("note", noteId);
       setSearchParams(next, { replace: true });
       window.setTimeout(() => setOpening(false), 500);
@@ -292,6 +293,7 @@ function AppContent() {
                 onCreateNotebook={() => setCreateNotebookOpen(true)}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={() => setCreateNoteOpen(true)}
+                onExitToWebsite={handleExitToWebsite}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
@@ -339,12 +341,12 @@ function AppContent() {
           setCreateNoteOpen(false);
           setOpening(true);
           try {
-            const created = await createSimpleNote(name, emoji);
+            const created = await createStandaloneNote(name, emoji);
             if (created) {
               const { notebookId: nbId, noteId } = created;
               setShowHome(false);
               const next = new URLSearchParams(searchParams);
-              next.set("notebook", nbId);
+              next.delete("notebook");
               next.set("note", noteId);
               setSearchParams(next, { replace: true });
             }

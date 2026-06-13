@@ -511,7 +511,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
         const latest = hybridEditorRef.current?.getValue();
-        if (activeNotebookId && activeNote && typeof latest === "string" && latest !== activeNote.content) {
+        if (activeNote && typeof latest === "string" && latest !== activeNote.content) {
           updateNote(activeNotebookId, activeNote.id, { content: latest });
         }
       }
@@ -521,7 +521,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   // Refresh stale signed URLs (older notes used a 7-day expiry). Files in storage
   // are permanent — we just regenerate a fresh long-lived signed URL on load.
   useEffect(() => {
-    if (!activeNote || !activeNotebookId || isOverrideActive) return;
+    if (!activeNote || isOverrideActive) return;
     const attachments = activeNote.attachments || [];
     if (!attachments.length) return;
     let cancelled = false;
@@ -567,7 +567,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   const debouncedUpdate = useCallback(
     (field: "title" | "content", value: string) => {
-      if (!activeNotebookId || !activeNote) return;
+      if (!activeNote) return;
       clearTimeout(debounceRef.current);
       setSaveStatus("saving");
       debounceRef.current = setTimeout(async () => {
@@ -586,7 +586,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
       hybridEditorRef.current?.insertAtCursor(markdown);
       // Persist IMMEDIATELY so attachments survive navigation/refresh
       // (the editor's onChange would otherwise wait 500ms for the debounce).
-      if (activeNotebookId && activeNote) {
+      if (activeNote) {
         const latest = hybridEditorRef.current?.getValue() ?? "";
         clearTimeout(debounceRef.current);
         updateNote(activeNotebookId, activeNote.id, { content: latest });
@@ -598,7 +598,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   const handleToolbarChange = useCallback(
     (content: string) => {
-      if (!activeNotebookId || !activeNote) return;
+      if (!activeNote) return;
       updateNote(activeNotebookId, activeNote.id, { content });
     },
     [activeNotebookId, activeNote?.id, updateNote]
@@ -606,7 +606,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   const handleVoiceTranscript = useCallback(
     (text: string) => {
-      if (!activeNotebookId || !activeNote) return;
+      if (!activeNote) return;
       // Insert at cursor via the rich editor (works whether HybridEditor uses textarea or contenteditable)
       hybridEditorRef.current?.insertAtCursor(" " + text);
     },
@@ -615,7 +615,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
   const handleAIEdit = useCallback(
     (newContent: string) => {
-      if (!activeNotebookId || !activeNote) return;
+      if (!activeNote) return;
       const original = (activeNote.content ?? "").trim();
       const incoming = (newContent ?? "").trim();
       if (!incoming) return;
@@ -648,7 +648,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     async (e: React.DragEvent) => {
       e.preventDefault();
       setDragOver(false);
-      if (!user || !activeNote || !activeNotebookId) return;
+      if (!user || !activeNote) return;
 
       const files = Array.from(e.dataTransfer.files);
       if (files.length === 0) return;
@@ -771,7 +771,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           {/* Tags row */}
           {!focusMode && !isOverrideActive && (
             <div className="mt-2">
-              <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
+              <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId} onTagsUpdated={setTags} />
             </div>
           )}
 

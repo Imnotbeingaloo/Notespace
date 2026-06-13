@@ -113,6 +113,7 @@ function TemporaryWorkspaceInner() {
     if (!row) return;
     const note: Note = {
       id: row.id,
+      notebook_id: null,
       title: row.title,
       content: row.content,
       attachments: [],
