@@ -9,7 +9,7 @@ const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools
 interface NoteTagsProps {
   tags: string[];
   noteId: string;
-  notebookId: string;
+  notebookId?: string | null;
   onTagsUpdated: (tags: string[]) => void;
 }
 

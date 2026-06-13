@@ -755,7 +755,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         </div>
       )}
 
-      {/* Simple Notes sidebar section removed per user request. */}
+      {/* Standalone notes are rendered at the top of the sidebar. */}
 
       {/* Smart Tags & Study Planner - above footer */}
       {!collapsed && (

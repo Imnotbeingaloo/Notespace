@@ -648,7 +648,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     async (e: React.DragEvent) => {
       e.preventDefault();
       setDragOver(false);
-      if (!user || !activeNote || !activeNotebookId) return;
+      if (!user || !activeNote) return;
 
       const files = Array.from(e.dataTransfer.files);
       if (files.length === 0) return;
@@ -771,7 +771,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           {/* Tags row */}
           {!focusMode && !isOverrideActive && (
             <div className="mt-2">
-              <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId!} onTagsUpdated={setTags} />
+              <NoteTags tags={tags} noteId={activeNote.id} notebookId={activeNotebookId} onTagsUpdated={setTags} />
             </div>
           )}
 
