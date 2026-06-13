@@ -61,8 +61,9 @@ export type Database = {
           content: string
           created_at: string
           deleted_at: string | null
+          emoji: string | null
           id: string
-          notebook_id: string
+          notebook_id: string | null
           tags: string[] | null
           title: string
           updated_at: string
@@ -73,8 +74,9 @@ export type Database = {
           content?: string
           created_at?: string
           deleted_at?: string | null
+          emoji?: string | null
           id?: string
-          notebook_id: string
+          notebook_id?: string | null
           tags?: string[] | null
           title?: string
           updated_at?: string
@@ -85,8 +87,9 @@ export type Database = {
           content?: string
           created_at?: string
           deleted_at?: string | null
+          emoji?: string | null
           id?: string
-          notebook_id?: string
+          notebook_id?: string | null
           tags?: string[] | null
           title?: string
           updated_at?: string
