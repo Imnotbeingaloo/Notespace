@@ -52,21 +52,24 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
 
-  // Always prompt for a display name until the user provides one.
-  // If they close the tab without entering it, they'll be asked again next visit.
+  // Fire "welcome back" immediately on home arrival when the login flag is set,
+  // without waiting for the profile to finish loading (avoids the visible delay).
+  useEffect(() => {
+    try {
+      const variant = sessionStorage.getItem("welcomeVariant");
+      const shown = sessionStorage.getItem("welcomeShown");
+      if (variant === "returning" && !shown) {
+        sessionStorage.setItem("welcomeShown", "1");
+        setWelcomeBackOpen(true);
+      }
+    } catch {}
+  }, []);
+
+  // Name-prompt logic still waits for the profile to resolve.
   useEffect(() => {
     if (profileLoading) return;
     if (profile?.display_name) {
       setNamePromptOpen(false);
-      // Returning users: show "Nice to see you again" once per session.
-      try {
-        const variant = sessionStorage.getItem("welcomeVariant");
-        const shown = sessionStorage.getItem("welcomeShown");
-        if (variant === "returning" && !shown) {
-          sessionStorage.setItem("welcomeShown", "1");
-          setWelcomeBackOpen(true);
-        }
-      } catch {}
       return;
     }
     setNamePromptOpen(true);
