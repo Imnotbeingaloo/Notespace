@@ -1096,6 +1096,24 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         onCreate={async (name, emoji) => { await createNotebook(name, emoji); }}
       />
 
+      {/* Create standalone Note */}
+      <CreateNotebookDialog
+        kind="note"
+        open={newNoteOpen}
+        onOpenChange={setNewNoteOpen}
+        title="Create Note"
+        submitLabel="Create Note"
+        placeholder="e.g. Today's ideas"
+        onCreate={async (name, emoji) => {
+          const created = await createStandaloneNote(name, emoji);
+          if (created) {
+            setActiveNotebookId(null);
+            setActiveNoteId(created.noteId);
+            onSelectNote?.();
+          }
+        }}
+      />
+
 
       {/* Confirm Sub-Notebook nesting */}
       <ConfirmDialog
