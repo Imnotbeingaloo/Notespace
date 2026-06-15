@@ -244,10 +244,11 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap justify-center gap-2"
           >
             {attachments.filter(a => !isImage(a.type)).map((att, i) => {
               const originalIdx = attachments.indexOf(att);
+              const shortName = att.name.length > 7 ? `${att.name.slice(0, 6)}...` : att.name;
               return (
                 <motion.div
                   key={att.url}
@@ -258,7 +259,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
                 >
                   <FileIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   <div className="flex flex-col min-w-0">
-                    <span className="truncate max-w-[120px]">{att.name}</span>
+                    <span className="truncate max-w-[80px]" title={att.name}>{shortName}</span>
                     <span className="text-[10px] text-muted-foreground">{formatSize(att.size)}</span>
                   </div>
                   <button
