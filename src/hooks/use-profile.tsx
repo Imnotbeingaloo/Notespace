@@ -8,9 +8,38 @@ export interface ProfileRow {
   password_last_changed_at: string | null;
 }
 
+const DISPLAY_NAME_CACHE_KEY = "displayNameCache";
+
+function readCachedDisplayName(userId: string | undefined): string | null {
+  if (!userId || typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(DISPLAY_NAME_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { user_id?: string; display_name?: string };
+    return parsed?.user_id === userId ? (parsed.display_name ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedDisplayName(userId: string, name: string | null) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(DISPLAY_NAME_CACHE_KEY, JSON.stringify({ user_id: userId, display_name: name }));
+  } catch {}
+}
+
 export function useProfile() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<ProfileRow | null>(null);
+  // Eagerly seed from localStorage so navigating Home <-> Notebook keeps the
+  // greeting stable instead of flashing "Welcome back." then "Welcome back, X.".
+  const [profile, setProfile] = useState<ProfileRow | null>(() => {
+    if (!user?.id) return null;
+    const cached = readCachedDisplayName(user.id);
+    return cached !== null
+      ? { user_id: user.id, display_name: cached, password_last_changed_at: null }
+      : null;
+  });
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
@@ -25,7 +54,9 @@ export function useProfile() {
       .select("user_id, display_name, password_last_changed_at")
       .eq("user_id", user.id)
       .maybeSingle();
-    setProfile((data as ProfileRow) ?? { user_id: user.id, display_name: null, password_last_changed_at: null });
+    const next = (data as ProfileRow) ?? { user_id: user.id, display_name: null, password_last_changed_at: null };
+    setProfile(next);
+    writeCachedDisplayName(user.id, next.display_name);
     setLoading(false);
   }, [user]);
 
@@ -44,6 +75,7 @@ export function useProfile() {
         .upsert({ user_id: user.id, display_name: trimmed }, { onConflict: "user_id" });
       if (error) return { error: error.message };
       setProfile((p) => ({ user_id: user.id, display_name: trimmed, password_last_changed_at: p?.password_last_changed_at ?? null }));
+      writeCachedDisplayName(user.id, trimmed);
       return { error: null };
     },
     [user]

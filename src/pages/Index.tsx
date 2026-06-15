@@ -77,8 +77,7 @@ function AppContent() {
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
   const lastHydratedUrlRef = useRef<string | null>(null);
   const [scratchLeavePending, setScratchLeavePending] = useState<null | { fromNotebookId: string; noteId: string; targetView: () => void }>(null);
-  const [createNotebookOpen, setCreateNotebookOpen] = useState(false);
-  const [createNoteOpen, setCreateNoteOpen] = useState(false);
+  const [createMenuOpen, setCreateMenuOpen] = useState(false);
 
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
@@ -290,9 +289,9 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onOpenNote={openNoteFromHome}
-                onCreateNotebook={() => setCreateNotebookOpen(true)}
+                onCreateNotebook={() => setCreateMenuOpen(true)}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
-                onCreateSimpleNote={() => setCreateNoteOpen(true)}
+                onCreateSimpleNote={() => setCreateMenuOpen(true)}
                 onExitToWebsite={handleExitToWebsite}
               />
             ) : (
@@ -316,34 +315,25 @@ function AppContent() {
         </div>
       </div>
 
-      {/* Create Notebook dialog (used by topbar button + Home tile) */}
+      {/* Unified Create dialog — choose Note or Notebook in one popup */}
       <CreateNotebookDialog
-        open={createNotebookOpen}
-        onOpenChange={setCreateNotebookOpen}
-        onCreate={async (name, emoji) => {
+        mode="choose"
+        open={createMenuOpen}
+        onOpenChange={setCreateMenuOpen}
+        onCreateNotebook={async (name, emoji) => {
           const id = await createNotebook(name, emoji);
           if (id) {
-            setCreateNotebookOpen(false);
+            setCreateMenuOpen(false);
             openNotebookFromHome(id);
           }
         }}
-      />
-
-      {/* Create Note dialog — creates one standalone note in the Notes collection */}
-      <CreateNotebookDialog
-        kind="note"
-        open={createNoteOpen}
-        onOpenChange={setCreateNoteOpen}
-        submitLabel="Create Note"
-        title="Create Note"
-        placeholder="e.g. Today's ideas"
-        onCreate={async (name, emoji) => {
-          setCreateNoteOpen(false);
+        onCreateNote={async (name, emoji) => {
+          setCreateMenuOpen(false);
           setOpening(true);
           try {
             const created = await createStandaloneNote(name, emoji);
             if (created) {
-              const { notebookId: nbId, noteId } = created;
+              const { noteId } = created;
               setShowHome(false);
               const next = new URLSearchParams(searchParams);
               next.delete("notebook");

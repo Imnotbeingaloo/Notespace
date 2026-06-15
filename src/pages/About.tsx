@@ -435,15 +435,25 @@ export default function AboutPage() {
       <AnimatedDivider />
 
       {/* CTA */}
-      <section className="container mx-auto px-6 py-28">
-        <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border p-12 md:p-16 text-center max-w-4xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Join us on the journey</h2>
-          <p className="text-muted-foreground mb-4 max-w-md mx-auto">We're just getting started. Be part of a community that thinks better, together.</p>
-          <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">Free to use, open to feedback, and always improving.</p>
-          <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-            {user ? "Open App" : "Get Started Free"} <ArrowRight className="h-5 w-5" />
-          </Link>
-        </motion.div>
+      <section className="bg-foreground/[0.04] py-20">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
+          >
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
+              Join us on the journey
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
+              We're just getting started. Be part of a community that thinks better, together — free to use, open to feedback.
+            </p>
+            <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+              {user ? "Open App" : "Get Started Free"} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </div>
       </section>
 
       <Footer />

@@ -79,8 +79,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   }, [notebooks]);
 
   const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
-  const [newNotebookOpen, setNewNotebookOpen] = useState(false);
-  const [newNoteOpen, setNewNoteOpen] = useState(false);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const [pendingNestChild, setPendingNestChild] = useState<{ childId: string; parentId: string } | null>(null);
   const [draggedNotebookId, setDraggedNotebookId] = useState<string | null>(null);
@@ -340,53 +338,31 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               {sidebarUploadProcessing ? "Processing" : "Upload"}
             </button>
             <div className="w-full flex justify-center">
-              <Popover open={createMenuOpen} onOpenChange={setCreateMenuOpen}>
-                <PopoverTrigger asChild>
-                  <button
-                    onDragOver={(e) => {
-                      if (dragNoteId && dragNoteFromNb) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
-                    }}
-                    onDragLeave={() => setPromoteDropActive(false)}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setPromoteDropActive(false);
-                      if (dragNoteId && dragNoteFromNb) {
-                        const nb = notebooks.find((n) => n.id === dragNoteFromNb);
-                        const note = nb?.notes.find((n) => n.id === dragNoteId);
-                        if (note) setPendingPromoteNote({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
-                        setDragNoteId(null); setDragNoteFromNb(null);
-                      }
-                    }}
-                    className={`w-full max-w-[160px] flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm rounded-lg magnetic-btn transition-all duration-150 active:scale-[0.97] ${
-                      promoteDropActive
-                        ? "bg-primary/15 text-primary ring-1 ring-primary/40"
-                        : "bg-primary/10 text-primary hover:bg-primary/15"
-                    }`}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    <span className="font-medium">{promoteDropActive ? "Drop to make notebook" : "Create"}</span>
-                    <ChevronDown className="h-3 w-3 opacity-70" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="center" side="bottom" className="w-52 p-1.5">
-                  <button
-                    onClick={() => { setCreateMenuOpen(false); setNewNoteOpen(true); }}
-                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-foreground hover:bg-muted transition-colors text-left"
-                  >
-                    <NotebookPen className="h-4 w-4 text-primary" />
-                    <span className="flex-1">New Note</span>
-                    <span className="text-[10px] text-muted-foreground">single</span>
-                  </button>
-                  <button
-                    onClick={() => { setCreateMenuOpen(false); setNewNotebookOpen(true); }}
-                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-foreground hover:bg-muted transition-colors text-left"
-                  >
-                    <BookPlus className="h-4 w-4 text-primary" />
-                    <span className="flex-1">New Notebook</span>
-                    <span className="text-[10px] text-muted-foreground">group</span>
-                  </button>
-                </PopoverContent>
-              </Popover>
+              <button
+                onClick={() => setCreateMenuOpen(true)}
+                onDragOver={(e) => {
+                  if (dragNoteId && dragNoteFromNb) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
+                }}
+                onDragLeave={() => setPromoteDropActive(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setPromoteDropActive(false);
+                  if (dragNoteId && dragNoteFromNb) {
+                    const nb = notebooks.find((n) => n.id === dragNoteFromNb);
+                    const note = nb?.notes.find((n) => n.id === dragNoteId);
+                    if (note) setPendingPromoteNote({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
+                    setDragNoteId(null); setDragNoteFromNb(null);
+                  }
+                }}
+                className={`w-full max-w-[160px] flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm rounded-lg magnetic-btn transition-all duration-150 active:scale-[0.97] ${
+                  promoteDropActive
+                    ? "bg-primary/15 text-primary ring-1 ring-primary/40"
+                    : "bg-primary/10 text-primary hover:bg-primary/15"
+                }`}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span className="font-medium">{promoteDropActive ? "Drop to make notebook" : "Create"}</span>
+              </button>
             </div>
             {tempNotesEnabled && (
               <Link
@@ -1089,22 +1065,13 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         onProcessingChange={setSidebarUploadProcessing}
       />
 
-      {/* Create Notebook Modal */}
+      {/* Unified Create dialog — choose Note or Notebook in one popup */}
       <CreateNotebookDialog
-        open={newNotebookOpen}
-        onOpenChange={setNewNotebookOpen}
-        onCreate={async (name, emoji) => { await createNotebook(name, emoji); }}
-      />
-
-      {/* Create standalone Note */}
-      <CreateNotebookDialog
-        kind="note"
-        open={newNoteOpen}
-        onOpenChange={setNewNoteOpen}
-        title="Create Note"
-        submitLabel="Create Note"
-        placeholder="e.g. Today's ideas"
-        onCreate={async (name, emoji) => {
+        mode="choose"
+        open={createMenuOpen}
+        onOpenChange={setCreateMenuOpen}
+        onCreateNotebook={async (name, emoji) => { await createNotebook(name, emoji); }}
+        onCreateNote={async (name, emoji) => {
           const created = await createStandaloneNote(name, emoji);
           if (created) {
             setActiveNotebookId(null);
