@@ -1067,22 +1067,13 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         onProcessingChange={setSidebarUploadProcessing}
       />
 
-      {/* Create Notebook Modal */}
+      {/* Unified Create dialog — choose Note or Notebook in one popup */}
       <CreateNotebookDialog
-        open={newNotebookOpen}
-        onOpenChange={setNewNotebookOpen}
-        onCreate={async (name, emoji) => { await createNotebook(name, emoji); }}
-      />
-
-      {/* Create standalone Note */}
-      <CreateNotebookDialog
-        kind="note"
-        open={newNoteOpen}
-        onOpenChange={setNewNoteOpen}
-        title="Create Note"
-        submitLabel="Create Note"
-        placeholder="e.g. Today's ideas"
-        onCreate={async (name, emoji) => {
+        mode="choose"
+        open={createMenuOpen}
+        onOpenChange={setCreateMenuOpen}
+        onCreateNotebook={async (name, emoji) => { await createNotebook(name, emoji); }}
+        onCreateNote={async (name, emoji) => {
           const created = await createStandaloneNote(name, emoji);
           if (created) {
             setActiveNotebookId(null);
