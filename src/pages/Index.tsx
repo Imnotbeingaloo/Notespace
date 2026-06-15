@@ -77,8 +77,7 @@ function AppContent() {
   const [retryingDeepLink, setRetryingDeepLink] = useState(false);
   const lastHydratedUrlRef = useRef<string | null>(null);
   const [scratchLeavePending, setScratchLeavePending] = useState<null | { fromNotebookId: string; noteId: string; targetView: () => void }>(null);
-  const [createNotebookOpen, setCreateNotebookOpen] = useState(false);
-  const [createNoteOpen, setCreateNoteOpen] = useState(false);
+  const [createMenuOpen, setCreateMenuOpen] = useState(false);
 
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
