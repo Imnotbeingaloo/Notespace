@@ -289,9 +289,9 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onOpenNote={openNoteFromHome}
-                onCreateNotebook={() => setCreateNotebookOpen(true)}
+                onCreateNotebook={() => setCreateMenuOpen(true)}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
-                onCreateSimpleNote={() => setCreateNoteOpen(true)}
+                onCreateSimpleNote={() => setCreateMenuOpen(true)}
                 onExitToWebsite={handleExitToWebsite}
               />
             ) : (
