@@ -7,8 +7,8 @@ export default function Footer() {
   const { user } = useAuth();
 
   return (
-    <footer className="border-t border-border bg-card/50 rounded-t-[3rem]">
-      <div className="container mx-auto px-6 py-16 md:py-24">
+    <footer className="border-t border-border bg-card/50">
+      <div className="container mx-auto px-6 pt-16 md:pt-24 pb-8 md:pb-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
