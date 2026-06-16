@@ -269,7 +269,15 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 pr-8 min-w-0">
             <FileText className="h-4 w-4 text-primary flex-shrink-0" />
-            <span className="truncate block min-w-0 flex-1">{file.name}</span>
+            {(() => {
+              const dot = file.name.lastIndexOf(".");
+              const base = dot > 0 ? file.name.slice(0, dot) : file.name;
+              const ext = dot > 0 ? file.name.slice(dot) : "";
+              const shortBase = base.length > 7 ? `${base.slice(0, 7)}...` : base;
+              return (
+                <span className="block min-w-0 flex-1" title={file.name}>{shortBase}{ext}</span>
+              );
+            })()}
           </DialogTitle>
 
           <DialogDescription>
