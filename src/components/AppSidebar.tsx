@@ -337,33 +337,32 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               )}
               {sidebarUploadProcessing ? "Processing" : "Upload"}
             </button>
-            <div className="w-full flex justify-center">
-              <button
-                onClick={() => setCreateMenuOpen(true)}
-                onDragOver={(e) => {
-                  if (dragNoteId && dragNoteFromNb) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
-                }}
-                onDragLeave={() => setPromoteDropActive(false)}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setPromoteDropActive(false);
-                  if (dragNoteId && dragNoteFromNb) {
-                    const nb = notebooks.find((n) => n.id === dragNoteFromNb);
-                    const note = nb?.notes.find((n) => n.id === dragNoteId);
-                    if (note) setPendingPromoteNote({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
-                    setDragNoteId(null); setDragNoteFromNb(null);
-                  }
-                }}
-                className={`w-full max-w-[160px] flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm rounded-lg magnetic-btn transition-all duration-150 active:scale-[0.97] ${
-                  promoteDropActive
-                    ? "bg-primary/15 text-primary ring-1 ring-primary/40"
-                    : "bg-primary/10 text-primary hover:bg-primary/15"
-                }`}
-              >
-                <Plus className="h-3.5 w-3.5" />
-                <span className="font-medium">{promoteDropActive ? "Drop to make notebook" : "Create"}</span>
-              </button>
-            </div>
+            <button
+              onClick={() => setCreateMenuOpen(true)}
+              onDragOver={(e) => {
+                if (dragNoteId && dragNoteFromNb) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setPromoteDropActive(true); }
+              }}
+              onDragLeave={() => setPromoteDropActive(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setPromoteDropActive(false);
+                if (dragNoteId && dragNoteFromNb) {
+                  const nb = notebooks.find((n) => n.id === dragNoteFromNb);
+                  const note = nb?.notes.find((n) => n.id === dragNoteId);
+                  if (note) setPendingPromoteNote({ noteId: dragNoteId, fromNbId: dragNoteFromNb, title: note.title });
+                  setDragNoteId(null); setDragNoteFromNb(null);
+                }
+              }}
+              title="Create a new note or notebook."
+              className={`w-full flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg magnetic-btn transition-colors ${
+                promoteDropActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+              }`}
+            >
+              <Plus className="h-3.5 w-3.5" />
+              {promoteDropActive ? "Drop to make notebook" : "Create"}
+            </button>
             {tempNotesEnabled && (
               <Link
                 to="/app/temporary"
