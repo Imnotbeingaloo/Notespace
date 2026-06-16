@@ -655,7 +655,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                                 onSelectNote?.();
                               }}
                             >
-                              <NotebookPen className="h-3.5 w-3.5 flex-shrink-0 text-primary/70" />
+                              <FileText className="h-3.5 w-3.5 flex-shrink-0 text-primary/70" />
                               <span className="truncate flex-1 text-sm">{note.title}</span>
                               <button
                                 onClick={(e) => {
