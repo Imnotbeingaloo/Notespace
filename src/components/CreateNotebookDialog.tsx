@@ -154,7 +154,7 @@ export function CreateNotebookDialog({
                     className="group flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-background hover:border-primary/50 hover:bg-primary/[0.04] transition-all"
                   >
                     <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-[1.04] transition-transform">
-                      <NotebookPen className="h-6 w-6 text-primary" />
+                      <FileText className="h-6 w-6 text-primary" />
                     </div>
                     <span className="font-medium text-sm text-foreground">Note</span>
                     <span className="text-[11px] text-muted-foreground text-center leading-tight">A single page</span>
@@ -224,13 +224,6 @@ export function CreateNotebookDialog({
                       Back
                     </Button>
                   )}
-                  <Button
-                    variant="ghost"
-                    onClick={() => onOpenChange(false)}
-                    disabled={submitting}
-                  >
-                    Cancel
-                  </Button>
                   <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
                     {submitting ? "Creating…" : cta}
                   </Button>
