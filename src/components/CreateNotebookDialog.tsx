@@ -224,13 +224,6 @@ export function CreateNotebookDialog({
                       Back
                     </Button>
                   )}
-                  <Button
-                    variant="ghost"
-                    onClick={() => onOpenChange(false)}
-                    disabled={submitting}
-                  >
-                    Cancel
-                  </Button>
                   <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
                     {submitting ? "Creating…" : cta}
                   </Button>
