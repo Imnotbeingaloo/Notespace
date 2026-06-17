@@ -218,12 +218,7 @@ export function CreateNotebookDialog({
                   </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-border bg-muted/30 flex items-center justify-end gap-2">
-                  {mode === "choose" && (
-                    <Button variant="ghost" onClick={() => setStep("choose")} disabled={submitting}>
-                      Back
-                    </Button>
-                  )}
+                <div className="px-6 py-4 border-t border-border bg-muted/30 flex items-center justify-end">
                   <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
                     {submitting ? "Creating…" : cta}
                   </Button>
