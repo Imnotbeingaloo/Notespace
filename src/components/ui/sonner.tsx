@@ -14,11 +14,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       duration={3000}
       theme={theme as ToasterProps["theme"]}
-      position="bottom-right"
+      position="top-right"
       visibleToasts={MAX_VISIBLE_TOASTS}
-      gap={12}
+      gap={14}
       expand
-      offset={{ top: 16, right: 16, bottom: 16, left: 16 }}
+      offset={{ top: 20, right: 20, bottom: 20, left: 20 }}
       mobileOffset={{ bottom: 16, left: 16, right: 16, top: 16 }}
       className="toaster group"
       aria-label="Notifications"
@@ -37,8 +37,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
         classNames: {
           toast: [
             "group relative pointer-events-auto",
-            "flex min-h-[54px] items-start gap-3 w-[min(400px,calc(100vw-2rem))]",
-            "rounded-xl bg-primary/10 backdrop-blur-md px-4 py-3.5 pr-10 font-sans text-sm text-foreground",
+            "flex min-h-[56px] items-start gap-3 w-[440px] max-w-[calc(100vw-2rem)]",
+            "rounded-xl bg-primary/10 backdrop-blur-md px-5 py-4 pr-11 font-sans text-sm text-foreground",
             "shadow-lg shadow-black/10 border-0",
           ].join(" "),
           title: "font-medium text-[13.5px] leading-snug",
@@ -49,10 +49,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
             "inline-flex items-center rounded-md bg-primary/20 hover:bg-primary/30 px-2.5 py-1 text-xs font-medium text-current transition-colors",
           icon: "shrink-0 mt-0.5 text-current [&_svg]:h-4 [&_svg]:w-4",
           closeButton: [
-            "!absolute !top-2 !right-2 !left-auto !translate-x-0 !translate-y-0",
+            "!absolute !top-2.5 !right-2.5 !left-auto !translate-x-0 !translate-y-0",
             "!h-6 !w-6 !rounded-md !border-none !bg-transparent",
             "!text-current/70 hover:!text-current hover:!bg-current/10",
-            "transition-colors flex items-center justify-center",
+            "transition-colors flex items-center justify-center opacity-100",
           ].join(" "),
         },
       }}

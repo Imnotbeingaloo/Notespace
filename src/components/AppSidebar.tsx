@@ -280,12 +280,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             : "flex items-center justify-between p-3 border-b border-sidebar-border"
         }
       >
-        <AnimatePresence>
-          {!collapsed && (
+        <AnimatePresence initial={false} mode="wait">
+          {!collapsed ? (
             <motion.div
+              key="expanded"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
               className="flex items-center gap-2 min-w-0"
             >
               <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0 mt-1" />
@@ -299,16 +301,45 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 <Home className="h-4 w-4" />
               </button>
             </motion.div>
+          ) : (
+            <motion.div
+              key="collapsed-logo"
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <TooltipProvider delayDuration={150}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={onToggle}
+                      aria-label="Open sidebar"
+                      className="group relative p-1 rounded-md hover:bg-muted transition-colors flex items-center justify-center"
+                    >
+                      <img
+                        src="/logo.png"
+                        alt="Notebook Archive"
+                        className="h-7 w-7 object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-4deg]"
+                      />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Open sidebar</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </motion.div>
           )}
         </AnimatePresence>
-        <button
-          onClick={onToggle}
-          aria-label={collapsed ? "Open sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Open sidebar" : "Collapse sidebar"}
-          className="p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
-        >
-          <Menu className="h-4 w-4" />
-        </button>
+        {!collapsed && (
+          <button
+            onClick={onToggle}
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+            className="p-1.5 rounded-md notebook-hover text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {!collapsed && (
