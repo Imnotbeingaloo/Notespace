@@ -16,7 +16,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       position="bottom-right"
       visibleToasts={MAX_VISIBLE_TOASTS}
-      gap={10}
+      gap={12}
       expand
       offset={{ top: 16, right: 16, bottom: 16, left: 16 }}
       mobileOffset={{ bottom: 16, left: 16, right: 16, top: 16 }}
@@ -38,15 +38,15 @@ const Toaster = ({ ...props }: ToasterProps) => {
           toast: [
             "group relative pointer-events-auto",
             "flex min-h-[54px] items-start gap-3 w-[min(400px,calc(100vw-2rem))]",
-            "rounded-lg border border-border bg-popover px-4 py-3.5 pr-10 font-sans text-sm text-popover-foreground",
-            "shadow-lg shadow-black/10",
+            "rounded-xl bg-primary/10 backdrop-blur-md px-4 py-3.5 pr-10 font-sans text-sm text-foreground",
+            "shadow-lg shadow-black/10 border-0",
           ].join(" "),
           title: "font-medium text-[13.5px] leading-snug",
           description: "text-current/80 text-xs leading-relaxed mt-1",
           actionButton:
-            "ml-auto inline-flex items-center rounded-md bg-secondary/10 hover:bg-secondary/20 px-2.5 py-1 text-xs font-medium text-current transition-colors",
+            "ml-auto inline-flex items-center rounded-md bg-primary/20 hover:bg-primary/30 px-2.5 py-1 text-xs font-medium text-current transition-colors",
           cancelButton:
-            "inline-flex items-center rounded-md bg-secondary/10 hover:bg-secondary/20 px-2.5 py-1 text-xs font-medium text-current transition-colors",
+            "inline-flex items-center rounded-md bg-primary/20 hover:bg-primary/30 px-2.5 py-1 text-xs font-medium text-current transition-colors",
           icon: "shrink-0 mt-0.5 text-current [&_svg]:h-4 [&_svg]:w-4",
           closeButton: [
             "!absolute !top-2 !right-2 !left-auto !translate-x-0 !translate-y-0",
