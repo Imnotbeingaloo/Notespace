@@ -498,25 +498,22 @@
   }
 }
 
-/* ============= Sonner toasts: strict linear, never overlap ============= */
+/* ============= Sonner toasts: smooth stacking, never cut off ============= */
 [data-sonner-toaster] {
-  --gap: 12px !important;
+  --gap: 14px !important;
+  --width: 440px !important;
+  max-width: calc(100vw - 2rem) !important;
 }
 [data-sonner-toaster] [data-sonner-toast] {
-  /* Force every toast to its natural layout slot — never let sonner
-     stack them visually on top of one another. */
-  transform: none !important;
+  width: 100% !important;
+  max-width: calc(100vw - 2rem) !important;
+  /* Smooth spring-like transition for stacking shuffle */
+  transition:
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 280ms ease,
+    height 380ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+/* Make sure the close cross is always visible */
+[data-sonner-toaster] [data-sonner-toast] [data-close-button] {
   opacity: 1 !important;
-  scale: 1 !important;
-  --y: 0 !important;
-  --scale: 1 !important;
-  position: relative !important;
-  top: auto !important;
-  bottom: auto !important;
-}
-[data-sonner-toaster][data-y-position="bottom"] [data-sonner-toast] {
-  margin-top: 12px;
-}
-[data-sonner-toaster][data-y-position="top"] [data-sonner-toast] {
-  margin-bottom: 12px;
 }
