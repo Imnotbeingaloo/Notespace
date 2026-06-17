@@ -248,6 +248,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
   };
 
   return (
+    <TooltipProvider delayDuration={200}>
     <div className="relative flex items-center">
       <input
         ref={imageInputRef}
@@ -278,16 +279,21 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         <div key={a.label} className="contents">
             {a.label === "Highlight" ? (
               <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-                    title="Highlight color"
-                  >
-                    <Highlighter className="h-4 w-4" />
-                  </button>
-                </PopoverTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+                        aria-label="Highlight color"
+                      >
+                        <Highlighter className="h-4 w-4" />
+                      </button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Highlight color</TooltipContent>
+                </Tooltip>
                 <PopoverContent className="w-auto p-2" align="start" sideOffset={6} onOpenAutoFocus={(e) => e.preventDefault()}>
                   <div className="flex items-center gap-1.5">
                     {HIGHLIGHT_COLORS.map((c) => (
@@ -305,16 +311,21 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
                 </PopoverContent>
               </Popover>
             ) : (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  a.action();
-                }}
-                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-                title={a.label}>
-                <a.icon className={`h-4 w-4 ${a.icon === Loader2 ? "animate-spin" : ""}`} />
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      a.action();
+                    }}
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+                    aria-label={a.label}>
+                    <a.icon className={`h-4 w-4 ${a.icon === Loader2 ? "animate-spin" : ""}`} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">{a.label}</TooltipContent>
+              </Tooltip>
             )}
             {separatorAfter.has(i) &&
           <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
@@ -334,14 +345,19 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         {onFindReplace && (
           <>
             <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
-            <button
-              type="button"
-              onClick={onFindReplace}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-              title="Find & Replace (Ctrl+F)"
-            >
-              <Search className="h-4 w-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={onFindReplace}
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+                  aria-label="Find & Replace"
+                >
+                  <Search className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Find & Replace (Ctrl+F)</TooltipContent>
+            </Tooltip>
           </>
         )}
       </div>
@@ -355,5 +371,6 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
           <ChevronRight className="h-4 w-4" />
         </button>
       )}
-    </div>);
+    </div>
+    </TooltipProvider>);
 }
