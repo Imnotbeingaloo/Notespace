@@ -497,3 +497,26 @@
     animation: none !important;
   }
 }
+
+/* ============= Sonner toasts: strict linear, never overlap ============= */
+[data-sonner-toaster] {
+  --gap: 12px !important;
+}
+[data-sonner-toaster] [data-sonner-toast] {
+  /* Force every toast to its natural layout slot — never let sonner
+     stack them visually on top of one another. */
+  transform: none !important;
+  opacity: 1 !important;
+  scale: 1 !important;
+  --y: 0 !important;
+  --scale: 1 !important;
+  position: relative !important;
+  top: auto !important;
+  bottom: auto !important;
+}
+[data-sonner-toaster][data-y-position="bottom"] [data-sonner-toast] {
+  margin-top: 12px;
+}
+[data-sonner-toaster][data-y-position="top"] [data-sonner-toast] {
+  margin-bottom: 12px;
+}
