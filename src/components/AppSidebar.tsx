@@ -751,20 +751,24 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       {collapsed && (
         <div className="flex-1 flex flex-col items-center py-3 gap-2">
           {notebooks.map((nb) => (
-            <button
-              key={nb.id}
-              onClick={() => {
-                setActiveNotebookId(nb.id);
-                setExpandedNotebook(nb.id);
-                onToggle();
-              }}
-              className={`p-2 rounded-lg transition-all duration-200 text-base ${
-                activeNotebookId === nb.id ? "bg-primary/10" : "notebook-hover"
-              }`}
-              title={nb.name}
-            >
-              {nb.emoji}
-            </button>
+            <Tooltip key={nb.id}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    setActiveNotebookId(nb.id);
+                    setExpandedNotebook(nb.id);
+                    onToggle();
+                  }}
+                  className={`p-2 rounded-lg transition-all duration-200 text-base ${
+                    activeNotebookId === nb.id ? "bg-primary/10" : "notebook-hover"
+                  }`}
+                  aria-label={nb.name}
+                >
+                  {nb.emoji}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{nb.name}</TooltipContent>
+            </Tooltip>
           ))}
         </div>
       )}
