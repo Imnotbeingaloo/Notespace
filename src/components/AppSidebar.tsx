@@ -315,12 +315,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     <button
                       onClick={onToggle}
                       aria-label="Open sidebar"
-                      className="group relative p-1 rounded-md hover:bg-muted transition-colors flex items-center justify-center"
+                      className="group relative h-9 w-9 rounded-xl hover:bg-muted transition-colors flex items-center justify-center"
                     >
                       <img
                         src="/logo.png"
                         alt="Notebook Archive"
-                        className="h-7 w-7 object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-4deg]"
+                        className="h-9 w-9 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:rotate-[-3deg]"
                       />
                     </button>
                   </TooltipTrigger>
@@ -750,25 +750,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
       {collapsed && (
         <div className="flex-1 flex flex-col items-center py-3 gap-2">
-          <motion.button
-            onClick={() => onOpenHome?.()}
-            initial={{ opacity: 0, scale: 0.6, y: -6 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
-            whileHover={{ scale: 1.08, rotate: -3 }}
-            whileTap={{ scale: 0.94 }}
-            className="mb-1 p-1.5 rounded-xl notebook-hover"
-            title="Home — Notebook Archive"
-            aria-label="Home"
-          >
-            <motion.img
-              src="/logo.png"
-              alt="Notebook Archive"
-              className="h-9 w-9 object-contain"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.button>
           {notebooks.map((nb) => (
             <button
               key={nb.id}
