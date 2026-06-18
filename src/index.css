@@ -498,20 +498,19 @@
   }
 }
 
-/* ============= Sonner toasts: smooth stacking, never cut off ============= */
+/* ============= Sonner toasts: bottom-right linear list, never cut off ============= */
 [data-sonner-toaster] {
-  --gap: 14px !important;
-  --width: 440px !important;
+  --gap: 10px !important;
+  --width: 420px !important;
   max-width: calc(100vw - 2rem) !important;
 }
 [data-sonner-toaster] [data-sonner-toast] {
   width: 100% !important;
   max-width: calc(100vw - 2rem) !important;
-  /* Smooth spring-like transition for stacking shuffle */
   transition:
-    transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity 280ms ease,
-    height 380ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+    height 420ms cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 /* Make sure the close cross is always visible */
 [data-sonner-toaster] [data-sonner-toast] [data-close-button] {

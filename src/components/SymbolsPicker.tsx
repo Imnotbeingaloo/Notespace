@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SymbolEntry {
   char: string;
@@ -147,13 +148,19 @@ export function SymbolsPicker({ onInsert, editorRef }: SymbolsPickerProps) {
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>
-        <button
-          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-          title={`Insert Symbol (${shortcutLabel})`}>
-          <span className="flex items-center justify-center h-4 w-4 text-[16px] font-medium leading-none">Ω</span>
-        </button>
-      </PopoverTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+              aria-label={`Insert Symbol (${shortcutLabel})`}>
+              <span className="flex items-center justify-center h-4 w-4 text-[16px] font-medium leading-none">Ω</span>
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">Insert Symbol ({shortcutLabel})</TooltipContent>
+      </Tooltip>
       <PopoverContent className="w-80 p-0" align="end" sideOffset={8}>
         <div className="p-3 border-b border-border">
           <div className="relative">

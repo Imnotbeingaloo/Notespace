@@ -199,7 +199,7 @@ export function OnboardingHelp() {
           className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
           aria-label="Help"
         >
-          <HelpCircle className="h-4 w-4" />
+          <HelpCircle className="h-5 w-5" />
         </Button>
       </div>
 

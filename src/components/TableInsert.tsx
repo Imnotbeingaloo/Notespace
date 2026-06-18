@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Table2, Plus, Minus } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TableInsertProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -64,14 +65,20 @@ export function TableInsert({ editorRef }: TableInsertProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-          title="Insert Table"
-        >
-          <Table2 className="h-4 w-4" />
-        </button>
-      </PopoverTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+              aria-label="Insert Table"
+            >
+              <Table2 className="h-4 w-4" />
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">Insert Table</TooltipContent>
+      </Tooltip>
       <PopoverContent className="w-56 p-3" align="start" sideOffset={8}>
         <p className="text-xs font-medium text-foreground mb-2">Insert Table</p>
 

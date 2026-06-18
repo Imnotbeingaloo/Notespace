@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BookPlus, FileText, NotebookPen, X } from "lucide-react";
+import { ArrowLeft, BookPlus, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -218,7 +218,13 @@ export function CreateNotebookDialog({
                   </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-border bg-muted/30 flex items-center justify-end">
+                <div className="px-6 py-4 border-t border-border bg-muted/30 flex items-center justify-between gap-3">
+                  {mode === "choose" && (
+                    <Button type="button" variant="ghost" onClick={() => setStep("choose")} disabled={submitting} className="gap-2">
+                      <ArrowLeft className="h-4 w-4" />
+                      Back
+                    </Button>
+                  )}
                   <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
                     {submitting ? "Creating…" : cta}
                   </Button>
