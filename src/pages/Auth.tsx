@@ -117,7 +117,7 @@ const AuthPage = () => {
       if (error) {
         setVerifyError(friendlyError(error.message, "signup").message);
       } else {
-        setResendNotice("Verification email sent again. Check your inbox.");
+        setResendNotice("Verification email sent again. Check your inbox or spam folder.");
         setResendCountdown(45);
       }
     } finally {
@@ -162,7 +162,7 @@ const AuthPage = () => {
           </div>
           <h2 className="font-serif text-2xl font-bold text-foreground mb-2">Check your email</h2>
           <p className="text-muted-foreground mb-6">
-            We sent a verification link to <strong>{email}</strong>. Click it, then come back and tap the button below.
+            We sent a verification link to <strong>{email}</strong>. Check your inbox or spam folder, click it, then come back and tap the button below.
           </p>
           <button
             onClick={handleVerified}
