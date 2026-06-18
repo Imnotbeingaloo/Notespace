@@ -203,7 +203,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                             redirectTo: `${window.location.origin}/auth?reset=1`,
                           });
                           if (error) toast.error(error.message);
-                          else toast.success("Reset link sent — check your inbox.");
+                          else toast.success("Reset link sent — check your inbox or spam folder.");
                         }}
                         className="text-[11px] text-primary/80 hover:text-primary hover:underline underline-offset-2 transition-colors"
                       >

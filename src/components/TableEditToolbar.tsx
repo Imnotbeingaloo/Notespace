@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Plus, Minus, Trash2, TableProperties } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TableEditToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -127,14 +128,20 @@ export function TableEditToolbar({ editorRef }: TableEditToolbarProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-          title="Edit Table"
-        >
-          <TableProperties className="h-4 w-4" />
-        </button>
-      </PopoverTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+              aria-label="Edit Table"
+            >
+              <TableProperties className="h-4 w-4" />
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">Edit Table</TooltipContent>
+      </Tooltip>
       <PopoverContent className="w-48 p-2" align="start" sideOffset={8}>
         <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-2 mb-1.5">
           Rows
