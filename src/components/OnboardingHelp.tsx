@@ -196,7 +196,7 @@ export function OnboardingHelp() {
           onClick={handleHelpClick}
           variant="ghost"
           size="icon"
-          className="h-9 w-9 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
+          className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
           aria-label="Help"
         >
           <HelpCircle className="h-5 w-5" />
