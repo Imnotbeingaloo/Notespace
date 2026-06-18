@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { List, ListOrdered, CheckSquare, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ListStylePickerProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -158,16 +159,21 @@ export function ListStylePicker({ editorRef }: ListStylePickerProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0 inline-flex items-center gap-0.5"
-          title="Lists"
-        >
-          <List className="h-4 w-4" />
-          <ChevronDown className="h-2.5 w-2.5" />
-        </button>
-      </PopoverTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0 inline-flex items-center gap-0.5"
+              aria-label="Lists"
+            >
+              <List className="h-4 w-4" />
+              <ChevronDown className="h-2.5 w-2.5" />
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">Lists</TooltipContent>
+      </Tooltip>
       <PopoverContent className="w-56 p-1.5" align="start" sideOffset={8}>
         <div className="space-y-0.5">
           {listOptions.map((option) => (
