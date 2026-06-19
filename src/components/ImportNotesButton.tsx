@@ -45,7 +45,7 @@ export function ImportNotesButton({ onInsert }: ImportNotesButtonProps) {
       }
 
       if (ext === ".html" || ext === ".htm") {
-        content = stripHtml(text);
+        content = stripHtml(content);
       }
 
       if (content.trim()) {
