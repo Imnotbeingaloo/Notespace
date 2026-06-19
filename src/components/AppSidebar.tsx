@@ -743,26 +743,67 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       )}
 
       {collapsed && (
-        <div className="flex-1 flex flex-col items-center py-3 gap-2">
-          {notebooks.map((nb) => (
-            <Tooltip key={nb.id}>
+        <div className="flex-1 flex flex-col items-center py-3 gap-2 overflow-y-auto scrollbar-thin">
+          {standaloneNotes.map((note) => (
+            <Tooltip key={note.id}>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => {
-                    setActiveNotebookId(nb.id);
-                    setExpandedNotebook(nb.id);
-                    onToggle();
+                    setActiveNotebookId(null);
+                    setActiveNoteId(note.id);
+                    onSelectNote?.();
                   }}
                   className={`p-2 rounded-lg transition-all duration-200 text-base ${
-                    activeNotebookId === nb.id ? "bg-primary/10" : "notebook-hover"
+                    activeNoteId === note.id ? "bg-primary/10" : "notebook-hover"
                   }`}
-                  aria-label={nb.name}
+                  aria-label={note.title}
                 >
-                  {nb.emoji}
+                  {note.emoji || "📝"}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right">{nb.name}</TooltipContent>
+              <TooltipContent side="right">{note.title}</TooltipContent>
             </Tooltip>
+          ))}
+          {notebooks.map((nb) => (
+            <div key={nb.id} className="flex flex-col items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => {
+                      setActiveNotebookId(nb.id);
+                      setExpandedNotebook(nb.id);
+                    }}
+                    className={`p-2 rounded-lg transition-all duration-200 text-base ${
+                      activeNotebookId === nb.id ? "bg-primary/10" : "notebook-hover"
+                    }`}
+                    aria-label={nb.name}
+                  >
+                    {nb.emoji}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">{nb.name}</TooltipContent>
+              </Tooltip>
+              {(activeNotebookId === nb.id || expandedNotebook === nb.id) && nb.notes.slice(0, 6).map((note) => (
+                <Tooltip key={note.id}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => {
+                        setActiveNotebookId(nb.id);
+                        setActiveNoteId(note.id);
+                        onSelectNote?.();
+                      }}
+                      className={`p-1.5 rounded-md transition-all duration-200 ${
+                        activeNoteId === note.id ? "bg-primary/10 text-primary" : "text-muted-foreground notebook-hover"
+                      }`}
+                      aria-label={note.title}
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{note.title}</TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
           ))}
         </div>
       )}
