@@ -23,6 +23,7 @@ import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { NewNotePrompt } from "@/components/NewNotePrompt";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import { X as XIcon, ChevronLeft, ChevronRight, RotateCcw, Sparkles, Trophy } from "lucide-react";
 
@@ -443,6 +444,7 @@ function PreviewButton() {
 export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindReplaceChange }: { focusMode?: boolean; findReplaceOpen?: boolean; onFindReplaceChange?: (open: boolean) => void }) {
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote, isOverrideActive } = useNotebooks();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
@@ -716,11 +718,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         onCreateNew={(title?: string, content?: string) => activeNotebookId && createNote(activeNotebookId, title, content)}
         onImportAndCreate={async (content: string, fileName: string) => {
           if (!activeNotebookId) return;
-          await createNote(activeNotebookId);
-          // We'll insert content after creation via a slight delay
-          setTimeout(() => {
-            hybridEditorRef.current?.insertAtCursor(`## Imported: ${fileName}\n\n${content}`);
-          }, 500);
+          await createNote(activeNotebookId, fileName.replace(/\.[^.]+$/, "") || "Imported Note", content);
         }}
       />
     );
@@ -920,7 +918,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         </div>
 
         {/* File upload */}
-        {!focusMode && !isOverrideActive && (
+        {!focusMode && !isOverrideActive && !isMobile && (
           <div className="shrink-0 border-t border-border">
             <FileUpload onInsertMarkdown={handleInsertMarkdown} onSaveSelection={() => hybridEditorRef.current?.saveSelection()} />
 

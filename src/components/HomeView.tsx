@@ -271,7 +271,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
               <button
                 onClick={onCreateNotebook}
                 data-testid="home-create"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card/80 text-muted-foreground text-sm font-medium hover:text-foreground hover:bg-muted transition-all duration-150 active:scale-[0.97]"
               >
                 <Plus className="h-4 w-4" />
                 Create
@@ -375,7 +375,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             {!query && onCreateNotebook && (
               <button
                 onClick={onCreateNotebook}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card/80 text-muted-foreground text-sm font-medium hover:text-foreground hover:bg-muted transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 Create a Notebook
