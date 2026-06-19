@@ -38,6 +38,7 @@ export function OnboardingHelp() {
   const repeatTimerRef = useRef<number | null>(null);
   const dismissedRef = useRef(false);
   const openRef = useRef(false);
+  const closeRestartedRef = useRef(false);
 
   // Initialize from storage
   useEffect(() => {
@@ -50,6 +51,16 @@ export function OnboardingHelp() {
   }, []);
 
   useEffect(() => { openRef.current = open; }, [open]);
+
+  useEffect(() => {
+    if (open || dismissedRef.current) return;
+    if (!closeRestartedRef.current) {
+      closeRestartedRef.current = true;
+      return;
+    }
+    if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = window.setTimeout(() => setHintOpen(true), IDLE_MS);
+  }, [open]);
 
   const clearAllTimers = () => {
     if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
