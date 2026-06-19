@@ -721,7 +721,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           await createNote(activeNotebookId);
           // We'll insert content after creation via a slight delay
           setTimeout(() => {
-            hybridEditorRef.current?.insertAtCursor(`## Imported: ${fileName}\n\n${content}`);
+            hybridEditorRef.current?.insertAtCursor(content);
           }, 500);
         }}
       />
