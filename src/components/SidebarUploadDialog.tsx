@@ -13,6 +13,7 @@ import {
   friendlyUploadMessage,
 } from "@/lib/file-validation";
 import { extractPdfText } from "@/lib/pdf-extract";
+import { formatImportedDocument } from "@/lib/document-import";
 import {
   Dialog,
   DialogContent,
@@ -49,6 +50,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
   const { notebooks, createNotebook, createNote, updateNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
   const [stage, setStage] = useState<Stage>("choose");
   const [bgProgress, setBgProgress] = useState(0);
+  const [prepLabel, setPrepLabel] = useState("Checking file…");
   const [bgReady, setBgReady] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -78,6 +80,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     setSearch("");
     setErrorMsg(null);
     setBgProgress(0);
+    setPrepLabel("Checking file…");
     setBgReady(false);
     preparedRef.current = null;
     prepErrorRef.current = null;
@@ -85,8 +88,9 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     let cancelled = false;
     (async () => {
       try {
-        const payload = await prepareFile(file, user.id, (p) => {
+        const payload = await prepareFile(file, user.id, (p, label) => {
           if (!cancelled) setBgProgress(p);
+          if (!cancelled && label) setPrepLabel(label);
         });
         if (cancelled) return;
         preparedRef.current = payload;
@@ -133,31 +137,35 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
   async function prepareFile(
     f: File,
     userId: string,
-    onProgress: (p: number) => void,
+    onProgress: (p: number, label?: string) => void,
   ): Promise<PreparedPayload> {
     if (isTextDocument(f)) {
-      onProgress(20);
+      onProgress(20, "Reading file…");
       const text = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = () => reject(reader.error);
         reader.readAsText(f);
       });
-      onProgress(100);
-      return { kind: "text", body: `${text}\n\n` };
+      onProgress(78, "Formatting document…");
+      const body = formatImportedDocument(text, f.name);
+      onProgress(100, "Ready to add to notebook");
+      return { kind: "text", body };
     }
     if (isPdfFile(f)) {
-      onProgress(10);
-      const { text, pageCount, isScanned } = await extractPdfText(f, (p) => onProgress(10 + Math.round(p * 0.8)));
+      onProgress(10, "Reading PDF…");
+      const { text, pageCount, isScanned } = await extractPdfText(f, (p) => onProgress(10 + Math.round(p * 0.72), "Extracting PDF text…"));
       console.info("[upload-diagnostics] PDF prepared", { name: f.name, pageCount, isScanned, textLength: text.length });
       if (isScanned || !text.trim()) {
         return prepareBinary(f, userId, onProgress);
       }
-      onProgress(100);
+      onProgress(90, "Formatting extracted text…");
+      const body = formatImportedDocument(text, f.name);
+      onProgress(100, "Ready to add to notebook");
       return {
         kind: "pdf",
         pageCount,
-        body: `${text}\n\n`,
+        body,
       };
     }
     return prepareBinary(f, userId, onProgress);
@@ -166,9 +174,9 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
   async function prepareBinary(
     f: File,
     userId: string,
-    onProgress: (p: number) => void,
+    onProgress: (p: number, label?: string) => void,
   ): Promise<PreparedPayload> {
-    onProgress(15);
+    onProgress(15, "Uploading file…");
     // Stage under a temporary noteId — we'll associate it with the real note when the user picks.
     const stagingNoteId = `staging-${crypto.randomUUID()}`;
     const path = buildStoragePath(userId, stagingNoteId, f.name);
@@ -176,14 +184,14 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
       .from("note-attachments")
       .upload(path, f, { upsert: false });
     if (error) throw error;
-    onProgress(75);
+    onProgress(75, "Creating secure file link…");
     const { data: signed, error: signErr } = await supabase.storage
       .from("note-attachments")
       .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
     if (signErr || !signed?.signedUrl) {
       throw signErr || new Error("Could not generate a URL for the uploaded file.");
     }
-    onProgress(100);
+    onProgress(100, "Ready to add to notebook");
     const link = f.type.startsWith("image/")
       ? `![${f.name}](${signed.signedUrl})`
       : `[📎 ${f.name}](${signed.signedUrl})`;
@@ -291,13 +299,21 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         {/* Background-upload progress bar — visible while prep is running so the user
             knows the upload is already happening even before they pick a destination. */}
         {stage === "choose" && !bgReady && (
-          <div className="space-y-1.5 -mt-1">
+          <div className="space-y-2 -mt-1 rounded-xl bg-primary/5 p-3">
             <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 text-foreground">
                 <Loader2 className="h-3 w-3 animate-spin" />
-                Uploading in the background
+                {prepLabel}
               </span>
               <span>{bgProgress}%</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+              <span className={`h-1.5 w-1.5 rounded-full ${bgProgress >= 35 ? "bg-primary" : "bg-muted-foreground/35"}`} />
+              <span>uploaded</span>
+              <span className={`h-1.5 w-1.5 rounded-full ${bgProgress >= 80 ? "bg-primary" : "bg-muted-foreground/35"}`} />
+              <span>formatted</span>
+              <span className={`h-1.5 w-1.5 rounded-full ${bgProgress >= 100 ? "bg-primary" : "bg-muted-foreground/35"}`} />
+              <span>ready</span>
             </div>
             <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
               <motion.div

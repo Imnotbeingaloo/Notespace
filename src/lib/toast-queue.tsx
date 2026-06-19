@@ -1,79 +1,174 @@
 import * as React from "react";
-import { toast as sonnerToast, type ExternalToast } from "sonner";
+import type { ExternalToast, ToastT } from "sonner";
 
-const MAX_VISIBLE_TOASTS = 4;
-const TOAST_SPACING_MS = 40;
+const MAX_VISIBLE_TOASTS = 3;
 
-type ToastKind = "message" | "success" | "info" | "warning" | "error" | "loading";
+export type ToastKind = "message" | "success" | "info" | "warning" | "error" | "loading";
 
-interface QueuedToast {
+export interface QueuedToast {
+  id: string | number;
   kind: ToastKind;
   title: React.ReactNode;
+  description?: React.ReactNode;
+  action?: React.ReactNode | { label: React.ReactNode; onClick?: () => void };
+  cancel?: React.ReactNode | { label: React.ReactNode; onClick?: () => void };
+  duration: number;
+  expanded: boolean;
+  createdAt: number;
   options?: ExternalToast;
 }
 
-const queue: QueuedToast[] = [];
-let visibleCount = 0;
-let draining = false;
-
-function scheduleDrain() {
-  if (draining) return;
-  draining = true;
-  window.setTimeout(() => {
-    draining = false;
-    drainQueue();
-  }, TOAST_SPACING_MS);
-}
-
-// Per-type durations: errors/warnings stay visible longer for readability
-// while still respecting any explicit `duration` passed in options.
 const DEFAULT_DURATION: Record<ToastKind, number> = {
-  message: 3000,
-  success: 3000,
-  info: 3000,
-  warning: 3000,
-  error: 3000,
-  loading: 3000,
+  message: 4200,
+  success: 4200,
+  info: 4200,
+  warning: 5200,
+  error: 6000,
+  loading: Infinity,
 };
 
+const activeToasts: QueuedToast[] = [];
+const queuedToasts: QueuedToast[] = [];
+const listeners = new Set<(toasts: QueuedToast[]) => void>();
+const timers = new Map<string | number, ReturnType<typeof setTimeout>>();
+const history: QueuedToast[] = [];
+
+function makeId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function snapshot() {
+  return [...activeToasts];
+}
+
+function emit() {
+  const next = snapshot();
+  listeners.forEach((listener) => listener(next));
+}
+
+function asToastT(toast: QueuedToast): ToastT {
+  return {
+    id: toast.id,
+    title: toast.title,
+    type: toast.kind === "message" ? "default" : toast.kind,
+    description: toast.description,
+    duration: toast.duration,
+  } as ToastT;
+}
+
+function clearTimer(id: string | number) {
+  const timer = timers.get(id);
+  if (timer) clearTimeout(timer);
+  timers.delete(id);
+}
+
+function startTimer(toast: QueuedToast) {
+  clearTimer(toast.id);
+  if (!Number.isFinite(toast.duration) || toast.duration <= 0) return;
+  timers.set(
+    toast.id,
+    setTimeout(() => removeToast(toast.id, "auto"), toast.duration),
+  );
+}
+
 function drainQueue() {
-  if (typeof window === "undefined") return;
-  if (visibleCount >= MAX_VISIBLE_TOASTS) return;
-  const next = queue.shift();
-  if (!next) return;
+  while (activeToasts.length < MAX_VISIBLE_TOASTS && queuedToasts.length > 0) {
+    const next = queuedToasts.shift();
+    if (!next) break;
+    activeToasts.unshift(next);
+    startTimer(next);
+  }
+}
 
-  visibleCount += 1;
-  const options: ExternalToast = {
-    duration: DEFAULT_DURATION[next.kind],
-    ...next.options,
-    onAutoClose: (toast) => {
-      visibleCount = Math.max(0, visibleCount - 1);
-      next.options?.onAutoClose?.(toast);
-      drainQueue();
-    },
-    onDismiss: (toast) => {
-      visibleCount = Math.max(0, visibleCount - 1);
-      next.options?.onDismiss?.(toast);
-      drainQueue();
-    },
+export function subscribeToasts(listener: (toasts: QueuedToast[]) => void) {
+  listeners.add(listener);
+  listener(snapshot());
+  return () => {
+    listeners.delete(listener);
   };
+}
 
-  if (next.kind === "message") sonnerToast(next.title, options);
-  else sonnerToast[next.kind](next.title, options);
-
-  if (queue.length > 0 && visibleCount < MAX_VISIBLE_TOASTS) scheduleDrain();
+export function getToastSnapshot() {
+  return snapshot();
 }
 
 export function queuedToast(kind: ToastKind, title: React.ReactNode, options?: ExternalToast) {
   if (typeof window === "undefined") return "";
-  queue.push({ kind, title, options });
-  drainQueue();
-  return "queued";
+  const toast: QueuedToast = {
+    id: options?.id ?? makeId(),
+    kind,
+    title,
+    description: options?.description as React.ReactNode,
+    action: options?.action as QueuedToast["action"],
+    cancel: options?.cancel as QueuedToast["cancel"],
+    duration: options?.duration ?? DEFAULT_DURATION[kind],
+    expanded: false,
+    createdAt: Date.now(),
+    options,
+  };
+
+  history.unshift(toast);
+  if (history.length > 30) history.length = 30;
+
+  if (activeToasts.length < MAX_VISIBLE_TOASTS) {
+    activeToasts.unshift(toast);
+    startTimer(toast);
+    emit();
+  } else {
+    queuedToasts.push(toast);
+  }
+
+  return toast.id;
+}
+
+export function setToastExpanded(id: string | number, expanded: boolean) {
+  const toast = activeToasts.find((item) => item.id === id);
+  if (!toast) return;
+  toast.expanded = expanded;
+  emit();
+}
+
+export function removeToast(id: string | number, reason: "dismiss" | "auto" = "dismiss") {
+  const activeIndex = activeToasts.findIndex((toast) => toast.id === id);
+  if (activeIndex !== -1) {
+    const [toast] = activeToasts.splice(activeIndex, 1);
+    clearTimer(id);
+    const callbackToast = asToastT(toast);
+    if (reason === "auto") toast.options?.onAutoClose?.(callbackToast);
+    else toast.options?.onDismiss?.(callbackToast);
+    drainQueue();
+    emit();
+    return;
+  }
+
+  const queuedIndex = queuedToasts.findIndex((toast) => toast.id === id);
+  if (queuedIndex !== -1) queuedToasts.splice(queuedIndex, 1);
+  emit();
+}
+
+export function dismissToast(id?: string | number) {
+  if (id !== undefined) {
+    removeToast(id, "dismiss");
+    return;
+  }
+
+  [...activeToasts].forEach((toast) => removeToast(toast.id, "dismiss"));
+  queuedToasts.length = 0;
+  emit();
 }
 
 export function resetToastQueue() {
-  queue.length = 0;
-  visibleCount = 0;
+  [...timers.values()].forEach((timer) => window.clearTimeout(timer));
+  timers.clear();
+  activeToasts.length = 0;
+  queuedToasts.length = 0;
+  history.length = 0;
+  emit();
+}
+
+export function getToastHistory() {
+  return [...history].map(asToastT);
 }
 
 export { MAX_VISIBLE_TOASTS };

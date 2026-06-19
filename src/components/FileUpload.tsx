@@ -13,6 +13,7 @@ import {
   stripHtmlTags,
 } from "@/lib/file-validation";
 import { extractPdfText } from "@/lib/pdf-extract";
+import { formatImportedDocument } from "@/lib/document-import";
 import { toast } from "@/components/ui/sonner";
 
 interface FileUploadProps {
@@ -26,6 +27,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
+  const [uploadStep, setUploadStep] = useState("Ready");
 
   if (!activeNote) return null;
 
@@ -53,6 +55,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
     const files = e.target.files;
     if (!files || !user) return;
     setUploading(true);
+    setUploadStep("Checking files…");
     const fileList = Array.from(files);
     setProgress({ current: 0, total: fileList.length, name: fileList[0]?.name || "" });
 
@@ -66,14 +69,16 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
       // Plain text-ish docs: read and insert content at the cursor.
       if (isTextDocument(file)) {
         try {
+          setUploadStep("Reading file…");
           const text = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
             reader.onerror = () => reject(reader.error);
             reader.readAsText(file);
           });
+          setUploadStep("Formatting document…");
           const content = isHtmlFile(file) ? stripHtmlTags(text) : text;
-          onInsertMarkdown?.(`\n\n${content}\n\n`);
+          onInsertMarkdown?.(`\n\n${formatImportedDocument(content, file.name)}`);
           toast.success(`Imported "${file.name}"`);
         } catch (err: any) {
           toast.error(`Could not read "${file.name}": ${err?.message || "unknown error"}`);
@@ -84,6 +89,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
       // PDFs: extract text. If > 5 pages, spin up a brand-new notebook with the contents.
       if (isPdfFile(file)) {
         try {
+          setUploadStep("Reading PDF…");
           toast.info(`Reading "${file.name}"…`);
           const { text, pageCount, isScanned } = await extractPdfText(file);
           console.info("[upload-diagnostics] Inline PDF extraction finished", { fileName: file.name, pageCount, isScanned, textLength: text.length });
@@ -91,13 +97,15 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             // No useful text — fall through to binary upload.
             toast.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
           } else if (pageCount > 5) {
+            setUploadStep("Creating notebook…");
             toast.info(`"${file.name}" has ${pageCount} pages — creating a new notebook note for it.`, { duration: 6000 });
             const baseName = uniqueNotebookName(file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported PDF");
             const nbId = await createNotebook(baseName);
             if (nbId) {
               const noteId = await createNote(nbId, file.name);
               if (noteId) {
-                await updateNote(nbId, noteId, { content: `${text}\n\n` });
+                setUploadStep("Adding to notebook…");
+                await updateNote(nbId, noteId, { content: formatImportedDocument(text, file.name) });
                 setActiveNotebookId(nbId);
                 setActiveNoteId(noteId);
                 toast.success(`"${file.name}" had ${pageCount} pages — created a new notebook for it.`);
@@ -107,7 +115,8 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             toast.error(`Could not create a notebook for "${file.name}".`);
             continue;
           } else {
-            onInsertMarkdown?.(`\n\n${text}\n\n`);
+            setUploadStep("Formatting PDF text…");
+            onInsertMarkdown?.(`\n\n${formatImportedDocument(text, file.name)}`);
             toast.success(`Imported "${file.name}" (${pageCount} page${pageCount === 1 ? "" : "s"})`);
             continue;
           }
@@ -121,12 +130,14 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
 
       // Binary file: upload to storage, verify success, insert link at caret.
       try {
+        setUploadStep("Uploading file…");
         const path = buildStoragePath(user.id, activeNote.id, file.name);
         const { error } = await supabase.storage
           .from("note-attachments")
           .upload(path, file, { upsert: false });
         if (error) throw error;
 
+        setUploadStep("Creating secure link…");
         const { data: signedUrlData, error: signErr } = await supabase.storage
           .from("note-attachments")
           .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
@@ -163,6 +174,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
 
     setUploading(false);
     setProgress(null);
+    setUploadStep("Ready");
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -220,9 +232,9 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
       <div className="flex flex-col gap-1 min-w-0 flex-1 max-w-[260px]">
         <span className="text-sm text-muted-foreground select-none truncate">
           {uploading && progress
-            ? `Uploading ${progress.current + 1}/${progress.total} — ${progress.name}`
+            ? `${uploadStep} ${progress.current + 1}/${progress.total} — ${progress.name}`
             : uploading
-              ? "Uploading your files…"
+              ? uploadStep
               : "Attach files or drag & drop"}
         </span>
         {uploading && progress && (
@@ -236,7 +248,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
           </div>
         )}
       </div>
-      <input ref={inputRef} type="file" multiple className="hidden" onChange={handleUpload} />
+      <input ref={inputRef} type="file" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.epub,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,.mp4,.mov,.webm,image/*,video/mp4,video/quicktime,video/webm,application/pdf,application/epub+zip,text/plain,text/markdown,text/csv,application/json" className="hidden" onChange={handleUpload} />
 
       <AnimatePresence>
         {attachments.filter(a => !isImage(a.type)).length > 0 && (
