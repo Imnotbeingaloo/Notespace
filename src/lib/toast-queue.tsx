@@ -111,13 +111,17 @@ export function queuedToast(kind: ToastKind, title: React.ReactNode, options?: E
   history.unshift(toast);
   if (history.length > 30) history.length = 30;
 
-  if (activeToasts.length < MAX_VISIBLE_TOASTS) {
-    activeToasts.unshift(toast);
-    startTimer(toast);
-    emit();
-  } else {
-    queuedToasts.push(toast);
+  if (activeToasts.length >= MAX_VISIBLE_TOASTS) {
+    const oldest = activeToasts.pop();
+    if (oldest) {
+      clearTimer(oldest.id);
+      oldest.options?.onDismiss?.(asToastT(oldest));
+    }
   }
+
+  activeToasts.unshift(toast);
+  startTimer(toast);
+  emit();
 
   return toast.id;
 }
