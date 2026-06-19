@@ -23,8 +23,8 @@ const toolbarTips: Tip[] = [
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
-const IDLE_MS = 5000;
-const SHOW_MS = 3500;
+const IDLE_MS = 4000;
+const SHOW_MS = 8000;
 const REPEAT_MIN_MS = 5000;
 const REPEAT_MAX_MS = 10000;
 
@@ -69,6 +69,7 @@ export function OnboardingHelp() {
       if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
       hideTimerRef.current = window.setTimeout(() => {
         setHintOpen(false);
+        hideTimerRef.current = null;
         scheduleNext();
       }, SHOW_MS);
     };
@@ -129,9 +130,6 @@ export function OnboardingHelp() {
     } catch {}
     setOpen(true);
     setHintOpen(false);
-    // Stop the hint loop for this session, but DON'T mark dismissed forever —
-    // the user controls that via the checkbox below.
-    dismissedRef.current = true;
     clearAllTimers();
   };
 
