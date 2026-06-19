@@ -1,12 +1,14 @@
 import { useRef, useState, useCallback } from "react";
 import { FileUp, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { extractPdfText } from "@/lib/pdf-extract";
+import { formatImportedDocument } from "@/lib/document-import";
 
 interface ImportNotesButtonProps {
   onInsert: (text: string) => void;
 }
 
-const ALLOWED_EXTENSIONS = [".txt", ".md", ".markdown", ".html", ".htm", ".csv", ".json"];
+const ALLOWED_EXTENSIONS = [".txt", ".md", ".markdown", ".html", ".htm", ".csv", ".json", ".pdf"];
 
 function stripHtml(html: string): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
@@ -23,22 +25,31 @@ export function ImportNotesButton({ onInsert }: ImportNotesButtonProps) {
 
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      toast({ title: "Unsupported file", description: "Please upload a .txt, .md, .html, .csv, or .json file.", variant: "destructive" });
+      toast({ title: "Unsupported file", description: "Please upload a .txt, .md, .html, .csv, .json, or .pdf file.", variant: "destructive" });
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
     setLoading(true);
     try {
-      const text = await file.text();
-      let content = text;
+      let content = "";
+      if (ext === ".pdf") {
+        const { text, isScanned } = await extractPdfText(file);
+        if (isScanned || !text.trim()) {
+          toast({ title: "Scanned PDF", description: "This PDF does not contain readable text yet.", variant: "destructive" });
+          return;
+        }
+        content = text;
+      } else {
+        content = await file.text();
+      }
 
       if (ext === ".html" || ext === ".htm") {
         content = stripHtml(text);
       }
 
       if (content.trim()) {
-        onInsert(`\n## Imported: ${file.name}\n\n${content}\n`);
+        onInsert(`\n${formatImportedDocument(content, file.name)}`);
         toast({ title: "Notes imported", description: `"${file.name}" has been placed in your document.` });
       } else {
         toast({ title: "Empty file", description: "The file appears to be empty.", variant: "destructive" });
@@ -65,7 +76,7 @@ export function ImportNotesButton({ onInsert }: ImportNotesButtonProps) {
       <input
         ref={inputRef}
         type="file"
-        accept=".txt,.md,.markdown,.html,.htm,.csv,.json"
+        accept=".txt,.md,.markdown,.html,.htm,.csv,.json,.pdf,application/pdf"
         className="hidden"
         onChange={handleFile}
       />
