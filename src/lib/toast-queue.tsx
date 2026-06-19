@@ -171,4 +171,8 @@ export function getToastHistory() {
   return [...history].map(asToastT);
 }
 
+export function getCurrentToasts() {
+  return [...activeToasts].map(asToastT);
+}
+
 export { MAX_VISIBLE_TOASTS };
