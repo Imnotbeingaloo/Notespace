@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, AlertTriangle, AlertCircle, Info, Bell, X, ChevronDown } from "lucide-react";
 import {
   dismissToast,
+  getCurrentToasts,
   getToastHistory,
   getToastSnapshot,
   queuedToast,
@@ -226,7 +227,7 @@ const toast = Object.assign(
     },
     message: (message: ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
     getHistory: getToastHistory,
-    getToasts: getToastHistory,
+    getToasts: getCurrentToasts,
   }
 );
 
