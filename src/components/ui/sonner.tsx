@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import type { ExternalToast } from "sonner";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { CheckCircle2, AlertTriangle, AlertCircle, Info, Bell, X, ChevronDown } from "lucide-react";
 import {
@@ -220,7 +220,7 @@ const toast = Object.assign(
         });
       return id;
     },
-    custom: (jsx: (id: number | string) => React.ReactElement, options?: ExternalToast) => {
+    custom: (jsx: (id: number | string) => ReactElement, options?: ExternalToast) => {
       const id = options?.id ?? Date.now();
       return queuedToast("message", jsx(id), { ...options, id });
     },

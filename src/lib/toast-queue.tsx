@@ -159,7 +159,7 @@ export function dismissToast(id?: string | number) {
 }
 
 export function resetToastQueue() {
-  [...timers.values()].forEach((timer) => window.clearTimeout(timer));
+  [...timers.values()].forEach((timer) => clearTimeout(timer));
   timers.clear();
   activeToasts.length = 0;
   queuedToasts.length = 0;
