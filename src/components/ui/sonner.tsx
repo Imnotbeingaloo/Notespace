@@ -189,7 +189,7 @@ const Toaster = ({ className, ...props }: ToasterProps) => {
       {...props}
     >
       <motion.ol layout className="flex w-full flex-col gap-2.5">
-        <AnimatePresence initial={false} mode="popLayout">
+        <AnimatePresence initial={false}>
           {items.map((item, index) => (
             <NotificationCard key={item.id} item={item} newest={index === 0} />
           ))}
