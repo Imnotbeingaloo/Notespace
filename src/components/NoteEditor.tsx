@@ -718,11 +718,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         onCreateNew={(title?: string, content?: string) => activeNotebookId && createNote(activeNotebookId, title, content)}
         onImportAndCreate={async (content: string, fileName: string) => {
           if (!activeNotebookId) return;
-          await createNote(activeNotebookId);
-          // We'll insert content after creation via a slight delay
-          setTimeout(() => {
-            hybridEditorRef.current?.insertAtCursor(content);
-          }, 500);
+          await createNote(activeNotebookId, fileName.replace(/\.[^.]+$/, "") || "Imported Note", content);
         }}
       />
     );
