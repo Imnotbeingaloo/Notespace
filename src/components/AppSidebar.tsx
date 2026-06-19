@@ -309,24 +309,18 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <TooltipProvider delayDuration={150}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={onToggle}
-                      aria-label="Open sidebar"
-                      className="group relative h-9 w-9 rounded-xl hover:bg-muted transition-colors flex items-center justify-center"
-                    >
-                      <img
-                        src="/logo.png"
-                        alt="Notebook Archive"
-                        className="h-9 w-9 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:rotate-[-3deg]"
-                      />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Open sidebar</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <button
+                onClick={onToggle}
+                aria-label="Open sidebar"
+                className="group relative h-9 w-9 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center overflow-hidden"
+              >
+                <img
+                  src="/logo.png"
+                  alt="Notebook Archive"
+                  className="absolute h-9 w-9 object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
+                />
+                <Menu className="absolute h-4 w-4 text-foreground opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
