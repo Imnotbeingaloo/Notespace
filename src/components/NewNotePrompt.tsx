@@ -8,6 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { NoteTemplatePicker, NoteTemplate } from "@/components/NoteTemplatePicker";
+import { extractPdfText } from "@/lib/pdf-extract";
+import { formatImportedDocument } from "@/lib/document-import";
 
 interface NewNotePromptProps {
   notebookName: string;
@@ -17,7 +19,7 @@ interface NewNotePromptProps {
   onImportAndCreate: (content: string, fileName: string) => void;
 }
 
-const ALLOWED_EXTENSIONS = [".txt", ".md", ".markdown", ".html", ".htm", ".csv", ".json"];
+const ALLOWED_EXTENSIONS = [".txt", ".md", ".markdown", ".html", ".htm", ".csv", ".json", ".pdf"];
 
 function stripHtml(html: string): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
@@ -37,37 +39,40 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
 
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      setImportStatus("Unsupported file type. Use .txt, .md, .html, .csv, or .json");
+      setImportStatus("Unsupported file type. Use .txt, .md, .html, .csv, .json, or .pdf");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
     setImporting(true);
-    setImportStatus("Reading document...");
-
-    const startTime = Date.now();
+    setImportStatus(ext === ".pdf" ? "Reading PDF…" : "Reading document…");
 
     try {
-      const text = await file.text();
-      let content = text;
+      let content = "";
+      if (ext === ".pdf") {
+        const { text, isScanned } = await extractPdfText(file, () => setImportStatus("Extracting PDF text…"));
+        if (isScanned || !text.trim()) {
+          setImportStatus("This PDF looks scanned, so there isn't readable text to import yet.");
+          setImporting(false);
+          return;
+        }
+        content = text;
+      } else {
+        const text = await file.text();
+        content = text;
+      }
+
       if (ext === ".html" || ext === ".htm") {
-        content = stripHtml(text);
+        content = stripHtml(content);
       }
 
-      setImportStatus("Parsing content...");
-      await new Promise(r => setTimeout(r, 1500));
-      setImportStatus("Formatting text...");
-      await new Promise(r => setTimeout(r, 1500));
-      setImportStatus("Preparing document...");
+      setImportStatus("Formatting text…");
+      const formatted = formatImportedDocument(content, file.name);
+      setImportStatus("Adding to notebook…");
 
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 5000) {
-        await new Promise(r => setTimeout(r, 5000 - elapsed));
-      }
-
-      if (content.trim()) {
+      if (formatted.trim()) {
         setUploadDialogOpen(false);
-        onImportAndCreate(content, file.name);
+        onImportAndCreate(formatted, file.name);
       } else {
         setImportStatus("File appears to be empty.");
         setImporting(false);
@@ -173,7 +178,7 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
                   className="flex flex-col items-center gap-4 w-full"
                 >
                   <p className="text-sm text-muted-foreground text-center">
-                    Choose a file to import into your new note. Supported formats: .txt, .md, .html, .csv, .json
+                    Choose a file to import into your new note. Supported formats: .txt, .md, .html, .csv, .json, .pdf
                   </p>
                   <button
                     onClick={() => inputRef.current?.click()}
@@ -191,7 +196,7 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
             <input
               ref={inputRef}
               type="file"
-              accept=".txt,.md,.markdown,.html,.htm,.csv,.json"
+              accept=".txt,.md,.markdown,.html,.htm,.csv,.json,.pdf,application/pdf"
               className="hidden"
               onChange={handleFile}
             />
