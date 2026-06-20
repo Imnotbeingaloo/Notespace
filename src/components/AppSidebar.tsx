@@ -526,14 +526,13 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         ? "bg-primary/10 text-foreground font-medium"
                         : "text-sidebar-foreground notebook-hover"
                     } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
-                    onClick={() => toggleExpand(nb.id)}
+                    onClick={() => {
+                      setActiveNotebookId(nb.id);
+                      const first = nb.notes?.[0]?.id ?? null;
+                      if (first) setActiveNoteId(first);
+                      onSelectNote?.();
+                    }}
                   >
-                    <motion.div
-                      animate={{ rotate: expandedNotebook === nb.id ? 90 : 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <ChevronRight className="h-3 w-3 text-muted-foreground" />
-                    </motion.div>
                     <span>{nb.emoji}</span>
                     <span className="flex-1 truncate">{nb.name}</span>
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
