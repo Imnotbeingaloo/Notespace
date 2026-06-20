@@ -40,7 +40,7 @@ const looksLikeStandaloneNoteWrapper = (nb: any) => {
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateNotebookDirect, onCreateNoteDirect, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite }: HomeViewProps) {
   const { notebooks, standaloneNotes, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData } = useNotebooks();
   const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
