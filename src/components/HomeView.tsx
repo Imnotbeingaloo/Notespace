@@ -1,11 +1,17 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2, BookPlus } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
 import { WelcomeBackDialog } from "@/components/WelcomeBackDialog";
@@ -15,6 +21,8 @@ interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
   onOpenNote?: (notebookId: string | null, noteId: string) => void;
   onCreateNotebook?: () => void;
+  onCreateNotebookDirect?: () => void;
+  onCreateNoteDirect?: () => void;
   onCreateScratchNote?: () => void;
   onCreateSimpleNote?: () => void;
   onExitToWebsite?: () => void;
