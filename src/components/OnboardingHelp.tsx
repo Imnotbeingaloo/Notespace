@@ -23,24 +23,58 @@ const toolbarTips: Tip[] = [
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
-const IDLE_MS = 4000;
-const SHOW_MS = 8000;
-const REPEAT_MIN_MS = 5000;
-const REPEAT_MAX_MS = 10000;
+// Escalating idle thresholds (ms) — 5s, 15s, 30s, then 30s thereafter.
+const IDLE_STEPS_MS = [5000, 15000, 30000];
+const SHOW_MS = 6000;
 
 export function OnboardingHelp() {
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [hintOpen, setHintOpen] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
+
   const idleTimerRef = useRef<number | null>(null);
   const hideTimerRef = useRef<number | null>(null);
-  const repeatTimerRef = useRef<number | null>(null);
+  const showCountRef = useRef(0);
   const dismissedRef = useRef(false);
   const openRef = useRef(false);
-  const closeRestartedRef = useRef(false);
+  const hintOpenRef = useRef(false);
 
-  // Initialize from storage
+  const clearIdle = () => {
+    if (idleTimerRef.current) {
+      window.clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
+  };
+  const clearHide = () => {
+    if (hideTimerRef.current) {
+      window.clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+  };
+
+  const currentDelay = () => IDLE_STEPS_MS[Math.min(showCountRef.current, IDLE_STEPS_MS.length - 1)];
+
+  const armIdle = () => {
+    clearIdle();
+    if (dismissedRef.current || openRef.current) return;
+    idleTimerRef.current = window.setTimeout(() => {
+      idleTimerRef.current = null;
+      if (dismissedRef.current || openRef.current) return;
+      setHintOpen(true);
+      hintOpenRef.current = true;
+      showCountRef.current += 1;
+      clearHide();
+      hideTimerRef.current = window.setTimeout(() => {
+        setHintOpen(false);
+        hintOpenRef.current = false;
+        hideTimerRef.current = null;
+        // Don't auto-restart — only re-arm when the user becomes idle again.
+      }, SHOW_MS);
+    }, currentDelay());
+  };
+
+  // Init from storage
   useEffect(() => {
     try {
       if (localStorage.getItem(DISMISS_KEY) === "1") {
@@ -52,106 +86,71 @@ export function OnboardingHelp() {
 
   useEffect(() => { openRef.current = open; }, [open]);
 
-  useEffect(() => {
-    if (open || dismissedRef.current) return;
-    if (!closeRestartedRef.current) {
-      closeRestartedRef.current = true;
-      return;
-    }
-    if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-    idleTimerRef.current = window.setTimeout(() => setHintOpen(true), IDLE_MS);
-  }, [open]);
-
-  const clearAllTimers = () => {
-    if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-    if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
-    if (repeatTimerRef.current) window.clearTimeout(repeatTimerRef.current);
-  };
-
+  // Activity listener — any interaction immediately hides the hint and
+  // restarts the idle timer (no continuous looping).
   useEffect(() => {
     if (dismissedRef.current) return;
 
-    const showHint = () => {
-      if (dismissedRef.current || openRef.current) {
-        scheduleNext();
-        return;
-      }
-      setHintOpen(true);
-      if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
-      hideTimerRef.current = window.setTimeout(() => {
-        setHintOpen(false);
-        hideTimerRef.current = null;
-        scheduleNext();
-      }, SHOW_MS);
-    };
-
-    const scheduleNext = () => {
-      if (dismissedRef.current) return;
-      if (repeatTimerRef.current) window.clearTimeout(repeatTimerRef.current);
-      const delay = REPEAT_MIN_MS + Math.random() * (REPEAT_MAX_MS - REPEAT_MIN_MS);
-      repeatTimerRef.current = window.setTimeout(() => {
-        // require idle from this point
-        armIdle();
-      }, delay);
-    };
-
-    const armIdle = () => {
-      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = window.setTimeout(showHint, IDLE_MS);
-    };
-
     const onActivity = () => {
       if (dismissedRef.current) return;
-      // Only reset the idle countdown if a hint isn't currently displayed
-      if (!hideTimerRef.current || !document) {
-        // proceed
+      if (hintOpenRef.current) {
+        setHintOpen(false);
+        hintOpenRef.current = false;
+        clearHide();
       }
-      if (idleTimerRef.current) {
-        window.clearTimeout(idleTimerRef.current);
-        armIdle();
-      }
+      armIdle();
     };
 
-    const events = ["mousemove", "keydown", "scroll", "click", "touchstart"];
+    const events = ["mousemove", "keydown", "scroll", "click", "touchstart", "pointerdown"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     armIdle();
 
     return () => {
       events.forEach((e) => window.removeEventListener(e, onActivity));
-      clearAllTimers();
+      clearIdle();
+      clearHide();
     };
   }, []);
+
+  // Pause/resume around the dialog
+  useEffect(() => {
+    if (open) {
+      setHintOpen(false);
+      hintOpenRef.current = false;
+      clearIdle();
+      clearHide();
+    } else if (!dismissedRef.current) {
+      armIdle();
+    }
+  }, [open]);
 
   const dismissForever = () => {
     dismissedRef.current = true;
     try { localStorage.setItem(DISMISS_KEY, "1"); } catch {}
     setHintOpen(false);
-    clearAllTimers();
+    hintOpenRef.current = false;
+    clearIdle();
+    clearHide();
   };
 
   const undismiss = () => {
     dismissedRef.current = false;
     try { localStorage.removeItem(DISMISS_KEY); } catch {}
+    showCountRef.current = 0;
+    armIdle();
   };
 
   const handleHelpClick = () => {
-    // Sync checkbox state from storage every time the dialog opens
     try {
       setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1");
     } catch {}
     setOpen(true);
-    setHintOpen(false);
-    clearAllTimers();
   };
 
   const handleDontShowToggle = (checked: boolean) => {
     setDontShowAgain(checked);
     if (checked) dismissForever();
-    else {
-      undismiss();
-      // Re-arm hint loop so the user sees it again later in this session
-      dismissedRef.current = false;
-    }
+    else undismiss();
   };
 
   return (
@@ -186,7 +185,6 @@ export function OnboardingHelp() {
               transition={{ duration: 0.25 }}
               className="absolute top-full right-0 mt-1.5 flex flex-col items-end gap-1 pointer-events-none z-50"
             >
-              {/* Arrow sits directly under the help button (button is h-8 w-8 = 32px, half = 16px). */}
               <motion.span
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}

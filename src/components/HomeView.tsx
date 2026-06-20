@@ -1,11 +1,17 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2, BookPlus } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
 import { WelcomeBackDialog } from "@/components/WelcomeBackDialog";
@@ -15,6 +21,8 @@ interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
   onOpenNote?: (notebookId: string | null, noteId: string) => void;
   onCreateNotebook?: () => void;
+  onCreateNotebookDirect?: () => void;
+  onCreateNoteDirect?: () => void;
   onCreateScratchNote?: () => void;
   onCreateSimpleNote?: () => void;
   onExitToWebsite?: () => void;
@@ -32,7 +40,7 @@ const looksLikeStandaloneNoteWrapper = (nb: any) => {
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateNotebookDirect, onCreateNoteDirect, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite }: HomeViewProps) {
   const { notebooks, standaloneNotes, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData } = useNotebooks();
   const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
@@ -267,15 +275,34 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
           {/* Quick actions row — separated from the notebook grid */}
           <div className="flex flex-wrap items-center gap-2 mt-6">
-            {onCreateNotebook && (
-              <button
-                onClick={onCreateNotebook}
-                data-testid="home-create"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card/80 text-muted-foreground text-sm font-medium hover:text-foreground hover:bg-muted transition-all duration-150 active:scale-[0.97]"
-              >
-                <Plus className="h-4 w-4" />
-                Create
-              </button>
+            {(onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    data-testid="home-create"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card/80 text-muted-foreground text-sm font-medium hover:text-foreground hover:bg-muted transition-all duration-150 active:scale-[0.97]"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-44">
+                  <DropdownMenuItem
+                    onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
+                    className="gap-2"
+                  >
+                    <FileText className="h-4 w-4 text-primary" />
+                    <span>Note</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
+                    className="gap-2"
+                  >
+                    <BookPlus className="h-4 w-4 text-primary" />
+                    <span>Notebook</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             {tempEnabled && onCreateScratchNote && (
               <button

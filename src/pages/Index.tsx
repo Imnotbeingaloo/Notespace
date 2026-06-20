@@ -78,6 +78,7 @@ function AppContent() {
   const lastHydratedUrlRef = useRef<string | null>(null);
   const [scratchLeavePending, setScratchLeavePending] = useState<null | { fromNotebookId: string; noteId: string; targetView: () => void }>(null);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
+  const [homeCreateKind, setHomeCreateKind] = useState<null | "notebook" | "note">(null);
 
   const handleRetryDeepLink = useCallback(async () => {
     setRetryingDeepLink(true);
@@ -289,7 +290,8 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onOpenNote={openNoteFromHome}
-                onCreateNotebook={() => setCreateMenuOpen(true)}
+                onCreateNotebookDirect={() => setHomeCreateKind("notebook")}
+                onCreateNoteDirect={() => setHomeCreateKind("note")}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={() => setCreateMenuOpen(true)}
                 onExitToWebsite={handleExitToWebsite}
@@ -347,6 +349,36 @@ function AppContent() {
       />
 
       {/* Global duplicate-title prompt (note move/rename) */}
+      {/* Home dropdown — single-kind create dialog (Notebook OR Note picked from dropdown) */}
+      <CreateNotebookDialog
+        mode="single"
+        kind={homeCreateKind ?? "notebook"}
+        open={!!homeCreateKind}
+        onOpenChange={(o) => !o && setHomeCreateKind(null)}
+        onCreate={async (name, emoji) => {
+          if (homeCreateKind === "note") {
+            setHomeCreateKind(null);
+            setOpening(true);
+            try {
+              const created = await createStandaloneNote(name, emoji);
+              if (created) {
+                setShowHome(false);
+                const next = new URLSearchParams(searchParams);
+                next.delete("notebook");
+                next.set("note", created.noteId);
+                setSearchParams(next, { replace: true });
+              }
+            } finally {
+              window.setTimeout(() => setOpening(false), 400);
+            }
+          } else {
+            const id = await createNotebook(name, emoji);
+            setHomeCreateKind(null);
+            if (id) openNotebookFromHome(id);
+          }
+        }}
+      />
+
       <RenameDuplicateDialog />
 
       {/* Temporary-note FAB removed — entry points are sidebar + home button + route */}

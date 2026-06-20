@@ -51,9 +51,21 @@ function textOf(value: ReactNode) {
 
 function displayKind(toast: QueuedToast): keyof typeof variants {
   const text = `${textOf(toast.title)} ${textOf(toast.description)}`.toLowerCase();
-  if (toast.kind === "error" || /failed|couldn|error|unsupported|expired/.test(text)) return "error";
-  if (toast.kind === "warning" || /broken|temporary|scanned|limit|empty/.test(text)) return "warning";
-  if (toast.kind === "success") return "success";
+  // Red — strictly destructive / critical system warnings.
+  if (
+    toast.kind === "error" ||
+    /failed|couldn|error|unsupported|expired|delete|deleted|deleting|removed|destroyed|trash|disconnect|offline|network lost/.test(text)
+  ) return "error";
+  // Yellow — turned OFF / negative or minor warning states.
+  if (
+    toast.kind === "warning" ||
+    /disabled|turned off|switched off|broken|temporary|scanned|limit|empty|paused/.test(text)
+  ) return "warning";
+  // Green — turned ON / positive successful actions.
+  if (
+    toast.kind === "success" ||
+    /enabled|turned on|switched on|saved|created|uploaded|connected|restored/.test(text)
+  ) return "success";
   if (toast.kind === "loading") return "loading";
   return "info";
 }
@@ -81,6 +93,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
   const kind = displayKind(item);
   const visual = variants[kind];
   const Icon = visual.Icon;
+  const hasDetails = Boolean(item.description) || Boolean(item.action) || Boolean(item.cancel);
 
   return (
     <motion.li
@@ -108,7 +121,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13px] font-semibold leading-5 text-foreground">{item.title}</div>
           <AnimatePresence initial={false}>
-            {item.expanded && (
+            {hasDetails && item.expanded && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -117,7 +130,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
                 className="overflow-hidden"
               >
                 <div className="pt-1 text-xs leading-relaxed text-muted-foreground">
-                  {item.description || "Notification details"}
+                  {item.description}
                   {(item.action || item.cancel) && (
                     <div className="mt-2 flex flex-wrap gap-2">
                       {renderAction(item.action, item.id)}
@@ -132,14 +145,16 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       </div>
 
       <div className="absolute right-2.5 top-2.5 flex items-center gap-1">
-        <button
-          type="button"
-          onClick={() => setToastExpanded(item.id, !item.expanded)}
-          aria-label={item.expanded ? "Hide notification details" : "Show notification details"}
-          className="inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-        >
-          <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${item.expanded ? "rotate-180" : ""}`} />
-        </button>
+        {hasDetails && (
+          <button
+            type="button"
+            onClick={() => setToastExpanded(item.id, !item.expanded)}
+            aria-label={item.expanded ? "Hide notification details" : "Show notification details"}
+            className="inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${item.expanded ? "rotate-180" : ""}`} />
+          </button>
+        )}
         <button
           type="button"
           onClick={() => removeToast(item.id)}

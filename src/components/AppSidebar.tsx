@@ -268,7 +268,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     <motion.aside
       initial={false}
       animate={{ width: collapsed ? 56 : 280 }}
-      transition={{ duration: 0.25, ease: "easeInOut" }}
+      transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
       className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
     >
       {/* Header — collapsed state matches the editor topbar height (48px + 1px border)
@@ -526,14 +526,13 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         ? "bg-primary/10 text-foreground font-medium"
                         : "text-sidebar-foreground notebook-hover"
                     } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
-                    onClick={() => toggleExpand(nb.id)}
+                    onClick={() => {
+                      setActiveNotebookId(nb.id);
+                      const first = nb.notes?.[0]?.id ?? null;
+                      if (first) setActiveNoteId(first);
+                      onSelectNote?.();
+                    }}
                   >
-                    <motion.div
-                      animate={{ rotate: expandedNotebook === nb.id ? 90 : 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <ChevronRight className="h-3 w-3 text-muted-foreground" />
-                    </motion.div>
                     <span>{nb.emoji}</span>
                     <span className="flex-1 truncate">{nb.name}</span>
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
@@ -609,106 +608,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     </button>
                   </div>
 
-                  {/* Notes inside notebook */}
-                  <AnimatePresence>
-                    {expandedNotebook === nb.id && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="ml-5 pl-3 border-l-2 border-sidebar-border space-y-0.5 py-1">
-                          {nb.notes.map((note, noteIndex) => (
-                            <div
-                              key={note.id}
-                              draggable
-                              onDragStart={(e) => {
-                                setDragNoteId(note.id);
-                                setDragNoteFromNb(nb.id);
-                                e.dataTransfer.effectAllowed = "move";
-                              }}
-                              onDragOver={(e) => {
-                                if (dragNoteId && dragNoteId !== note.id) {
-                                  e.preventDefault();
-                                  e.dataTransfer.dropEffect = "move";
-                                  setDragOverNoteId(note.id);
-                                }
-                              }}
-                              onDragLeave={() => setDragOverNoteId(null)}
-                              onDrop={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setDragOverNoteId(null);
-                                if (!dragNoteId || dragNoteId === note.id) return;
-                                if (dragNoteFromNb === nb.id) {
-                                  // Same-notebook reorder
-                                  const fromIdx = nb.notes.findIndex((n) => n.id === dragNoteId);
-                                  if (fromIdx === -1) return;
-                                  reorderNotes(nb.id, fromIdx, noteIndex);
-                                } else if (dragNoteFromNb) {
-                                  // Cross-notebook move via confirm dialog
-                                  const sourceNb = notebooks.find((n) => n.id === dragNoteFromNb);
-                                  const draggedNote = sourceNb?.notes.find((n) => n.id === dragNoteId);
-                                  if (draggedNote) {
-                                    setPendingMoveNote({
-                                      noteId: dragNoteId,
-                                      fromNbId: dragNoteFromNb,
-                                      toNbId: nb.id,
-                                      noteTitle: draggedNote.title,
-                                      toNbName: nb.name,
-                                    });
-                                  }
-                                }
-                                setDragNoteId(null);
-                                setDragNoteFromNb(null);
-                              }}
-                              onDragEnd={() => {
-                                setDragNoteId(null);
-                                setDragNoteFromNb(null);
-                                setDragOverNoteId(null);
-                              }}
-                              className={`group/note flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-all duration-200 ${
-                                activeNoteId === note.id
-                                  ? "bg-primary/10 text-foreground font-medium"
-                                  : "text-muted-foreground notebook-hover"
-                              } ${dragOverNoteId === note.id && dragNoteId !== note.id ? "border-t-2 border-primary" : ""} ${dragNoteId === note.id ? "opacity-40" : ""}`}
-                              onClick={() => {
-                                setActiveNotebookId(nb.id);
-                                setActiveNoteId(note.id);
-                                onSelectNote?.();
-                              }}
-                            >
-                              <FileText className="h-3.5 w-3.5 flex-shrink-0 text-primary/70" />
-                              <span className="truncate flex-1 text-sm">{note.title}</span>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  showConfirm(
-                                    "Move to Trash?",
-                                    `"${note.title}" will be moved to Trash. You can restore it later.`,
-                                    () => deleteNote(nb.id, note.id),
-                                    "Move to Trash"
-                                  );
-                                }}
-                                className="opacity-0 group-hover/note:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
-                              >
-                                <Trash2 className="h-2.5 w-2.5" />
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            onClick={() => createNote(nb.id)}
-                            className="flex items-center gap-2 px-2 py-1.5 text-[13px] text-muted-foreground notebook-hover rounded-md w-full"
-                          >
-                            <Plus className="h-3 w-3" />
-                            Add note
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {/* Notes nested inside notebooks are intentionally hidden from
+                      the sidebar root list. Open the notebook to view its notes. */}
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -783,26 +684,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 </TooltipTrigger>
                 <TooltipContent side="right">{nb.name}</TooltipContent>
               </Tooltip>
-              {(activeNotebookId === nb.id || expandedNotebook === nb.id) && nb.notes.slice(0, 6).map((note) => (
-                <Tooltip key={note.id}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => {
-                        setActiveNotebookId(nb.id);
-                        setActiveNoteId(note.id);
-                        onSelectNote?.();
-                      }}
-                      className={`p-1.5 rounded-md transition-all duration-200 ${
-                        activeNoteId === note.id ? "bg-primary/10 text-primary" : "text-muted-foreground notebook-hover"
-                      }`}
-                      aria-label={note.title}
-                    >
-                      <FileText className="h-3.5 w-3.5" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">{note.title}</TooltipContent>
-                </Tooltip>
-              ))}
+              {/* Nested notes intentionally hidden in collapsed view. */}
             </div>
           ))}
         </div>
