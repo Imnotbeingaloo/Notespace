@@ -1,30 +1,25 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, BookPlus, FileText, X } from "lucide-react";
+import { BookPlus, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const DEFAULT_EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
-const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
+// Curated, premium utility cover emojis — relevant for note-taking workflows.
+const CURATED_EMOJIS = ["📝", "📚", "💡", "🚀", "📅", "📌", "🔒"];
 
 type Kind = "notebook" | "note";
 
 interface CreateNotebookDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Back-compat single-handler API. Called for the selected kind. */
   onCreate?: (name: string, emoji: string) => Promise<void> | void;
-  /** Optional kind-specific handlers (used when mode = "choose"). */
   onCreateNotebook?: (name: string, emoji: string) => Promise<void> | void;
   onCreateNote?: (name: string, emoji: string) => Promise<void> | void;
   parentName?: string | null;
   title?: string;
-  /** Fixed kind. Ignored when mode = "choose". */
   kind?: Kind;
   submitLabel?: string;
   placeholder?: string;
-  /** "single" (default) or "choose" — when "choose" the user first picks
-   *  Note vs Notebook, then fills in the form in the same dialog. */
   mode?: "single" | "choose";
 }
 
@@ -43,9 +38,8 @@ export function CreateNotebookDialog({
 }: CreateNotebookDialogProps) {
   const [step, setStep] = useState<"choose" | "form">(mode === "choose" ? "choose" : "form");
   const [activeKind, setActiveKind] = useState<Kind>(kindProp);
-  const palette = activeKind === "note" ? NOTE_EMOJIS : DEFAULT_EMOJIS;
   const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState(palette[0]);
+  const [emoji, setEmoji] = useState(CURATED_EMOJIS[0]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -53,17 +47,14 @@ export function CreateNotebookDialog({
       setStep(mode === "choose" ? "choose" : "form");
       setActiveKind(kindProp);
       setName("");
-      const p = (mode === "choose" ? DEFAULT_EMOJIS : (kindProp === "note" ? NOTE_EMOJIS : DEFAULT_EMOJIS));
-      setEmoji(p[Math.floor(Math.random() * p.length)]);
+      setEmoji(CURATED_EMOJIS[0]);
       setSubmitting(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode, kindProp]);
 
   const pickKind = (k: Kind) => {
     setActiveKind(k);
-    const p = k === "note" ? NOTE_EMOJIS : DEFAULT_EMOJIS;
-    setEmoji(p[Math.floor(Math.random() * p.length)]);
+    setEmoji(CURATED_EMOJIS[0]);
     setStep("form");
   };
 
@@ -92,6 +83,9 @@ export function CreateNotebookDialog({
       : title || (activeKind === "note" ? "Create Note" : "Create Notebook");
   const cta = submitLabel || (activeKind === "note" ? "Create Note" : "Create Notebook");
 
+  // Smooth slide+fade transition between steps.
+  const stepTransition = { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const };
+
   return (
     <AnimatePresence>
       {open && (
@@ -117,6 +111,7 @@ export function CreateNotebookDialog({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            layout
             className="relative w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl shadow-primary/10 overflow-hidden"
           >
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
@@ -142,95 +137,109 @@ export function CreateNotebookDialog({
               </button>
             </div>
 
-            {step === "choose" ? (
-              <div className="px-6 py-5">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Pick a single standalone note, or a notebook that groups multiple notes.
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => pickKind("note")}
-                    className="group flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-background hover:border-primary/50 hover:bg-primary/[0.04] transition-all"
-                  >
-                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-[1.04] transition-transform">
-                      <FileText className="h-6 w-6 text-primary" />
+            <AnimatePresence mode="wait" initial={false}>
+              {step === "choose" ? (
+                <motion.div
+                  key="choose"
+                  initial={{ opacity: 0, x: -24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -24 }}
+                  transition={stepTransition}
+                  className="px-6 py-5"
+                >
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Pick a single standalone note, or a notebook that groups multiple notes.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => pickKind("note")}
+                      className="group flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-background hover:border-primary/50 hover:bg-primary/[0.04] transition-all"
+                    >
+                      <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-[1.04] transition-transform">
+                        <FileText className="h-6 w-6 text-primary" />
+                      </div>
+                      <span className="font-medium text-sm text-foreground">Note</span>
+                      <span className="text-[11px] text-muted-foreground text-center leading-tight">A single page</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => pickKind("notebook")}
+                      className="group flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-background hover:border-primary/50 hover:bg-primary/[0.04] transition-all"
+                    >
+                      <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-[1.04] transition-transform">
+                        <BookPlus className="h-6 w-6 text-primary" />
+                      </div>
+                      <span className="font-medium text-sm text-foreground">Notebook</span>
+                      <span className="text-[11px] text-muted-foreground text-center leading-tight">A group of notes</span>
+                    </button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0, x: 28 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 28 }}
+                  transition={stepTransition}
+                >
+                  <div className="px-6 py-4 space-y-4">
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        Name
+                      </label>
+                      <Input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleSubmit();
+                          }
+                        }}
+                        placeholder={placeholder || (activeKind === "note" ? "e.g. Meeting follow-ups" : "e.g. Quantum Physics")}
+                        className="mt-1.5 h-10"
+                        autoFocus
+                        maxLength={80}
+                      />
                     </div>
-                    <span className="font-medium text-sm text-foreground">Note</span>
-                    <span className="text-[11px] text-muted-foreground text-center leading-tight">A single page</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => pickKind("notebook")}
-                    className="group flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-background hover:border-primary/50 hover:bg-primary/[0.04] transition-all"
-                  >
-                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-[1.04] transition-transform">
-                      <BookPlus className="h-6 w-6 text-primary" />
+
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        Cover emoji
+                      </label>
+                      <div className="mt-1.5 grid grid-cols-7 gap-1.5">
+                        {CURATED_EMOJIS.map((em) => (
+                          <button
+                            key={em}
+                            type="button"
+                            onClick={() => setEmoji(em)}
+                            className={`h-10 rounded-lg text-xl transition-all duration-150 ${
+                              emoji === em
+                                ? "bg-primary/15 ring-2 ring-primary scale-105"
+                                : "hover:bg-muted"
+                            }`}
+                          >
+                            {em}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <span className="font-medium text-sm text-foreground">Notebook</span>
-                    <span className="text-[11px] text-muted-foreground text-center leading-tight">A group of notes</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="px-6 py-4 space-y-4">
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Name
-                    </label>
-                    <Input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleSubmit();
-                        }
-                      }}
-                      placeholder={placeholder || (activeKind === "note" ? "e.g. Meeting follow-ups" : "e.g. Quantum Physics")}
-                      className="mt-1.5 h-10"
-                      autoFocus
-                      maxLength={80}
-                    />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Cover emoji
-                    </label>
-                    <div className="mt-1.5 grid grid-cols-6 gap-1.5">
-                      {palette.map((em) => (
-                        <button
-                          key={em}
-                          type="button"
-                          onClick={() => setEmoji(em)}
-                          className={`h-10 rounded-lg text-xl transition-all duration-150 ${
-                            emoji === em
-                              ? "bg-primary/15 ring-2 ring-primary scale-105"
-                              : "hover:bg-muted"
-                          }`}
-                        >
-                          {em}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="px-6 py-4 border-t border-border bg-muted/30 flex items-center justify-between gap-3">
-                  {mode === "choose" && (
-                    <Button type="button" variant="ghost" onClick={() => setStep("choose")} disabled={submitting} className="gap-2">
-                      <ArrowLeft className="h-4 w-4" />
-                      Back
+                  <div className="px-6 py-4 border-t border-border bg-muted/30 flex items-center justify-end gap-2">
+                    {mode === "choose" && (
+                      <Button type="button" variant="ghost" onClick={() => setStep("choose")} disabled={submitting}>
+                        Back
+                      </Button>
+                    )}
+                    <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
+                      {submitting ? "Creating…" : cta}
                     </Button>
-                  )}
-                  <Button onClick={handleSubmit} disabled={!name.trim() || submitting}>
-                    {submitting ? "Creating…" : cta}
-                  </Button>
-                </div>
-              </>
-            )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       )}
