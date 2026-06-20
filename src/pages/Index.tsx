@@ -290,29 +290,8 @@ function AppContent() {
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
                 onOpenNote={openNoteFromHome}
-                onCreateNotebookDirect={async () => {
-                  const name = window.prompt("Notebook name")?.trim();
-                  if (!name) return;
-                  const id = await createNotebook(name, "📚");
-                  if (id) openNotebookFromHome(id);
-                }}
-                onCreateNoteDirect={async () => {
-                  const title = window.prompt("Note title")?.trim();
-                  if (!title) return;
-                  setOpening(true);
-                  try {
-                    const created = await createStandaloneNote(title, "📝");
-                    if (created) {
-                      setShowHome(false);
-                      const next = new URLSearchParams(searchParams);
-                      next.delete("notebook");
-                      next.set("note", created.noteId);
-                      setSearchParams(next, { replace: true });
-                    }
-                  } finally {
-                    window.setTimeout(() => setOpening(false), 400);
-                  }
-                }}
+                onCreateNotebookDirect={() => setHomeCreateKind("notebook")}
+                onCreateNoteDirect={() => setHomeCreateKind("note")}
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={() => setCreateMenuOpen(true)}
                 onExitToWebsite={handleExitToWebsite}
