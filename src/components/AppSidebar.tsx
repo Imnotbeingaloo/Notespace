@@ -684,26 +684,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 </TooltipTrigger>
                 <TooltipContent side="right">{nb.name}</TooltipContent>
               </Tooltip>
-              {(activeNotebookId === nb.id || expandedNotebook === nb.id) && nb.notes.slice(0, 6).map((note) => (
-                <Tooltip key={note.id}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => {
-                        setActiveNotebookId(nb.id);
-                        setActiveNoteId(note.id);
-                        onSelectNote?.();
-                      }}
-                      className={`p-1.5 rounded-md transition-all duration-200 ${
-                        activeNoteId === note.id ? "bg-primary/10 text-primary" : "text-muted-foreground notebook-hover"
-                      }`}
-                      aria-label={note.title}
-                    >
-                      <FileText className="h-3.5 w-3.5" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">{note.title}</TooltipContent>
-                </Tooltip>
-              ))}
+              {/* Nested notes intentionally hidden in collapsed view. */}
             </div>
           ))}
         </div>
