@@ -268,7 +268,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     <motion.aside
       initial={false}
       animate={{ width: collapsed ? 56 : 280 }}
-      transition={{ duration: 0.25, ease: "easeInOut" }}
+      transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
       className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
     >
       {/* Header — collapsed state matches the editor topbar height (48px + 1px border)
