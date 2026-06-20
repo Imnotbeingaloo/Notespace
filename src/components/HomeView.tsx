@@ -275,15 +275,34 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
           {/* Quick actions row — separated from the notebook grid */}
           <div className="flex flex-wrap items-center gap-2 mt-6">
-            {onCreateNotebook && (
-              <button
-                onClick={onCreateNotebook}
-                data-testid="home-create"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card/80 text-muted-foreground text-sm font-medium hover:text-foreground hover:bg-muted transition-all duration-150 active:scale-[0.97]"
-              >
-                <Plus className="h-4 w-4" />
-                Create
-              </button>
+            {(onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    data-testid="home-create"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card/80 text-muted-foreground text-sm font-medium hover:text-foreground hover:bg-muted transition-all duration-150 active:scale-[0.97]"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-44">
+                  <DropdownMenuItem
+                    onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
+                    className="gap-2"
+                  >
+                    <FileText className="h-4 w-4 text-primary" />
+                    <span>Note</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
+                    className="gap-2"
+                  >
+                    <BookPlus className="h-4 w-4 text-primary" />
+                    <span>Notebook</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             {tempEnabled && onCreateScratchNote && (
               <button
