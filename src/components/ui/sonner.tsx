@@ -51,9 +51,21 @@ function textOf(value: ReactNode) {
 
 function displayKind(toast: QueuedToast): keyof typeof variants {
   const text = `${textOf(toast.title)} ${textOf(toast.description)}`.toLowerCase();
-  if (toast.kind === "error" || /failed|couldn|error|unsupported|expired/.test(text)) return "error";
-  if (toast.kind === "warning" || /broken|temporary|scanned|limit|empty/.test(text)) return "warning";
-  if (toast.kind === "success") return "success";
+  // Red — strictly destructive / critical system warnings.
+  if (
+    toast.kind === "error" ||
+    /failed|couldn|error|unsupported|expired|delete|deleted|deleting|removed|destroyed|trash|disconnect|offline|network lost/.test(text)
+  ) return "error";
+  // Yellow — turned OFF / negative or minor warning states.
+  if (
+    toast.kind === "warning" ||
+    /disabled|turned off|switched off|broken|temporary|scanned|limit|empty|paused/.test(text)
+  ) return "warning";
+  // Green — turned ON / positive successful actions.
+  if (
+    toast.kind === "success" ||
+    /enabled|turned on|switched on|saved|created|uploaded|connected|restored/.test(text)
+  ) return "success";
   if (toast.kind === "loading") return "loading";
   return "info";
 }
