@@ -60,19 +60,18 @@ function PaperStyleTransitionOverlay() {
 
 const queryClient = new QueryClient();
 
-// Force light theme on marketing pages, restore preference on app pages
+// Force light theme on marketing pages, restore preference (light/dark/system) on app pages
 function ThemeController() {
   const { pathname } = useLocation();
-  const { setTheme, theme } = useTheme();
+  const { setTheme } = useTheme();
 
   useEffect(() => {
-    const isAppPage = pathname === "/app" || pathname === "/trash" || pathname === "/app/temporary";
+    const isAppPage =
+      pathname.startsWith("/app") || pathname === "/home" || pathname === "/trash";
     if (isAppPage) {
-      // Restore saved app theme
-      const saved = localStorage.getItem("app-theme") || "light";
+      const saved = localStorage.getItem("app-theme") || "system";
       setTheme(saved);
     } else {
-      // Force light on marketing pages
       setTheme("light");
     }
   }, [pathname, setTheme]);
@@ -81,7 +80,7 @@ function ThemeController() {
 }
 
 const App = () => (
-  <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
     <MotionConfig reducedMotion="user">
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
@@ -94,6 +93,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/app" element={<AppPage />} />
+                <Route path="/home" element={<AppPage />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/features" element={<FeaturesPage />} />
