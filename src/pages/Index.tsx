@@ -5,7 +5,7 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { useAuth } from "@/context/AuthContext";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
@@ -35,10 +35,12 @@ function AppContent() {
 
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const urlNotebook = searchParams.get("notebook");
   const urlNote = searchParams.get("note");
-  // Default to Home view unless a deep link is present
-  const [showHome, setShowHome] = useState(!urlNotebook);
+  // /home → Home view; /app → editor (unless no deep link, then Home)
+  const isHomeRoute = location.pathname === "/home";
+  const [showHome, setShowHome] = useState(isHomeRoute || !urlNotebook);
   const [opening, setOpening] = useState(false);
   const navigate = useNavigate();
 
@@ -121,12 +123,14 @@ function AppContent() {
   const openHome = useCallback(() => {
     setShowHome(true);
     if (isMobile) setSidebarOpen(false);
-    // Clear deep-link params
-    const next = new URLSearchParams(searchParams);
-    next.delete("notebook");
-    next.delete("note");
-    setSearchParams(next, { replace: true });
-  }, [isMobile, searchParams, setSearchParams]);
+    navigate("/home", { replace: false });
+  }, [isMobile, navigate]);
+
+  // React to route changes: switching to /home forces Home view, /app shows editor when a notebook is selected.
+  useEffect(() => {
+    if (location.pathname === "/home") setShowHome(true);
+    else if (location.pathname === "/app" && urlNotebook) setShowHome(false);
+  }, [location.pathname, urlNotebook]);
 
   const openNotebookFromHome = useCallback(
     (notebookId: string) => {
@@ -136,14 +140,13 @@ function AppContent() {
       const firstNoteId = nb?.notes?.[0]?.id ?? null;
       setActiveNoteId(firstNoteId);
       setShowHome(false);
-      const next = new URLSearchParams(searchParams);
-      next.set("notebook", notebookId);
-      if (firstNoteId) next.set("note", firstNoteId);
-      else next.delete("note");
-      setSearchParams(next, { replace: true });
+      const params = new URLSearchParams();
+      params.set("notebook", notebookId);
+      if (firstNoteId) params.set("note", firstNoteId);
+      navigate(`/app?${params.toString()}`);
       window.setTimeout(() => setOpening(false), 700);
     },
-    [setActiveNotebookId, setActiveNoteId, notebooks, searchParams, setSearchParams]
+    [setActiveNotebookId, setActiveNoteId, notebooks, navigate]
   );
 
   const openNoteFromHome = useCallback(
@@ -152,14 +155,13 @@ function AppContent() {
       setActiveNotebookId(notebookId);
       setActiveNoteId(noteId);
       setShowHome(false);
-      const next = new URLSearchParams(searchParams);
-      if (notebookId) next.set("notebook", notebookId);
-      else next.delete("notebook");
-      next.set("note", noteId);
-      setSearchParams(next, { replace: true });
+      const params = new URLSearchParams();
+      if (notebookId) params.set("notebook", notebookId);
+      params.set("note", noteId);
+      navigate(`/app?${params.toString()}`);
       window.setTimeout(() => setOpening(false), 500);
     },
-    [setActiveNotebookId, setActiveNoteId, searchParams, setSearchParams]
+    [setActiveNotebookId, setActiveNoteId, navigate]
   );
 
   return (
