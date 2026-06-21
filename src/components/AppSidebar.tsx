@@ -608,8 +608,59 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     </button>
                   </div>
 
-                  {/* Notes nested inside notebooks are intentionally hidden from
-                      the sidebar root list. Open the notebook to view its notes. */}
+                  {/* Nested notes — shown when this notebook is active or expanded. */}
+                  <AnimatePresence initial={false}>
+                    {(activeNotebookId === nb.id || expandedNotebook === nb.id) && nb.notes && nb.notes.length > 0 && (
+                      <motion.div
+                        key={`notes-${nb.id}`}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden ml-4 mt-0.5 border-l border-sidebar-border/60 pl-2 space-y-0.5"
+                      >
+                        {nb.notes.map((note) => (
+                          <div
+                            key={note.id}
+                            draggable
+                            onDragStart={(e) => {
+                              setDragNoteId(note.id);
+                              setDragNoteFromNb(nb.id);
+                              e.dataTransfer.effectAllowed = "move";
+                            }}
+                            onDragEnd={() => { setDragNoteId(null); setDragNoteFromNb(null); }}
+                            onClick={() => {
+                              setActiveNotebookId(nb.id);
+                              setActiveNoteId(note.id);
+                              onSelectNote?.();
+                            }}
+                            className={`group/nn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
+                              activeNoteId === note.id
+                                ? "bg-primary/10 text-foreground font-medium"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                            }`}
+                          >
+                            <FileText className="h-3 w-3 shrink-0 opacity-70" />
+                            <span className="truncate flex-1">{note.title || "Untitled"}</span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                showConfirm(
+                                  "Move to Trash?",
+                                  `"${note.title}" will be moved to Trash. You can restore it later.`,
+                                  () => deleteNote(nb.id, note.id),
+                                  "Move to Trash"
+                                );
+                              }}
+                              className="opacity-0 group-hover/nn:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               ))}
             </AnimatePresence>
