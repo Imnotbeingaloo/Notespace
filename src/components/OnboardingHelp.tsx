@@ -158,13 +158,16 @@ export function OnboardingHelp() {
       <div className="relative flex items-center">
         <AnimatePresence>
           {hintOpen && !isMobile && (
-            <motion.div
+            <motion.button
+              type="button"
               key="hint-desktop"
+              onClick={() => { setHintOpen(false); hintOpenRef.current = false; clearHide(); clearIdle(); }}
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
               transition={{ duration: 0.25 }}
-              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-foreground/80 pointer-events-none"
+              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-foreground/80 cursor-pointer"
+              aria-label="Hide hint"
             >
               <span>Confused? Click here</span>
               <motion.span
@@ -174,16 +177,19 @@ export function OnboardingHelp() {
               >
                 <ArrowRight className="h-3.5 w-3.5" />
               </motion.span>
-            </motion.div>
+            </motion.button>
           )}
           {hintOpen && isMobile && (
-            <motion.div
+            <motion.button
+              type="button"
               key="hint-mobile"
+              onClick={() => { setHintOpen(false); hintOpenRef.current = false; clearHide(); clearIdle(); }}
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.25 }}
-              className="absolute top-full right-0 mt-1.5 flex flex-col items-end gap-1 pointer-events-none z-50"
+              className="absolute top-full right-0 mt-1.5 flex flex-col items-end gap-1 z-50"
+              aria-label="Hide hint"
             >
               <motion.span
                 animate={{ y: [0, -3, 0] }}
@@ -195,7 +201,7 @@ export function OnboardingHelp() {
               <span className="whitespace-nowrap rounded-md bg-popover/95 backdrop-blur px-2 py-1 text-[11px] font-medium text-foreground shadow-md border border-border">
                 Confused? Tap here
               </span>
-            </motion.div>
+            </motion.button>
           )}
         </AnimatePresence>
 
