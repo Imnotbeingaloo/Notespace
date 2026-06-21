@@ -275,7 +275,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                         checked={paperStyle}
                         onCheckedChange={(v) => {
                           setPaperStyle(v);
-                          toast.success(v ? "Notebook paper enabled" : "Notebook paper disabled");
+                          (v ? toast.success : toast.warning)(v ? "Notebook paper enabled" : "Notebook paper disabled");
                         }}
                       />
                     </div>
@@ -296,7 +296,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                         checked={tempNotesEnabled}
                         onCheckedChange={(v) => {
                           setTempNotesEnabled(v);
-                          toast.success(v ? "Temporary Notes enabled" : "Temporary Notes disabled");
+                          (v ? toast.success : toast.warning)(v ? "Temporary Notes enabled" : "Temporary Notes disabled");
                         }}
                         aria-label="Toggle Temporary Notes"
                       />
@@ -323,7 +323,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   ] as const).map(({ id, label, Icon }) => (
                     <button
                       key={id}
-                      onClick={() => setTheme(id)}
+                      onClick={() => { setTheme(id); try { localStorage.setItem("app-theme", id); } catch {} }}
                       className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
                         theme === id
                           ? "border-primary bg-primary/5 text-foreground"
