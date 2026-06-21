@@ -4,8 +4,8 @@ import { BookPlus, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Curated, premium utility cover emojis — relevant for note-taking workflows.
-const CURATED_EMOJIS = ["📝", "📚", "💡", "🚀", "📅", "📌", "🔒"];
+// Original curated set — notebook covers for note-taking.
+const CURATED_EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
 
 type Kind = "notebook" | "note";
 
@@ -84,7 +84,7 @@ export function CreateNotebookDialog({
   const cta = submitLabel || (activeKind === "note" ? "Create Note" : "Create Notebook");
 
   // Smooth slide+fade transition between steps.
-  const stepTransition = { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const };
+  const stepTransition = { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
     <AnimatePresence>
@@ -141,9 +141,9 @@ export function CreateNotebookDialog({
               {step === "choose" ? (
                 <motion.div
                   key="choose"
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
+                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
                   transition={stepTransition}
                   className="px-6 py-5"
                 >
@@ -178,9 +178,9 @@ export function CreateNotebookDialog({
               ) : (
                 <motion.div
                   key="form"
-                  initial={{ opacity: 0, x: 28 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 28 }}
+                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
                   transition={stepTransition}
                 >
                   <div className="px-6 py-4 space-y-4">
@@ -208,7 +208,7 @@ export function CreateNotebookDialog({
                       <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Cover emoji
                       </label>
-                      <div className="mt-1.5 grid grid-cols-7 gap-1.5">
+                      <div className="mt-1.5 grid grid-cols-6 gap-1.5">
                         {CURATED_EMOJIS.map((em) => (
                           <button
                             key={em}
