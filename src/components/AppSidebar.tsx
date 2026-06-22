@@ -617,16 +617,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
                   {/* Nested notes — shown when this notebook is active or expanded. */}
                   <AnimatePresence initial={false}>
-                    {(activeNotebookId === nb.id || expandedNotebook === nb.id) && nb.notes && nb.notes.length > 0 && (
+                    {(activeNotebookId === nb.id || expandedNotebook === nb.id) && (
                       <motion.div
                         key={`notes-${nb.id}`}
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden ml-4 mt-0.5 border-l border-sidebar-border/60 pl-2 space-y-0.5"
+                        className="overflow-hidden ml-4 mt-0.5 border-l-2 border-sidebar-border pl-2 space-y-0.5"
                       >
-                        {nb.notes.map((note) => (
+                        {nb.notes?.map((note) => (
                           <div
                             key={note.id}
                             draggable
@@ -665,9 +665,23 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                             </button>
                           </div>
                         ))}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveNotebookId(nb.id);
+                            createNote(nb.id);
+                            onSelectNote?.();
+                          }}
+                          title="Add a note to this notebook"
+                          className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[12px] text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+                        >
+                          <Plus className="h-3 w-3" />
+                          <span>Add note</span>
+                        </button>
                       </motion.div>
                     )}
                   </AnimatePresence>
+
                 </motion.div>
               ))}
             </AnimatePresence>
