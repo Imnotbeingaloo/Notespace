@@ -413,7 +413,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       );
       setActiveNoteId(data.id);
       if (finalTitle !== requested) {
-        toast(`Renamed to "${finalTitle}" — that title was already used in this notebook.`);
+        toast(`Renamed to "${finalTitle}"`, { description: `A note named "${desiredTitle}" already exists in this notebook, so we appended a number.` });
       }
       return data.id;
     }
@@ -458,7 +458,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     setActiveNotebookId(null);
     setActiveNoteId(data.id);
     if (finalTitle !== requested) {
-      toast(`Renamed to "${finalTitle}" — that title was already used in Notes.`);
+      toast(`Renamed to "${finalTitle}"`, { description: `A note named "${requested}" already exists in Notes, so we appended a number.` });
     }
     return { notebookId: null, noteId: data.id };
   }, [user, uniqueStandaloneTitle]);

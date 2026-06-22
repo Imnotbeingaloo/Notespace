@@ -26,7 +26,7 @@ const AuthPage = () => {
   const friendlyError = (
     raw: string,
     mode: "login" | "signup"
-  ): { message: string; autoSwitchToSignup?: boolean } => {
+  ): { message: string } => {
     const m = raw.toLowerCase();
     if (m.includes("network") || m.includes("failed to fetch") || m.includes("timeout") || m.includes("fetch")) {
       return { message: "We're experiencing a database sync issue right now. Please try again in a few moments." };
@@ -71,7 +71,6 @@ const AuthPage = () => {
       if (error) {
         const f = friendlyError(error.message, "login");
         setError(f.message);
-        if (f.autoSwitchToSignup) setMode("signup");
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
         navigate("/app");
