@@ -36,7 +36,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
       }`}
     >
       <div className="flex items-center justify-between gap-3 md:gap-6 px-3 sm:px-5 py-3">
-        <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0">
+        <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0 group">
           <img
             src="/logo.png"
             alt="Notebook Archive"
@@ -45,7 +45,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
             loading="eager"
             decoding="sync"
             fetchPriority="high"
-            className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0"
+            className="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
           />
           <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">
             Notebook Archive
