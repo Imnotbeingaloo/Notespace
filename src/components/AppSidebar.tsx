@@ -293,7 +293,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <motion.img
                 src="/logo.png"
                 alt="Notebook Archive"
-                className="h-10 w-10 object-contain flex-shrink-0"
+                className="h-8 w-8 object-contain flex-shrink-0"
                 whileHover={{ rotate: -6, scale: 1.06 }}
                 transition={{ type: "spring", stiffness: 320, damping: 18 }}
               />
