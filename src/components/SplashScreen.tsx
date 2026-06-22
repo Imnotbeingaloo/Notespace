@@ -49,7 +49,7 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
           <motion.img
             src="/logo.png"
             alt="Notebook Archive"
-            className="relative z-10 h-16 w-16 object-contain"
+            className="relative z-10 h-[3.2rem] w-[3.2rem] object-contain"
             initial={{ scale: 0.3, opacity: 0, rotate: fast ? 0 : -15 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             transition={{ duration: fast ? 0.3 : 0.7, ease: [0.16, 1, 0.3, 1] }}
