@@ -54,7 +54,7 @@ export function CreateNotebookDialog({
   const [step, setStep] = useState<"choose" | "form">(mode === "choose" ? "choose" : "form");
   const [activeKind, setActiveKind] = useState<Kind>(kindProp);
   const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState(CURATED_EMOJIS[0]);
+  const [emoji, setEmoji] = useState(EMOJIS_FOR(kindProp)[0]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -62,14 +62,14 @@ export function CreateNotebookDialog({
       setStep(mode === "choose" ? "choose" : "form");
       setActiveKind(kindProp);
       setName("");
-      setEmoji(CURATED_EMOJIS[0]);
+      setEmoji(EMOJIS_FOR(kindProp)[0]);
       setSubmitting(false);
     }
   }, [open, mode, kindProp]);
 
   const pickKind = (k: Kind) => {
     setActiveKind(k);
-    setEmoji(CURATED_EMOJIS[0]);
+    setEmoji(EMOJIS_FOR(k)[0]);
     setStep("form");
   };
 
