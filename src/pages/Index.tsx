@@ -16,6 +16,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
+import { NewNotePrompt } from "@/components/NewNotePrompt";
 import { RenameDuplicateDialog } from "@/components/RenameDuplicateDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 
@@ -288,6 +289,49 @@ function AppContent() {
               </div>
             ) : opening ? (
               <LoadingScreen label="Opening notebook…" />
+            ) : homeCreateKind === "note" ? (
+              <NewNotePrompt
+                notebookName="New Note"
+                notebookEmoji="📝"
+                noteCount={0}
+                onCreateNew={async (title?: string, content?: string) => {
+                  setHomeCreateKind(null);
+                  setOpening(true);
+                  try {
+                    const created = await createStandaloneNote(title, undefined);
+                    if (created) {
+                      if (content) {
+                        await updateNote(created.noteId, { content });
+                      }
+                      setShowHome(false);
+                      const next = new URLSearchParams(searchParams);
+                      next.delete("notebook");
+                      next.set("note", created.noteId);
+                      setSearchParams(next, { replace: true });
+                    }
+                  } finally {
+                    window.setTimeout(() => setOpening(false), 400);
+                  }
+                }}
+                onImportAndCreate={async (content: string, fileName: string) => {
+                  setHomeCreateKind(null);
+                  setOpening(true);
+                  try {
+                    const baseTitle = fileName.replace(/\.[^.]+$/, "") || "Imported Note";
+                    const created = await createStandaloneNote(baseTitle, undefined);
+                    if (created) {
+                      await updateNote(created.noteId, { content });
+                      setShowHome(false);
+                      const next = new URLSearchParams(searchParams);
+                      next.delete("notebook");
+                      next.set("note", created.noteId);
+                      setSearchParams(next, { replace: true });
+                    }
+                  } finally {
+                    window.setTimeout(() => setOpening(false), 400);
+                  }
+                }}
+              />
             ) : showHome ? (
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
