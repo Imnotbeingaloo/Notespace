@@ -4,8 +4,23 @@ import { BookPlus, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Original curated set — notebook covers for note-taking.
-const CURATED_EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+// Two curated sets — subject-themed for notebooks, note-action themed for notes.
+// Both render in a 6-column grid → ~4 visible rows each.
+const NOTEBOOK_EMOJIS = [
+  "📓", "📕", "📗", "📘", "📙", "📔",
+  "📒", "🗂️", "📚", "📖", "📰", "📑",
+  "💡", "🔬", "🧪", "🧮", "📐", "📊",
+  "🎯", "✏️", "🎨", "🎼", "💻", "⚗️",
+  "🌍", "📜", "🩺", "⚖️", "🏛️", "🧠",
+];
+const NOTE_EMOJIS = [
+  "📝", "📌", "✅", "⭐", "🔖", "💡",
+  "📅", "✏️", "🗒️", "💬", "📋", "🎯",
+  "🚀", "🔔", "❤️", "🔥", "⚡", "📞",
+  "🛒", "✈️", "🍽️", "🎁", "🏃", "🧘",
+  "💼", "🎬", "🎵", "🌱", "☕", "🧾",
+];
+const EMOJIS_FOR = (k: Kind) => (k === "note" ? NOTE_EMOJIS : NOTEBOOK_EMOJIS);
 
 type Kind = "notebook" | "note";
 
