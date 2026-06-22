@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2, BookPlus } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -299,7 +299,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                       onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
                       className="gap-2"
                     >
-                      <BookPlus className="h-4 w-4 text-primary" />
+                      <BookOpen className="h-4 w-4 text-primary" />
                       <span>Notebook</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -320,7 +320,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                   data-testid="home-create-notebook"
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
                 >
-                  <BookPlus className="h-4 w-4" />
+                  <BookOpen className="h-4 w-4" />
                   New Notebook
                 </button>
               </>
