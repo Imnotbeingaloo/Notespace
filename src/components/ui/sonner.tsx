@@ -51,6 +51,12 @@ function textOf(value: ReactNode) {
 
 function displayKind(toast: QueuedToast): keyof typeof variants {
   const text = `${textOf(toast.title)} ${textOf(toast.description)}`.toLowerCase();
+  // Green — turned ON / positive successful actions (checked first so "enabled"
+  // wins over generic words like "temporary").
+  if (
+    toast.kind === "success" ||
+    /\benabled\b|turned on|switched on|saved|created|uploaded|connected|restored/.test(text)
+  ) return "success";
   // Red — strictly destructive / critical system warnings.
   if (
     toast.kind === "error" ||
@@ -59,13 +65,8 @@ function displayKind(toast: QueuedToast): keyof typeof variants {
   // Yellow — turned OFF / negative or minor warning states.
   if (
     toast.kind === "warning" ||
-    /disabled|turned off|switched off|broken|temporary|scanned|limit|empty|paused/.test(text)
+    /\bdisabled\b|turned off|switched off|broken|scanned|limit|empty|paused/.test(text)
   ) return "warning";
-  // Green — turned ON / positive successful actions.
-  if (
-    toast.kind === "success" ||
-    /enabled|turned on|switched on|saved|created|uploaded|connected|restored/.test(text)
-  ) return "success";
   if (toast.kind === "loading") return "loading";
   return "info";
 }
@@ -93,7 +94,11 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
   const kind = displayKind(item);
   const visual = variants[kind];
   const Icon = visual.Icon;
-  const hasDetails = Boolean(item.description) || Boolean(item.action) || Boolean(item.cancel);
+  // The chevron arrow is reserved for revealing extra detail/description.
+  // Action buttons (e.g. Undo) always render inline so users don't have to dig for them.
+  const hasDescription = Boolean(item.description);
+  const hasActions = Boolean(item.action) || Boolean(item.cancel);
+  const showChevron = hasDescription;
 
   return (
     <motion.li
@@ -120,8 +125,14 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
 
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13px] font-semibold leading-5 text-foreground">{item.title}</div>
+          {hasActions && (
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {renderAction(item.action, item.id)}
+              {renderAction(item.cancel, item.id)}
+            </div>
+          )}
           <AnimatePresence initial={false}>
-            {hasDetails && item.expanded && (
+            {hasDescription && item.expanded && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -131,12 +142,6 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
               >
                 <div className="pt-1 text-xs leading-relaxed text-muted-foreground">
                   {item.description}
-                  {(item.action || item.cancel) && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {renderAction(item.action, item.id)}
-                      {renderAction(item.cancel, item.id)}
-                    </div>
-                  )}
                 </div>
               </motion.div>
             )}
@@ -145,7 +150,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       </div>
 
       <div className="absolute right-2.5 top-2.5 flex items-center gap-1">
-        {hasDetails && (
+        {showChevron && (
           <button
             type="button"
             onClick={() => setToastExpanded(item.id, !item.expanded)}
