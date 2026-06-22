@@ -267,8 +267,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   return (
     <motion.aside
       initial={false}
-      animate={{ width: collapsed ? 56 : 280 }}
-      transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+      animate={{ width: collapsed ? 64 : 280 }}
+      transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
       className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
     >
       {/* Header — collapsed state matches the editor topbar height (48px + 1px border)
@@ -284,14 +284,20 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           {!collapsed ? (
             <motion.div
               key="expanded"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
               className="flex items-center gap-2 min-w-0"
             >
-              <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0 mt-1" />
-              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap translate-y-[1px] mt-1">Notebook Archive</span>
+              <motion.img
+                src="/logo.png"
+                alt="Notebook Archive"
+                className="h-10 w-10 object-contain flex-shrink-0"
+                whileHover={{ rotate: -6, scale: 1.06 }}
+                transition={{ type: "spring", stiffness: 320, damping: 18 }}
+              />
+              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap">Notebook Archive</span>
               <button
                 type="button"
                 onClick={() => onOpenHome?.()}
@@ -304,22 +310,22 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           ) : (
             <motion.div
               key="collapsed-logo"
-              initial={{ opacity: 0, scale: 0.85 }}
+              initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.85 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
             >
               <button
                 onClick={onToggle}
                 aria-label="Open sidebar"
-                className="group relative h-9 w-9 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center overflow-hidden"
+                className="group relative h-10 w-10 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center overflow-hidden"
               >
                 <img
                   src="/logo.png"
                   alt="Notebook Archive"
-                  className="absolute h-9 w-9 object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
+                  className="absolute h-10 w-10 object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
                 />
-                <Menu className="absolute h-4 w-4 text-foreground opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />
+                <Menu className="absolute h-5 w-5 text-foreground opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />
               </button>
             </motion.div>
           )}
@@ -335,6 +341,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           </button>
         )}
       </div>
+
 
       {!collapsed && (
         <div className="flex-1 overflow-y-auto p-2 scrollbar-thin">
@@ -610,16 +617,16 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
                   {/* Nested notes — shown when this notebook is active or expanded. */}
                   <AnimatePresence initial={false}>
-                    {(activeNotebookId === nb.id || expandedNotebook === nb.id) && nb.notes && nb.notes.length > 0 && (
+                    {(activeNotebookId === nb.id || expandedNotebook === nb.id) && (
                       <motion.div
                         key={`notes-${nb.id}`}
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden ml-4 mt-0.5 border-l border-sidebar-border/60 pl-2 space-y-0.5"
+                        className="overflow-hidden ml-4 mt-0.5 border-l-2 border-sidebar-border pl-2 space-y-0.5"
                       >
-                        {nb.notes.map((note) => (
+                        {nb.notes?.map((note) => (
                           <div
                             key={note.id}
                             draggable
@@ -658,9 +665,23 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                             </button>
                           </div>
                         ))}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveNotebookId(nb.id);
+                            createNote(nb.id);
+                            onSelectNote?.();
+                          }}
+                          title="Add a note to this notebook"
+                          className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[12px] text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+                        >
+                          <Plus className="h-3 w-3" />
+                          <span>Add note</span>
+                        </button>
                       </motion.div>
                     )}
                   </AnimatePresence>
+
                 </motion.div>
               ))}
             </AnimatePresence>

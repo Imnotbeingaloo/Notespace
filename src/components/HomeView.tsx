@@ -235,7 +235,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                 className="flex items-center gap-2 min-w-0 group"
                 title="Back to website"
               >
-                <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain flex-shrink-0" />
+                <img src="/logo.png" alt="Notebook Archive" className="h-10 w-10 object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
                 <span className="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors">
                   Notebook Archive
                 </span>
@@ -281,7 +281,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                   <DropdownMenuTrigger asChild>
                     <button
                       data-testid="home-create"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                      className="inline-flex w-44 items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
                     >
                       <Plus className="h-4 w-4" />
                       Create

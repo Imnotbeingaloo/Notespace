@@ -4,8 +4,23 @@ import { BookPlus, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Original curated set — notebook covers for note-taking.
-const CURATED_EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
+// Two curated sets — subject-themed for notebooks, note-action themed for notes.
+// Both render in a 6-column grid → ~4 visible rows each.
+const NOTEBOOK_EMOJIS = [
+  "📓", "📕", "📗", "📘", "📙", "📔",
+  "📒", "🗂️", "📚", "📖", "📰", "📑",
+  "💡", "🔬", "🧪", "🧮", "📐", "📊",
+  "🎯", "✏️", "🎨", "🎼", "💻", "⚗️",
+  "🌍", "📜", "🩺", "⚖️", "🏛️", "🧠",
+];
+const NOTE_EMOJIS = [
+  "📝", "📌", "✅", "⭐", "🔖", "💡",
+  "📅", "✏️", "🗒️", "💬", "📋", "🎯",
+  "🚀", "🔔", "❤️", "🔥", "⚡", "📞",
+  "🛒", "✈️", "🍽️", "🎁", "🏃", "🧘",
+  "💼", "🎬", "🎵", "🌱", "☕", "🧾",
+];
+const EMOJIS_FOR = (k: Kind) => (k === "note" ? NOTE_EMOJIS : NOTEBOOK_EMOJIS);
 
 type Kind = "notebook" | "note";
 
@@ -39,7 +54,7 @@ export function CreateNotebookDialog({
   const [step, setStep] = useState<"choose" | "form">(mode === "choose" ? "choose" : "form");
   const [activeKind, setActiveKind] = useState<Kind>(kindProp);
   const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState(CURATED_EMOJIS[0]);
+  const [emoji, setEmoji] = useState(EMOJIS_FOR(kindProp)[0]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -47,14 +62,14 @@ export function CreateNotebookDialog({
       setStep(mode === "choose" ? "choose" : "form");
       setActiveKind(kindProp);
       setName("");
-      setEmoji(CURATED_EMOJIS[0]);
+      setEmoji(EMOJIS_FOR(kindProp)[0]);
       setSubmitting(false);
     }
   }, [open, mode, kindProp]);
 
   const pickKind = (k: Kind) => {
     setActiveKind(k);
-    setEmoji(CURATED_EMOJIS[0]);
+    setEmoji(EMOJIS_FOR(k)[0]);
     setStep("form");
   };
 
@@ -209,7 +224,7 @@ export function CreateNotebookDialog({
                         Cover emoji
                       </label>
                       <div className="mt-1.5 grid grid-cols-6 gap-1.5">
-                        {CURATED_EMOJIS.map((em) => (
+                        {EMOJIS_FOR(activeKind).map((em) => (
                           <button
                             key={em}
                             type="button"
