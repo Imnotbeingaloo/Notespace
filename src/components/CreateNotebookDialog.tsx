@@ -224,7 +224,7 @@ export function CreateNotebookDialog({
                         Cover emoji
                       </label>
                       <div className="mt-1.5 grid grid-cols-6 gap-1.5">
-                        {CURATED_EMOJIS.map((em) => (
+                        {EMOJIS_FOR(activeKind).map((em) => (
                           <button
                             key={em}
                             type="button"
