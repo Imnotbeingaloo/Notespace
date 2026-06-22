@@ -12,7 +12,7 @@ export function LoadingScreen({ label }: { label?: string }) {
       <motion.img
         src="/logo.png"
         alt=""
-        className="h-14 w-14 object-contain relative z-10"
+        className="h-12 w-12 object-contain relative z-10"
         initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
         animate={{ scale: 1, opacity: 1, rotate: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}

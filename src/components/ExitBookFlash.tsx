@@ -48,7 +48,7 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
           <motion.img
             src="/logo.png"
             alt="Notebook Archive"
-            className="relative z-10 h-20 w-20 object-contain"
+            className="relative z-10 h-16 w-16 object-contain"
             initial={{ scale: 0.3, opacity: 0, rotate: -15 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
