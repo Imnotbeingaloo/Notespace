@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -285,6 +285,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                     >
                       <Plus className="h-4 w-4" />
                       Create
+                      <ChevronDown className="h-3.5 w-3.5 opacity-80" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-44">
