@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,8 +34,7 @@ const AuthPage = () => {
     if (mode === "login" && (m.includes("invalid login credentials") || m.includes("invalid_credentials"))) {
       return {
         message:
-          "We couldn't find an account with this email — we've switched you to Sign Up so you can create one. If you already have an account, the password you entered didn't match.",
-        autoSwitchToSignup: true,
+          "We couldn't find your account, or the password is incorrect. Create a new account to get started, or double-check your password and try again.",
       };
     }
     if (m.includes("email not confirmed") || m.includes("not confirmed")) {
@@ -230,7 +229,7 @@ const AuthPage = () => {
       >
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <BookOpen className="h-7 w-7 text-primary" />
+          <img src="/logo.png" alt="Notebook Archive" className="h-8 w-8 object-contain" />
           <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
         </div>
 
