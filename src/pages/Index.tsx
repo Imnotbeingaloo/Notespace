@@ -398,30 +398,13 @@ function AppContent() {
       {/* Home dropdown — single-kind create dialog (Notebook OR Note picked from dropdown) */}
       <CreateNotebookDialog
         mode="single"
-        kind={homeCreateKind ?? "notebook"}
-        open={!!homeCreateKind}
+        kind="notebook"
+        open={homeCreateKind === "notebook"}
         onOpenChange={(o) => !o && setHomeCreateKind(null)}
         onCreate={async (name, emoji) => {
-          if (homeCreateKind === "note") {
-            setHomeCreateKind(null);
-            setOpening(true);
-            try {
-              const created = await createStandaloneNote(name, emoji);
-              if (created) {
-                setShowHome(false);
-                const next = new URLSearchParams(searchParams);
-                next.delete("notebook");
-                next.set("note", created.noteId);
-                setSearchParams(next, { replace: true });
-              }
-            } finally {
-              window.setTimeout(() => setOpening(false), 400);
-            }
-          } else {
-            const id = await createNotebook(name, emoji);
-            setHomeCreateKind(null);
-            if (id) openNotebookFromHome(id);
-          }
+          const id = await createNotebook(name, emoji);
+          setHomeCreateKind(null);
+          if (id) openNotebookFromHome(id);
         }}
       />
 
