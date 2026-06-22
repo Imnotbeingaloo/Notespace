@@ -5,3 +5,7 @@ verify_jwt = false
 
 [functions.ai-tools]
 verify_jwt = false
+
+[functions.check-email-exists]
+verify_jwt = false
+
