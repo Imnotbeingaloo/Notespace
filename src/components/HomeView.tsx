@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2, BookPlus } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNotebooks } from "@/context/NotebookContext";
