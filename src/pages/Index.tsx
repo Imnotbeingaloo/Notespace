@@ -301,7 +301,7 @@ function AppContent() {
                     const created = await createStandaloneNote(title, undefined);
                     if (created) {
                       if (content) {
-                        await updateNote(created.noteId, { content });
+                        await updateNote(null, created.noteId, { content });
                       }
                       setShowHome(false);
                       const next = new URLSearchParams(searchParams);
@@ -320,7 +320,7 @@ function AppContent() {
                     const baseTitle = fileName.replace(/\.[^.]+$/, "") || "Imported Note";
                     const created = await createStandaloneNote(baseTitle, undefined);
                     if (created) {
-                      await updateNote(created.noteId, { content });
+                      await updateNote(null, created.noteId, { content });
                       setShowHome(false);
                       const next = new URLSearchParams(searchParams);
                       next.delete("notebook");
