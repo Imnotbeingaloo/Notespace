@@ -235,7 +235,7 @@ function TemporaryWorkspaceInner() {
               className="flex items-center gap-1.5 group"
               title="Back to your notebooks"
             >
-              <img src="/logo.png" alt="" className="h-[1.08rem] w-[1.08rem] object-contain" />
+              <img src="/logo.png" alt="" className="h-[0.9rem] w-[0.9rem] object-contain" />
               <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors hidden sm:inline">
                 Notebook Archive
               </span>

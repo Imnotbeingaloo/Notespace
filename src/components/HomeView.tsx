@@ -235,7 +235,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                 className="flex items-center gap-2 min-w-0 group"
                 title="Back to website"
               >
-                <img src="/logo.png" alt="Notebook Archive" className="h-[1.73rem] w-[1.73rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
+              <img src="/logo.png" alt="Notebook Archive" className="h-[1.5rem] w-[1.5rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
                 <span className="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors">
                   Notebook Archive
                 </span>
