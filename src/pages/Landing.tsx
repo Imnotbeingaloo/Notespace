@@ -176,7 +176,7 @@ export default function LandingPage() {
       >
         <div className="flex items-center justify-between gap-3 md:gap-6 px-3 sm:px-5 py-3">
             <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0 group">
-               <img src="/logo.png" alt="Notebook Archive" width={32} height={32} loading="eager" decoding="sync" fetchPriority="high" className="h-[1.26rem] w-[1.26rem] sm:h-[1.44rem] sm:w-[1.44rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
+               <img src="/logo.png" alt="Notebook Archive" width={32} height={32} loading="eager" decoding="sync" fetchPriority="high" className="h-[1.51rem] w-[1.51rem] sm:h-[1.73rem] sm:w-[1.73rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
                <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
             </Link>
           <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0">

@@ -242,7 +242,7 @@ const AuthPage = () => {
       >
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <img src="/logo.png" alt="Notebook Archive" className="h-[1.44rem] w-[1.44rem] object-contain" />
+          <img src="/logo.png" alt="Notebook Archive" className="h-[1.73rem] w-[1.73rem] object-contain" />
           <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
         </div>
 
