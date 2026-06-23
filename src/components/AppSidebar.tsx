@@ -293,7 +293,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <motion.img
                 src="/logo.png"
                 alt="Notebook Archive"
-                className="h-[1.44rem] w-[1.44rem] object-contain flex-shrink-0"
+                className="h-[1.73rem] w-[1.73rem] object-contain flex-shrink-0"
                 whileHover={{ rotate: -6, scale: 1.06 }}
                 transition={{ type: "spring", stiffness: 320, damping: 18 }}
               />
@@ -323,7 +323,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 <img
                   src="/logo.png"
                   alt="Notebook Archive"
-                  className="absolute h-[1.44rem] w-[1.44rem] object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
+                  className="absolute h-[1.73rem] w-[1.73rem] object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
                 />
                 <Menu className="absolute h-5 w-5 text-foreground opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />
               </button>

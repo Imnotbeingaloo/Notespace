@@ -45,7 +45,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
             loading="eager"
             decoding="sync"
             fetchPriority="high"
-            className="h-[1.26rem] w-[1.26rem] sm:h-[1.44rem] sm:w-[1.44rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+            className="h-[1.51rem] w-[1.51rem] sm:h-[1.73rem] sm:w-[1.73rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
           />
           <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">
             Notebook Archive
