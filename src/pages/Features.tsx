@@ -72,13 +72,21 @@ export default function FeaturesPage() {
         <PageHeader activePage="features" />
 
       {/* Hero */}
-      <section className="relative overflow-hidden pt-28 pb-16">
+      <section className="relative overflow-hidden pt-28 pb-16 border-b border-border">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-primary/[0.04] pointer-events-none" />
+        <div
+          className="absolute inset-0 opacity-[0.025] pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)",
+            backgroundSize: "24px 24px",
+          }}
+        />
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
-              <Sparkles className="h-3.5 w-3.5 text-accent" />
-              Features
-            </div>
+            <p className="text-[11px] uppercase tracking-[0.25em] text-primary/80 font-mono mb-4">
+              ◆ Features
+            </p>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
               Everything you need. Nothing you don't.
             </h1>
