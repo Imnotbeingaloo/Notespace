@@ -66,6 +66,7 @@ export function OnboardingHelp() {
       if (dismissedRef.current || openRef.current) return;
       setHintOpen(true);
       hintOpenRef.current = true;
+      shownAtRef.current = Date.now();
       showCountRef.current += 1;
       clearHide();
       hideTimerRef.current = window.setTimeout(() => {
