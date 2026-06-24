@@ -114,12 +114,12 @@ export default function FeaturesPage() {
                   <motion.div
                     initial={{ opacity: 0, x: reverse ? 30 : -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
+                    viewport={{ once: false, amount: 0.2, margin: "-80px" }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                     className="md:col-span-5"
                   >
                     <div className="inline-flex items-center gap-2 mb-4">
-                      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-primary">
+                      <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-accent">
                         {String(gIdx + 1).padStart(2, "0")} · {group.kicker}
                       </span>
                     </div>
@@ -135,7 +135,7 @@ export default function FeaturesPage() {
                   <motion.div
                     initial="hidden"
                     whileInView="show"
-                    viewport={{ once: true, margin: "-60px" }}
+                    viewport={{ once: false, amount: 0.15, margin: "-60px" }}
                     variants={{ hidden: {}, show: { transition: { staggerChildren: 0.18, delayChildren: 0.1 } } }}
                     className="md:col-span-7 relative"
                   >
@@ -164,7 +164,7 @@ export default function FeaturesPage() {
                                 color: "hsl(var(--primary-foreground))",
                                 scale: 1,
                               }}
-                              viewport={{ once: true, margin: "-40px" }}
+                              viewport={{ once: false, amount: 0.3, margin: "-40px" }}
                               transition={{ duration: 0.7, delay: 0.25 + iIdx * 0.15, ease: [0.16, 1, 0.3, 1] }}
                               className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10"
                             >
