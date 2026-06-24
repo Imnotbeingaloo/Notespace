@@ -328,9 +328,9 @@ export default function HowItWorksPage() {
         />
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <motion.div style={{ y: badgeY }} className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 backdrop-blur px-4 py-1.5 mb-6 shadow-sm">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">Get Started in Minutes</span>
+            <motion.div style={{ y: badgeY }} className="flex items-center justify-center gap-3 mb-6">
+              <span className="h-px w-8 bg-primary" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-primary">How It Works</span>
             </motion.div>
             <motion.h1 style={{ y: headingY }} className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
               How Notebook Archive <span className="text-primary">works</span>

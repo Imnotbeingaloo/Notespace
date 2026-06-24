@@ -101,12 +101,12 @@ export default function PricingPage() {
         />
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 backdrop-blur px-4 py-1.5 mb-6 shadow-sm">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">Simple Pricing</span>
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="h-px w-8 bg-primary" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-primary">Plans That Grow With You</span>
             </div>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
-              Plans that grow with you
+              Plans that <span className="text-primary">grow</span> with you
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Start free, upgrade when you need more AI power. No hidden fees, cancel anytime. Every plan includes our core markdown editor, instant search, and auto-save — so you're always covered.
