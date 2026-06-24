@@ -98,6 +98,8 @@ export function OnboardingHelp() {
     const onActivity = () => {
       if (dismissedRef.current) return;
       if (hintOpenRef.current) {
+        // Keep the hint visible for at least MIN_VISIBLE_MS before activity dismisses it.
+        if (Date.now() - shownAtRef.current < MIN_VISIBLE_MS) return;
         setHintOpen(false);
         hintOpenRef.current = false;
         clearHide();
@@ -105,7 +107,8 @@ export function OnboardingHelp() {
       armIdle();
     };
 
-    const events = ["mousemove", "keydown", "scroll", "click", "touchstart", "pointerdown"];
+    // Only intentional inputs dismiss/reset — exclude mousemove & scroll (too noisy).
+    const events = ["keydown", "click", "touchstart", "pointerdown"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     armIdle();
 
