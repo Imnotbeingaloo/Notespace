@@ -85,8 +85,8 @@ export default function FeaturesPage() {
         <div className="container mx-auto px-6 pt-8 pb-12 md:pt-16 md:pb-20 text-center relative">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <div className="flex items-center justify-center gap-3 mb-6">
-              <span className="h-px w-8 bg-primary" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-primary">Features</span>
+              <span className="h-px w-8 bg-accent" />
+              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Features</span>
             </div>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
               Everything you <span className="text-primary">need</span>. Nothing you don't.
