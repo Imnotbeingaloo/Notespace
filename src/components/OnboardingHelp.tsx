@@ -39,6 +39,9 @@ export function OnboardingHelp() {
   const dismissedRef = useRef(false);
   const openRef = useRef(false);
   const hintOpenRef = useRef(false);
+  const shownAtRef = useRef(0);
+  // Min time the hint must remain visible before any activity can dismiss it.
+  const MIN_VISIBLE_MS = 3000;
 
   const clearIdle = () => {
     if (idleTimerRef.current) {
