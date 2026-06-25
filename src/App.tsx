@@ -21,6 +21,8 @@ const SharedNotePage = lazy(() => import("./pages/SharedNote"));
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { usePaperStyleTransition } from "@/hooks/use-paper-style";
 import { PaperStyleSwitcher } from "@/components/PaperStyleSwitcher";
+import { NetworkStatusToasts } from "@/components/NetworkStatusToasts";
+
 
 function PaperStyleTransitionOverlay() {
   const transitioning = usePaperStyleTransition();
@@ -89,6 +91,8 @@ const App = () => (
             <AuthProvider>
               <ScrollToTop />
               <ThemeController />
+              <NetworkStatusToasts />
+
               <PaperStyleTransitionOverlay />
               <Routes>
                 <Route path="/" element={<Landing />} />
