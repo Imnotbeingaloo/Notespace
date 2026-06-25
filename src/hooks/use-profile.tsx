@@ -49,16 +49,34 @@ export function useProfile() {
       return;
     }
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select("user_id, display_name, password_last_changed_at")
       .eq("user_id", user.id)
       .maybeSingle();
-    const next = (data as ProfileRow) ?? { user_id: user.id, display_name: null, password_last_changed_at: null };
-    setProfile(next);
-    writeCachedDisplayName(user.id, next.display_name);
+    // Amnesia bug fix: on network/server error, KEEP whatever we have (cache or
+    // existing state). Never wipe a known display_name to null just because a
+    // slow/failed request returned no data — that re-triggers onboarding.
+    if (error) {
+      setLoading(false);
+      return;
+    }
+    if (data) {
+      const next = data as ProfileRow;
+      setProfile(next);
+      writeCachedDisplayName(user.id, next.display_name);
+    } else {
+      // Genuinely no row. Only treat as empty if we don't already have a cached name.
+      const cached = readCachedDisplayName(user.id);
+      if (cached) {
+        setProfile({ user_id: user.id, display_name: cached, password_last_changed_at: null });
+      } else {
+        setProfile({ user_id: user.id, display_name: null, password_last_changed_at: null });
+      }
+    }
     setLoading(false);
   }, [user]);
+
 
   useEffect(() => {
     refresh();
