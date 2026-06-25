@@ -91,6 +91,8 @@ const App = () => (
             <AuthProvider>
               <ScrollToTop />
               <ThemeController />
+              <NetworkStatusToasts />
+
               <PaperStyleTransitionOverlay />
               <Routes>
                 <Route path="/" element={<Landing />} />
