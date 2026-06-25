@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { installOfflineQueueListener } from "@/lib/offline-queue";
+
 
 /**
  * Mounts global network listeners:
