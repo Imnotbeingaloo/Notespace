@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/components/ui/sonner";
 import { promptRenameForDuplicate } from "@/components/RenameDuplicateDialog";
+import { isOffline, queueNoteUpdate } from "@/lib/offline-queue";
+
 
 export interface Attachment {
   name: string;
@@ -602,8 +604,21 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (Object.keys(updates).length === 0) return;
-      await supabase.from("notes").update(updates as any).eq("id", noteId);
+
+      // Offline-write queue: if the network is down, persist the change locally
+      // and skip the network call. Optimistic state below still updates the UI,
+      // and the queue flushes automatically when the browser comes back online.
+      if (isOffline()) {
+        queueNoteUpdate(noteId, updates as Record<string, unknown>);
+      } else {
+        const { error } = await supabase.from("notes").update(updates as any).eq("id", noteId);
+        if (error) {
+          // Network failure mid-flight — queue it so we don't lose the edit.
+          queueNoteUpdate(noteId, updates as Record<string, unknown>);
+        }
+      }
       if (!notebookId) {
+
         setAllStandaloneNotes((prev) => prev.map((n) => n.id === noteId ? { ...n, ...updates, updated_at: new Date().toISOString() } : n));
         return;
       }

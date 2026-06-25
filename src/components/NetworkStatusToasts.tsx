@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { installOfflineQueueListener } from "@/lib/offline-queue";
+
 
 /**
  * Mounts global network listeners:
@@ -17,7 +19,9 @@ export function NetworkStatusToasts() {
   const slowTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    installOfflineQueueListener();
     // ---- Online / Offline ----
+
     const showOffline = () => {
       toast.error("📡 Connection lost. Please check your internet connection and try again.", {
         id: OFFLINE_TOAST_ID,
