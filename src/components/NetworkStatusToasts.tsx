@@ -19,7 +19,9 @@ export function NetworkStatusToasts() {
   const slowTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    installOfflineQueueListener();
     // ---- Online / Offline ----
+
     const showOffline = () => {
       toast.error("📡 Connection lost. Please check your internet connection and try again.", {
         id: OFFLINE_TOAST_ID,
