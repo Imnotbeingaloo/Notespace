@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/components/ui/sonner";
 import { promptRenameForDuplicate } from "@/components/RenameDuplicateDialog";
+import { isOffline, queueNoteUpdate } from "@/lib/offline-queue";
+
 
 export interface Attachment {
   name: string;
