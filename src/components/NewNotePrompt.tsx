@@ -32,8 +32,15 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState("");
-  const [showTemplates, setShowTemplates] = useState(false);
+  // "main" → starting cards. "featured" → 5 quick templates + gallery gateway. "gallery" → full library.
+  const [view, setView] = useState<"main" | "featured" | "gallery">("main");
+  const [previewTemplate, setPreviewTemplate] = useState<NoteTemplate | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const featured = useMemo(
+    () => FEATURED_TEMPLATE_IDS.map((id) => templates.find((t) => t.id === id)).filter(Boolean) as NoteTemplate[],
+    []
+  );
 
   const handleFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
