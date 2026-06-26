@@ -1,13 +1,15 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, FileUp, Loader2, LayoutTemplate } from "lucide-react";
+import { Plus, FileUp, Loader2, LayoutTemplate, ArrowLeft, LayoutGrid, Eye, Check, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { NoteTemplatePicker, NoteTemplate } from "@/components/NoteTemplatePicker";
+import { NoteTemplatePicker, NoteTemplate, templates, FEATURED_TEMPLATE_IDS, TemplatePaper } from "@/components/NoteTemplatePicker";
 import { extractPdfText } from "@/lib/pdf-extract";
 import { formatImportedDocument } from "@/lib/document-import";
 
@@ -30,8 +32,15 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState("");
-  const [showTemplates, setShowTemplates] = useState(false);
+  // "main" → starting cards. "featured" → 5 quick templates + gallery gateway. "gallery" → full library.
+  const [view, setView] = useState<"main" | "featured" | "gallery">("main");
+  const [previewTemplate, setPreviewTemplate] = useState<NoteTemplate | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const featured = useMemo(
+    () => FEATURED_TEMPLATE_IDS.map((id) => templates.find((t) => t.id === id)).filter(Boolean) as NoteTemplate[],
+    []
+  );
 
   const handleFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,19 +101,76 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
   };
 
   const handleTemplateSelect = (template: NoteTemplate) => {
-    setShowTemplates(false);
+    setView("main");
+    setPreviewTemplate(null);
     onCreateNew(template.title, template.content);
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background">
+    <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background py-8">
       <AnimatePresence mode="wait">
-        {showTemplates ? (
+        {view === "gallery" ? (
           <NoteTemplatePicker
             key="templates"
             onSelect={handleTemplateSelect}
-            onBack={() => setShowTemplates(false)}
+            onBack={() => setView("featured")}
           />
+        ) : view === "featured" ? (
+          <motion.div
+            key="featured"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex flex-col w-full max-w-4xl mx-auto px-4 sm:px-8"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <button
+                onClick={() => setView("main")}
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" /> Back
+              </button>
+              <div className="text-center">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-accent mb-1">— Quick start —</p>
+                <h2 className="font-serif text-2xl font-bold text-foreground">Choose a template</h2>
+                <p className="text-xs text-muted-foreground mt-1">Our most-loved layouts to start writing instantly.</p>
+              </div>
+              <div className="w-10" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {featured.map((tmpl) => (
+                <motion.button
+                  key={tmpl.id}
+                  onClick={() => setPreviewTemplate(tmpl)}
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group flex flex-col gap-3 p-3 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all text-left overflow-hidden"
+                >
+                  <div className="relative h-40 w-full">
+                    <TemplatePaper template={tmpl} compact />
+                    <div className={`absolute top-2 right-2 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${tmpl.accent ?? "bg-primary/10 text-primary"}`}>
+                      {tmpl.icon}
+                    </div>
+                  </div>
+                  <div className="px-1 pb-1">
+                    <p className="text-sm font-semibold text-foreground truncate">{tmpl.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{tmpl.description}</p>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={() => setView("gallery")}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-dashed border-primary/40 text-sm font-medium text-primary hover:bg-primary/5 transition-colors"
+              >
+                <LayoutGrid className="h-4 w-4" />
+                Choose from Gallery
+              </button>
+            </div>
+          </motion.div>
         ) : (
           <motion.div
             key="main"
@@ -139,16 +205,81 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
                 Create a New Note
               </button>
               <button
-                onClick={() => setShowTemplates(true)}
+                onClick={() => setView("featured")}
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl border border-dashed border-primary/30 text-sm font-medium text-primary/70 hover:text-primary hover:bg-primary/5 transition-colors"
               >
                 <LayoutTemplate className="h-4 w-4" />
-                Use a Template
+                Choose from Template
               </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Featured-view template preview modal (gallery has its own internal preview) */}
+      <AnimatePresence>
+        {previewTemplate && view === "featured" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setPreviewTemplate(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 10 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-2xl max-h-[85vh] bg-card rounded-2xl border border-border shadow-2xl overflow-hidden flex flex-col"
+            >
+              <div className="flex items-center justify-between px-5 py-3 border-b border-border">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${previewTemplate.accent ?? "bg-primary/10 text-primary"}`}>
+                    {previewTemplate.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-foreground truncate">{previewTemplate.name}</p>
+                    <p className="text-[11px] text-muted-foreground flex items-center gap-1"><Eye className="h-3 w-3" /> Preview</p>
+                  </div>
+                </div>
+                <button onClick={() => setPreviewTemplate(null)} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-muted">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-6 py-5 bg-background/40">
+                {previewTemplate.content.trim() ? (
+                  <article className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-serif">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{previewTemplate.content}</ReactMarkdown>
+                  </article>
+                ) : (
+                  <div className="text-center text-sm text-muted-foreground py-10">
+                    A clean, empty page — yours to fill.
+                  </div>
+                )}
+              </div>
+
+              <div className="px-5 py-3 border-t border-border flex items-center justify-end gap-2 bg-muted/30">
+                <button
+                  onClick={() => setPreviewTemplate(null)}
+                  className="px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => { const t = previewTemplate; setPreviewTemplate(null); handleTemplateSelect(t); }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-md shadow-primary/20 hover:opacity-90"
+                >
+                  <Check className="h-3.5 w-3.5" /> Use this template
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
 
       {/* Upload Dialog */}
       <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>

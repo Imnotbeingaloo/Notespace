@@ -197,7 +197,9 @@ function AppContent() {
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
               onOpenPlanner={() => setPlannerOpen(true)}
               onOpenHome={() => { if (showHome) { handleExitToWebsite(); } else { openHome(); } }}
+              onRequestNewNote={() => { setShowHome(true); setHomeCreateKind("note"); if (isMobile) setSidebarOpen(false); }}
             />
+
           </motion.div>
         )}
       </AnimatePresence>
@@ -368,6 +370,7 @@ function AppContent() {
         mode="choose"
         open={createMenuOpen}
         onOpenChange={setCreateMenuOpen}
+        onPickNote={() => { setCreateMenuOpen(false); setHomeCreateKind("note"); }}
         onCreateNotebook={async (name, emoji) => {
           const id = await createNotebook(name, emoji);
           if (id) {

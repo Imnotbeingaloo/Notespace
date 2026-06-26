@@ -30,6 +30,8 @@ interface CreateNotebookDialogProps {
   onCreate?: (name: string, emoji: string) => Promise<void> | void;
   onCreateNotebook?: (name: string, emoji: string) => Promise<void> | void;
   onCreateNote?: (name: string, emoji: string) => Promise<void> | void;
+  /** If provided in choose mode, picking "Note" calls this instead of advancing to the name/emoji form. */
+  onPickNote?: () => void;
   parentName?: string | null;
   title?: string;
   kind?: Kind;
@@ -44,6 +46,7 @@ export function CreateNotebookDialog({
   onCreate,
   onCreateNotebook,
   onCreateNote,
+  onPickNote,
   parentName,
   title,
   kind: kindProp = "notebook",
@@ -68,6 +71,11 @@ export function CreateNotebookDialog({
   }, [open, mode, kindProp]);
 
   const pickKind = (k: Kind) => {
+    if (k === "note" && onPickNote) {
+      onPickNote();
+      onOpenChange(false);
+      return;
+    }
     setActiveKind(k);
     setEmoji(EMOJIS_FOR(k)[0]);
     setStep("form");

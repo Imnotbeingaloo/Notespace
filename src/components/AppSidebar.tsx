@@ -29,9 +29,11 @@ interface AppSidebarProps {
   onSelectNote?: () => void;
   onOpenPlanner?: () => void;
   onOpenHome?: () => void;
+  /** Open the full upload/blank/template chooser instead of immediately creating a blank note. */
+  onRequestNewNote?: () => void;
 }
 
-export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome, onRequestNewNote }: AppSidebarProps) {
   const { signOut, user } = useAuth();
   const { profile } = useProfile();
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -1074,6 +1076,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         mode="choose"
         open={createMenuOpen}
         onOpenChange={setCreateMenuOpen}
+        onPickNote={onRequestNewNote}
         onCreateNotebook={async (name, emoji) => { await createNotebook(name, emoji); }}
         onCreateNote={async (name, emoji) => {
           const created = await createStandaloneNote(name, emoji);
@@ -1084,6 +1087,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           }
         }}
       />
+
 
 
       {/* Confirm Sub-Notebook nesting */}
