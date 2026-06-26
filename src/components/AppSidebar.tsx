@@ -29,9 +29,11 @@ interface AppSidebarProps {
   onSelectNote?: () => void;
   onOpenPlanner?: () => void;
   onOpenHome?: () => void;
+  /** Open the full upload/blank/template chooser instead of immediately creating a blank note. */
+  onRequestNewNote?: () => void;
 }
 
-export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome, onRequestNewNote }: AppSidebarProps) {
   const { signOut, user } = useAuth();
   const { profile } = useProfile();
   const [settingsOpen, setSettingsOpen] = useState(false);
