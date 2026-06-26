@@ -46,6 +46,7 @@ export function CreateNotebookDialog({
   onCreate,
   onCreateNotebook,
   onCreateNote,
+  onPickNote,
   parentName,
   title,
   kind: kindProp = "notebook",
