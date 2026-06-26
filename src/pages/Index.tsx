@@ -370,6 +370,7 @@ function AppContent() {
         mode="choose"
         open={createMenuOpen}
         onOpenChange={setCreateMenuOpen}
+        onPickNote={() => { setCreateMenuOpen(false); setHomeCreateKind("note"); }}
         onCreateNotebook={async (name, emoji) => {
           const id = await createNotebook(name, emoji);
           if (id) {
