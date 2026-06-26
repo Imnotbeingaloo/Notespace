@@ -71,6 +71,11 @@ export function CreateNotebookDialog({
   }, [open, mode, kindProp]);
 
   const pickKind = (k: Kind) => {
+    if (k === "note" && onPickNote) {
+      onPickNote();
+      onOpenChange(false);
+      return;
+    }
     setActiveKind(k);
     setEmoji(EMOJIS_FOR(k)[0]);
     setStep("form");
