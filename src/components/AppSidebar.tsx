@@ -1076,6 +1076,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         mode="choose"
         open={createMenuOpen}
         onOpenChange={setCreateMenuOpen}
+        onPickNote={onRequestNewNote}
         onCreateNotebook={async (name, emoji) => { await createNotebook(name, emoji); }}
         onCreateNote={async (name, emoji) => {
           const created = await createStandaloneNote(name, emoji);
@@ -1086,6 +1087,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           }
         }}
       />
+
 
 
       {/* Confirm Sub-Notebook nesting */}
