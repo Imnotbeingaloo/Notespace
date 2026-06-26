@@ -23,8 +23,8 @@ const toolbarTips: Tip[] = [
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
-// Escalating idle thresholds (ms) — 5s, 15s, 30s, then 30s thereafter.
-const IDLE_STEPS_MS = [5000, 15000, 30000];
+// Idle threshold — hint appears after 10s of no intentional interaction.
+const IDLE_STEPS_MS = [10000];
 const SHOW_MS = 6000;
 
 export function OnboardingHelp() {
