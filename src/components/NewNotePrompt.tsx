@@ -1,13 +1,15 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, FileUp, Loader2, LayoutTemplate } from "lucide-react";
+import { Plus, FileUp, Loader2, LayoutTemplate, ArrowLeft, LayoutGrid, Eye, Check, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { NoteTemplatePicker, NoteTemplate } from "@/components/NoteTemplatePicker";
+import { NoteTemplatePicker, NoteTemplate, templates, FEATURED_TEMPLATE_IDS, TemplatePaper } from "@/components/NoteTemplatePicker";
 import { extractPdfText } from "@/lib/pdf-extract";
 import { formatImportedDocument } from "@/lib/document-import";
 
