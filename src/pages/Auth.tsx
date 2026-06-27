@@ -232,9 +232,10 @@ const AuthPage = () => {
       >
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <img src="/logo.png" alt="Notebook Archive" className="h-[1.2rem] w-[1.2rem] object-contain" />
+          <img src="/logo.png" alt="" aria-hidden="true" className="h-[1.2rem] w-[1.2rem] object-contain" />
           <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
         </div>
+        <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
         {/* Card */}
         <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
@@ -301,10 +302,11 @@ const AuthPage = () => {
             <button
               type="submit"
               disabled={loading}
+              aria-label={loading ? "Verifying your account" : undefined}
               className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               ) : (
                 <>
                   {mode === "login" ? "Sign In" : "Create Account"}
