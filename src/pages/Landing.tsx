@@ -491,17 +491,17 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Simple to start, <span className="text-primary">powerful</span> as you grow
+              Easy at first. <span className="text-primary">Bigger</span> when you need it to be.
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Getting started takes less than a minute. No complex setup, no steep learning curve — just open, write, and let the AI handle the rest.
+              You can be writing in under a minute. There's no setup to suffer through, no manual to read. Just open it.
             </p>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-10">
             {[
-              { step: "1", title: "Tag filtering", desc: "Organize your knowledge with a powerful tagging system. Find exactly what you need in seconds with smart filters and search." },
-              { step: "2", title: "Note templates", desc: "Jumpstart your thinking with pre-built structures for lectures, meetings, and research. Standardize your note-taking effortlessly." },
-              { step: "3", title: "Pomodoro timer", desc: "Stay focused and productive with a built-in focus timer. Balance deep work sessions with scheduled breaks to maximize learning." },
+              { step: "1", title: "Tag filtering", desc: "Drop a #tag anywhere in a note and it shows up in the sidebar. Click it later to pull every related note back in one go." },
+              { step: "2", title: "Note templates", desc: "Skip the blank page. Pick a starting layout for lectures, meetings, or weekly reviews and tweak it from there." },
+              { step: "3", title: "Pomodoro timer", desc: "A 25/5 sprint sits in the corner when you want it. Start it, work, take the break — same as it's always worked." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -528,17 +528,17 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 relative">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Trusted by <span className="text-accent">professionals</span> and students
+              What <span className="text-accent">people</span> have said about it
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              See why researchers, students, and teams choose Notebook Archive over traditional note-taking tools. Real feedback from real users who've made the switch.
+              Researchers, students, and small teams sent us notes after switching. A few of them are below.
             </p>
           </motion.div>
           <div className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12">
             {[
-              { quote: "Finally a note app that actually helps me understand what I'm writing, not just store it. The AI explanations are genuinely useful — it's like having a tutor on standby.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
-              { quote: "The AI explanations saved me during finals. It's like having a tutor built into my notebook. I can't go back to plain editors after experiencing this workflow.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-              { quote: "Our team switched from Notion and haven't looked back. The instant search and shared notebooks changed how we collaborate across time zones.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+              { quote: "It's the first note app I've used that actually pushes back on what I write. The Explain panel is doing real work, not decoration.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
+              { quote: "Got me through finals. Highlighting a concept and getting a real explanation back is way faster than tabbing out to Google every two minutes.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
+              { quote: "We tried moving our team docs over from another tool. Search alone made it stick — I find things in two keystrokes that used to take me a scroll-fest.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
             ].map((t, i) => (
               <motion.div
                 key={t.name}
@@ -573,13 +573,13 @@ export default function LandingPage() {
             className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
           >
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Ready to organize your thinking?
+              Want a quieter place to think?
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              Join thousands who've made Notebook Archive their thinking companion. Free forever — no credit card required.
+              The free plan is the real product. No card, no countdown, no upsell wall later. Open it and start writing.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Open App" : "Get Started — It's Free"} <ArrowRight className="h-4 w-4" />
+              {user ? "Open App" : "Open it now"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
