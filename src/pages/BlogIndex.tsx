@@ -16,6 +16,14 @@ const posts = [
     tag: "Comparison",
   },
   {
+    slug: "onenote-alternatives-2026",
+    title: "Six Honest OneNote Alternatives for 2026",
+    excerpt:
+      "OneNote is free and generous — and a freeform canvas that gets messy fast, locks your notes in, and gates the good AI behind Microsoft 365. The six apps people actually move to.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "obsidian-alternatives-2026",
     title: "Six Honest Obsidian Alternatives for 2026",
     excerpt:
