@@ -23,6 +23,7 @@ const BlogBestNoteTakingAppForWriters = lazy(() => import("./pages/BlogBestNoteT
 const BlogAINoteTakingAppForStudents = lazy(() => import("./pages/BlogAINoteTakingAppForStudents"));
 const BlogKiNotizenApp = lazy(() => import("./pages/BlogKiNotizenApp"));
 const BlogIndex = lazy(() => import("./pages/BlogIndex"));
+const BlogNotionAlternatives = lazy(() => import("./pages/BlogNotionAlternatives"));
 const UseCasesIndex = lazy(() => import("./pages/UseCasesIndex"));
 const UseCaseStudents = lazy(() => import("./pages/UseCaseStudents"));
 const UseCaseWriters = lazy(() => import("./pages/UseCaseWriters"));
