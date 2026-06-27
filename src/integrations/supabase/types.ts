@@ -134,6 +134,7 @@ export type Database = {
           created_at: string
           expires_at: string | null
           id: string
+          is_discoverable: boolean
           is_public: boolean
           note_id: string
           share_token: string
@@ -144,6 +145,7 @@ export type Database = {
           created_at?: string
           expires_at?: string | null
           id?: string
+          is_discoverable?: boolean
           is_public?: boolean
           note_id: string
           share_token?: string
@@ -154,6 +156,7 @@ export type Database = {
           created_at?: string
           expires_at?: string | null
           id?: string
+          is_discoverable?: boolean
           is_public?: boolean
           note_id?: string
           share_token?: string
@@ -283,6 +286,7 @@ export type Database = {
         Args: { _token: string }
         Returns: {
           content: string
+          is_discoverable: boolean
           title: string
         }[]
       }

@@ -24,6 +24,7 @@ interface SharedLink {
   share_token: string;
   shared_with_email: string | null;
   is_public: boolean;
+  is_discoverable?: boolean;
   created_at: string;
 }
 
@@ -100,6 +101,20 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
     toast.success("Share removed");
   };
 
+  const toggleDiscoverable = async (share: SharedLink) => {
+    const next = !share.is_discoverable;
+    const { error } = await supabase
+      .from("shared_notes" as any)
+      .update({ is_discoverable: next } as any)
+      .eq("id", share.id);
+    if (error) {
+      toast.error("Couldn't update visibility");
+      return;
+    }
+    setShares((prev) => prev.map((s) => (s.id === share.id ? { ...s, is_discoverable: next } : s)));
+    toast.success(next ? "Search engines can now find this note" : "Hidden from search engines");
+  };
+
   const getShareUrl = (token: string) => `${window.location.origin}/shared/${token}`;
 
   const copyLink = (token: string) => {
@@ -167,9 +182,24 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
                   ) : (
                     <Mail className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                   )}
-                  <span className="text-xs text-foreground truncate flex-1">
-                    {share.shared_with_email || "Public link"}
-                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-foreground truncate">
+                      {share.shared_with_email || "Public link"}
+                    </div>
+                    {share.is_public && (
+                      <button
+                        type="button"
+                        onClick={() => toggleDiscoverable(share)}
+                        className="mt-1 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground transition"
+                        title="Toggle whether search engines can index this note"
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${share.is_discoverable ? "bg-primary" : "bg-muted-foreground/40"}`}
+                        />
+                        {share.is_discoverable ? "Discoverable on search engines" : "Hidden from search engines"}
+                      </button>
+                    )}
+                  </div>
                   <button
                     onClick={() => copyLink(share.share_token)}
                     className="p-1 rounded hover:bg-muted transition-colors"
