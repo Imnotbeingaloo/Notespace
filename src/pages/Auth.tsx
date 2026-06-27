@@ -154,12 +154,14 @@ const AuthPage = () => {
               body: { email: email.trim() },
             });
             if (data && data.exists === false) {
-              setError("No account found for this email. Create one to get started.");
+              setMode("signup");
+              setConfirmPassword(password);
+              setError("Oops, that account doesn't exist. Try creating one.");
             } else {
               setError("Incorrect password. Try again or reset it below.");
             }
           } catch {
-            setError("Incorrect email or password. If you don't have an account yet, create one to get started.");
+            setError("Incorrect email or password.");
           }
         } else {
           setError(friendlyError(error.message, "login").message);
