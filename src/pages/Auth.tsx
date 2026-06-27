@@ -154,12 +154,15 @@ const AuthPage = () => {
         if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
           try {
             const { data } = await supabase.functions.invoke("check-email-exists", {
-              body: { email: email.trim() },
+              body: { email: email.trim(), logFailure: true },
             });
             if (data && data.exists === false) {
+              setUnknownEmail(email.trim());
               setMode("signup");
               setConfirmPassword(password);
-              setError("Oops, that account doesn't exist. Try creating one.");
+              setHighlightEmail(true);
+              setNotice(`Oops, no account for ${email.trim()}. We've switched you to sign up - finish creating it below.`);
+              setTimeout(() => setHighlightEmail(false), 2200);
             } else {
               setError("Incorrect password. Try again or reset it below.");
             }
