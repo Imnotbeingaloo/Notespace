@@ -121,7 +121,7 @@ function PhilosophySection() {
       <div className="container mx-auto px-6 max-w-5xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
           <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">Our philosophy</p>
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">From storing notes to actually using them</h2>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">From storing notes to using them</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">Two ways of working with a notebook, side by side.</p>
         </motion.div>
 
