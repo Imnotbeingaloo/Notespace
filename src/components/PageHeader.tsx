@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface PageHeaderProps {
-  activePage?: "features" | "pricing" | "about" | "how-it-works";
+  activePage?: "features" | "pricing" | "about" | "how-it-works" | "blog";
 }
 
 const navLinks = [
@@ -13,6 +13,7 @@ const navLinks = [
   { to: "/pricing", label: "Pricing", key: "pricing" },
   { to: "/about", label: "About", key: "about" },
   { to: "/how-it-works", label: "How It Works", key: "how-it-works" },
+  { to: "/blog", label: "Blog", key: "blog" },
 ];
 
 export function PageHeader({ activePage }: PageHeaderProps) {
