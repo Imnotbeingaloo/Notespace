@@ -304,10 +304,10 @@ export default function AboutPage() {
               <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Our Story</span>
             </div>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
-              The <span className="text-primary">notebook</span> we kept wishing existed
+              The <span className="text-primary">notebook</span> we always wanted to use
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Notebook Archive started because nothing on the market did the boring parts well. We're a small team writing it for people who care about their notes more than the average person probably should.
+              Notebook Archive was built because no existing tool handled the fundamentals well. We are a small team building it for people who treat their notes as serious work.
             </p>
           </motion.div>
         </div>
