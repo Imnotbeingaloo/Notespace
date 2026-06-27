@@ -1,6 +1,7 @@
-import { motion } from "framer-motion";
-import { ArrowRight, Check, X, Quote } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Check, X, Quote, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,7 @@ export function UseCaseLayout({
   tips,
   faqs,
 }: UseCaseLayoutProps) {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   return (
     <main className="min-h-screen bg-background">
       <PageHeader />
@@ -342,17 +344,52 @@ export function UseCaseLayout({
             </div>
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Common questions</h2>
           </div>
-          <div className="space-y-4">
-            {faqs.map((f) => (
-              <details key={f.q} className="group rounded-xl border border-border bg-card p-5">
-                <summary className="cursor-pointer font-medium text-foreground list-none flex justify-between items-center">
-                  {f.q}
-                  <span className="ml-4 text-muted-foreground group-open:rotate-45 transition-transform">+</span>
-                </summary>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
-              </details>
-            ))}
+          <div className="space-y-3">
+            {faqs.map((f, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <motion.div
+                  key={f.q}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.4, delay: i * 0.04 }}
+                  className="rounded-xl border border-border bg-card overflow-hidden"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    className="w-full flex items-center justify-between gap-4 text-left p-5 hover:bg-muted/30 transition-colors"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="font-medium text-foreground">{f.q}</span>
+                    <motion.span
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      className="shrink-0 text-muted-foreground"
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                    </motion.span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <p className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
+
         </div>
       </section>
 
