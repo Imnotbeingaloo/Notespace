@@ -8,6 +8,14 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "best-ai-writing-assistants-for-note-takers",
+    title: "Best AI Writing Assistants for Note-Takers (2026)",
+    excerpt:
+      "Grammarly owns the search — but note-takers need something different. Six honest picks for AI writing assistants that live inside your notebook: Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
+    date: "Jun 2026",
+    tag: "AI Writing",
+  },
+  {
     slug: "ai-voice-notes-meeting-transcription",
     title: "Best AI Voice Note Taking & Meeting Transcription Apps (2026)",
     excerpt:

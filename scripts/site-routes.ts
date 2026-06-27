@@ -33,6 +33,7 @@ export const PUBLIC_ROUTES: PublicRoute[] = [
   { path: "/blog/onenote-alternatives-2026", changefreq: "monthly", priority: "0.9" },
   { path: "/blog/best-note-taking-app-2026", changefreq: "monthly", priority: "1.0" },
   { path: "/blog/ai-voice-notes-meeting-transcription", changefreq: "monthly", priority: "0.9" },
+  { path: "/blog/best-ai-writing-assistants-for-note-takers", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases", changefreq: "monthly", priority: "0.8" },
   { path: "/use-cases/students", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases/writers", changefreq: "monthly", priority: "0.9" },
