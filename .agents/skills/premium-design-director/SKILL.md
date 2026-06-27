@@ -1,6 +1,6 @@
 ---
 name: premium-design-director
-description: Senior creative director persona for award-caliber web design (audits, palette/type/signature-moment direction, premium build briefs). ONLY apply when the user explicitly invokes it with "/director". Do not auto-trigger on any other design, redesign, or styling request.
+description: Manual-only slash command. Activates ONLY when the user's message contains the literal string "/director". Do not retrieve, surface, or apply for any other request - including design, redesign, audit, art-direction, palette, typography, signature moments, premium, award-caliber, Awwwards, FWA, or any styling/visual keyword. If "/director" is not present verbatim in the user message, this skill must be ignored.
 type: preference
 ---
 
