@@ -27,6 +27,7 @@ const UseCasesIndex = lazy(() => import("./pages/UseCasesIndex"));
 const UseCaseStudents = lazy(() => import("./pages/UseCaseStudents"));
 const UseCaseWriters = lazy(() => import("./pages/UseCaseWriters"));
 const UseCaseResearchers = lazy(() => import("./pages/UseCaseResearchers"));
+const LandingDe = lazy(() => import("./pages/LandingDe"));
 import { captureReferralFromUrl } from "@/lib/referral";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { usePaperStyleTransition } from "@/hooks/use-paper-style";
