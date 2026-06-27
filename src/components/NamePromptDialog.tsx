@@ -85,14 +85,18 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
       }}
     >
       <DialogContent
-        className="sm:max-w-[480px] p-0 overflow-hidden border-0 bg-transparent shadow-none"
+        className="sm:max-w-[480px] p-0 overflow-hidden border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-none duration-0"
         hideClose={step !== "ask"}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 14 }}
+          initial={{ opacity: 0, scale: 0.85, y: 28 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={reduceMotion ? { duration: 0.2 } : spring}
-          className="relative rounded-2xl bg-card border border-border/50 shadow-[0_30px_80px_-20px_hsl(var(--primary)/0.35)] overflow-hidden"
+          transition={
+            reduceMotion
+              ? { duration: 0.2 }
+              : { type: "spring", stiffness: 220, damping: 24, mass: 0.9 }
+          }
+          className="relative rounded-2xl bg-card border border-border/50 shadow-2xl overflow-hidden"
         >
           {/* Ruled-paper background */}
           <div className="pointer-events-none absolute inset-0 opacity-[0.4]">
@@ -106,21 +110,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
             <div className="absolute top-0 bottom-0 left-12 w-px bg-[hsl(var(--primary)/0.25)]" />
           </div>
 
-          {/* Soft accent glows */}
-          <motion.div
-            aria-hidden
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.15, duration: 0.9, ease }}
-            className="pointer-events-none absolute -top-32 -right-24 h-72 w-72 rounded-full bg-primary/20 blur-3xl"
-          />
-          <motion.div
-            aria-hidden
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.25, duration: 1.1, ease }}
-            className="pointer-events-none absolute -bottom-28 -left-16 h-64 w-64 rounded-full bg-orange-400/15 blur-3xl"
-          />
+
 
           <div className="relative min-h-[360px]">
             <AnimatePresence mode="wait">
@@ -288,12 +278,13 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                     Your notebook is ready. Let's write something worth remembering.
                   </p>
                   <motion.div
-                    className="mt-7 h-px mx-auto w-32 bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+                    className="mt-7 h-px mx-auto w-32 bg-primary/40"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: reduceMotion ? 0.1 : 2.4, ease: "linear" }}
                     style={{ transformOrigin: "left" }}
                   />
+
                 </motion.div>
               )}
             </AnimatePresence>
