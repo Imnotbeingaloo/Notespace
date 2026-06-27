@@ -14,7 +14,7 @@ const VALID_TOKEN = /^[A-Za-z0-9_-]{16,}$/;
 export default function SharedNote() {
   const { token } = useParams<{ token: string }>();
   const tokenIsValid = !!token && VALID_TOKEN.test(token);
-  const [note, setNote] = useState<{ title: string; content: string } | null>(null);
+  const [note, setNote] = useState<{ title: string; content: string; is_discoverable: boolean } | null>(null);
   const [loading, setLoading] = useState(!!tokenIsValid);
   const [error, setError] = useState("");
 
@@ -38,11 +38,14 @@ export default function SharedNote() {
         return;
       }
 
-      setNote({ title: (row as any).title, content: (row as any).content });
+      setNote({
+        title: (row as any).title,
+        content: (row as any).content,
+        is_discoverable: !!(row as any).is_discoverable,
+      });
       setLoading(false);
     };
 
-    fetchSharedNote();
     fetchSharedNote();
   }, [tokenIsValid, token]);
 
@@ -77,7 +80,8 @@ export default function SharedNote() {
           title={`${note.title} - Notebook Archive`}
           description={(note.content || "").slice(0, 160).replace(/\s+/g, " ").trim() || "A shared note from Notebook Archive."}
           path={`/shared/${token ?? ""}`}
-          noindex
+          noindex={!note.is_discoverable}
+          type="article"
           jsonLd={{
             "@context": "https://schema.org",
             "@type": "Article",
