@@ -88,12 +88,14 @@ export function OnboardingHelp() {
   // Init from storage
   useEffect(() => {
     try {
-      if (localStorage.getItem(DISMISS_KEY) === "1") {
+      const permanent = localStorage.getItem(DISMISS_KEY) === "1";
+      const dayDismissed = localStorage.getItem(DISMISS_DATE_KEY) === todayStr();
+      if (permanent) setDontShowAgain(true);
+      if (permanent || dayDismissed || !isBeginner) {
         dismissedRef.current = true;
-        setDontShowAgain(true);
       }
     } catch {}
-  }, []);
+  }, [isBeginner]);
 
   useEffect(() => { openRef.current = open; }, [open]);
 
