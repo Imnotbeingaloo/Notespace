@@ -85,7 +85,7 @@ export function OnboardingHelp() {
     }, currentDelay());
   };
 
-  // Init from storage
+  // Init from storage + beginner gating. Re-evaluates if the user creates content.
   useEffect(() => {
     try {
       const permanent = localStorage.getItem(DISMISS_KEY) === "1";
@@ -93,6 +93,10 @@ export function OnboardingHelp() {
       if (permanent) setDontShowAgain(true);
       if (permanent || dayDismissed || !isBeginner) {
         dismissedRef.current = true;
+        setHintOpen(false);
+        hintOpenRef.current = false;
+        clearIdle();
+        clearHide();
       }
     } catch {}
   }, [isBeginner]);
