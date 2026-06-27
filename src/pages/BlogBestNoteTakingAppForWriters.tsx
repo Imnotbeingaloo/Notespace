@@ -159,6 +159,7 @@ export default function BlogBestNoteTakingAppForWriters() {
   return (
     <>
       <SeoHead
+        type="article"
         title="Best Note Taking App for Writers (2026) — Honest Comparison"
         description="The four note taking apps that actually fit how writers work — Scrivener, Obsidian, Ulysses, and Notebook Archive. Screenshots, pros and cons, and who each one is for."
         path="/blog/best-note-taking-app-for-writers"

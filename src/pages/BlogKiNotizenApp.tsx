@@ -100,6 +100,7 @@ export default function BlogKiNotizenApp() {
   return (
     <>
       <SeoHead
+        type="article"
         title="Die beste KI-Notizen-App 2026 — ehrlicher Vergleich"
         description="Die KI-Notizen-Apps, die wirklich funktionieren — Notebook Archive, Notion, Obsidian und Mem im ehrlichen Vergleich. Preise, Funktionen, für wen jede App geeignet ist."
         path="/blog/ki-notizen-app"
