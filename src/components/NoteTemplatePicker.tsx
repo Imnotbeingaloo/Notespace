@@ -556,25 +556,21 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6"
+      className="flex flex-col w-full max-w-5xl mx-auto px-4 sm:px-8 py-6"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Compact header — no oversized hero copy */}
+      <div className="flex items-center justify-between mb-5">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back
         </button>
-        <div className="text-center">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-accent mb-1">— Template Gallery —</p>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">Pick a starting point</h2>
-          <p className="text-xs text-muted-foreground mt-1">Hand-crafted layouts — preview before you commit.</p>
-        </div>
+        <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground">Template Gallery</h2>
         <div className="w-10" />
       </div>
 
-      {/* Search + categories — sticky-feeling toolbar */}
+      {/* Search + categories */}
       <div className="flex flex-col gap-3 mb-5">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -602,8 +598,8 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
         </div>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[64vh] overflow-y-auto pr-1 pb-2">
+      {/* Grid — same generous card size as the featured chooser, page scrolls naturally */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
         {filtered.map((tmpl) => (
           <motion.button
             key={tmpl.id}
@@ -612,8 +608,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
             whileTap={{ scale: 0.98 }}
             className="group flex flex-col gap-3 p-3 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all text-left overflow-hidden"
           >
-            {/* Larger paper preview */}
-            <div className="relative h-40 w-full">
+            <div className="relative h-44 w-full">
               <TemplatePaper template={tmpl} compact />
               <div className={`absolute top-2 right-2 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${tmpl.accent ?? "bg-primary/10 text-primary"}`}>
                 {tmpl.icon}
@@ -635,6 +630,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
           </div>
         )}
       </div>
+
 
       {/* Preview modal */}
       <AnimatePresence>
@@ -669,19 +665,26 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 py-5 bg-background/40">
-                {preview.content.trim() ? (
-                  <article className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-serif">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{preview.content}</ReactMarkdown>
-                  </article>
-                ) : (
-                  <div className="text-center text-sm text-muted-foreground py-10">
-                    A clean, empty page — yours to fill.
-                  </div>
-                )}
+              <div className="flex-1 overflow-y-auto bg-muted/20 p-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="mx-auto max-w-[640px] rounded-lg bg-white dark:bg-zinc-900 border border-border/60 shadow-sm p-8"
+                >
+                  {preview.content.trim() ? (
+                    <article className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-serif prose-h2:mt-0 prose-h2:text-xl prose-h3:text-base prose-table:text-xs prose-th:bg-muted/40">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{preview.content}</ReactMarkdown>
+                    </article>
+                  ) : (
+                    <div className="text-center text-sm text-muted-foreground py-10">
+                      A clean, empty page — yours to fill.
+                    </div>
+                  )}
+                </motion.div>
               </div>
 
-              <div className="px-5 py-3 border-t border-border flex items-center justify-end gap-2 bg-muted/30">
+              <div className="px-5 py-3 border-t border-border flex items-center justify-end gap-2 bg-card">
                 <button
                   onClick={() => setPreview(null)}
                   className="px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -690,11 +693,12 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
                 </button>
                 <button
                   onClick={() => { const t = preview; setPreview(null); onSelect(t); }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-md shadow-primary/20 hover:opacity-90"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
                 >
                   <Check className="h-3.5 w-3.5" /> Use this template
                 </button>
               </div>
+
             </motion.div>
           </motion.div>
         )}

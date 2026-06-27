@@ -23,14 +23,15 @@ export function NetworkStatusToasts() {
     // ---- Online / Offline ----
 
     const showOffline = () => {
-      toast.error("📡 Connection lost. Please check your internet connection and try again.", {
+      toast.error("📡 Connection lost", {
         id: OFFLINE_TOAST_ID,
         duration: Infinity,
+        description: "Check your internet connection and try again.",
       });
     };
     const showOnline = () => {
       toast.dismiss(OFFLINE_TOAST_ID);
-      toast.success("✅ Back online — syncing your data.", { duration: 2500 });
+      toast.success("Back online", { duration: 2500, description: "Syncing your data now." });
     };
     if (typeof navigator !== "undefined" && navigator.onLine === false) showOffline();
     window.addEventListener("offline", showOffline);
@@ -44,8 +45,8 @@ export function NetworkStatusToasts() {
       slowTimerRef.current = setTimeout(() => {
         if (inflightRef.current > 0 && navigator.onLine !== false) {
           toast.warning(
-            "⏳ Your internet connection is running a bit slow right now. Hang tight while we sync your data!",
-            { id: SLOW_TOAST_ID, duration: 6000 }
+            "Slow connection",
+            { id: SLOW_TOAST_ID, duration: 6000, description: "Hang tight — we're still syncing your data." }
           );
         }
       }, SLOW_MS);

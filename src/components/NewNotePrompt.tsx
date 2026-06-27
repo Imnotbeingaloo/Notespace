@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { NoteTemplatePicker, NoteTemplate, templates, FEATURED_TEMPLATE_IDS, TemplatePaper } from "@/components/NoteTemplatePicker";
+import { NoteTemplatePicker, NoteTemplate, templates, FEATURED_TEMPLATE_IDS } from "@/components/NoteTemplatePicker";
 import { extractPdfText } from "@/lib/pdf-extract";
 import { formatImportedDocument } from "@/lib/document-import";
 
@@ -121,56 +121,48 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex flex-col w-full max-w-4xl mx-auto px-4 sm:px-8"
+            className="flex flex-col w-full max-w-xl mx-auto px-4 sm:px-6"
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-5">
               <button
                 onClick={() => setView("main")}
                 className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft className="h-3.5 w-3.5" /> Back
               </button>
-              <div className="text-center">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-accent mb-1">— Quick start —</p>
-                <h2 className="font-serif text-2xl font-bold text-foreground">Choose a template</h2>
-                <p className="text-xs text-muted-foreground mt-1">Our most-loved layouts to start writing instantly.</p>
-              </div>
+              <h2 className="font-serif text-xl font-bold text-foreground">Choose a template</h2>
               <div className="w-10" />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-2">
               {featured.map((tmpl) => (
                 <motion.button
                   key={tmpl.id}
                   onClick={() => setPreviewTemplate(tmpl)}
-                  whileHover={{ y: -3 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group flex flex-col gap-3 p-3 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all text-left overflow-hidden"
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.99 }}
+                  className="group flex items-center gap-3 p-3 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all text-left"
                 >
-                  <div className="relative h-40 w-full">
-                    <TemplatePaper template={tmpl} compact />
-                    <div className={`absolute top-2 right-2 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${tmpl.accent ?? "bg-primary/10 text-primary"}`}>
-                      {tmpl.icon}
-                    </div>
+                  <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${tmpl.accent ?? "bg-primary/10 text-primary"}`}>
+                    {tmpl.icon}
                   </div>
-                  <div className="px-1 pb-1">
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-foreground truncate">{tmpl.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{tmpl.description}</p>
+                    <p className="text-xs text-muted-foreground truncate">{tmpl.description}</p>
                   </div>
                 </motion.button>
               ))}
             </div>
 
-            <div className="mt-6 flex justify-center">
-              <button
-                onClick={() => setView("gallery")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-dashed border-primary/40 text-sm font-medium text-primary hover:bg-primary/5 transition-colors"
-              >
-                <LayoutGrid className="h-4 w-4" />
-                Choose from Gallery
-              </button>
-            </div>
+            <button
+              onClick={() => setView("gallery")}
+              className="mt-4 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/10 text-primary text-sm font-semibold hover:bg-primary/15 transition-colors"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              More Templates
+            </button>
           </motion.div>
+
         ) : (
           <motion.div
             key="main"
@@ -249,19 +241,26 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 py-5 bg-background/40">
-                {previewTemplate.content.trim() ? (
-                  <article className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-serif">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{previewTemplate.content}</ReactMarkdown>
-                  </article>
-                ) : (
-                  <div className="text-center text-sm text-muted-foreground py-10">
-                    A clean, empty page — yours to fill.
-                  </div>
-                )}
+              <div className="flex-1 overflow-y-auto bg-muted/20 p-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="mx-auto max-w-[640px] rounded-lg bg-white dark:bg-zinc-900 border border-border/60 shadow-sm p-8"
+                >
+                  {previewTemplate.content.trim() ? (
+                    <article className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-serif prose-h2:mt-0 prose-h2:text-xl prose-h3:text-base prose-table:text-xs prose-th:bg-muted/40">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{previewTemplate.content}</ReactMarkdown>
+                    </article>
+                  ) : (
+                    <div className="text-center text-sm text-muted-foreground py-10">
+                      A clean, empty page — yours to fill.
+                    </div>
+                  )}
+                </motion.div>
               </div>
 
-              <div className="px-5 py-3 border-t border-border flex items-center justify-end gap-2 bg-muted/30">
+              <div className="px-5 py-3 border-t border-border flex items-center justify-end gap-2 bg-card">
                 <button
                   onClick={() => setPreviewTemplate(null)}
                   className="px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -270,11 +269,12 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
                 </button>
                 <button
                   onClick={() => { const t = previewTemplate; setPreviewTemplate(null); handleTemplateSelect(t); }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-md shadow-primary/20 hover:opacity-90"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
                 >
                   <Check className="h-3.5 w-3.5" /> Use this template
                 </button>
               </div>
+
             </motion.div>
           </motion.div>
         )}
