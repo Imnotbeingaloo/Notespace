@@ -13,7 +13,7 @@ const navLinks = [
   { to: "/pricing", label: "Pricing", key: "pricing" },
   { to: "/about", label: "About", key: "about" },
   { to: "/how-it-works", label: "How It Works", key: "how-it-works" },
-  { to: "/blog", label: "Blog", key: "blog" },
+  
 ];
 
 export function PageHeader({ activePage }: PageHeaderProps) {
