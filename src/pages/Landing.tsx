@@ -31,7 +31,15 @@ function renderInline(text: string): ReactNode[] {
   while ((match = regex.exec(text)) !== null) {
     if (match.index > lastIndex) tokens.push(text.slice(lastIndex, match.index));
     if (match[2] !== undefined) {
-      tokens.push(<strong key={key++} className="font-semibold text-foreground">{match[2]}</strong>);
+      tokens.push(
+        <strong
+          key={key++}
+          className="font-semibold text-foreground inline-block animate-in zoom-in-95 duration-300 ease-out origin-left"
+          style={{ willChange: "transform" }}
+        >
+          {match[2]}
+        </strong>
+      );
     } else if (match[3] !== undefined) {
       tokens.push(<em key={key++}>{match[3]}</em>);
     }
@@ -43,8 +51,6 @@ function renderInline(text: string): ReactNode[] {
 
 function RenderMarkdownLine({ text }: { text: string }) {
   const isHeading = text.startsWith("# ") || text.startsWith("## ") || text.startsWith("### ");
-  const hasBold = /\*\*[^*]+\*\*/.test(text);
-  const shouldAnimate = isHeading || hasBold;
 
   const inner = (() => {
     if (text === "") return <p>{"\u00A0"}</p>;
@@ -60,13 +66,14 @@ function RenderMarkdownLine({ text }: { text: string }) {
     return <p className="text-muted-foreground">{renderInline(text)}</p>;
   })();
 
-  if (!shouldAnimate) return <div>{inner}</div>;
+  if (!isHeading) return <div>{inner}</div>;
   return (
     <div
       className="animate-in zoom-in-95 duration-300 ease-out origin-left"
       style={{ willChange: "transform" }}
     >
       {inner}
+
     </div>
   );
 }
