@@ -336,7 +336,7 @@ export default function HowItWorksPage() {
               How Notebook Archive <span className="text-primary">works</span>
             </motion.h1>
             <motion.p style={{ y: subtitleY }} className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              The path from a blank page to something you'll actually open again next month. Six small steps, no setup ceremony.
+              From a blank page to a note you will revisit — six deliberate steps, with no setup overhead.
             </motion.p>
           </motion.div>
         </div>
