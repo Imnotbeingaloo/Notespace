@@ -146,8 +146,8 @@ export default function LandingPage() {
   return (
     <>
       <SeoHead
-        title="Notebook Archive — AI-Powered Personal Notebook"
-        description="A quiet place to write, link, and revisit your ideas — with AI woven in only where it actually helps."
+        title="Notebook Archive — AI Note Taking App for Writing & Research"
+        description="An AI note taking app for writers, students, and researchers. Capture ideas, organize notebooks, and let AI help only where it actually matters."
         path="/"
         jsonLd={{
           "@context": "https://schema.org",
