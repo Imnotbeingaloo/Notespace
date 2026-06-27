@@ -169,8 +169,8 @@ export default function PricingPage() {
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Side by side</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Everything in each plan, laid out flat. Upgrading only adds rows — nothing you had before disappears.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Compare plans</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">A complete view of every plan. Upgrading only adds capabilities — nothing you had before is removed.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 30, scale: 0.98 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="rounded-[2rem] border border-border bg-card overflow-hidden mt-10">
             <div className="overflow-x-auto">
