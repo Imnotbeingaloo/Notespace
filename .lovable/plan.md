@@ -1,27 +1,86 @@
-## Changes to `src/components/NamePromptDialog.tsx`
+# Plan
 
-**1. Remove all gradients & glows (use solid colors only)**
-- Delete the two blurred radial "accent glow" `motion.div`s (`bg-primary/20 blur-3xl` and `bg-orange-400/15 blur-3xl`) at lines 110-123.
-- Replace the `bg-gradient-to-r from-transparent via-primary/50 to-transparent` divider in the welcome step (line 291) with a solid `bg-primary/40` line.
-- Replace the custom soft primary glow shadow `shadow-[0_30px_80px_-20px_hsl(var(--primary)/0.35)]` on the card (line 95) with a flat `shadow-2xl`.
-- Keep the ruled-paper background lines (they're solid borders, not gradients).
-- Solid colors only: `bg-card`, `bg-primary`, `bg-orange-500`, `border-border/50`, etc. - no `bg-gradient-*`, no `blur-*`, no `from-/via-/to-`.
+Two tracks: ship the SEO surfaces for the "study planner / study schedule" cluster, and fix the three editor issues from your message.
 
-**2. Fix the missing entrance animation**
+---
 
-The current motion.div entrance gets suppressed because Radix `DialogContent` mounts with its own `data-[state=open]:animate-in` classes that fight with the inner framer-motion `initial`/`animate`. Result: the dialog snaps in with no visible movement.
+## Track 1 - SEO (study planner / study schedule)
 
-Fix:
-- On `DialogContent`, append classes to neutralize Radix's built-in transitions:  
-  `data-[state=open]:animate-none data-[state=closed]:animate-none data-[state=open]:zoom-in-100 data-[state=open]:fade-in-100 duration-0`
-- Make the framer-motion entrance more pronounced and obviously visible:
-  - `initial={{ opacity: 0, scale: 0.85, y: 28 }}`
-  - `animate={{ opacity: 1, scale: 1, y: 0 }}`
-  - `transition={{ type: "spring", stiffness: 220, damping: 24, mass: 0.9 }}`
-- Add a brief inner stagger so the brand mark + headline cascade in (already partially present; tighten delays so they fire after the card lands).
+### 1. Optimize homepage + marketing for "study planner" + "study schedule"
 
-**3. No other behavior changes** - copy, steps, save flow, welcome transition, and 3s auto-close all stay exactly as they are.
+Targeted, additive copy only - no visual redesign.
 
-### Why these specific fixes
-- User asked for "simple colors, no gradients" → every gradient/blur/glow utility is removed; only flat tokens remain.
-- User said the dialog "doesn't have any animation" when it shows up → Radix's default content animation classes were overriding the framer-motion entrance; disabling them and using a stronger spring makes the appear animation actually play.
+- `index.html`: rewrite `<title>` and `<meta name="description">` to naturally include both phrases (e.g. *"Notebook Archive - AI study planner & note-taking app"* / desc mentioning "study schedule").
+- `src/pages/Landing.tsx`: add one short sub-headline / eyebrow line under the hero that includes "study planner" and "study schedule" in human prose, plus one feature row mentioning both. No layout shift.
+- `src/pages/Features.tsx`: extend the existing "Organize" / planner section copy with the two phrases.
+- `SeoHead` defaults reviewed so the homepage canonical/OG mirror the new title.
+
+### 2. Two new guide posts (long-form, ranking-grade)
+
+Each follows the existing `Blog*` page pattern (PageHeader, SeoHead with HowTo + FAQ JSON-LD, Merriweather sections, internal links to `/templates/study-planner` and `/app`).
+
+- `**/blog/how-to-make-a-study-plan**` - targets "how to make a study plan", "how to create a study plan", "study plan template". Includes a copy-pasteable weekly study plan template inside the post.
+- `**/blog/how-to-make-a-study-plan-for-exams**` - targets "how to make a study plan for exams", "exam study plan", plus long-tails (finals/MCAT/GRE phrasing in one FAQ block).
+
+Wire each into `src/App.tsx`, `scripts/site-routes.ts` (PUBLIC_ROUTES), and `src/pages/BlogIndex.tsx`.
+
+### 3. New `/templates/study-planner` page
+
+Targets "exam study planner" + "study planner app". Built as a dedicated route (not a `TemplateDetail` slug, so it can carry its own SEO + CTA shape):
+
+- Hero with the two keywords in H1 + sub-headline.
+- Visible template preview (weekly + exam-week layouts).
+- "Open this template in Notebook Archive" CTA → creates a note from the template via the existing `NoteTemplatePicker` flow.
+- FAQ schema covering "Is there a free study planner app?", "What's the best study planner for exams?".
+- Add to `App.tsx`, `site-routes.ts`, and link from `/templates` gallery + both new blog posts.
+
+---
+
+## Track 2 - Editor fixes
+
+### 4. Kill the scrollbar on the editor (regression)
+
+`src/components/NoteEditor.tsx` line 907: `overflow-y-auto` is back on the editor scroll container. Restore the previous behavior - the editor body scrolls without a visible scrollbar (use `scrollbar-none` like the toolbar row at line 878, keep scrolling functional).
+
+### 5. Hide the whole stats strip when "word goal" is toggled off
+
+Right now `WordCount` (words / chars / min read - the strip in your screenshot) renders unconditionally at line 918. Gate the entire footer block on `wordCountGoalEnabled`:
+
+- When ON → show `WordCount` + `WordCountGoal` (today's behavior).
+- When OFF → render nothing (no words, no chars, no reading time, no goal row).
+
+### 6. Fix the "words /chars / minute read counter" on  documents
+
+`currently its showing 70 characters, 8 words and 1 minute read for a blank document thats how you know its not fixed, fix it entirely`
+
+`src/components/WordCount.tsx` strips HTML with a regex but the editor's empty state is `<p><br></p>` / nbsp / placeholder markup that survives the strip and inflates the count. Fix:
+
+- Strip tags, decode `&nbsp;`, collapse whitespace, then trim before counting.
+- If the cleaned text is empty → return null (don't render the strip at all).
+- `readTime` uses `Math.max(1, ...)` which forces "1 min" even at 0 words - change to: 0 words → no strip; otherwise compute normally.
+
+---
+
+## Files touched
+
+```text
+SEO
+  index.html
+  src/pages/Landing.tsx
+  src/pages/Features.tsx
+  src/pages/BlogHowToMakeStudyPlan.tsx          (new)
+  src/pages/BlogHowToMakeStudyPlanForExams.tsx  (new)
+  src/pages/TemplateStudyPlanner.tsx            (new)
+  src/pages/BlogIndex.tsx
+  src/pages/TemplatesGallery.tsx
+  src/App.tsx
+  scripts/site-routes.ts
+
+Editor
+  src/components/NoteEditor.tsx     (scrollbar + gate stats strip)
+  src/components/WordCount.tsx      (blank-doc fix)
+```
+
+Sitemap regenerates automatically via the existing `predev`/`prebuild` hook once `site-routes.ts` is updated.
+
+No backend, schema, or auth changes.
