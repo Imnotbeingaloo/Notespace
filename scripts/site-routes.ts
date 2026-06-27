@@ -37,6 +37,7 @@ export const PUBLIC_ROUTES: PublicRoute[] = [
   { path: "/use-cases/students", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases/writers", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases/researchers", changefreq: "monthly", priority: "0.9" },
+  { path: "/use-cases/project-managers", changefreq: "monthly", priority: "0.9" },
 ];
 
 /**
