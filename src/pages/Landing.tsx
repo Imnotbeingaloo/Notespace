@@ -499,9 +499,9 @@ export default function LandingPage() {
           </motion.div>
           <div className="grid md:grid-cols-3 gap-10">
             {[
-              { step: "1", title: "Tag filtering", desc: "Drop a #tag anywhere in a note and it shows up in the sidebar. Click it later to pull every related note back in one go." },
-              { step: "2", title: "Note templates", desc: "Skip the blank page. Pick a starting layout for lectures, meetings, or weekly reviews and tweak it from there." },
-              { step: "3", title: "Pomodoro timer", desc: "A 25/5 sprint sits in the corner when you want it. Start it, work, take the break — same as it's always worked." },
+              { step: "1", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly." },
+              { step: "2", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews — then adapt it to your workflow." },
+              { step: "3", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
