@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { FurtherReading } from "@/components/FurtherReading";
 
 const steps = [
   { icon: FolderOpen, title: "Make a notebook", description: "One per topic, class, or project — whatever shape your brain prefers. You can change your mind later." },
