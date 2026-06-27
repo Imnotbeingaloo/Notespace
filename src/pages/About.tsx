@@ -336,9 +336,9 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                     <Target className="h-6 w-6 text-primary" />
                   </div>
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">What we're trying to do</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-3">We think the tool you use to think should be at least as sharp as you are. Most note apps treat your writing like dead text in a folder — we'd rather treat it like something that talks back.</p>
-                  <p className="text-muted-foreground leading-relaxed">The goal: the calmest, most useful, most private place to keep your thinking on the internet.</p>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our mission</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">The tool you use to think should be as sharp as your thinking. Most note apps treat your writing as static text in a folder; we treat it as something that responds and connects.</p>
+                  <p className="text-muted-foreground leading-relaxed">Our goal is to build the calmest, most useful, and most private home for your work online.</p>
                 </div>
               </motion.div>
               {/* Dot on the center line */}
