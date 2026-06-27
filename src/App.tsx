@@ -24,6 +24,7 @@ const BlogAINoteTakingAppForStudents = lazy(() => import("./pages/BlogAINoteTaki
 const BlogKiNotizenApp = lazy(() => import("./pages/BlogKiNotizenApp"));
 const BlogIndex = lazy(() => import("./pages/BlogIndex"));
 const BlogNotionAlternatives = lazy(() => import("./pages/BlogNotionAlternatives"));
+const BlogObsidianAlternatives = lazy(() => import("./pages/BlogObsidianAlternatives"));
 const UseCasesIndex = lazy(() => import("./pages/UseCasesIndex"));
 const UseCaseStudents = lazy(() => import("./pages/UseCaseStudents"));
 const UseCaseWriters = lazy(() => import("./pages/UseCaseWriters"));
