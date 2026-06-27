@@ -202,6 +202,17 @@ export default function FeaturesPage() {
 
       <AnimatedDivider />
 
+      <FurtherReading
+        slugs={[
+          "best-note-taking-app-2026",
+          "best-ai-note-taking-apps-2026",
+          "notion-alternatives-2026",
+        ]}
+        heading="See how it stacks up"
+      />
+
+      <AnimatedDivider />
+
       {/* CTA */}
       <section className="bg-foreground/[0.04] py-20">
         <div className="container mx-auto px-6">
