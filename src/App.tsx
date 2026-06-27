@@ -83,6 +83,14 @@ function ThemeController() {
   return null;
 }
 
+// Capture ?ref / ?utm_* params on first landing and persist to localStorage.
+// Attached to user_metadata on signup (see AuthContext.signUp).
+function ReferralCapture() {
+  const { pathname } = useLocation();
+  useEffect(() => { captureReferralFromUrl(); }, [pathname]);
+  return null;
+}
+
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
     <MotionConfig reducedMotion="user">
