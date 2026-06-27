@@ -298,7 +298,7 @@ const AuthPage = () => {
       return;
     }
     try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
-    navigate("/app");
+    navigate("/home");
   };
 
   if (checkEmail) {
