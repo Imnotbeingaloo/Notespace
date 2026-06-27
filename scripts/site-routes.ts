@@ -50,6 +50,18 @@ export const PUBLIC_ROUTES: PublicRoute[] = [
   { path: "/compare/reflect", changefreq: "monthly", priority: "0.9" },
   { path: "/compare/apple-notes", changefreq: "monthly", priority: "0.9" },
   { path: "/compare/google-keep", changefreq: "monthly", priority: "0.9" },
+  { path: "/templates", changefreq: "monthly", priority: "0.9" },
+  { path: "/templates/lecture", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/cornell", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/research", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/study-guide", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/flashcards", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/essay-outline", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/reading-notes", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/problem-set", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/weekly-review", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/meeting", changefreq: "monthly", priority: "0.8" },
+  { path: "/templates/book-notes", changefreq: "monthly", priority: "0.8" },
 ];
 
 /**
