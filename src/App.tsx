@@ -33,6 +33,7 @@ const UseCasesIndex = lazy(() => import("./pages/UseCasesIndex"));
 const UseCaseStudents = lazy(() => import("./pages/UseCaseStudents"));
 const UseCaseWriters = lazy(() => import("./pages/UseCaseWriters"));
 const UseCaseResearchers = lazy(() => import("./pages/UseCaseResearchers"));
+const UseCaseProjectManagers = lazy(() => import("./pages/UseCaseProjectManagers"));
 
 import { captureReferralFromUrl } from "@/lib/referral";
 import { ScrollToTop } from "@/components/ScrollToTop";
