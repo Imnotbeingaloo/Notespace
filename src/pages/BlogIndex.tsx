@@ -8,6 +8,14 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "best-note-taking-app-2026",
+    title: "The Best Note Taking App in 2026 — 7 Honest Picks",
+    excerpt:
+      "Seven note taking apps compared honestly — Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and a clear pick for each kind of person.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "evernote-alternatives-2026",
     title: "Six Honest Evernote Alternatives for 2026",
     excerpt:
