@@ -399,6 +399,17 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
+      <FurtherReading
+        slugs={[
+          "ai-note-taking-app-for-students",
+          "best-note-taking-app-for-writers",
+          "best-ai-note-taking-apps-2026",
+        ]}
+        heading="Workflows for the way you work"
+      />
+
+      <AnimatedDivider />
+
       {/* CTA */}
       <section className="bg-foreground/[0.04] py-20">
         <div className="container mx-auto px-6">
