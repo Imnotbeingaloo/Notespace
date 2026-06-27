@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import Footer from "@/components/Footer";
 import { templates } from "@/components/NoteTemplatePicker";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 const CATEGORIES = ["Academic", "Productivity", "Work", "Personal"] as const;
 
@@ -15,19 +16,23 @@ export default function TemplatesGallery() {
     document.documentElement.classList.remove("dark");
   }, []);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Note-taking templates",
-    itemListElement: templates
-      .filter((t) => t.id !== "blank")
-      .map((t, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: t.name,
-        url: `https://notebookarchive.lovable.app/templates/${t.id}`,
-      })),
-  };
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Note-taking templates",
+      itemListElement: templates
+        .filter((t) => t.id !== "blank")
+        .map((t, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: t.name,
+          url: `https://notebookarchive.lovable.app/templates/${t.id}`,
+        })),
+    },
+    breadcrumbsJsonLd([{ name: "Templates", path: "/templates" }]),
+  ];
+
 
   return (
     <>
