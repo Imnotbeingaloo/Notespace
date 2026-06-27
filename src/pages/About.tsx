@@ -422,8 +422,8 @@ export default function AboutPage() {
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-3xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">A short history</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">The honest version of how we got here.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our journey</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">A brief account of how we arrived here.</p>
           </motion.div>
           <div className="relative mt-12">
             <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
