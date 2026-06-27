@@ -302,10 +302,11 @@ const AuthPage = () => {
             <button
               type="submit"
               disabled={loading}
+              aria-label={loading ? "Verifying your account" : undefined}
               className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               ) : (
                 <>
                   {mode === "login" ? "Sign In" : "Create Account"}
