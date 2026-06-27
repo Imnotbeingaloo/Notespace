@@ -8,6 +8,14 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "ai-voice-notes-meeting-transcription",
+    title: "Best AI Voice Note Taking & Meeting Transcription Apps (2026)",
+    excerpt:
+      "Voice in, organized notes out. Five honest picks for AI voice notes and meeting transcription — Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
+    date: "Jun 2026",
+    tag: "AI Voice",
+  },
+  {
     slug: "best-note-taking-app-2026",
     title: "The Best Note Taking App in 2026 — 7 Honest Picks",
     excerpt:
