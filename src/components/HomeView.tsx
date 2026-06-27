@@ -86,7 +86,6 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
   }, [profile?.display_name, profileLoading]);
 
   const handleNamePromptChange = (open: boolean) => {
-    if (!open && !profile?.display_name) return;
     if (!open) {
       try { localStorage.removeItem("pendingNamePrompt"); } catch {}
     }
