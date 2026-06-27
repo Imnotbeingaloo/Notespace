@@ -93,6 +93,7 @@ const App = () => (
             <AuthProvider>
               <ScrollToTop />
               <ThemeController />
+              <ReferralCapture />
               <NetworkStatusToasts />
 
               <PaperStyleTransitionOverlay />
