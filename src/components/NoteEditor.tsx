@@ -24,6 +24,7 @@ import { NewNotePrompt } from "@/components/NewNotePrompt";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
 
 import { X as XIcon, ChevronLeft, ChevronRight, RotateCcw, Sparkles, Trophy } from "lucide-react";
 
@@ -445,6 +446,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote, isOverrideActive } = useNotebooks();
   const { user } = useAuth();
   const isMobile = useIsMobile();
+  const [wordCountGoalEnabled] = useWordCountGoalEnabled();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
@@ -901,8 +903,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           onClose={() => onFindReplaceChange?.(false)}
         />
 
-        {/* Content area */}
-        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+        {/* Content area — natural height, no inner scrollbar; page handles overflow */}
+        <div className="flex-1 min-h-0">
           <HybridEditor
             ref={hybridEditorRef}
             content={activeNote.content || ""}
@@ -914,7 +916,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         {/* Word count, goal & reading time */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
           <WordCount content={activeNote?.content || ""} />
-          <WordCountGoal content={activeNote?.content || ""} />
+          {wordCountGoalEnabled && <WordCountGoal content={activeNote?.content || ""} />}
         </div>
 
         {/* File upload */}
