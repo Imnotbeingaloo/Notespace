@@ -36,7 +36,7 @@ export interface NoteTemplate {
 
 const today = () => new Date().toLocaleDateString();
 
-const templates: NoteTemplate[] = [
+export const templates: NoteTemplate[] = [
   {
     id: "blank",
     name: "Blank Note",
