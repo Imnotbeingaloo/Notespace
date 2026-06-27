@@ -1,6 +1,7 @@
-import { motion } from "framer-motion";
-import { ArrowRight, Check, X, Quote } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Check, X, Quote, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
