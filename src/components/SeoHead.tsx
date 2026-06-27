@@ -13,6 +13,8 @@ interface SeoHeadProps {
   noindex?: boolean;
   /** Absolute or root-relative path to the social share image. Defaults to /og-image.jpg. */
   image?: string;
+  /** og:type value. Use "article" for blog posts; defaults to "website". */
+  type?: "website" | "article";
 }
 
 const BASE_URL = "https://notebookarchive.lovable.app";
