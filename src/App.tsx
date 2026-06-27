@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import Landing from "./pages/Landing";
 import AppPage from "./pages/Index";
 import AuthPage from "./pages/Auth";
+import ResetPasswordPage from "./pages/ResetPassword";
 import PricingPage from "./pages/Pricing";
 import FeaturesPage from "./pages/Features";
 import AboutPage from "./pages/About";
