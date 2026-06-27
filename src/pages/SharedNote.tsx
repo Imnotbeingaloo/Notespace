@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BookOpen, ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,15 +7,20 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SeoHead } from "@/components/SeoHead";
 
+// Share tokens are long random strings. The literal ":token" placeholder or
+// anything obviously malformed should fall through to the global 404 page.
+const VALID_TOKEN = /^[A-Za-z0-9_-]{16,}$/;
+
 export default function SharedNote() {
   const { token } = useParams<{ token: string }>();
+  const tokenIsValid = !!token && VALID_TOKEN.test(token);
   const [note, setNote] = useState<{ title: string; content: string } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!tokenIsValid);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchSharedNote = async () => {
-      if (!token) { setError("Invalid link"); setLoading(false); return; }
+      if (!tokenIsValid) return;
 
       const { data, error: rpcErr } = await supabase
         .rpc("get_shared_note" as any, { _token: token });
