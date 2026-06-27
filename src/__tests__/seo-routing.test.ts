@@ -14,7 +14,7 @@ import {
   PUBLIC_ROUTES,
   PRIVATE_ROUTE_PATTERNS,
   INDEXING_BOTS,
-} from "../scripts/site-routes";
+} from "../../scripts/site-routes";
 
 const robots = readFileSync(resolve("public/robots.txt"), "utf-8");
 const sitemap = readFileSync(resolve("public/sitemap.xml"), "utf-8");
