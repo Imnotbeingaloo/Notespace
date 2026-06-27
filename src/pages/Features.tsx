@@ -30,7 +30,7 @@ const groups = [
     items: [
       { Icon: Tag, name: "Smart tags", desc: "Type `#anything` inside a note. It appears in the sidebar tag cloud; clicking it retrieves every note that references it.", deepLink: "/app", linkLabel: "See your tag cloud" },
       { Icon: Timer, name: "Pomodoro timer", desc: "A 25/5 timer rests in the corner. Start a session, take a deliberate break, and review your completed sessions throughout the day.", deepLink: "/app", linkLabel: "Start a session" },
-      { Icon: BookOpen, name: "Study planner", desc: "Schedule sessions per notebook, track your daily streak, and receive a reminder before you miss one.", deepLink: "/app", linkLabel: "Open the planner" },
+      { Icon: BookOpen, name: "Study planner & study schedule", desc: "A built-in study planner: schedule sessions per notebook, build a recurring study schedule for exams, track your daily streak, and get a reminder before you miss one.", deepLink: "/templates/study-planner", linkLabel: "Open the study planner" },
     ],
   },
   {
