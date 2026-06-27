@@ -18,6 +18,8 @@ import TemporaryWorkspacePage from "./pages/TemporaryWorkspace";
 import NotFound from "./pages/NotFound";
 import { lazy, Suspense } from "react";
 const SharedNotePage = lazy(() => import("./pages/SharedNote"));
+const BlogBestAINoteTakingApps = lazy(() => import("./pages/BlogBestAINoteTakingApps"));
+import { captureReferralFromUrl } from "@/lib/referral";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { usePaperStyleTransition } from "@/hooks/use-paper-style";
 import { PaperStyleSwitcher } from "@/components/PaperStyleSwitcher";
@@ -106,6 +108,7 @@ const App = () => (
                 <Route path="/trash" element={<TrashPage />} />
                 <Route path="/app/temporary" element={<TemporaryWorkspacePage />} />
                 <Route path="/shared/:token" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><SharedNotePage /></Suspense>} />
+                <Route path="/blog/best-ai-note-taking-apps-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogBestAINoteTakingApps /></Suspense>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>
