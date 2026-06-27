@@ -144,16 +144,18 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                   transition={{ duration: 0.3, ease }}
                   className="relative pl-[72px] pr-9 pt-4 pb-9"
                 >
-                  {/* Card header strip */}
+                  {/* Card header strip - leaves room for the close X on the right */}
                   <motion.div
                     initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1, duration: 0.4, ease }}
-                    className="h-[44px] flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-muted-foreground/70 font-mono"
+                    className="h-[44px] flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-muted-foreground/70 font-mono pr-10 whitespace-nowrap"
                   >
-                    <span>No. 01 - {greetingRef.current}</span>
-                    <span className="text-orange-500/80">New entry</span>
+                    <span>No. 01</span>
+                    <span className="h-px flex-1 bg-border" />
+                    <span className="text-orange-500/90">{greetingRef.current}</span>
                   </motion.div>
+
 
                   {/* Headline - sits on the first rule */}
                   <motion.h2
