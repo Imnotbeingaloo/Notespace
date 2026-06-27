@@ -22,8 +22,8 @@ const editorLines = [
 ];
 
 // Render inline markdown: **bold**, *italic*, `code`
-function renderInline(text: string): React.ReactNode[] {
-  const tokens: React.ReactNode[] = [];
+function renderInline(text: string): ReactNode[] {
+  const tokens: ReactNode[] = [];
   const regex = /(\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`)/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
