@@ -89,10 +89,10 @@ export default function FeaturesPage() {
               <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Features</span>
             </div>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
-              What's in the box, and <span className="text-primary">nothing</span> that isn't.
+              Every feature, <span className="text-primary">purposefully</span> built.
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              A small, deliberate toolkit for writing, organizing, and pulling ideas back up later. The AI shows up where it earns its keep, not where it can.
+              A focused toolkit for writing, organizing, and retrieving ideas. AI is integrated where it genuinely improves the experience — never as decoration.
             </p>
           </motion.div>
         </div>
