@@ -47,6 +47,16 @@ const cases = [
     highlights: ["Cross-notebook search", "PDF quote extraction", "Smart tag aggregation", "Private by default"],
     cta: "See the researcher workflow",
   },
+  {
+    to: "/use-cases/project-managers",
+    Icon: Briefcase,
+    label: "Project Managers",
+    headline: "The notebook that survives every status meeting.",
+    blurb:
+      "Capture meetings live, extract action items, and keep stakeholder context in one searchable place — from kickoff to retrospective.",
+    highlights: ["Live meeting capture", "AI summarization", "Owner-tagged action items", "Public stakeholder share links"],
+    cta: "See the PM workflow",
+  },
 ];
 
 const marqueeItems = [
