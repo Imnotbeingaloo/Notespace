@@ -146,7 +146,7 @@ export default function PricingPage() {
                   <Zap className="h-3 w-3" /> Most Popular
                 </div>
               )}
-              <h3 className="font-serif text-xl font-bold text-foreground">{tier.name}</h3>
+              <h2 className="font-serif text-xl font-bold text-foreground">{tier.name}</h2>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-4xl font-bold text-foreground">{tier.price}</span>
                 {tier.period && <span className="text-sm text-muted-foreground">{tier.period}</span>}
