@@ -30,6 +30,7 @@ const BlogOneNoteAlternatives = lazy(() => import("./pages/BlogOneNoteAlternativ
 const BlogBestNoteTakingApp = lazy(() => import("./pages/BlogBestNoteTakingApp"));
 const BlogAIVoiceNotes = lazy(() => import("./pages/BlogAIVoiceNotes"));
 const BlogAIWritingAssistants = lazy(() => import("./pages/BlogAIWritingAssistants"));
+const BlogAILiteratureReview = lazy(() => import("./pages/BlogAILiteratureReview"));
 const UseCasesIndex = lazy(() => import("./pages/UseCasesIndex"));
 const UseCaseStudents = lazy(() => import("./pages/UseCaseStudents"));
 const UseCaseWriters = lazy(() => import("./pages/UseCaseWriters"));
