@@ -23,6 +23,7 @@ const BlogBestNoteTakingAppForWriters = lazy(() => import("./pages/BlogBestNoteT
 const BlogAINoteTakingAppForStudents = lazy(() => import("./pages/BlogAINoteTakingAppForStudents"));
 const BlogKiNotizenApp = lazy(() => import("./pages/BlogKiNotizenApp"));
 const BlogIndex = lazy(() => import("./pages/BlogIndex"));
+const BlogNotionAlternatives = lazy(() => import("./pages/BlogNotionAlternatives"));
 const UseCasesIndex = lazy(() => import("./pages/UseCasesIndex"));
 const UseCaseStudents = lazy(() => import("./pages/UseCaseStudents"));
 const UseCaseWriters = lazy(() => import("./pages/UseCaseWriters"));
@@ -131,6 +132,7 @@ const App = () => (
                 <Route path="/blog" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogIndex /></Suspense>} />
                 <Route path="/blog/ai-note-taking-app-for-students" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAINoteTakingAppForStudents /></Suspense>} />
                 <Route path="/blog/ki-notizen-app" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogKiNotizenApp /></Suspense>} />
+                <Route path="/blog/notion-alternatives-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogNotionAlternatives /></Suspense>} />
                 <Route path="/use-cases" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCasesIndex /></Suspense>} />
                 <Route path="/use-cases/students" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseStudents /></Suspense>} />
                 <Route path="/use-cases/writers" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseWriters /></Suspense>} />

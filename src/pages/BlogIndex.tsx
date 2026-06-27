@@ -8,6 +8,14 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "notion-alternatives-2026",
+    title: "Six Honest Notion Alternatives for 2026",
+    excerpt:
+      "Notion grew into an everything-tool. If you only ever used it for notes, here are the six apps people actually leave for — Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "best-ai-note-taking-apps-2026",
     title: "Best AI Note Taking Apps for Writers and Researchers in 2026",
     excerpt:
