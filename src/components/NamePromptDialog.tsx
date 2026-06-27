@@ -268,9 +268,31 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                     <span>Welcome aboard</span>
                   </div>
 
-                  <h2 className="mt-3 font-serif text-[28px] leading-tight text-foreground tracking-tight">
-                    Nice to meet you,
+                  <h2 className="mt-3 font-serif text-[28px] leading-tight text-foreground tracking-tight flex items-center gap-3">
+                    <span>Nice to meet you,</span>
+                    <motion.span
+                      aria-hidden
+                      className="inline-block origin-[70%_70%] text-[30px]"
+                      initial={{ rotate: 0, scale: 0.6, opacity: 0 }}
+                      animate={
+                        reduceMotion
+                          ? { rotate: 0, scale: 1, opacity: 1 }
+                          : {
+                              opacity: 1,
+                              scale: 1,
+                              rotate: [0, -18, 14, -12, 10, -6, 0],
+                            }
+                      }
+                      transition={
+                        reduceMotion
+                          ? { duration: 0.2 }
+                          : { delay: 0.25, duration: 1.4, ease: "easeInOut", repeat: 1, repeatDelay: 0.4 }
+                      }
+                    >
+                      👋
+                    </motion.span>
                   </h2>
+
                   <motion.p
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
