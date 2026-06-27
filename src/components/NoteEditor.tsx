@@ -903,8 +903,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           onClose={() => onFindReplaceChange?.(false)}
         />
 
-        {/* Content area — natural height, no inner scrollbar; page handles overflow */}
-        <div className="flex-1 min-h-0">
+        {/* Content area — scrolls internally only when content exceeds available height */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
           <HybridEditor
             ref={hybridEditorRef}
             content={activeNote.content || ""}
