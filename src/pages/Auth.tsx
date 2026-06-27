@@ -374,7 +374,7 @@ const AuthPage = () => {
                   type="button"
                   role="tab"
                   aria-selected={active}
-                  onClick={() => { setMode(m); setError(""); setConfirmPassword(""); setForgotSent(false); }}
+                  onClick={() => { setMode(m); setError(""); setNotice(""); setConfirmPassword(""); setForgotSent(false); }}
                   className={`flex-1 py-2 text-sm font-medium rounded-md border-0 outline-none transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-muted ${
                     active ? "bg-background text-foreground shadow-sm" : "bg-transparent text-muted-foreground hover:text-foreground"
                   }`}
