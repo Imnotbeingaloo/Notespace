@@ -48,17 +48,18 @@ function renderInline(text: string): ReactNode[] {
 }
 
 function RenderMarkdownLine({ text }: { text: string }) {
+  const reveal = "animate-[md-reveal_360ms_ease-out_both]";
   if (text === "") return <p>{"\u00A0"}</p>;
   if (text.startsWith("### ")) {
-    return <h4 className="font-serif text-base font-bold text-foreground mt-2">{renderInline(text.slice(4))}</h4>;
+    return <h4 className={`font-serif text-base font-bold text-foreground mt-2 ${reveal}`}>{renderInline(text.slice(4))}</h4>;
   }
   if (text.startsWith("## ")) {
-    return <h3 className="font-serif text-lg font-bold text-foreground mt-2">{renderInline(text.slice(3))}</h3>;
+    return <h3 className={`font-serif text-lg font-bold text-foreground mt-2 ${reveal}`}>{renderInline(text.slice(3))}</h3>;
   }
   if (text.startsWith("# ")) {
-    return <h2 className="font-serif text-xl font-bold text-foreground mt-2">{renderInline(text.slice(2))}</h2>;
+    return <h2 className={`font-serif text-xl font-bold text-foreground mt-2 ${reveal}`}>{renderInline(text.slice(2))}</h2>;
   }
-  return <p className="text-muted-foreground">{renderInline(text)}</p>;
+  return <p className={`text-muted-foreground ${reveal}`}>{renderInline(text)}</p>;
 }
 
 const navLinks = [
