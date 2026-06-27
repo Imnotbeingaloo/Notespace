@@ -39,6 +39,17 @@ export const PUBLIC_ROUTES: PublicRoute[] = [
   { path: "/use-cases/writers", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases/researchers", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases/project-managers", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare", changefreq: "monthly", priority: "0.8" },
+  { path: "/compare/notion", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/obsidian", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/evernote", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/onenote", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/roam", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/bear", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/mem", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/reflect", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/apple-notes", changefreq: "monthly", priority: "0.9" },
+  { path: "/compare/google-keep", changefreq: "monthly", priority: "0.9" },
 ];
 
 /**
