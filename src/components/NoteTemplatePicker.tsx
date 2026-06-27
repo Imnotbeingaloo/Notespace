@@ -707,4 +707,4 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
   );
 }
 
-export { templates, TemplatePaper };
+export { TemplatePaper };
