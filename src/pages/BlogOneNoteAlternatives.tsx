@@ -207,6 +207,7 @@ export default function BlogOneNoteAlternatives() {
   return (
     <>
       <SeoHead
+        type="article"
         title="OneNote Alternatives in 2026 — 6 Honest Picks Compared"
         description="Six OneNote alternatives compared with screenshots, pros and cons, and pricing — Notion, Obsidian, Evernote, Reflect, Mem, and Notebook Archive."
         path="/blog/onenote-alternatives-2026"

@@ -232,6 +232,7 @@ export default function BlogBestAINoteTakingApps() {
   return (
     <>
       <SeoHead
+        type="article"
         title="Best AI Note Taking Apps for Writers & Researchers (2026)"
         description="A real comparison of the seven AI note taking apps that actually earn the label — pricing, AI features, offline support, screenshots, and who each one is for."
         path="/blog/best-ai-note-taking-apps-2026"

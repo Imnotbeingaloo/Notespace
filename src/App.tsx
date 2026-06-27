@@ -33,6 +33,7 @@ const UseCasesIndex = lazy(() => import("./pages/UseCasesIndex"));
 const UseCaseStudents = lazy(() => import("./pages/UseCaseStudents"));
 const UseCaseWriters = lazy(() => import("./pages/UseCaseWriters"));
 const UseCaseResearchers = lazy(() => import("./pages/UseCaseResearchers"));
+const UseCaseProjectManagers = lazy(() => import("./pages/UseCaseProjectManagers"));
 
 import { captureReferralFromUrl } from "@/lib/referral";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -148,6 +149,7 @@ const App = () => (
                 <Route path="/use-cases/students" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseStudents /></Suspense>} />
                 <Route path="/use-cases/writers" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseWriters /></Suspense>} />
                 <Route path="/use-cases/researchers" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseResearchers /></Suspense>} />
+                <Route path="/use-cases/project-managers" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseProjectManagers /></Suspense>} />
                 
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -210,6 +210,7 @@ export default function BlogObsidianAlternatives() {
   return (
     <>
       <SeoHead
+        type="article"
         title="Obsidian Alternatives in 2026 — 6 Honest Picks Compared"
         description="Six Obsidian alternatives compared with screenshots, pros and cons, and pricing — Notion, Reflect, Mem, OneNote, Evernote, and Notebook Archive."
         path="/blog/obsidian-alternatives-2026"
