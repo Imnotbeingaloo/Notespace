@@ -178,6 +178,27 @@ const AuthPage = () => {
   const [resendCountdown, setResendCountdown] = useState(0);
   const [resending, setResending] = useState(false);
   const [resendNotice, setResendNotice] = useState("");
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (!emailValid) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setForgotLoading(true);
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setForgotLoading(false);
+    if (err) {
+      setError(friendlyError(err.message, "login").message);
+      return;
+    }
+    setForgotSent(true);
+  };
 
   useEffect(() => {
     if (resendCountdown <= 0) return;
