@@ -8,6 +8,14 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "obsidian-alternatives-2026",
+    title: "Six Honest Obsidian Alternatives for 2026",
+    excerpt:
+      "Obsidian is brilliant — and it's a tool you have to build. If you're tired of maintaining a vault, paying for sync, and configuring plugins before you can write, here are the six apps people actually move to.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "notion-alternatives-2026",
     title: "Six Honest Notion Alternatives for 2026",
     excerpt:

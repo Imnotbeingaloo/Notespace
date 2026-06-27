@@ -290,6 +290,45 @@ export default function UseCasesIndex() {
           </div>
         </section>
 
+        {/* FURTHER READING */}
+        <section className="py-20 border-t border-border">
+          <div className="container mx-auto px-6 max-w-4xl">
+            <div className="text-center mb-10">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <span className="h-px w-8 bg-accent" />
+                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Further reading</span>
+              </div>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+                Comparing your options
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Link
+                to="/blog/obsidian-alternatives-2026"
+                className="group block rounded-xl border border-border bg-card p-5 hover:border-primary/40 transition"
+              >
+                <p className="text-[11px] uppercase tracking-widest text-accent font-semibold mb-2">Comparison</p>
+                <h3 className="font-serif text-lg font-bold mb-2 group-hover:text-primary transition">
+                  Six Honest Obsidian Alternatives for 2026
+                </h3>
+                <p className="text-sm text-muted-foreground">For people tired of maintaining a vault, paying for sync, and configuring plugins before they can write.</p>
+              </Link>
+              <Link
+                to="/blog/notion-alternatives-2026"
+                className="group block rounded-xl border border-border bg-card p-5 hover:border-primary/40 transition"
+              >
+                <p className="text-[11px] uppercase tracking-widest text-accent font-semibold mb-2">Comparison</p>
+                <h3 className="font-serif text-lg font-bold mb-2 group-hover:text-primary transition">
+                  Six Honest Notion Alternatives for 2026
+                </h3>
+                <p className="text-sm text-muted-foreground">For people who only ever used Notion to write — and want the docs to feel like a notebook again.</p>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+
+
         {/* FINAL CTA */}
         <section className="py-24 border-t border-border bg-muted/30">
           <div className="container mx-auto px-6 max-w-3xl text-center">
