@@ -63,8 +63,8 @@ function RenderMarkdownLine({ text }: { text: string }) {
   if (!shouldAnimate) return <div>{inner}</div>;
   return (
     <div
-      className="animate-in fade-in duration-500 ease-out"
-      style={{ willChange: "opacity" }}
+      className="animate-in zoom-in-95 duration-300 ease-out origin-left"
+      style={{ willChange: "transform" }}
     >
       {inner}
     </div>
