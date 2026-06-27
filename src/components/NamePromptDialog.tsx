@@ -114,7 +114,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
     >
 
       <DialogContent
-        className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.35s_ease-out,scale-out_0.35s_ease-out]"
+        className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.45s_ease-out,scale-out_0.45s_ease-out]"
         hideClose={step !== "ask"}
       >
         {/* Stacked paper effect: two offset sheets behind the main card */}
@@ -124,35 +124,40 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
           transition={reduceMotion ? { duration: 0.2 } : spring}
           className="relative"
         >
-          {/* Back sheets - only shown on the ask step */}
-          {step === "ask" && (
-            <>
-              <div
-                aria-hidden
-                className="absolute inset-0 rounded-[14px] bg-card border border-border/40 shadow-md"
-                style={{ transform: "rotate(-2.2deg) translate(-6px, 6px)" }}
-              />
-              <div
-                aria-hidden
-                className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md"
-                style={{ transform: "rotate(1.4deg) translate(4px, 3px)" }}
-              />
-            </>
-          )}
-
+          {/* Back sheets - peek out from behind the main card */}
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-[14px] bg-card border border-border/40 shadow-md"
+            style={{ transform: "rotate(-2.2deg) translate(-6px, 6px)" }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md"
+            style={{ transform: "rotate(1.4deg) translate(4px, 3px)" }}
+          />
 
           {/* Main card - index card / bookplate */}
           <div className="relative rounded-[14px] bg-card border border-border shadow-2xl overflow-hidden">
+            {/* Gray ruled notebook lines, confined to the left margin (left of the red rule) */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute top-0 bottom-0 left-0 w-[52px] opacity-60"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(to bottom, transparent 0, transparent 22px, hsl(var(--border)) 22px, hsl(var(--border)) 23px)",
+              }}
+            />
             {/* Left margin rule (notebook red/orange) */}
             <div
               aria-hidden
-              className="absolute top-0 bottom-0 left-[52px] w-px bg-orange-500/60"
+              className="absolute top-0 bottom-0 left-[52px] w-px bg-orange-500/70"
             />
 
             {/* Punched holes accent (left edge) */}
             <div aria-hidden className="absolute left-[18px] top-1/4 h-2.5 w-2.5 rounded-full bg-background border border-border/70" />
             <div aria-hidden className="absolute left-[18px] top-1/2 h-2.5 w-2.5 rounded-full bg-background border border-border/70" />
             <div aria-hidden className="absolute left-[18px] top-3/4 h-2.5 w-2.5 rounded-full bg-background border border-border/70" />
+
 
             <AnimatePresence mode="wait">
               {step === "ask" && (
