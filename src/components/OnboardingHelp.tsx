@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useNotebooks } from "@/context/NotebookContext";
 
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
 
