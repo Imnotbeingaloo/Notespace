@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { email } = await req.json();
+    const { email, logFailure } = await req.json();
     if (!email || typeof email !== "string") {
       return new Response(JSON.stringify({ exists: false }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -22,7 +22,6 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // Page through users to find a match (no direct getUserByEmail API).
     const target = email.trim().toLowerCase();
     let page = 1;
     let exists = false;
@@ -35,6 +34,15 @@ Deno.serve(async (req) => {
       }
       if (data.users.length < 1000) break;
       page++;
+    }
+
+    if (logFailure) {
+      const userAgent = req.headers.get("user-agent") ?? null;
+      await admin.from("auth_failure_logs").insert({
+        email: target,
+        reason: exists ? "wrong_password" : "email_not_found",
+        user_agent: userAgent,
+      });
     }
 
     return new Response(JSON.stringify({ exists }), {

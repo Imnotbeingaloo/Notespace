@@ -57,6 +57,9 @@ const AuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [unknownEmail, setUnknownEmail] = useState("");
+  const [highlightEmail, setHighlightEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
@@ -151,12 +154,15 @@ const AuthPage = () => {
         if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
           try {
             const { data } = await supabase.functions.invoke("check-email-exists", {
-              body: { email: email.trim() },
+              body: { email: email.trim(), logFailure: true },
             });
             if (data && data.exists === false) {
+              setUnknownEmail(email.trim());
               setMode("signup");
               setConfirmPassword(password);
-              setError("Oops, that account doesn't exist. Try creating one.");
+              setHighlightEmail(true);
+              setNotice(`Oops, no account for ${email.trim()}. We've switched you to sign up - finish creating it below.`);
+              setTimeout(() => setHighlightEmail(false), 2200);
             } else {
               setError("Incorrect password. Try again or reset it below.");
             }
@@ -368,7 +374,7 @@ const AuthPage = () => {
                   type="button"
                   role="tab"
                   aria-selected={active}
-                  onClick={() => { setMode(m); setError(""); setConfirmPassword(""); setForgotSent(false); }}
+                  onClick={() => { setMode(m); setError(""); setNotice(""); setConfirmPassword(""); setForgotSent(false); }}
                   className={`flex-1 py-2 text-sm font-medium rounded-md border-0 outline-none transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-muted ${
                     active ? "bg-background text-foreground shadow-sm" : "bg-transparent text-muted-foreground hover:text-foreground"
                   }`}
@@ -473,8 +479,9 @@ const AuthPage = () => {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring ${
+                  onChange={(e) => { setEmail(e.target.value); if (notice) setNotice(""); }}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-all ${
+                    highlightEmail ? "border-primary ring-2 ring-primary/40" :
                     email && !emailValid ? "border-destructive/60" : "border-input"
                   }`}
                   placeholder="you@example.com"
@@ -589,6 +596,28 @@ const AuthPage = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {notice && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-foreground"
+                role="status"
+              >
+                <p className="leading-snug">{notice}</p>
+              </motion.div>
+            )}
+
+            {mode === "login" && unknownEmail && unknownEmail === email.trim() && (
+              <button
+                type="button"
+                onClick={() => { setMode("signup"); setNotice(`Creating an account for ${unknownEmail}.`); setHighlightEmail(true); setTimeout(() => setHighlightEmail(false), 2000); }}
+                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-primary/40 bg-primary/5 text-primary font-medium text-sm hover:bg-primary/10 ${BTN_PRESS}`}
+              >
+                Create account for {unknownEmail}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
 
             {error && (
               <motion.div
