@@ -57,6 +57,9 @@ const AuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [unknownEmail, setUnknownEmail] = useState("");
+  const [highlightEmail, setHighlightEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
