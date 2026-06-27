@@ -8,6 +8,7 @@ import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { FurtherReading } from "@/components/FurtherReading";
 
 const groups = [
   {
