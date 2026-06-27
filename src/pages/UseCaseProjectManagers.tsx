@@ -1,25 +1,22 @@
-import { useEffect } from "react";
 import { UseCaseLayout } from "@/components/UseCaseLayout";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 export default function UseCaseProjectManagers() {
-  useEffect(() => {
-    const ld = {
+  const jsonLd = [
+    {
       "@context": "https://schema.org",
       "@type": "WebPage",
       name: "Notebook Archive for Project Managers",
       description:
         "AI note taking for meetings: extract action items, summarize stakeholder calls, and organize project documentation in one searchable workspace.",
       url: "https://notebookarchive.lovable.app/use-cases/project-managers",
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(ld);
-    document.head.appendChild(script);
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
+    },
+    breadcrumbsJsonLd([
+      { name: "Use cases", path: "/use-cases" },
+      { name: "Project managers", path: "/use-cases/project-managers" },
+    ]),
+  ];
 
   return (
     <>
@@ -27,7 +24,9 @@ export default function UseCaseProjectManagers() {
         title="Best AI Note Taking App for Meetings - Notebook Archive for Project Managers"
         description="Capture meetings, extract action items, and keep stakeholder context organized. The note-taking system built for project managers running multiple workstreams."
         path="/use-cases/project-managers"
+        jsonLd={jsonLd}
       />
+
       <UseCaseLayout
         eyebrow="For project managers"
         title={<>The notebook that survives <span className="text-primary">every status meeting</span>.</>}
