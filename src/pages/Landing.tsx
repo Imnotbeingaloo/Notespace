@@ -21,6 +21,46 @@ const editorLines = [
   { text: "- Schrödinger equation: `iℏ∂ψ/∂t = Ĥψ`", className: "text-muted-foreground" },
 ];
 
+// Render inline markdown: **bold**, *italic*, `code`
+function renderInline(text: string): React.ReactNode[] {
+  const tokens: React.ReactNode[] = [];
+  const regex = /(\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) tokens.push(text.slice(lastIndex, match.index));
+    if (match[2] !== undefined) {
+      tokens.push(<strong key={key++} className="font-semibold text-foreground">{match[2]}</strong>);
+    } else if (match[3] !== undefined) {
+      tokens.push(<em key={key++}>{match[3]}</em>);
+    } else if (match[4] !== undefined) {
+      tokens.push(
+        <code key={key++} className="font-mono text-[0.85em] bg-primary/10 text-primary px-1 py-0.5 rounded">
+          {match[4]}
+        </code>
+      );
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) tokens.push(text.slice(lastIndex));
+  return tokens;
+}
+
+function RenderMarkdownLine({ text }: { text: string }) {
+  if (text === "") return <p>{"\u00A0"}</p>;
+  if (text.startsWith("### ")) {
+    return <h4 className="font-serif text-base font-bold text-foreground mt-2">{renderInline(text.slice(4))}</h4>;
+  }
+  if (text.startsWith("## ")) {
+    return <h3 className="font-serif text-lg font-bold text-foreground mt-2">{renderInline(text.slice(3))}</h3>;
+  }
+  if (text.startsWith("# ")) {
+    return <h2 className="font-serif text-xl font-bold text-foreground mt-2">{renderInline(text.slice(2))}</h2>;
+  }
+  return <p className="text-muted-foreground">{renderInline(text)}</p>;
+}
+
 const navLinks = [
   { label: "Features", href: "/features", isAnchor: false },
   { label: "Pricing", href: "/pricing", isAnchor: false },
