@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Loader2, BookOpen, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { toast } from "@/components/ui/sonner";
 
@@ -10,15 +10,15 @@ interface NamePromptDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-type Step = "ask" | "transition" | "welcome";
+type Step = "ask" | "welcome";
 
 const getGreeting = () => {
   const h = new Date().getHours();
-  if (h < 5) return "Hello, night owl";
+  if (h < 5) return "A note before you begin";
   if (h < 12) return "Good morning";
   if (h < 17) return "Good afternoon";
   if (h < 21) return "Good evening";
-  return "Hello, night owl";
+  return "A note before you begin";
 };
 
 export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) {
@@ -61,23 +61,22 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
       return;
     }
     setSavedName(trimmed);
-    setStep("transition");
-    window.setTimeout(() => setStep("welcome"), reduceMotion ? 50 : 750);
+    setStep("welcome");
     closeTimer.current = window.setTimeout(
       () => onOpenChange(false),
-      reduceMotion ? 1200 : 3000
+      reduceMotion ? 1200 : 2600
     );
   };
 
   const ease = [0.22, 1, 0.36, 1] as const;
-  const spring = { type: "spring" as const, stiffness: 260, damping: 26 };
+  const spring = { type: "spring" as const, stiffness: 220, damping: 24, mass: 0.9 };
 
   return (
     <Dialog
       open={open}
       onOpenChange={(o) => {
         if (saving) return;
-        if (step !== "ask" && o === false) {
+        if (step === "welcome" && o === false) {
           onOpenChange(false);
           return;
         }
@@ -85,34 +84,55 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
       }}
     >
       <DialogContent
-        className="sm:max-w-[480px] p-0 overflow-hidden border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-none duration-0"
+        className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-none duration-0"
         hideClose={step !== "ask"}
       >
+        {/* Stacked paper effect: two offset sheets behind the main card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.85, y: 28 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={
-            reduceMotion
-              ? { duration: 0.2 }
-              : { type: "spring", stiffness: 220, damping: 24, mass: 0.9 }
-          }
-          className="relative rounded-2xl bg-card border border-border/50 shadow-2xl overflow-hidden"
+          initial={{ opacity: 0, scale: 0.82, y: 32, rotate: -1.5 }}
+          animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
+          transition={reduceMotion ? { duration: 0.2 } : spring}
+          className="relative"
         >
-          {/* Ruled-paper background */}
-          <div className="pointer-events-none absolute inset-0 opacity-[0.4]">
+          {/* Back sheet 2 */}
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-[14px] bg-card border border-border/40 shadow-md"
+            style={{ transform: "rotate(-2.2deg) translate(-6px, 6px)" }}
+          />
+          {/* Back sheet 1 */}
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md"
+            style={{ transform: "rotate(1.4deg) translate(4px, 3px)" }}
+          />
+
+          {/* Main card - index card / bookplate */}
+          <div className="relative rounded-[14px] bg-card border border-border shadow-2xl overflow-hidden">
+            {/* Ruled lines */}
             <div
-              className="absolute inset-0"
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-[0.35]"
               style={{
                 backgroundImage:
-                  "repeating-linear-gradient(to bottom, transparent 0, transparent 31px, hsl(var(--border)/0.35) 31px, hsl(var(--border)/0.35) 32px)",
+                  "repeating-linear-gradient(to bottom, transparent 0, transparent 33px, hsl(var(--border)) 33px, hsl(var(--border)) 34px)",
+                backgroundPosition: "0 56px",
               }}
             />
-            <div className="absolute top-0 bottom-0 left-12 w-px bg-[hsl(var(--primary)/0.25)]" />
-          </div>
+            {/* Left margin rule (notebook red/orange) */}
+            <div
+              aria-hidden
+              className="absolute top-0 bottom-0 left-[52px] w-px bg-orange-500/40"
+            />
+            {/* Top double rule */}
+            <div aria-hidden className="absolute top-[44px] left-0 right-0 h-px bg-border" />
+            <div aria-hidden className="absolute top-[48px] left-0 right-0 h-px bg-border/60" />
 
+            {/* Punched holes accent (left edge) */}
+            <div aria-hidden className="absolute left-[18px] top-1/4 h-2.5 w-2.5 rounded-full bg-background border border-border/70" />
+            <div aria-hidden className="absolute left-[18px] top-1/2 h-2.5 w-2.5 rounded-full bg-background border border-border/70" />
+            <div aria-hidden className="absolute left-[18px] top-3/4 h-2.5 w-2.5 rounded-full bg-background border border-border/70" />
 
-
-          <div className="relative min-h-[360px]">
             <AnimatePresence mode="wait">
               {step === "ask" && (
                 <motion.div
@@ -121,58 +141,51 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.3, ease }}
-                  className="px-9 pt-10 pb-9"
+                  className="relative pl-[72px] pr-9 pt-4 pb-9"
                 >
-                  {/* Brand mark */}
+                  {/* Card header strip */}
                   <motion.div
-                    initial={{ opacity: 0, y: -8, rotate: -10, scale: 0.7 }}
-                    animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
-                    transition={{ ...spring, delay: 0.05 }}
-                    className="inline-flex items-center justify-center h-11 w-11 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                  >
-                    <BookOpen className="h-5 w-5" />
-                  </motion.div>
-
-                  {/* Eyebrow */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -8 }}
+                    initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.18, duration: 0.4, ease }}
-                    className="mt-5 flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-orange-500/90 font-semibold"
+                    transition={{ delay: 0.1, duration: 0.4, ease }}
+                    className="h-[44px] flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-muted-foreground/70 font-mono"
                   >
-                    <span className="h-px w-8 bg-orange-500/60" />
-                    <span>{greetingRef.current}</span>
+                    <span>No. 01 - {greetingRef.current}</span>
+                    <span className="text-orange-500/80">New entry</span>
                   </motion.div>
 
-                  {/* Headline */}
+                  {/* Headline - sits on the first rule */}
                   <motion.h2
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.22, duration: 0.5, ease }}
-                    className="mt-2 font-serif text-[30px] leading-[1.12] text-foreground tracking-tight"
+                    transition={{ delay: 0.18, duration: 0.5, ease }}
+                    className="mt-5 font-serif text-[30px] leading-[1.15] text-foreground tracking-tight"
                   >
                     What should{" "}
-                    <span className="italic text-primary">we</span>
-                    <br />
+                    <span className="italic text-primary">we</span>{" "}
                     call you?
                   </motion.h2>
 
                   <motion.p
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.5, ease }}
-                    className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground max-w-[360px]"
+                    transition={{ delay: 0.26, duration: 0.5, ease }}
+                    className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground max-w-[320px]"
                   >
-                    Just a first name or a nickname - whatever feels like you.
-                    We'll use it to keep things personal.
+                    A first name, a nickname, whatever feels like you. We'll use
+                    it to keep things personal.
                   </motion.p>
 
+                  {/* Field label like a form field on the card */}
                   <motion.div
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.38, duration: 0.5, ease }}
-                    className="mt-8 space-y-5"
+                    transition={{ delay: 0.34, duration: 0.5, ease }}
+                    className="mt-8"
                   >
+                    <label className="block text-[10px] uppercase tracking-[0.24em] text-muted-foreground/80 font-mono mb-1">
+                      Name on file
+                    </label>
                     <div className="relative">
                       <input
                         autoFocus
@@ -185,64 +198,42 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                         maxLength={60}
                         placeholder="Type your name…"
                         aria-label="Display name"
-                        className="peer w-full bg-transparent border-0 border-b border-border/70 px-0 pt-2 pb-3 font-serif text-2xl text-foreground placeholder:text-muted-foreground/40 placeholder:font-sans placeholder:text-base focus:outline-none focus:border-primary transition-colors"
+                        className="w-full bg-transparent border-0 border-b-2 border-border px-0 pt-1 pb-3 font-serif text-[26px] text-foreground placeholder:text-muted-foreground/35 placeholder:font-sans placeholder:text-base focus:outline-none focus:border-primary transition-colors"
                       />
                       <motion.div
-                        className="absolute left-0 right-0 -bottom-px h-[2px] bg-primary origin-left"
+                        className="absolute left-0 right-0 -bottom-[2px] h-[2px] bg-primary origin-left"
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: name ? 1 : 0 }}
                         transition={{ duration: 0.35, ease }}
                       />
-                      <span className="absolute right-0 bottom-3 text-[10px] text-muted-foreground/50 tabular-nums">
+                      <span className="absolute right-0 bottom-3 text-[10px] text-muted-foreground/50 tabular-nums font-mono">
                         {name.length}/60
                       </span>
                     </div>
-
-                    <div className="flex items-center justify-between gap-4 pt-1">
-                      <p className="text-[11px] text-muted-foreground/70">
-                        You can change this anytime in Settings.
-                      </p>
-                      <motion.button
-                        type="button"
-                        onClick={handleSave}
-                        disabled={saving || !name.trim()}
-                        whileHover={!saving && name.trim() ? { scale: 1.03 } : undefined}
-                        whileTap={!saving && name.trim() ? { scale: 0.97 } : undefined}
-                        className="group relative px-5 py-2.5 text-[13px] font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shadow-md shadow-primary/30"
-                      >
-                        {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                        <span>Continue</span>
-                        <span className="transition-transform group-hover:translate-x-0.5">→</span>
-                      </motion.button>
-                    </div>
                   </motion.div>
-                </motion.div>
-              )}
 
-              {step === "transition" && (
-                <motion.div
-                  key="transition"
-                  className="absolute inset-0 flex items-center justify-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
+                  {/* Footer row */}
                   <motion.div
-                    initial={{ scale: 0.4, opacity: 0, rotate: -12 }}
-                    animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                    transition={spring}
-                    className="relative h-20 w-20 rounded-2xl bg-primary flex items-center justify-center shadow-2xl shadow-primary/40"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.42, duration: 0.5, ease }}
+                    className="mt-7 flex items-center justify-between gap-4"
                   >
-                    <BookOpen className="h-9 w-9 text-primary-foreground" />
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.25, ...spring }}
-                      className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-orange-500 flex items-center justify-center shadow-lg"
+                    <p className="text-[11px] text-muted-foreground/70 italic">
+                      You can change this anytime in Settings.
+                    </p>
+                    <motion.button
+                      type="button"
+                      onClick={handleSave}
+                      disabled={saving || !name.trim()}
+                      whileHover={!saving && name.trim() ? { scale: 1.03 } : undefined}
+                      whileTap={!saving && name.trim() ? { scale: 0.97 } : undefined}
+                      className="group relative px-5 py-2.5 text-[13px] font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
                     >
-                      <Sparkles className="h-3.5 w-3.5 text-white" />
-                    </motion.div>
+                      {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                      <span>Continue</span>
+                      <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                    </motion.button>
                   </motion.div>
                 </motion.div>
               )}
@@ -250,41 +241,40 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
               {step === "welcome" && (
                 <motion.div
                   key="welcome"
-                  className="px-9 py-14 text-center"
+                  className="relative pl-[72px] pr-9 py-12 min-h-[300px] flex flex-col justify-center"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.45, ease }}
                 >
-                  <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.24em] text-orange-500/90 font-semibold">
+                  <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-orange-500 font-mono">
                     <span className="h-px w-6 bg-orange-500/60" />
                     <span>Welcome aboard</span>
-                    <span className="h-px w-6 bg-orange-500/60" />
                   </div>
 
-                  <h2 className="mt-4 font-serif text-3xl leading-tight text-foreground tracking-tight">
+                  <h2 className="mt-3 font-serif text-[28px] leading-tight text-foreground tracking-tight">
                     Nice to meet you,
                   </h2>
                   <motion.p
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15, duration: 0.5, ease }}
-                    className="font-serif italic text-4xl text-primary mt-1"
+                    className="font-serif italic text-[40px] leading-tight text-primary mt-1"
                   >
                     {savedName}.
                   </motion.p>
 
-                  <p className="text-sm text-muted-foreground mt-5 max-w-[300px] mx-auto leading-relaxed">
-                    Your notebook is ready. Let's write something worth remembering.
+                  <p className="text-sm text-muted-foreground mt-5 max-w-[320px] leading-relaxed">
+                    Your notebook is ready. Let's write something worth
+                    remembering.
                   </p>
                   <motion.div
-                    className="mt-7 h-px mx-auto w-32 bg-primary/40"
+                    className="mt-7 h-px w-32 bg-primary/40"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
-                    transition={{ duration: reduceMotion ? 0.1 : 2.4, ease: "linear" }}
+                    transition={{ duration: reduceMotion ? 0.1 : 2.2, ease: "linear" }}
                     style={{ transformOrigin: "left" }}
                   />
-
                 </motion.div>
               )}
             </AnimatePresence>
