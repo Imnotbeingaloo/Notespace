@@ -41,7 +41,7 @@ export function SeoHead({ title, description, path, jsonLd, noindex, image, type
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={type ?? "website"} />
       <meta property="og:image" content={imageUrl} />
       <meta property="og:image:alt" content={title} />
       <meta name="twitter:card" content="summary_large_image" />
