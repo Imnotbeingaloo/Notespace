@@ -15,7 +15,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import Footer from "@/components/Footer";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 const CTA =
   "/auth?ref=de-landing&utm_source=organic&utm_medium=landing&utm_campaign=de-homepage";
@@ -117,8 +117,7 @@ export default function LandingDe() {
       <SeoHead
         title="KI-Notizen-App für Studierende & Autoren — Notebook Archive"
         description="Notebook Archive ist die KI-Notizen-App für Menschen, die wirklich schreiben. Markdown-Editor, PDF-Extraktion, ehrliche KI — privat und werbefrei."
-        canonical="/de"
-        ogType="website"
+        path="/de"
         jsonLd={jsonLd}
       />
 
