@@ -14,12 +14,13 @@ type Step = "ask" | "welcome";
 
 const getGreeting = () => {
   const h = new Date().getHours();
-  if (h < 5) return "A note before you begin";
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  if (h < 21) return "Good evening";
-  return "A note before you begin";
+  if (h < 5) return "Late hours";
+  if (h < 12) return "Morning";
+  if (h < 17) return "Afternoon";
+  if (h < 21) return "Evening";
+  return "Late hours";
 };
+
 
 export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) {
   const { updateDisplayName } = useProfile();
