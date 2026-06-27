@@ -42,7 +42,6 @@ function renderInline(text: string): ReactNode[] {
 }
 
 function RenderMarkdownLine({ text }: { text: string }) {
-  const hasTransform = /^#{1,3}\s/.test(text) || /\*\*[^*]+\*\*/.test(text);
   const inner = (() => {
     if (text === "") return <p>{"\u00A0"}</p>;
     if (text.startsWith("### ")) {
@@ -56,14 +55,15 @@ function RenderMarkdownLine({ text }: { text: string }) {
     }
     return <p className="text-muted-foreground">{renderInline(text)}</p>;
   })();
-  if (!hasTransform) return inner;
   return (
-    <div className="animate-in fade-in duration-500 ease-out">
+    <div
+      className="animate-in fade-in slide-in-from-bottom-1 duration-300 ease-out"
+      style={{ willChange: "transform, opacity" }}
+    >
       {inner}
     </div>
   );
 }
-
 
 
 const navLinks = [
