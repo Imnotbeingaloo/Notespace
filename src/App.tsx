@@ -137,7 +137,8 @@ const App = () => (
                 <Route path="/" element={<Landing />} />
                 <Route path="/app" element={<AppPage />} />
                 <Route path="/home" element={<AppPage />} />
-                <Route path="/auth" element={<AuthPage />} />
+               <Route path="/auth" element={<AuthPage />} />
+               <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/features" element={<FeaturesPage />} />
                 <Route path="/about" element={<AboutPage />} />
