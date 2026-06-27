@@ -26,8 +26,10 @@ function writeCachedDisplayName(userId: string, name: string | null) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(DISPLAY_NAME_CACHE_KEY, JSON.stringify({ user_id: userId, display_name: name }));
+    window.dispatchEvent(new CustomEvent("display-name-updated", { detail: { user_id: userId, display_name: name } }));
   } catch {}
 }
+
 
 export function useProfile() {
   const { user } = useAuth();
