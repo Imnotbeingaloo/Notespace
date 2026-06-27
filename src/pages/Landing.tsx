@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -8,8 +8,6 @@ import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { ExitBookFlash } from "@/components/ExitBookFlash";
 import { SeoHead } from "@/components/SeoHead";
-import { RenderMarkdownLine } from "@/lib/landing-markdown";
-import { useReduceMotionPref, setReduceMotionPref } from "@/hooks/use-reduce-motion-pref";
 
 // Typing animation lines for the preview
 const editorLines = [
@@ -23,6 +21,55 @@ const editorLines = [
   { text: "- Schrödinger equation: `iℏ∂ψ/∂t = Ĥψ`", className: "text-muted-foreground" },
 ];
 
+// Render inline markdown: **bold**, *italic* (formulas in backticks are left as raw text)
+function renderInline(text: string): ReactNode[] {
+  const tokens: ReactNode[] = [];
+  const regex = /(\*\*([^*]+)\*\*|\*([^*\s][^*]*)\*)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) tokens.push(text.slice(lastIndex, match.index));
+    if (match[2] !== undefined) {
+      tokens.push(<strong key={key++} className="font-semibold text-foreground">{match[2]}</strong>);
+    } else if (match[3] !== undefined) {
+      tokens.push(<em key={key++}>{match[3]}</em>);
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) tokens.push(text.slice(lastIndex));
+  return tokens;
+}
+
+function RenderMarkdownLine({ text }: { text: string }) {
+  const isHeading = text.startsWith("# ") || text.startsWith("## ") || text.startsWith("### ");
+  const hasBold = /\*\*[^*]+\*\*/.test(text);
+  const shouldAnimate = isHeading || hasBold;
+
+  const inner = (() => {
+    if (text === "") return <p>{"\u00A0"}</p>;
+    if (text.startsWith("### ")) {
+      return <h4 className="font-serif text-base font-bold text-foreground mt-2">{renderInline(text.slice(4))}</h4>;
+    }
+    if (text.startsWith("## ")) {
+      return <h3 className="font-serif text-lg font-bold text-foreground mt-2">{renderInline(text.slice(3))}</h3>;
+    }
+    if (text.startsWith("# ")) {
+      return <h2 className="font-serif text-xl font-bold text-foreground mt-2">{renderInline(text.slice(2))}</h2>;
+    }
+    return <p className="text-muted-foreground">{renderInline(text)}</p>;
+  })();
+
+  if (!shouldAnimate) return <div>{inner}</div>;
+  return (
+    <div
+      className="animate-in zoom-in-95 duration-300 ease-out origin-left"
+      style={{ willChange: "transform" }}
+    >
+      {inner}
+    </div>
+  );
+}
 
 
 const navLinks = [
@@ -31,31 +78,6 @@ const navLinks = [
   { label: "About", href: "/about", isAnchor: false },
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
 ];
-
-function ReduceMotionToggle() {
-  const enabled = useReduceMotionPref();
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={enabled}
-      aria-label="Reduce motion"
-      onClick={() => setReduceMotionPref(!enabled)}
-      className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition-colors ${
-        enabled
-          ? "bg-primary/10 text-primary border-primary/30"
-          : "bg-transparent text-muted-foreground hover:text-foreground"
-      }`}
-      title={enabled ? "Motion reduced - click to enable animations" : "Click to reduce motion"}
-    >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${enabled ? "bg-primary" : "bg-muted-foreground/50"}`}
-      />
-      Reduce motion
-    </button>
-  );
-}
-
 
 
 export default function LandingPage() {
@@ -493,10 +515,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex-1 p-6 md:p-8">
-              <div className="flex items-start justify-between gap-3 mb-1">
-                <h2 className="font-serif text-xl font-bold text-foreground">Quantum Mechanics Intro</h2>
-                <ReduceMotionToggle />
-              </div>
+              <h2 className="font-serif text-xl font-bold text-foreground mb-1">Quantum Mechanics Intro</h2>
               <p className="text-xs text-muted-foreground mb-5">Updated Jan 15, 2:30 PM</p>
               <div className="space-y-1.5 text-sm leading-relaxed">
                 {editorLines.slice(0, visibleLines).map((line, i) => (
@@ -510,7 +529,6 @@ export default function LandingPage() {
                 )}
               </div>
             </div>
-
           </div>
         </motion.div>
         </div>
