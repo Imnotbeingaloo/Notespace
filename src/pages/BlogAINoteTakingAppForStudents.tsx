@@ -19,7 +19,7 @@ const picks = [
     name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive landing page — note-taker that thinks with you",
+    imageAlt: "Notebook Archive landing page - note-taker that thinks with you",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "Built for students who actually take notes by hand-typing them.",
     description:
@@ -27,12 +27,12 @@ const picks = [
     pros: [
       "Free tier covers a full semester of real note-taking",
       "AI explains concepts and summarizes PDFs (lecture slides, papers)",
-      "Per-notebook organization — one per course, set up in seconds",
+      "Per-notebook organization - one per course, set up in seconds",
       "Smart tags surface themes across all your notes for revision",
     ],
     cons: [
       "No native mobile app yet (web works on phones)",
-      "Newer than the giants — smaller community",
+      "Newer than the giants - smaller community",
     ],
     bestFor: "University and high-school students juggling multiple subjects.",
     disclosure: "Disclosure: this is the product we make. Criteria are listed up top.",
@@ -41,53 +41,53 @@ const picks = [
     name: "Notion",
     pricing: "Free; AI add-on $10/mo",
     imageUrl: notionShot.url,
-    imageAlt: "Notion landing page — Where teams and agents create together",
+    imageAlt: "Notion landing page - Where teams and agents create together",
     siteUrl: "https://www.notion.so",
     tagline: "The wiki-style workspace lots of students already use.",
     description:
-      "Databases, templates, calendars, and a generous free tier. Powerful, but the setup tax is real — students often spend more time decorating the workspace than studying in it. AI is a $10/mo add-on.",
+      "Databases, templates, calendars, and a generous free tier. Powerful, but the setup tax is real - students often spend more time decorating the workspace than studying in it. AI is a $10/mo add-on.",
     pros: [
-      "Huge template library — class trackers, study planners, flashcards",
+      "Huge template library - class trackers, study planners, flashcards",
       "Generous free tier for personal use",
       "Shareable pages for group projects",
     ],
     cons: [
-      "Heavy to set up — easy to over-engineer instead of study",
+      "Heavy to set up - easy to over-engineer instead of study",
       "AI is a paid add-on on top of any plan",
-      "No real offline mode — needs internet",
+      "No real offline mode - needs internet",
     ],
     bestFor: "Students who genuinely enjoy building elaborate systems.",
     ourTake:
-      "Notion is a workspace builder first, a notes app second. Notebook Archive starts working the moment you sign in — no template hunting, no database setup, and AI is in the free tier.",
+      "Notion is a workspace builder first, a notes app second. Notebook Archive starts working the moment you sign in - no template hunting, no database setup, and AI is in the free tier.",
   },
   {
     name: "Obsidian",
     pricing: "Free",
     imageUrl: obsidianShot.url,
-    imageAlt: "Obsidian landing page — Sharpen your thinking",
+    imageAlt: "Obsidian landing page - Sharpen your thinking",
     siteUrl: "https://obsidian.md",
-    tagline: "Local markdown files with backlinks — your notes, forever.",
+    tagline: "Local markdown files with backlinks - your notes, forever.",
     description:
-      "Free for personal use, fully offline, and your notes live as plain files on your device. Unmatched for long-term knowledge — but the setup is a project and AI requires plugins with your own API key.",
+      "Free for personal use, fully offline, and your notes live as plain files on your device. Unmatched for long-term knowledge - but the setup is a project and AI requires plugins with your own API key.",
     pros: [
       "Completely free for personal use",
       "Works offline; notes are plain files you own",
       "Graph view and backlinks are excellent for cross-subject revision",
     ],
     cons: [
-      "Steep learning curve — you assemble your own workflow",
+      "Steep learning curve - you assemble your own workflow",
       "AI requires plugin setup and a separate API key",
       "Cross-device sync is a paid add-on",
     ],
     bestFor: "CS / philosophy / research-track students who enjoy tinkering.",
     ourTake:
-      "Obsidian is the right pick if a weekend of setup sounds fun. Notebook Archive gives you the same markdown portability with AI working from minute one — useful when finals are in two weeks.",
+      "Obsidian is the right pick if a weekend of setup sounds fun. Notebook Archive gives you the same markdown portability with AI working from minute one - useful when finals are in two weeks.",
   },
   {
     name: "OneNote",
     pricing: "Free with school account",
     imageUrl: onenoteShot.url,
-    imageAlt: "OneNote landing page — capture ideas, organize projects",
+    imageAlt: "OneNote landing page - capture ideas, organize projects",
     siteUrl: "https://www.microsoft.com/en-us/microsoft-365/onenote/digital-note-taking-app",
     tagline: "Microsoft's notebook app, free with most school accounts.",
     description:
@@ -99,7 +99,7 @@ const picks = [
     ],
     cons: [
       "AI (Copilot) requires a paid Microsoft 365 plan",
-      "Interface is busy — feels like Office 2013 at times",
+      "Interface is busy - feels like Office 2013 at times",
       "Hard to export your notes out of the Microsoft ecosystem",
     ],
     bestFor: "Students whose school issues Microsoft accounts and tablets.",
@@ -111,15 +111,15 @@ const picks = [
 const faq = [
   {
     q: "What is the best AI note taking app for students in 2026?",
-    a: "For most students, Notebook Archive is the strongest fit — it's free to start, organizes notes by notebook (one per course is natural), and the AI explains and summarizes without writing essays for you, which keeps it within academic-integrity policies at most schools. Obsidian is the close runner-up if you want plain files on your own device.",
+    a: "For most students, Notebook Archive is the strongest fit - it's free to start, organizes notes by notebook (one per course is natural), and the AI explains and summarizes without writing essays for you, which keeps it within academic-integrity policies at most schools. Obsidian is the close runner-up if you want plain files on your own device.",
   },
   {
     q: "Is using an AI note taking app considered cheating?",
-    a: "Using AI to explain a concept, summarize a source you read, or organize notes you took yourself is generally fine — most universities treat it like using a tutor or a study guide. Using AI to write your essay or answer exam questions is cheating under almost every academic-integrity policy. The apps above are built around the first use, not the second.",
+    a: "Using AI to explain a concept, summarize a source you read, or organize notes you took yourself is generally fine - most universities treat it like using a tutor or a study guide. Using AI to write your essay or answer exam questions is cheating under almost every academic-integrity policy. The apps above are built around the first use, not the second.",
   },
   {
     q: "Is there a free AI note taking app for students?",
-    a: "Yes. Notebook Archive, Notion, Obsidian, and OneNote all have free tiers that cover real student use. Free tiers usually cap AI usage per month — that cap is the thing to compare, not the headline price.",
+    a: "Yes. Notebook Archive, Notion, Obsidian, and OneNote all have free tiers that cover real student use. Free tiers usually cap AI usage per month - that cap is the thing to compare, not the headline price.",
   },
   {
     q: "Can I use these apps to take notes from PDFs and lecture slides?",
@@ -137,7 +137,7 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best AI Note Taking App for Students in 2026",
     description:
-      "An honest comparison of AI note taking apps built for how students actually study — Notebook Archive, Notion, Obsidian, and OneNote.",
+      "An honest comparison of AI note taking apps built for how students actually study - Notebook Archive, Notion, Obsidian, and OneNote.",
     datePublished: "2026-06-27",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
@@ -164,8 +164,8 @@ export default function BlogAINoteTakingAppForStudents() {
     <>
       <SeoHead
         type="article"
-        title="Best AI Note Taking App for Students (2026) — Free & Honest Picks"
-        description="The four AI note taking apps that actually fit how students study — Notebook Archive, Notion, Obsidian, and OneNote. Free tiers, screenshots, pros and cons."
+        title="Best AI Note Taking App for Students (2026) - Free & Honest Picks"
+        description="The four AI note taking apps that actually fit how students study - Notebook Archive, Notion, Obsidian, and OneNote. Free tiers, screenshots, pros and cons."
         path="/blog/ai-note-taking-app-for-students"
         jsonLd={jsonLd}
       />
@@ -180,13 +180,13 @@ export default function BlogAINoteTakingAppForStudents() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — For Students · Updated June 2026
+              - For Students · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">AI Note Taking App for Students</span> in 2026
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Students don't need a productivity system — they need a place to dump lecture notes,
+              Students don't need a productivity system - they need a place to dump lecture notes,
               find them again at 2 a.m. before an exam, and get a concept explained without
               opening four more tabs. Here are the four apps that actually do that, with
               screenshots, pros, cons, and where each one fits.
@@ -199,8 +199,8 @@ export default function BlogAINoteTakingAppForStudents() {
               We talked to undergrads, grad students, and a few high-schoolers about what they want
               from a notes app, and four things came up every time. <strong>Per-course organization</strong>{" "}
               that doesn't take an afternoon to set up. <strong>Search that works</strong> across every
-              note from every class. <strong>AI that explains things</strong> — "what is the difference
-              between mitosis and meiosis?" — without writing the assignment for you. And a{" "}
+              note from every class. <strong>AI that explains things</strong> - "what is the difference
+              between mitosis and meiosis?" - without writing the assignment for you. And a{" "}
               <strong>free tier that's actually usable</strong>, because students don't have $19/month
               for everything.
             </p>
@@ -222,7 +222,7 @@ export default function BlogAINoteTakingAppForStudents() {
 
             <h2 className="font-serif text-2xl font-bold mt-12 mb-4">A note on academic integrity</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Every university has rules about AI use — read yours before you turn anything in. The
+              Every university has rules about AI use - read yours before you turn anything in. The
               safe pattern almost everywhere: use AI to <em>understand</em> material (explain, summarize,
               quiz me), not to <em>produce</em> material you submit. The apps above are built around the
               first pattern. If you want AI to write your essay, that's a different (riskier) tool category.

@@ -23,7 +23,7 @@ const cases = [
     label: "Students",
     headline: "Turn a semester of lectures into a clean revision system.",
     blurb:
-      "Organize every course in its own notebook, pull readable text out of dense PDFs, and rebuild your study notes before exams — without losing a weekend to setup.",
+      "Organize every course in its own notebook, pull readable text out of dense PDFs, and rebuild your study notes before exams - without losing a weekend to setup.",
     highlights: ["Course-based notebooks", "PDF text extraction", "Daily writing streak", "Global ⌘K search"],
     cta: "See the student workflow",
   },
@@ -43,7 +43,7 @@ const cases = [
     label: "Researchers",
     headline: "Hold a literature review together across years.",
     blurb:
-      "Annotate papers, lift quotes from PDFs with one click, search across every notebook at once, and keep your sources private — no training, no leaks.",
+      "Annotate papers, lift quotes from PDFs with one click, search across every notebook at once, and keep your sources private - no training, no leaks.",
     highlights: ["Cross-notebook search", "PDF quote extraction", "Smart tag aggregation", "Private by default"],
     cta: "See the researcher workflow",
   },
@@ -53,7 +53,7 @@ const cases = [
     label: "Project Managers",
     headline: "The notebook that survives every status meeting.",
     blurb:
-      "Capture meetings live, extract action items, and keep stakeholder context in one searchable place — from kickoff to retrospective.",
+      "Capture meetings live, extract action items, and keep stakeholder context in one searchable place - from kickoff to retrospective.",
     highlights: ["Live meeting capture", "AI summarization", "Owner-tagged action items", "Public stakeholder share links"],
     cta: "See the PM workflow",
   },
@@ -106,7 +106,7 @@ export default function UseCasesIndex() {
   return (
     <>
       <SeoHead
-        title="Use Cases — Notebook Archive"
+        title="Use Cases - Notebook Archive"
         description="Notebook Archive for students, writers, and researchers. See how a calm, AI-assisted note-taking app fits each workflow."
         path="/use-cases"
       />
@@ -154,7 +154,7 @@ export default function UseCasesIndex() {
           </div>
         </section>
 
-        {/* MARQUEE STRIP — what's inside, scrolling */}
+        {/* MARQUEE STRIP - what's inside, scrolling */}
         <section className="py-8 border-b border-border bg-muted/20 overflow-hidden marquee-pause">
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
@@ -174,7 +174,7 @@ export default function UseCasesIndex() {
         </section>
 
 
-        {/* WORKFLOW ROWS — distinctly NOT cards */}
+        {/* WORKFLOW ROWS - distinctly NOT cards */}
         <section className="py-24">
           <div className="container mx-auto px-6 max-w-5xl">
             <div className="text-center mb-14">
@@ -185,7 +185,7 @@ export default function UseCasesIndex() {
               </div>
               <h2 className="font-serif text-3xl md:text-4xl font-bold">Open the one that fits you.</h2>
               <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-                Each row is a full guide — tap through to read it.
+                Each row is a full guide - tap through to read it.
               </p>
             </div>
 
@@ -296,7 +296,7 @@ export default function UseCasesIndex() {
                 "The fastest way to know if a tool fits is to read the workflow of
                 someone exactly like you. That's what these three pages are."
               </blockquote>
-              <p className="mt-5 text-sm text-muted-foreground">— The Notebook Archive team</p>
+              <p className="mt-5 text-sm text-muted-foreground">- The Notebook Archive team</p>
             </motion.div>
           </div>
         </section>
@@ -342,7 +342,7 @@ export default function UseCasesIndex() {
                 <h3 className="font-serif text-lg font-bold mb-2 group-hover:text-primary transition">
                   Six Honest Notion Alternatives for 2026
                 </h3>
-                <p className="text-sm text-muted-foreground">For people who only ever used Notion to write — and want the docs to feel like a notebook again.</p>
+                <p className="text-sm text-muted-foreground">For people who only ever used Notion to write - and want the docs to feel like a notebook again.</p>
               </Link>
             </div>
           </div>
@@ -357,7 +357,7 @@ export default function UseCasesIndex() {
               Not sure which one to open?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-              Start with students — it covers the broadest workflow and most of what the
+              Start with students - it covers the broadest workflow and most of what the
               writer and researcher pages also explain.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

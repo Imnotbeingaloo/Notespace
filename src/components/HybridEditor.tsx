@@ -203,7 +203,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           const safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
           document.execCommand("insertHTML", false, `${safe}<p><br></p><p><br></p>`);
         } else if (/(^|\n)\s{0,3}#{1,6}\s|\n\n|\[[^\]]+\]\([^)]+\)|^[-*]\s|\|.+\|/m.test(text)) {
-          // Looks like markdown (headings, paragraphs, links, lists, tables) — render it.
+          // Looks like markdown (headings, paragraphs, links, lists, tables) - render it.
           const html = markdownToHtml(text) + "<p><br></p><p><br></p>";
           document.execCommand("insertHTML", false, html);
         } else if (text.includes("\n")) {

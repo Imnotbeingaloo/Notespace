@@ -13,7 +13,7 @@ const NotFound = () => {
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-4 py-16">
       <SeoHead
-        title="404 — Page Not Found | Notebook Archive"
+        title="404 - Page Not Found | Notebook Archive"
         description="The page you're looking for doesn't exist."
         path="/404"
       />

@@ -59,14 +59,14 @@ function AppContent() {
   }, [isMobile]);
   const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createStandaloneNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook, createNote } = useNotebooks();
 
-  // Dynamic browser tab title — reflects the current note / notebook / view
+  // Dynamic browser tab title - reflects the current note / notebook / view
   useEffect(() => {
     const base = "Notebook Archive";
     let title = base;
     if (showHome) {
       title = `Home · ${base}`;
     } else if (activeNote?.title && activeNotebook?.name) {
-      title = `${activeNote.title} — ${activeNotebook.name} · ${base}`;
+      title = `${activeNote.title} - ${activeNotebook.name} · ${base}`;
     } else if (activeNotebook?.name) {
       title = `${activeNotebook.name} · ${base}`;
     }
@@ -207,7 +207,7 @@ function AppContent() {
 
       {/* Editor / Home */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar — hidden on Home (Home is chrome-free) */}
+        {/* Top bar - hidden on Home (Home is chrome-free) */}
         {!showHome && (
         <TooltipProvider>
           <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
@@ -366,7 +366,7 @@ function AppContent() {
         </div>
       </div>
 
-      {/* Unified Create dialog — choose Note or Notebook in one popup */}
+      {/* Unified Create dialog - choose Note or Notebook in one popup */}
       <CreateNotebookDialog
         mode="choose"
         open={createMenuOpen}
@@ -399,7 +399,7 @@ function AppContent() {
       />
 
       {/* Global duplicate-title prompt (note move/rename) */}
-      {/* Home dropdown — single-kind create dialog (Notebook OR Note picked from dropdown) */}
+      {/* Home dropdown - single-kind create dialog (Notebook OR Note picked from dropdown) */}
       <CreateNotebookDialog
         mode="single"
         kind="notebook"
@@ -414,7 +414,7 @@ function AppContent() {
 
       <RenameDuplicateDialog />
 
-      {/* Temporary-note FAB removed — entry points are sidebar + home button + route */}
+      {/* Temporary-note FAB removed - entry points are sidebar + home button + route */}
     </div>
   );
 }

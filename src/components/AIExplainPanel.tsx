@@ -22,7 +22,7 @@ export function AIExplainPanel() {
     if (!activeNote) return;
     const plain = (activeNote.content || "").replace(/<[^>]*>/g, "").trim();
     if (!plain) {
-      toast.error("Notebook is empty — write something first.");
+      toast.error("Notebook is empty - write something first.");
       return;
     }
     setOpen(true);

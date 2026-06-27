@@ -457,7 +457,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  // Shared Ask-AI modal state — opened by both the Ask AI trigger and the AI Edit button.
+  // Shared Ask-AI modal state - opened by both the Ask AI trigger and the AI Edit button.
   const [askAIOpen, setAskAIOpen] = useState(false);
   const [askAIMode, setAskAIMode] = useState<"chat" | "edit">("chat");
   const openAskAI = useCallback((mode: "chat" | "edit") => { setAskAIMode(mode); setAskAIOpen(true); }, []);
@@ -474,7 +474,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     return () => window.removeEventListener("keydown", handler);
   }, [findReplaceOpen, onFindReplaceChange]);
 
-  // Sync the (uncontrolled) title input whenever the saved title diverges —
+  // Sync the (uncontrolled) title input whenever the saved title diverges -
   // e.g. NotebookContext rewrote it after a duplicate-name prompt, or the user
   // cancelled the prompt and we need to revert the input to the saved title.
   useEffect(() => {
@@ -523,7 +523,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   }, [activeNote?.id, isOverrideActive]);
 
   // Refresh stale signed URLs (older notes used a 7-day expiry). Files in storage
-  // are permanent — we just regenerate a fresh long-lived signed URL on load.
+  // are permanent - we just regenerate a fresh long-lived signed URL on load.
   useEffect(() => {
     if (!activeNote || isOverrideActive) return;
     const attachments = activeNote.attachments || [];
@@ -903,7 +903,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           onClose={() => onFindReplaceChange?.(false)}
         />
 
-        {/* Content area — scrolls internally only when content exceeds available height */}
+        {/* Content area - scrolls internally only when content exceeds available height */}
         <div className="flex-1 min-h-0 overflow-y-auto">
           <HybridEditor
             ref={hybridEditorRef}

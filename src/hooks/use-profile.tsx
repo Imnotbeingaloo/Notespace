@@ -56,7 +56,7 @@ export function useProfile() {
       .maybeSingle();
     // Amnesia bug fix: on network/server error, KEEP whatever we have (cache or
     // existing state). Never wipe a known display_name to null just because a
-    // slow/failed request returned no data — that re-triggers onboarding.
+    // slow/failed request returned no data - that re-triggers onboarding.
     if (error) {
       setLoading(false);
       return;

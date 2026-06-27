@@ -21,15 +21,15 @@ const picks = [
     name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive landing page — a quiet markdown notebook with AI explain panel",
+    imageAlt: "Notebook Archive landing page - a quiet markdown notebook with AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "For people who liked Notion's notes but never used the databases.",
     description:
-      "A serif markdown editor with notebooks, nesting, global tags, AI explain, focus mode, and plain-text export. No blocks, no databases, no formula language — just somewhere quiet to write that's still smart when you need it to be.",
+      "A serif markdown editor with notebooks, nesting, global tags, AI explain, focus mode, and plain-text export. No blocks, no databases, no formula language - just somewhere quiet to write that's still smart when you need it to be.",
     pros: [
-      "Calm, opinionated writing surface — no block hunting",
+      "Calm, opinionated writing surface - no block hunting",
       "AI side panel summarizes and explains without rewriting your text",
-      "Real markdown export — your notes are portable forever",
+      "Real markdown export - your notes are portable forever",
       "Free tier covers daily use; Pro is one flat price",
     ],
     cons: [
@@ -43,18 +43,18 @@ const picks = [
     name: "Obsidian",
     pricing: "Free; Sync $5/mo",
     imageUrl: obsidianShot.url,
-    imageAlt: "Obsidian landing page — Sharpen your thinking",
+    imageAlt: "Obsidian landing page - Sharpen your thinking",
     siteUrl: "https://obsidian.md",
     tagline: "Local-first markdown with backlinks and a graph view.",
     description:
       "Obsidian stores your notes as plain markdown files on your disk and bolts on backlinks, a graph view, and a deep plugin ecosystem. The flip side: you assemble your own workflow, and AI requires plugins and your own API keys.",
     pros: [
-      "Plain files on your device — notes outlive any app",
+      "Plain files on your device - notes outlive any app",
       "Massive plugin ecosystem covers almost any workflow",
       "Free for personal use, works fully offline",
     ],
     cons: [
-      "Steep learning curve — setup is itself a project",
+      "Steep learning curve - setup is itself a project",
       "AI requires plugins and your own API keys",
       "Sync across devices is a paid add-on",
     ],
@@ -70,7 +70,7 @@ const picks = [
     siteUrl: "https://evernote.com",
     tagline: "The original web clipper and shoebox for everything.",
     description:
-      "Evernote is built around capture — web clips, scanned receipts, PDFs, photos. It's still excellent at hoovering things in. Writing in it, though, has always been the weakest part, and pricing has crept up faster than features.",
+      "Evernote is built around capture - web clips, scanned receipts, PDFs, photos. It's still excellent at hoovering things in. Writing in it, though, has always been the weakest part, and pricing has crept up faster than features.",
     pros: [
       "Best-in-class web clipper",
       "Powerful search across PDFs and images",
@@ -93,7 +93,7 @@ const picks = [
     siteUrl: "https://www.onenote.com",
     tagline: "Free, infinite-canvas notebooks from Microsoft.",
     description:
-      "OneNote is the most generous free option on this list. Sections, pages, drawings, audio, math — it does a lot. The trade-off is that everything lives in Microsoft's universe, and the free-canvas model can get messy fast without discipline.",
+      "OneNote is the most generous free option on this list. Sections, pages, drawings, audio, math - it does a lot. The trade-off is that everything lives in Microsoft's universe, and the free-canvas model can get messy fast without discipline.",
     pros: [
       "Genuinely free with no real limits",
       "Excellent handwriting and stylus support",
@@ -112,18 +112,18 @@ const picks = [
     name: "Reflect",
     pricing: "$10/mo",
     imageUrl: reflectShot.url,
-    imageAlt: "Reflect landing page — a thinking tool",
+    imageAlt: "Reflect landing page - a thinking tool",
     siteUrl: "https://reflect.app",
     tagline: "A daily-notes app with AI baked in.",
     description:
-      "Reflect is built around the daily note — every day you get a fresh page, and links between pages form a personal wiki. AI features are first-class and use GPT-4 under the hood. Polished, opinionated, and pricey.",
+      "Reflect is built around the daily note - every day you get a fresh page, and links between pages form a personal wiki. AI features are first-class and use GPT-4 under the hood. Polished, opinionated, and pricey.",
     pros: [
       "Daily-note workflow done well",
       "AI features feel native, not bolted on",
       "End-to-end encrypted",
     ],
     cons: [
-      "Subscription-only — no free tier",
+      "Subscription-only - no free tier",
       "No long-form export beyond markdown copy/paste",
       "Daily-notes structure isn't for everyone",
     ],
@@ -135,7 +135,7 @@ const picks = [
     name: "Mem",
     pricing: "Free; Mem+ $10/mo",
     imageUrl: memShot.url,
-    imageAlt: "Mem landing page — self-organizing workspace for AI",
+    imageAlt: "Mem landing page - self-organizing workspace for AI",
     siteUrl: "https://mem.ai",
     tagline: "AI-first capture with self-organizing notes.",
     description:
@@ -146,7 +146,7 @@ const picks = [
       "Clean, modern interface",
     ],
     cons: [
-      "Limited manual organization — you mostly trust the AI",
+      "Limited manual organization - you mostly trust the AI",
       "Export is markdown but loses structure",
       "Smaller free tier than competitors",
     ],
@@ -159,7 +159,7 @@ const picks = [
 const faq = [
   {
     q: "Why look for a Notion alternative in 2026?",
-    a: "Notion grew into an everything-tool — databases, wikis, projects, docs. If you only ever used the docs, the loading times, AI add-on pricing, and block-by-block editing can feel like overhead. Most people on this list left for something lighter and faster to write in.",
+    a: "Notion grew into an everything-tool - databases, wikis, projects, docs. If you only ever used the docs, the loading times, AI add-on pricing, and block-by-block editing can feel like overhead. Most people on this list left for something lighter and faster to write in.",
   },
   {
     q: "Which Notion alternative is free?",
@@ -183,7 +183,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Notion Alternatives in 2026 — Honest Comparison",
+    headline: "Notion Alternatives in 2026 - Honest Comparison",
     description:
       "Six Notion alternatives compared honestly: Notebook Archive, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
@@ -212,8 +212,8 @@ export default function BlogNotionAlternatives() {
     <>
       <SeoHead
         type="article"
-        title="Notion Alternatives in 2026 — 6 Honest Picks Compared"
-        description="Six Notion alternatives compared with screenshots, pros and cons, and pricing — Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive."
+        title="Notion Alternatives in 2026 - 6 Honest Picks Compared"
+        description="Six Notion alternatives compared with screenshots, pros and cons, and pricing - Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive."
         path="/blog/notion-alternatives-2026"
         jsonLd={jsonLd}
       />
@@ -228,7 +228,7 @@ export default function BlogNotionAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — Notion Alternatives · Updated June 2026
+              - Notion Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">Notion Alternatives</span> for 2026
@@ -236,7 +236,7 @@ export default function BlogNotionAlternatives() {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Notion grew into an everything-tool. If you only ever opened it to write a note,
               the databases, formulas, and AI add-ons start to feel like overhead. These are the
-              six apps people actually leave for — what each one does well, where it falls short,
+              six apps people actually leave for - what each one does well, where it falls short,
               and who it's for.
             </p>
           </motion.header>

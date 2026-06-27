@@ -12,7 +12,7 @@ const ALL_LINKS: BlogLink[] = [
   {
     to: "/blog/best-note-taking-app-2026",
     title: "Best note taking app in 2026",
-    blurb: "Seven apps compared honestly — with a clear pick for each kind of person.",
+    blurb: "Seven apps compared honestly - with a clear pick for each kind of person.",
   },
   {
     to: "/blog/notion-alternatives-2026",
@@ -32,12 +32,12 @@ const ALL_LINKS: BlogLink[] = [
   {
     to: "/blog/onenote-alternatives-2026",
     title: "OneNote alternatives, compared",
-    blurb: "Structure without the freeform mess — and without Microsoft 365.",
+    blurb: "Structure without the freeform mess - and without Microsoft 365.",
   },
   {
     to: "/blog/best-ai-note-taking-apps-2026",
     title: "Best AI note taking apps",
-    blurb: "Seven apps that actually earn the 'AI' label — and which one fits you.",
+    blurb: "Seven apps that actually earn the 'AI' label - and which one fits you.",
   },
   {
     to: "/blog/best-note-taking-app-for-writers",
@@ -63,7 +63,7 @@ interface FurtherReadingProps {
 export function FurtherReading({
   slugs,
   heading = "Further reading",
-  eyebrow = "— From the blog",
+  eyebrow = "- From the blog",
 }: FurtherReadingProps) {
   const links = slugs
     ? slugs

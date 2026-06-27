@@ -74,7 +74,7 @@ export default function SharedNote() {
     <>
       {note && (
         <SeoHead
-          title={`${note.title} — Notebook Archive`}
+          title={`${note.title} - Notebook Archive`}
           description={(note.content || "").slice(0, 160).replace(/\s+/g, " ").trim() || "A shared note from Notebook Archive."}
           path={`/shared/${token ?? ""}`}
           noindex

@@ -132,7 +132,7 @@ export function SearchDialog() {
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="text-xs text-muted-foreground">
                       {note.notebookEmoji} {note.notebookName}
-                      {note.content && ` — ${note.content.slice(0, 50)}…`}
+                      {note.content && ` - ${note.content.slice(0, 50)}…`}
                     </span>
                     {note.tags?.map((tag) => (
                       <span key={tag} className="text-[9px] px-1.5 py-0 rounded-full bg-primary/10 text-primary">

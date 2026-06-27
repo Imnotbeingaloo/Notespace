@@ -13,14 +13,14 @@ const values = [
   { icon: Heart, title: "Built around the writer", description: "We design for the person staring at a blank page, not the slide where the feature gets shown off. If a thing doesn't help you write or find a note, it doesn't ship." },
   { icon: Zap, title: "Quiet by default", description: "Latency is a tax on thinking. Pages should open fast, the editor should never lag, and animations should know when to get out of the way." },
   { icon: Shield, title: "Your notes stay yours", description: "Encrypted in transit, scoped per user in the database, never sold, never used for training. The AI doesn't see a note unless you point at it." },
-  { icon: Lightbulb, title: "AI as a second pair of eyes", description: "We use the model to explain, summarize, and tag — never to write the note for you. Your voice is the point of taking notes in the first place." },
+  { icon: Lightbulb, title: "AI as a second pair of eyes", description: "We use the model to explain, summarize, and tag - never to write the note for you. Your voice is the point of taking notes in the first place." },
 ];
 
 const timeline = [
   { year: "2024 Q1", title: "The annoyance", description: "We kept bouncing between apps that were either too plain or too over-engineered. None of them helped us think; they just stored. So we sketched something else." },
   { year: "2024 Q3", title: "First usable build", description: "Markdown editor, notebooks, search. We put it in front of a small group, and what they kept asking for was the AI side, not more file management." },
   { year: "2025 Q1", title: "Explain shows up", description: "Streaming explanations beside the note, smart tags pulled from the prose itself, auto-summaries that don't lie about what's in the page." },
-  { year: "2025 Q3", title: "Sharing & teams", description: "Shared notebooks for study groups and small teams. Quieter version of co-editing than most apps ship — designed to stay out of your way." },
+  { year: "2025 Q3", title: "Sharing & teams", description: "Shared notebooks for study groups and small teams. Quieter version of co-editing than most apps ship - designed to stay out of your way." },
 ];
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
@@ -279,7 +279,7 @@ export default function AboutPage() {
   return (
     <>
       <SeoHead
-        title="About — Notebook Archive"
+        title="About - Notebook Archive"
         description="The mission and philosophy behind Notebook Archive: a focused, AI-augmented home for your thinking that respects your time and your privacy."
         path="/about"
       />
@@ -315,14 +315,14 @@ export default function AboutPage() {
 
       <AnimatedDivider />
 
-      {/* Mission & Approach — Zigzag layout */}
+      {/* Mission & Approach - Zigzag layout */}
       <section className="py-24">
         <div className="container mx-auto px-6 max-w-4xl relative">
-          {/* Center connector line — hidden on mobile */}
+          {/* Center connector line - hidden on mobile */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
 
           <div className="flex flex-col gap-16">
-            {/* Mission — left */}
+            {/* Mission - left */}
             <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
@@ -353,7 +353,7 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Approach — right */}
+            {/* Approach - right */}
             <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
               {/* Dot on the center line */}
               <div className="hidden md:flex items-center justify-end">
@@ -389,7 +389,7 @@ export default function AboutPage() {
 
       <AnimatedDivider />
 
-      {/* Philosophy — Reveal Cards */}
+      {/* Philosophy - Reveal Cards */}
       <PhilosophySection />
 
       <AnimatedDivider />
@@ -456,7 +456,7 @@ export default function AboutPage() {
               Start writing with us
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              The app is free to use and we review every piece of feedback. If something is not working, let us know — and we will address it.
+              The app is free to use and we review every piece of feedback. If something is not working, let us know - and we will address it.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
               {user ? "Open App" : "Open the app"} <ArrowRight className="h-4 w-4" />

@@ -403,7 +403,7 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                     <span className="text-muted-foreground">{interim}</span>
                   ) : (
                     <span className="text-muted-foreground/70 italic">
-                      Start speaking — your words will appear here.
+                      Start speaking - your words will appear here.
                     </span>
                   )}
                 </div>

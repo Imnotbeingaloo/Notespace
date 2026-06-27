@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/sonner";
 
-const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB — in-note attachments (videos, large PDFs).
-const MAX_SIDEBAR_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB — sidebar upload
+const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB - in-note attachments (videos, large PDFs).
+const MAX_SIDEBAR_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB - sidebar upload
 
 // Strict allow-list. HTML, SVG, and executables are intentionally excluded
 // because they can carry active content (scripts) that could be rendered later.
@@ -110,7 +110,7 @@ export function isImageFile(file: File): boolean {
   return file.type.startsWith("image/") && !file.type.includes("svg");
 }
 
-// Kept for backwards compatibility (no longer used — HTML is blocked).
+// Kept for backwards compatibility (no longer used - HTML is blocked).
 export function isHtmlFile(_file: File): boolean {
   return false;
 }

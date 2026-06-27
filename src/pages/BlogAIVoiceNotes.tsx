@@ -27,22 +27,22 @@ const picks = [
     name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive — a quiet markdown notebook with built-in AI",
+    imageAlt: "Notebook Archive - a quiet markdown notebook with built-in AI",
     siteUrl: "https://notebookarchive.lovable.app",
-    tagline: "Voice in, organized markdown out — without the meeting-bot vibe.",
+    tagline: "Voice in, organized markdown out - without the meeting-bot vibe.",
     description:
       "Dictate or paste a transcript and Notebook Archive turns it into clean, structured markdown inside a real notebook. The AI explain panel summarizes long transcripts into headings and bullets without rewriting your voice. No meeting bots joining calls uninvited.",
     pros: [
       "Voice-to-text inside the editor, then real markdown structure on top",
       "AI explain panel summarizes transcripts into headings and bullets",
-      "Notes live in notebooks with tags and search — not a transcript dump",
+      "Notes live in notebooks with tags and search - not a transcript dump",
       "Markdown export so transcripts outlive the app",
     ],
     cons: [
       "No automatic meeting-bot that joins Zoom/Meet calls",
       "Speaker diarization is basic compared to Otter",
     ],
-    bestFor: "Writers, researchers, and students who want voice as an input — not a separate transcript app.",
+    bestFor: "Writers, researchers, and students who want voice as an input - not a separate transcript app.",
     disclosure: "Disclosure: this is the product we make. Selection criteria are listed up top.",
   },
   {
@@ -53,14 +53,14 @@ const picks = [
     siteUrl: "https://otter.ai",
     tagline: "The default for live meeting transcription.",
     description:
-      "Otter joins your Zoom, Google Meet, and Teams calls and ships a searchable transcript with speaker labels and a short AI summary. It's the best-in-class for live meetings — but the output stays in Otter, not in your note system.",
+      "Otter joins your Zoom, Google Meet, and Teams calls and ships a searchable transcript with speaker labels and a short AI summary. It's the best-in-class for live meetings - but the output stays in Otter, not in your note system.",
     pros: [
       "Live transcription with strong speaker diarization",
       "OtterPilot joins meetings automatically",
       "Decent AI summaries and action item extraction",
     ],
     cons: [
-      "Notes are stuck inside Otter — exports are awkward",
+      "Notes are stuck inside Otter - exports are awkward",
       "Free tier capped at 300 minutes/month",
       "Meeting bot joining calls can feel intrusive to other attendees",
     ],
@@ -74,7 +74,7 @@ const picks = [
     siteUrl: "https://www.notion.so/product/ai",
     tagline: "Voice notes inside a wiki, with AI that rewrites them.",
     description:
-      "Notion's mobile app records audio and transcribes it into a page. Notion AI then summarizes or rewrites the transcript inside the same doc. Great if your whole team already lives in Notion — less great as a focused voice-notes tool.",
+      "Notion's mobile app records audio and transcribes it into a page. Notion AI then summarizes or rewrites the transcript inside the same doc. Great if your whole team already lives in Notion - less great as a focused voice-notes tool.",
     pros: [
       "Voice capture + AI summary in one place",
       "Shared workspace for team-wide voice notes",
@@ -95,9 +95,9 @@ const picks = [
     description:
       "Run Whisper locally or via API through a community plugin, and Obsidian becomes a private voice-notes setup. Transcripts stay on your machine. Setup time is real, and AI summarization needs another plugin on top.",
     pros: [
-      "Local-first — voice data never leaves your device if you run Whisper locally",
+      "Local-first - voice data never leaves your device if you run Whisper locally",
       "Free, scriptable, plugin-extensible",
-      "Markdown forever — your transcripts are portable",
+      "Markdown forever - your transcripts are portable",
     ],
     cons: [
       "Plugin assembly and config required",
@@ -113,7 +113,7 @@ const picks = [
     siteUrl: "https://mem.ai",
     tagline: "Capture-first voice notes that the AI organizes for you.",
     description:
-      "Mem encourages a stream of quick captures — including voice — and uses AI to auto-tag and connect them. It's the right shape if your problem is 'I record a lot and never organize anything'.",
+      "Mem encourages a stream of quick captures - including voice - and uses AI to auto-tag and connect them. It's the right shape if your problem is 'I record a lot and never organize anything'.",
     pros: [
       "Frictionless mobile capture, including voice",
       "AI auto-organizes and links related notes",
@@ -133,7 +133,7 @@ const faq = [
   },
   {
     q: "Are AI meeting transcription apps accurate enough to rely on?",
-    a: "For clear English audio with good microphones, Whisper-based and Otter transcripts are 90%+ accurate. Heavy accents, overlapping speakers, and bad audio still produce errors — always skim the transcript before sharing it as source-of-truth.",
+    a: "For clear English audio with good microphones, Whisper-based and Otter transcripts are 90%+ accurate. Heavy accents, overlapping speakers, and bad audio still produce errors - always skim the transcript before sharing it as source-of-truth.",
   },
   {
     q: "Is it legal to record meetings with an AI note taker?",
@@ -155,7 +155,7 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best AI Voice Note Taking and Meeting Transcription Apps in 2026",
     description:
-      "Five honest picks for AI voice notes and meeting transcription — Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
+      "Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
     datePublished: "2026-06-27",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
@@ -183,7 +183,7 @@ export default function BlogAIVoiceNotes() {
       <SeoHead
         type="article"
         title="Best AI Voice Note Taking & Meeting Transcription Apps (2026)"
-        description="Five honest picks for AI voice notes and meeting transcription — Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem. With pricing, pros and cons."
+        description="Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem. With pricing, pros and cons."
         path="/blog/ai-voice-notes-meeting-transcription"
         jsonLd={jsonLd}
       />
@@ -198,14 +198,14 @@ export default function BlogAIVoiceNotes() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — AI Voice Notes · Updated June 2026
+              - AI Voice Notes · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">AI Voice Note Taking</span> Apps in 2026
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Voice-to-text has finally crossed the line from "novelty" to "real input method".
-              These are the five apps that turn your voice into something you'll actually re-read —
+              These are the five apps that turn your voice into something you'll actually re-read -
               from full meeting transcripts to quick dictated thoughts.
             </p>
           </motion.header>
@@ -253,7 +253,7 @@ export default function BlogAIVoiceNotes() {
               Voice in. Real notes out.
             </p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive turns dictation and transcripts into clean, organized markdown — free to start, no meeting bot required.
+              Notebook Archive turns dictation and transcripts into clean, organized markdown - free to start, no meeting bot required.
             </p>
             <Link
               to={CTA}

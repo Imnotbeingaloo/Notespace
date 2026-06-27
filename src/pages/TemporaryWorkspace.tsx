@@ -273,7 +273,7 @@ function TemporaryWorkspaceInner() {
                 <SheetHeader>
                   <SheetTitle>Your notebooks</SheetTitle>
                 </SheetHeader>
-                <p className="text-xs text-muted-foreground mt-1">Open in a new tab — your temporary work stays untouched.</p>
+                <p className="text-xs text-muted-foreground mt-1">Open in a new tab - your temporary work stays untouched.</p>
                 <div className="mt-4 space-y-3">
                   {notebooks.length === 0 && (
                     <p className="text-xs text-muted-foreground italic">No notebooks yet.</p>
@@ -298,7 +298,7 @@ function TemporaryWorkspaceInner() {
         </div>
       </TooltipProvider>
 
-      {/* Full NoteEditor — receives the override note from context */}
+      {/* Full NoteEditor - receives the override note from context */}
       <div className="flex-1 flex flex-col min-h-0 pt-14">
         <NoteEditor />
       </div>
@@ -390,7 +390,7 @@ function TemporaryWorkspaceInner() {
 export default function TemporaryWorkspace() {
   return (
     <NotebookProvider>
-      <NoindexHead title="Temporary Workspace — Notebook Archive" />
+      <NoindexHead title="Temporary Workspace - Notebook Archive" />
       <TemporaryWorkspaceInner />
     </NotebookProvider>
   );

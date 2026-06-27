@@ -3,7 +3,7 @@ import { forwardRef, useState } from "react";
 /**
  * Friendly ghost icon. Interactive in two ways:
  *  1. Hovering the SVG itself wiggles + winks (works when icon is large enough).
- *  2. If the parent has the `group` class, it also reacts to that hover —
+ *  2. If the parent has the `group` class, it also reacts to that hover -
  *     useful when the icon is small inside a larger button.
  */
 export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
@@ -38,7 +38,7 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
           />
           {/* Left eye (always open) */}
           <circle cx="9.5" cy="11" r="0.9" fill="currentColor" stroke="none" />
-          {/* Right eye — open by default, winks (becomes a line) on hover */}
+          {/* Right eye - open by default, winks (becomes a line) on hover */}
           <circle
             cx="14.5" cy="11" r="0.9"
             fill="currentColor" stroke="none"
@@ -49,7 +49,7 @@ export const ScratchIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElemen
             strokeWidth="1.8"
             className="transition-opacity duration-150 opacity-0 group-hover/ghost:opacity-100 group-hover:opacity-100"
           />
-          {/* Mouth — small line resting, smiley arc on hover */}
+          {/* Mouth - small line resting, smiley arc on hover */}
           <path
             d="M11.2 13.8c.4-.4 1.2-.4 1.6 0"
             className="transition-opacity duration-150 opacity-100 group-hover/ghost:opacity-0 group-hover:opacity-0"

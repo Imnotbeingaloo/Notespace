@@ -94,7 +94,7 @@ export default function LandingPage() {
 
     const currentLine = editorLines[visibleLines];
 
-    // Empty lines — just pause briefly then advance
+    // Empty lines - just pause briefly then advance
     if (currentLine.text === "") {
       const timeout = setTimeout(() => {
         setVisibleLines((v) => v + 1);
@@ -104,7 +104,7 @@ export default function LandingPage() {
       return () => clearTimeout(timeout);
     }
 
-    // Typing in progress — use rAF for smooth, consistent rendering
+    // Typing in progress - use rAF for smooth, consistent rendering
     if (currentCharIndex < currentLine.text.length) {
       let rafId: number;
       let lastTime = 0;
@@ -128,7 +128,7 @@ export default function LandingPage() {
       return () => cancelAnimationFrame(rafId);
     }
 
-    // Line complete — advance immediately to next line
+    // Line complete - advance immediately to next line
     const nextLine = editorLines[visibleLines + 1];
     const timeout = setTimeout(() => {
       setVisibleLines((v) => v + 1);
@@ -146,7 +146,7 @@ export default function LandingPage() {
   return (
     <>
       <SeoHead
-        title="Notebook Archive — AI Note Taking App for Writing & Research"
+        title="Notebook Archive - AI Note Taking App for Writing & Research"
         description="An AI note taking app for writers, students, and researchers. Capture ideas, organize notebooks, and let AI help only where it actually matters."
         path="/"
         jsonLd={{
@@ -260,7 +260,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.35 }}
                 className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed"
               >
-                A quiet place to write, link, and revisit your ideas — with intelligence woven in only where it actually helps.
+                A quiet place to write, link, and revisit your ideas - with intelligence woven in only where it actually helps.
               </motion.p>
 
               <motion.div
@@ -288,7 +288,7 @@ export default function LandingPage() {
               </motion.p>
             </div>
 
-            {/* Right: manuscript vignette — desktop only */}
+            {/* Right: manuscript vignette - desktop only */}
             <div className="hidden md:block md:col-span-5 relative md:pt-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -494,13 +494,13 @@ export default function LandingPage() {
               Simple to start. <span className="text-primary">Powerful</span> when you need it.
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Begin writing in under a minute. No configuration, no learning curve — open the app and start.
+              Begin writing in under a minute. No configuration, no learning curve - open the app and start.
             </p>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-10">
             {[
               { step: "1", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly." },
-              { step: "2", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews — then adapt it to your workflow." },
+              { step: "2", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews - then adapt it to your workflow." },
               { step: "3", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress." },
             ].map((item, i) => (
               <motion.div
@@ -538,7 +538,7 @@ export default function LandingPage() {
             {[
               { quote: "The first note-taking tool that genuinely engages with what I write. The Explain panel adds real value to my research workflow.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
               { quote: "Indispensable during finals. Highlighting a concept and receiving a clear explanation is far more efficient than searching elsewhere.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-              { quote: "We migrated our team documentation from another platform. The search alone justified the move — I find information in seconds.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+              { quote: "We migrated our team documentation from another platform. The search alone justified the move - I find information in seconds.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
             ].map((t, i) => (
               <motion.div
                 key={t.name}
@@ -576,7 +576,7 @@ export default function LandingPage() {
               Ready to think more clearly?
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              The free plan is the full product — no credit card, no trial timer, no upsell wall. Open it and start writing.
+              The free plan is the full product - no credit card, no trial timer, no upsell wall. Open it and start writing.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
               {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />

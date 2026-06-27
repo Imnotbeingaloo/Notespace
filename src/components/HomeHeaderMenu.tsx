@@ -58,7 +58,7 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
               <p className="text-sm font-semibold text-foreground truncate">{profile.display_name}</p>
             )}
             <p className="text-[11px] text-muted-foreground truncate" title={user?.email || ""}>
-              {user?.email || "—"}
+              {user?.email || "-"}
             </p>
           </div>
 

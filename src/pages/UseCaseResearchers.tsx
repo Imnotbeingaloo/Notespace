@@ -24,7 +24,7 @@ export default function UseCaseResearchers() {
   return (
     <>
       <SeoHead
-        title="Note-Taking App for Researchers — Notebook Archive"
+        title="Note-Taking App for Researchers - Notebook Archive"
         description="Annotate papers, summarize PDFs, and retrieve quotes across every notebook. Built for serious research."
         path="/use-cases/researchers"
       />
@@ -34,15 +34,15 @@ export default function UseCaseResearchers() {
         intro="Read, annotate, and cross-reference without losing a single source. Built for literature reviews, fieldwork, and long projects."
         primaryCta={{ label: "Start free", to: "/auth" }}
         overview={[
-          "Research projects accumulate material the way old hard drives accumulate files — fast, in inconsistent formats, with relevance that only becomes clear months later. The note-taking system you choose at the start of a project determines whether month 18 is productive or paralyzing.",
+          "Research projects accumulate material the way old hard drives accumulate files - fast, in inconsistent formats, with relevance that only becomes clear months later. The note-taking system you choose at the start of a project determines whether month 18 is productive or paralyzing.",
           "Notebook Archive is structured for the long arc of research: deep nested notebooks for organizing literature by topic, tags for the methodological threads that cut across topics, a global search that treats every PDF and note as one corpus, and AI explanations for the moments when a paper introduces a concept you need to internalize without an hour of background reading.",
-          "It is not a reference manager — Zotero or Mendeley still own that workflow. It is the place where your reading, annotation, and writing happen, with citations exported into whatever pipeline you already use.",
+          "It is not a reference manager - Zotero or Mendeley still own that workflow. It is the place where your reading, annotation, and writing happen, with citations exported into whatever pipeline you already use.",
         ]}
         sections={[
           {
             title: "Every source in one place",
             body:
-              "Upload papers as PDFs and capture quotes inline. Annotate with your own commentary, tag by methodology or theme, and link back to the original document whenever you need to verify a claim. The original PDF stays attached to the note — verification is always one click away.",
+              "Upload papers as PDFs and capture quotes inline. Annotate with your own commentary, tag by methodology or theme, and link back to the original document whenever you need to verify a claim. The original PDF stays attached to the note - verification is always one click away.",
             bullets: [
               "PDF text extraction with searchable transcripts (up to 1 GB per file)",
               "Standalone notes for quick observations and field captures",
@@ -65,7 +65,7 @@ export default function UseCaseResearchers() {
             body:
               "A doctoral project runs four to six years. The system you start with has to survive switching laptops, changing supervisors, and a meaningful revision of your research question. Notebook Archive is structured to absorb that change: deep nesting, tag-based cross-referencing, and Markdown export mean nothing is locked in.",
             bullets: [
-              "Arbitrary nesting depth — fields, sub-fields, projects, papers",
+              "Arbitrary nesting depth - fields, sub-fields, projects, papers",
               "Tag-based pivots when your research question shifts",
               "Markdown and PDF export for archival and submission",
               "Public share links for sharing findings with co-authors or supervisors",
@@ -79,14 +79,14 @@ export default function UseCaseResearchers() {
           {
             title: "Works alongside Zotero and your reference manager",
             body:
-              "Notebook Archive is where you read, think, and write — not where you manage citations. Keep your bibliography in Zotero, Mendeley, or BibTeX. Drop the PDFs into Notebook Archive for annotation and synthesis. Export your draft to Markdown, run it through pandoc with your .bib file, and your final document carries proper citations.",
+              "Notebook Archive is where you read, think, and write - not where you manage citations. Keep your bibliography in Zotero, Mendeley, or BibTeX. Drop the PDFs into Notebook Archive for annotation and synthesis. Export your draft to Markdown, run it through pandoc with your .bib file, and your final document carries proper citations.",
           },
         ]}
         scenarios={[
           {
             situation: "You're writing a literature review and need to find every paper you've read that uses regression discontinuity.",
             problem: "You tagged some papers but not all of them, and your folder structure groups by topic not by method.",
-            solution: "Search ⌘K for 'regression discontinuity'. Every paper where the phrase appears in the extracted text surfaces, regardless of folder. Add the #rdd tag to the ones that matter — next time the lookup is a single click.",
+            solution: "Search ⌘K for 'regression discontinuity'. Every paper where the phrase appears in the extracted text surfaces, regardless of folder. Add the #rdd tag to the ones that matter - next time the lookup is a single click.",
           },
           {
             situation: "Your supervisor asks for your annotated bibliography on a topic.",
@@ -107,19 +107,19 @@ export default function UseCaseResearchers() {
         painPoints={[
           {
             problem: "I already use Zotero / Mendeley / EndNote.",
-            answer: "Keep using it. Notebook Archive replaces the place you write, annotate, and synthesize — not the place you manage citations. Bibliography stays in your reference manager; the writing happens here.",
+            answer: "Keep using it. Notebook Archive replaces the place you write, annotate, and synthesize - not the place you manage citations. Bibliography stays in your reference manager; the writing happens here.",
           },
           {
-            problem: "I need formal citation export — BibTeX, APA, Chicago.",
+            problem: "I need formal citation export - BibTeX, APA, Chicago.",
             answer: "Honest answer: native citation export isn't shipped. The standard workflow is to write in Notebook Archive, export to Markdown, run it through pandoc with your .bib file, and let pandoc generate citations in whatever style your venue requires." ,
           },
           {
-            problem: "I work with sensitive data — interviews, medical, classified.",
-            answer: "Notes are encrypted at rest, private by default, and never sent to AI unless you explicitly send them. For genuinely sensitive material that can't leave a controlled environment, run the AI features off — the editor and storage are still usable on their own." ,
+            problem: "I work with sensitive data - interviews, medical, classified.",
+            answer: "Notes are encrypted at rest, private by default, and never sent to AI unless you explicitly send them. For genuinely sensitive material that can't leave a controlled environment, run the AI features off - the editor and storage are still usable on their own." ,
           },
           {
             problem: "I co-author papers with multiple collaborators.",
-            answer: "Public share links give read-only access to a note. Real-time co-editing is on the roadmap but not shipped — the current workflow is to export, share, and merge edits manually. If real-time collaboration is a hard requirement, this is the wrong tool today." ,
+            answer: "Public share links give read-only access to a note. Real-time co-editing is on the roadmap but not shipped - the current workflow is to export, share, and merge edits manually. If real-time collaboration is a hard requirement, this is the wrong tool today." ,
           },
           {
             problem: "PDFs of scanned documents don't have text.",
@@ -127,7 +127,7 @@ export default function UseCaseResearchers() {
           },
           {
             problem: "I need version history for journal submissions.",
-            answer: "Frequent autosave keeps recent state safe. Granular version history isn't shipped yet — the workaround is to export to Markdown periodically and commit to a local git repo. Built-in versions are planned." ,
+            answer: "Frequent autosave keeps recent state safe. Granular version history isn't shipped yet - the workaround is to export to Markdown periodically and commit to a local git repo. Built-in versions are planned." ,
           },
         ]}
         comparison={{
@@ -153,7 +153,7 @@ export default function UseCaseResearchers() {
           { step: "Archive", title: "Close out the project", body: "Export the entire project to Markdown for long-term archival. The corpus stays portable across institutions and decades." },
         ]}
         tips={[
-          { title: "Tag by method, not just by topic", body: "Topic clusters are obvious from notebook structure. The high-value tags are methodological — #rdd, #ethnography, #meta_analysis — because they cut across topics in ways folders can't." },
+          { title: "Tag by method, not just by topic", body: "Topic clusters are obvious from notebook structure. The high-value tags are methodological - #rdd, #ethnography, #meta_analysis - because they cut across topics in ways folders can't." },
           { title: "One notebook per literature, not per paper", body: "Group papers into a single topical notebook; one note per paper. Sub-notebooks are for genuinely distinct sub-literatures." },
           { title: "Capture verbatim quotes, not paraphrases", body: "Drift between paraphrase and quote is the most common citation error. When you quote, mark it as a quote. Your future self will thank you when you're writing footnotes." },
           { title: "Use standalone notes for ideas, notebook notes for sources", body: "Keeps the source corpus clean and your idea stream visible. Sweep ideas into the right notebook when they mature." },
@@ -162,7 +162,7 @@ export default function UseCaseResearchers() {
         ]}
         faqs={[
           { q: "How large can the PDFs be?", a: "Up to 1 GB per file. Text extraction runs locally in your browser for speed and privacy." },
-          { q: "Can I share findings with collaborators?", a: "Yes — public share links generate a read-only page secured by token. Revoke access in one click. Real-time co-editing is on the roadmap but not shipped." },
+          { q: "Can I share findings with collaborators?", a: "Yes - public share links generate a read-only page secured by token. Revoke access in one click. Real-time co-editing is on the roadmap but not shipped." },
           { q: "Is there a citation manager?", a: "Not yet a full reference manager. The intended workflow is Zotero (or similar) for citations, Notebook Archive for reading, synthesis, and writing, pandoc to merge the two at export." },
           { q: "How is my data stored?", a: "Encrypted at rest, private by default, accessible only to you unless you explicitly share. AI access is opt-in per request and never trains models." },
           { q: "Does it support LaTeX?", a: "Markdown export carries through to pandoc, which produces LaTeX. Inline LaTeX equations render in the editor via Markdown math syntax." },

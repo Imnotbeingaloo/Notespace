@@ -12,7 +12,7 @@ const picks = [
   {
     name: "Notebook Archive",
     tagline: "Die KI-Notizen-App für Menschen, die wirklich schreiben.",
-    why: "Sauberer Markdown-Editor mit Serifenschrift, Fokus-Modus, tägliches Wortziel und KI, die Konzepte erklärt und Quellen zusammenfasst — ohne deinen Text neu zu schreiben. Notizbücher lassen sich verschachteln, Tags sind global, und alles lässt sich als Markdown exportieren.",
+    why: "Sauberer Markdown-Editor mit Serifenschrift, Fokus-Modus, tägliches Wortziel und KI, die Konzepte erklärt und Quellen zusammenfasst - ohne deinen Text neu zu schreiben. Notizbücher lassen sich verschachteln, Tags sind global, und alles lässt sich als Markdown exportieren.",
     pricing: "Kostenlos; Pro 19 $/Monat",
     bestFor: "Autoren, Studierende und Forschende, die jeden Tag schreiben.",
     disclosure: "Hinweis: Das ist unser eigenes Produkt. Bewertungskriterien siehe unten.",
@@ -37,7 +37,7 @@ const picks = [
   {
     name: "Mem",
     tagline: "Die App, die sich selbst sortiert.",
-    why: "Auto-Tagging und ähnliche-Notizen-Vorschläge. Gut, wenn du Ordner hasst — schlecht, wenn du Struktur brauchst.",
+    why: "Auto-Tagging und ähnliche-Notizen-Vorschläge. Gut, wenn du Ordner hasst - schlecht, wenn du Struktur brauchst.",
     pricing: "Kostenlos; Mem X 14,99 $/Monat",
     bestFor: "Menschen, die einfach drauflosschreiben wollen.",
     icon: Sparkles,
@@ -47,11 +47,11 @@ const picks = [
 const faq = [
   {
     q: "Was ist die beste KI-Notizen-App im Jahr 2026?",
-    a: "Es kommt darauf an, wie du arbeitest. Wenn du täglich schreibst und KI als zweites Paar Augen willst — nicht als Ghostwriter — passt Notebook Archive am besten. Wenn du ein vollständiges Team-Wiki brauchst, ist Notion die solidere Wahl. Wenn dir Datenschutz und lokale Dateien wichtig sind, nimm Obsidian.",
+    a: "Es kommt darauf an, wie du arbeitest. Wenn du täglich schreibst und KI als zweites Paar Augen willst - nicht als Ghostwriter - passt Notebook Archive am besten. Wenn du ein vollständiges Team-Wiki brauchst, ist Notion die solidere Wahl. Wenn dir Datenschutz und lokale Dateien wichtig sind, nimm Obsidian.",
   },
   {
     q: "Gibt es eine kostenlose KI-Notizen-App auf Deutsch?",
-    a: "Ja. Notebook Archive, Notion und Obsidian funktionieren alle auf Deutsch und haben kostenlose Tarife, die für den echten Alltag reichen. Kostenlose Tarife begrenzen meist die monatliche KI-Nutzung — genau das solltest du vergleichen, nicht den Headline-Preis.",
+    a: "Ja. Notebook Archive, Notion und Obsidian funktionieren alle auf Deutsch und haben kostenlose Tarife, die für den echten Alltag reichen. Kostenlose Tarife begrenzen meist die monatliche KI-Nutzung - genau das solltest du vergleichen, nicht den Headline-Preis.",
   },
   {
     q: "Sind meine Notizen sicher in einer KI-Notizen-App?",
@@ -68,9 +68,9 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "Article",
     inLanguage: "de",
-    headline: "Die beste KI-Notizen-App 2026 — ehrlicher Vergleich",
+    headline: "Die beste KI-Notizen-App 2026 - ehrlicher Vergleich",
     description:
-      "Ein ehrlicher Vergleich der besten KI-Notizen-Apps für Autoren, Studierende und Forschende — Notebook Archive, Notion, Obsidian und Mem.",
+      "Ein ehrlicher Vergleich der besten KI-Notizen-Apps für Autoren, Studierende und Forschende - Notebook Archive, Notion, Obsidian und Mem.",
     datePublished: "2026-06-27",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
@@ -101,8 +101,8 @@ export default function BlogKiNotizenApp() {
     <>
       <SeoHead
         type="article"
-        title="Die beste KI-Notizen-App 2026 — ehrlicher Vergleich"
-        description="Die KI-Notizen-Apps, die wirklich funktionieren — Notebook Archive, Notion, Obsidian und Mem im ehrlichen Vergleich. Preise, Funktionen, für wen jede App geeignet ist."
+        title="Die beste KI-Notizen-App 2026 - ehrlicher Vergleich"
+        description="Die KI-Notizen-Apps, die wirklich funktionieren - Notebook Archive, Notion, Obsidian und Mem im ehrlichen Vergleich. Preise, Funktionen, für wen jede App geeignet ist."
         path="/blog/ki-notizen-app"
         jsonLd={jsonLd}
       />
@@ -117,7 +117,7 @@ export default function BlogKiNotizenApp() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — Vergleich · Aktualisiert Juni 2026
+              - Vergleich · Aktualisiert Juni 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Die beste <span className="text-primary">KI-Notizen-App</span> im Jahr 2026
@@ -125,7 +125,7 @@ export default function BlogKiNotizenApp() {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Etwa vierzig Apps nennen sich gerade „KI-Notizen-Apps". Die meisten sind getarnte
               Meeting-Transkribierer oder Chat-Hüllen um deine Notizen. Wir haben die wenigen
-              ausprobiert, die den Namen verdienen — und aufgeschrieben, welche wir einem Freund
+              ausprobiert, die den Namen verdienen - und aufgeschrieben, welche wir einem Freund
               empfehlen würden, je nachdem wie er arbeitet.
             </p>
           </motion.header>
@@ -134,7 +134,7 @@ export default function BlogKiNotizenApp() {
             <h2 className="font-serif text-2xl font-bold mt-12 mb-4">Was eine echte KI-Notizen-App ausmacht</h2>
             <p className="text-muted-foreground leading-relaxed">
               Eine KI-Notizen-App sollte dich Notizen schreiben lassen, sie organisieren und dir
-              echte Hilfe vom Modell geben — nicht nur einen Knopf namens „KI", der ein Chatfenster
+              echte Hilfe vom Modell geben - nicht nur einen Knopf namens „KI", der ein Chatfenster
               öffnet. Wir haben alles aussortiert, was nur Meeting-Transkription macht, alles, was
               im Kern ein Wiki mit aufgesetzter KI ist, und alles, bei dem die KI nicht über deine
               eigenen Notizen nachdenken kann. Vier sind übrig geblieben.

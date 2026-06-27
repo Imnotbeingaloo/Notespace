@@ -37,7 +37,7 @@ vi.mock("@/context/NotebookContext", () => ({
   useNotebooks: () => ({ notebooks: fixture, loading: false, refreshData: vi.fn() }),
 }));
 
-describe("HomeView a11y — keyboard reachability & focus styles", () => {
+describe("HomeView a11y - keyboard reachability & focus styles", () => {
   beforeEach(() => {
     Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1440 });
   });

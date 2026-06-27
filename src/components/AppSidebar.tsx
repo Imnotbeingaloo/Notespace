@@ -273,7 +273,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
       className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
     >
-      {/* Header — collapsed state matches the editor topbar height (48px + 1px border)
+      {/* Header - collapsed state matches the editor topbar height (48px + 1px border)
           so the horizontal divider continues flush across the entire app width. */}
       <div
         className={
@@ -304,7 +304,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 type="button"
                 onClick={() => onOpenHome?.()}
                 className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-1"
-                title="Home — All documents"
+                title="Home - All documents"
               >
                 <Home className="h-4 w-4" />
               </button>
@@ -357,7 +357,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <button
               onClick={() => !sidebarUploadProcessing && sidebarUploadRef.current?.click()}
               disabled={sidebarUploadProcessing}
-              title="Upload a file (PDF, EPUB, DOCX, TXT, MD, CSV, JSON, images — up to 1 GB)."
+              title="Upload a file (PDF, EPUB, DOCX, TXT, MD, CSV, JSON, images - up to 1 GB)."
               className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground notebook-hover rounded-lg magnetic-btn disabled:cursor-wait disabled:opacity-70"
             >
               {sidebarUploadProcessing ? (
@@ -400,7 +400,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             {tempNotesEnabled && (
               <Link
                 to="/app/temporary"
-                title="Open a temporary workspace — auto-deletes after 24h."
+                title="Open a temporary workspace - auto-deletes after 24h."
                 className="w-full flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-lg magnetic-btn transition-colors active:scale-[0.98]"
               >
                 <ScratchIcon className="h-3.5 w-3.5" />
@@ -617,7 +617,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     </button>
                   </div>
 
-                  {/* Nested notes — shown when this notebook is active or expanded. */}
+                  {/* Nested notes - shown when this notebook is active or expanded. */}
                   <AnimatePresence initial={false}>
                     {(activeNotebookId === nb.id || expandedNotebook === nb.id) && (
                       <motion.div
@@ -948,7 +948,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               </AnimatePresence>
             </>
           ) : upcomingPlans.length === 1 ? (
-            /* Single plan — show inline, no dropdown */
+            /* Single plan - show inline, no dropdown */
             <div className="px-1">
               <p className="text-xs uppercase tracking-wider font-semibold text-muted-foreground px-2 mb-1.5 mt-2 flex items-center gap-1.5">
                 <CalendarDays className="h-3 w-3" />
@@ -975,7 +975,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               })()}
             </div>
           ) : (
-            /* No plans — helpful message */
+            /* No plans - helpful message */
             <div className="px-1">
               <p className="text-xs uppercase tracking-wider font-semibold text-muted-foreground px-2 mb-1.5 mt-2 flex items-center gap-1.5">
                 <CalendarDays className="h-3 w-3" />
@@ -1071,7 +1071,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         onProcessingChange={setSidebarUploadProcessing}
       />
 
-      {/* Unified Create dialog — choose Note or Notebook in one popup */}
+      {/* Unified Create dialog - choose Note or Notebook in one popup */}
       <CreateNotebookDialog
         mode="choose"
         open={createMenuOpen}

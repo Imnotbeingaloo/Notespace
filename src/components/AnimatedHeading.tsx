@@ -13,7 +13,7 @@ interface AnimatedHeadingProps {
 }
 
 /**
- * Cinematic heading reveal — fades each token up with a tiny stagger.
+ * Cinematic heading reveal - fades each token up with a tiny stagger.
  */
 export function AnimatedHeading({
   text,

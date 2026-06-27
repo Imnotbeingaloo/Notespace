@@ -110,7 +110,7 @@ function buildPageMarkdown(items: PdfItem[]): string {
 function stripPageChrome(text: string): string {
   return text
     .replace(/^\s*(?:page\s+)?\d+\s*(?:\/|of)\s*\d+\s*$/gim, "")
-    .replace(/^\s*[-–—]?\s*\d{1,4}\s*[-–—]?\s*$/gm, "")
+    .replace(/^\s*[-–-]?\s*\d{1,4}\s*[-–-]?\s*$/gm, "")
     .trim();
 }
 
