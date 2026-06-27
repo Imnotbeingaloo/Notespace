@@ -243,6 +243,17 @@ export default function PricingPage() {
 
       <AnimatedDivider />
 
+      <FurtherReading
+        slugs={[
+          "notion-alternatives-2026",
+          "evernote-alternatives-2026",
+          "obsidian-alternatives-2026",
+        ]}
+        heading="Comparing tools? Start here."
+      />
+
+      <AnimatedDivider />
+
       {/* CTA */}
       <section className="bg-foreground/[0.04] py-20">
         <div className="container mx-auto px-6">
