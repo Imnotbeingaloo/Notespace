@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      auth_failure_logs: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          reason: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          reason: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          reason?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       notebooks: {
         Row: {
           created_at: string
