@@ -14,33 +14,33 @@ const groups = [
     title: "Writing",
     kicker: "The canvas",
     blurb:
-      "Writing should feel close to thinking. The editor stays quiet by default, and the tools you actually use sit one keystroke away when you reach for them.",
+      "Writing should feel close to thinking. The editor remains quiet by default, with the tools you use most a single keystroke away.",
     items: [
-      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a toolbar built around long pages, not landing copy. Word count, character count, and read time tick in the footer as you type.", deepLink: "/app", linkLabel: "Open the editor" },
-      { Icon: Wand2, name: "AI explanations", desc: "Highlight a phrase, hit Explain, and the answer streams in beside your note. You stay on the page; the model does the reading.", deepLink: "/app", linkLabel: "Try it in a note" },
-      { Icon: Layers, name: "Templates", desc: "Skip the blank page. Lectures, meetings, weekly reviews, research starts — pick a scaffold and start filling it in.", deepLink: "/app", linkLabel: "Pick a template" },
+      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a toolbar designed for long-form work. Word count, character count, and read time update live in the footer.", deepLink: "/app", linkLabel: "Open the editor" },
+      { Icon: Wand2, name: "AI explanations", desc: "Highlight a phrase, select Explain, and a clear answer streams in beside your note. You stay focused on writing.", deepLink: "/app", linkLabel: "Try it in a note" },
+      { Icon: Layers, name: "Templates", desc: "Begin with a structured layout for lectures, meetings, weekly reviews, or research — then adapt to fit your work.", deepLink: "/app", linkLabel: "Pick a template" },
     ],
   },
   {
     title: "Organization",
     kicker: "The system",
     blurb:
-      "Notes only matter if you can find them again. Tags collect themselves across notebooks, sessions get planned, and a Pomodoro keeps you honest about the part where you actually sit and work.",
+      "Notes are only valuable when they remain accessible. Tags aggregate automatically, sessions are planned in advance, and a Pomodoro timer keeps your focus on the work.",
     items: [
-      { Icon: Tag, name: "Smart tags", desc: "Type `#anything` inside a note. It shows up in the sidebar cloud; click the chip later to pull every note that mentions it.", deepLink: "/app", linkLabel: "See your tag cloud" },
-      { Icon: Timer, name: "Pomodoro timer", desc: "A small 25/5 timer parked in the corner. Start a sprint, take a real break, and watch your completed sessions stack up over the day.", deepLink: "/app", linkLabel: "Start a sprint" },
-      { Icon: BookOpen, name: "Study planner", desc: "Schedule sessions per notebook, watch your day streak, and get a nudge when you're about to skip one.", deepLink: "/app", linkLabel: "Open the planner" },
+      { Icon: Tag, name: "Smart tags", desc: "Type `#anything` inside a note. It appears in the sidebar tag cloud; clicking it retrieves every note that references it.", deepLink: "/app", linkLabel: "See your tag cloud" },
+      { Icon: Timer, name: "Pomodoro timer", desc: "A 25/5 timer rests in the corner. Start a session, take a deliberate break, and review your completed sessions throughout the day.", deepLink: "/app", linkLabel: "Start a session" },
+      { Icon: BookOpen, name: "Study planner", desc: "Schedule sessions per notebook, track your daily streak, and receive a reminder before you miss one.", deepLink: "/app", linkLabel: "Open the planner" },
     ],
   },
   {
     title: "Sharing & Trust",
     kicker: "The foundation",
     blurb:
-      "Your notes belong to you. Everything is private unless you decide otherwise, the AI never reads anything without your say-so, and you can leave with your data any time.",
+      "Your notes belong to you. Everything remains private by default, the AI never accesses your content without explicit permission, and your data is portable at any time.",
     items: [
-      { Icon: Share2, name: "Public share links", desc: "Generate a read-only link with a secure token. The recipient gets a clean public page; you can revoke it with one click.", deepLink: "/app", linkLabel: "Share a note" },
-      { Icon: Lock, name: "Private by default", desc: "JWT auth, signed file URLs, and row-level security in the database. Nobody else sees your notes — including us, including the AI, until you ask.", deepLink: "/pricing", linkLabel: "See the security model" },
-      { Icon: Download, name: "Export anywhere", desc: "Markdown or PDF, one click, no proprietary wrappers. Your work walks out the same way it walked in.", deepLink: "/app", linkLabel: "Export a note" },
+      { Icon: Share2, name: "Public share links", desc: "Generate a read-only link secured by token. Recipients see a clean public page; revoke access in a single click.", deepLink: "/app", linkLabel: "Share a note" },
+      { Icon: Lock, name: "Private by default", desc: "JWT authentication, signed file URLs, and row-level security in the database. Your notes remain private — including from us and the AI — until you choose otherwise.", deepLink: "/pricing", linkLabel: "See the security model" },
+      { Icon: Download, name: "Export anywhere", desc: "Markdown or PDF, one click, no proprietary formats. Your work moves with you.", deepLink: "/app", linkLabel: "Export a note" },
     ],
   },
 ];
@@ -89,10 +89,10 @@ export default function FeaturesPage() {
               <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Features</span>
             </div>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
-              What's in the box, and <span className="text-primary">nothing</span> that isn't.
+              Every feature, <span className="text-primary">purposefully</span> built.
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              A small, deliberate toolkit for writing, organizing, and pulling ideas back up later. The AI shows up where it earns its keep, not where it can.
+              A focused toolkit for writing, organizing, and retrieving ideas. AI is integrated where it genuinely improves the experience — never as decoration.
             </p>
           </motion.div>
         </div>
@@ -211,10 +211,10 @@ export default function FeaturesPage() {
             className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
           >
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Take the whole kit for a spin
+              Experience the full toolkit
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              No card. No countdown. Just open it and write something.
+              No credit card. No trial limits. Open the app and start writing.
             </p>
             <Link to={user ? "/app" : "/auth"} className="inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
               {user ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4" />

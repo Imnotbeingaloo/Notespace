@@ -336,7 +336,7 @@ export default function HowItWorksPage() {
               How Notebook Archive <span className="text-primary">works</span>
             </motion.h1>
             <motion.p style={{ y: subtitleY }} className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              The path from a blank page to something you'll actually open again next month. Six small steps, no setup ceremony.
+              From a blank page to a note you will revisit — six deliberate steps, with no setup overhead.
             </motion.p>
           </motion.div>
         </div>
@@ -348,8 +348,8 @@ export default function HowItWorksPage() {
       <section className="py-16 md:py-28">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10 md:mb-16">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps, in order</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the loop play out — each step picks up where the last one left off.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps, end to end</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold — each step builds on the one before it.</p>
           </motion.div>
           <StepReel />
         </div>
@@ -364,7 +364,7 @@ export default function HowItWorksPage() {
             <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">Why this exists</span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">The problem</h2>
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Most notes get written once and never opened again. They sit in folders nobody ever clicks. We wanted the opposite.
+              Most notes are written once and never revisited. They accumulate in folders that no one opens. We built Notebook Archive to change that.
             </p>
           </motion.div>
 
@@ -383,9 +383,9 @@ export default function HowItWorksPage() {
       <section className="bg-foreground/[0.02] py-16 md:py-28">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who tends to like it</span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">A few different kinds of thinkers</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Tap a card to see how each one tends to use it.</p>
+            <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who it serves</span>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Built for different kinds of thinkers</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Select a card to see how each user typically works.</p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -403,9 +403,9 @@ export default function HowItWorksPage() {
         <div className="container mx-auto px-6">
           <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Open the editor</h2>
-            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">Start with one note. See how it feels. The free plan stays free — there's no clock ticking somewhere.</p>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">Begin with a single note. The free plan remains free, with no time limits.</p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Go to App" : "Write something"} <ArrowRight className="h-4 w-4" />
+              {user ? "Go to App" : "Get Started"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>

@@ -121,7 +121,7 @@ function PhilosophySection() {
       <div className="container mx-auto px-6 max-w-5xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
           <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">Our philosophy</p>
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">From storing notes to actually using them</h2>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">From storing notes to using them</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">Two ways of working with a notebook, side by side.</p>
         </motion.div>
 
@@ -304,10 +304,10 @@ export default function AboutPage() {
               <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Our Story</span>
             </div>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
-              The <span className="text-primary">notebook</span> we kept wishing existed
+              The <span className="text-primary">notebook</span> we always wanted to use
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Notebook Archive started because nothing on the market did the boring parts well. We're a small team writing it for people who care about their notes more than the average person probably should.
+              Notebook Archive was built because no existing tool handled the fundamentals well. We are a small team building it for people who treat their notes as serious work.
             </p>
           </motion.div>
         </div>
@@ -336,9 +336,9 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                     <Target className="h-6 w-6 text-primary" />
                   </div>
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">What we're trying to do</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-3">We think the tool you use to think should be at least as sharp as you are. Most note apps treat your writing like dead text in a folder — we'd rather treat it like something that talks back.</p>
-                  <p className="text-muted-foreground leading-relaxed">The goal: the calmest, most useful, most private place to keep your thinking on the internet.</p>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our mission</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">The tool you use to think should be as sharp as your thinking. Most note apps treat your writing as static text in a folder; we treat it as something that responds and connects.</p>
+                  <p className="text-muted-foreground leading-relaxed">Our goal is to build the calmest, most useful, and most private home for your work online.</p>
                 </div>
               </motion.div>
               {/* Dot on the center line */}
@@ -377,9 +377,9 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                     <Layers className="h-6 w-6 text-accent" />
                   </div>
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">How we work</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-3">No feature gets built because a competitor has it. Things ship because someone actually using the app asked, or because we got tired of working around the same gap.</p>
-                  <p className="text-muted-foreground leading-relaxed">We ship small, often. The people on the beta channel are basically co-authors at this point.</p>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our approach</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">Features are not built to match competitors. They ship because an active user requested them, or because we encountered the gap ourselves.</p>
+                  <p className="text-muted-foreground leading-relaxed">We ship small, frequent improvements. Our beta users are partners in the process.</p>
                 </div>
               </motion.div>
             </div>
@@ -397,8 +397,8 @@ export default function AboutPage() {
       {/* Values */}
       <section className="container mx-auto px-6 py-28 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">What we believe</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">Four short rules that decide most arguments inside the team.</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our principles</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">Four guiding values that shape how we build.</p>
         </motion.div>
         <div className="relative mt-12">
           <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
@@ -422,8 +422,8 @@ export default function AboutPage() {
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-3xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">A short history</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">The honest version of how we got here.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our journey</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">A brief account of how we arrived here.</p>
           </motion.div>
           <div className="relative mt-12">
             <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
@@ -453,10 +453,10 @@ export default function AboutPage() {
             className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
           >
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Come write with us
+              Start writing with us
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              The app is free to use and we read every piece of feedback that comes through. If something's off, tell us — we'll probably fix it next week.
+              The app is free to use and we review every piece of feedback. If something is not working, let us know — and we will address it.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
               {user ? "Open App" : "Open the app"} <ArrowRight className="h-4 w-4" />

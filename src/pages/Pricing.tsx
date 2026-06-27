@@ -13,7 +13,7 @@ const tiers = [
   {
     name: "Free",
     price: "$0",
-    description: "The honest starting point. Plenty of room to capture, organize, and search whatever you're working on.",
+    description: "A complete starting point with room to capture, organize, and search your work.",
     features: ["Up to 3 notebooks", "Unlimited notes with markdown", "AI topic explanations (5/day)", "Instant ⌘K search", "Auto-save & sync", "Export to PDF & Markdown", "File attachments (50 MB)", "Version history (7 days)"],
     cta: "Get Started",
     highlighted: false,
@@ -22,7 +22,7 @@ const tiers = [
     name: "Pro",
     price: "$19",
     period: "/month",
-    description: "For people who are in the app every day and want the AI to stop counting requests.",
+    description: "For daily users who require unlimited AI access and advanced workflow tools.",
     features: ["Unlimited notebooks", "Unlimited AI explanations", "AI summaries & flashcard generation", "Smart auto-tagging & linking", "Voice-to-note transcription", "File attachments (10 GB)", "Version history (unlimited)", "Export to Notion & integrations", "Priority support"],
     cta: "Start 14-Day Free Trial",
     highlighted: true,
@@ -31,7 +31,7 @@ const tiers = [
     name: "Team",
     price: "$29",
     period: "/user/month",
-    description: "Shared notebooks for a study group, lab, or small team that actually writes things together.",
+    description: "Shared notebooks for study groups, labs, and teams collaborating on long-form work.",
     features: ["Everything in Pro", "Shared notebooks & real-time co-editing", "Team knowledge base", "Admin dashboard & permissions", "SSO & advanced security", "Custom AI training on team data", "API access & webhooks", "Dedicated account manager"],
     cta: "Contact Sales",
     highlighted: false,
@@ -53,10 +53,10 @@ const comparisons = [
 ];
 
 const faqs = [
-  { q: "Can I switch plans later?", a: "Yes. Upgrade, downgrade, or cancel whenever. Mid-cycle upgrades get prorated, and nothing is locked in." },
-  { q: "Is there a student discount?", a: "Yep — sign up with a .edu address and Pro drops to 50% off automatically. No form to fill out." },
-  { q: "What happens to my notes if I downgrade?", a: "They stay yours. You'll keep every note you've written; you just won't be able to create new notebooks past the free limit until you upgrade again." },
-  { q: "How does the free trial work?", a: "Fourteen days of Pro, no card required up front. When it ends you either subscribe or drop back to Free — nothing disappears either way." },
+  { q: "Can I switch plans later?", a: "Yes. You can upgrade, downgrade, or cancel at any time. Mid-cycle upgrades are prorated, and there are no long-term commitments." },
+  { q: "Is there a student discount?", a: "Yes — students who sign up with a .edu address receive 50% off Pro automatically. No application required." },
+  { q: "What happens to my notes if I downgrade?", a: "Your notes remain yours. You retain access to everything you've written; you simply cannot create notebooks beyond the free limit until you upgrade." },
+  { q: "How does the free trial work?", a: "Fourteen days of Pro access with no credit card required. When the trial ends, you may subscribe or revert to the Free plan — your work is preserved either way." },
 ];
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
@@ -109,7 +109,7 @@ export default function PricingPage() {
               Plans that <span className="text-primary">grow</span> with you
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Start free. Move up when the AI starts feeling stingy. Editor, search, and auto-save are the same on every plan, so nothing essential is paywalled.
+              Start on Free. Upgrade when you need more capacity. The editor, search, and auto-save are identical on every plan — nothing essential is gated.
             </p>
           </motion.div>
         </div>
@@ -169,8 +169,8 @@ export default function PricingPage() {
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Side by side</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Everything in each plan, laid out flat. Upgrading only adds rows — nothing you had before disappears.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Compare plans</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">A complete view of every plan. Upgrading only adds capabilities — nothing you had before is removed.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 30, scale: 0.98 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="rounded-[2rem] border border-border bg-card overflow-hidden mt-10">
             <div className="overflow-x-auto">
@@ -208,8 +208,8 @@ export default function PricingPage() {
             <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
               <HelpCircle className="h-6 w-6 text-accent" />
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Questions people actually ask</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Short answers to the four things that come up most.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Frequently asked questions</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">Clear answers to the questions we hear most often.</p>
           </motion.div>
           <div className="space-y-6 mt-10">
             {faqs.map((faq, i) => (
@@ -241,10 +241,10 @@ export default function PricingPage() {
             className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
           >
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Pick a tier or just open the free one
+              Choose your plan
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              The free plan isn't a teaser. You can sit on it forever; we'd rather you stayed than felt squeezed.
+              The free plan is not a trial. You are welcome to use it indefinitely — upgrade only when you need more.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
               {user ? "Open App" : "Start on Free"} <ArrowRight className="h-4 w-4" />
