@@ -149,7 +149,18 @@ const AuthPage = () => {
       if (error) {
         const m = error.message.toLowerCase();
         if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
-          setError("Incorrect email or password. If you don't have an account yet, create one to get started.");
+          try {
+            const { data } = await supabase.functions.invoke("check-email-exists", {
+              body: { email: email.trim() },
+            });
+            if (data && data.exists === false) {
+              setError("No account found for this email. Create one to get started.");
+            } else {
+              setError("Incorrect password. Try again or reset it below.");
+            }
+          } catch {
+            setError("Incorrect email or password. If you don't have an account yet, create one to get started.");
+          }
         } else {
           setError(friendlyError(error.message, "login").message);
         }
