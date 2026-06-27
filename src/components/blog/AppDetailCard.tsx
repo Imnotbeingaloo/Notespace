@@ -18,6 +18,25 @@ export interface AppDetailCardProps {
 }
 
 export function AppDetailCard(p: AppDetailCardProps) {
+  // If this card points to our own site, append referral params so we can
+  // see in auth.users.raw_user_meta_data who clicked through from which blog.
+  const isOurSite = /notebookarchive\.lovable\.app/i.test(p.siteUrl);
+  let resolvedHref = p.siteUrl;
+  if (isOurSite && typeof window !== "undefined") {
+    try {
+      const url = new URL(p.siteUrl);
+      const slug = window.location.pathname.replace(/^\/+|\/+$/g, "").replace(/\//g, "-") || "blog";
+      if (!url.searchParams.has("ref")) url.searchParams.set("ref", "blog");
+      if (!url.searchParams.has("utm_source")) url.searchParams.set("utm_source", "blog");
+      if (!url.searchParams.has("utm_medium")) url.searchParams.set("utm_medium", "organic");
+      if (!url.searchParams.has("utm_campaign")) url.searchParams.set("utm_campaign", slug);
+      if (!url.searchParams.has("utm_content")) url.searchParams.set("utm_content", "app-card-image");
+      resolvedHref = url.toString();
+    } catch {
+      /* ignore URL parse issues */
+    }
+  }
+  const linkRel = isOurSite ? "noopener noreferrer" : "noopener noreferrer nofollow";
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -27,9 +46,9 @@ export function AppDetailCard(p: AppDetailCardProps) {
       className="border border-border rounded-xl overflow-hidden bg-card shadow-sm"
     >
       <a
-        href={p.siteUrl}
+        href={resolvedHref}
         target="_blank"
-        rel="noopener noreferrer nofollow"
+        rel={linkRel}
         className="block border-b border-border bg-muted/30 overflow-hidden group"
       >
         <img
