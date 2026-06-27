@@ -110,8 +110,8 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       className="pointer-events-auto relative w-full overflow-hidden rounded-lg border-0 bg-card text-card-foreground shadow-lg"
       style={{
         boxShadow: newest
-          ? `0 16px 34px -24px ${visual.accent}, 0 8px 22px hsl(var(--foreground) / 0.13)`
-          : "0 8px 22px hsl(var(--foreground) / 0.10)",
+          ? `0 10px 24px -18px ${visual.accent}, 0 6px 18px hsl(var(--foreground) / 0.10)`
+          : "0 6px 18px hsl(var(--foreground) / 0.08)",
       }}
     >
       <div className="flex min-h-[66px] items-start gap-3 px-3.5 py-3.5 pr-16">
@@ -124,7 +124,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
         </span>
 
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[13px] font-semibold leading-5 text-foreground">{item.title}</div>
+          <div className="text-[13px] font-semibold leading-5 text-foreground break-words">{item.title}</div>
           {hasActions && (
             <div className="mt-1.5 flex flex-wrap gap-2">
               {renderAction(item.action, item.id)}
