@@ -21,8 +21,10 @@ const BASE_URL = "https://notebookarchive.lovable.app";
  * Per-route head tags. Overrides the static <title>, meta description,
  * canonical, and og:* shipped in index.html for JS-executing crawlers.
  */
-export function SeoHead({ title, description, path, jsonLd, noindex }: SeoHeadProps) {
+export function SeoHead({ title, description, path, jsonLd, noindex, image }: SeoHeadProps) {
   const url = `${BASE_URL}${path}`;
+  const imagePath = image ?? "/og-image.jpg";
+  const imageUrl = imagePath.startsWith("http") ? imagePath : `${BASE_URL}${imagePath}`;
   const schemas = jsonLd
     ? Array.isArray(jsonLd)
       ? jsonLd
@@ -38,8 +40,12 @@ export function SeoHead({ title, description, path, jsonLd, noindex }: SeoHeadPr
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content="website" />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:alt" content={title} />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={imageUrl} />
       {noindex && <meta name="robots" content="noindex,nofollow" />}
       {schemas.map((schema, i) => (
         <script key={i} type="application/ld+json">
