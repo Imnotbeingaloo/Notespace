@@ -65,7 +65,10 @@ export const PRIVATE_ROUTE_PATTERNS: string[] = [
   "/app/",
   "/home",
   "/trash",
-  "/shared/",
+  // NOTE: /shared/* is intentionally NOT here. The shared-note page emits
+  // its own <meta name="robots"> tag (noindex by default, opt-in indexable
+  // via the per-share `is_discoverable` flag). Blocking it in robots.txt
+  // would prevent crawlers from ever seeing those per-page directives.
   "/auth",
   "/admin",
   "/admin/",
