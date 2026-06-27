@@ -56,7 +56,10 @@ export const PRIVATE_ROUTE_PATTERNS: string[] = [
   "/trash",
   "/shared/",
   "/auth",
+  "/admin",
+  "/admin/",
 ];
+
 
 /** Indexing bots that must honor the Disallow rules above. */
 export const INDEXING_BOTS: string[] = ["Googlebot", "Bingbot", "*"];
