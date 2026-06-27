@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { NotebookProvider, useNotebooks, type Note } from "@/context/NotebookContext";
 import { NoteEditor } from "@/components/NoteEditor";
+import { NoindexHead } from "@/components/NoindexHead";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import {
   Dialog,
@@ -389,6 +390,7 @@ function TemporaryWorkspaceInner() {
 export default function TemporaryWorkspace() {
   return (
     <NotebookProvider>
+      <NoindexHead title="Temporary Workspace — Notebook Archive" />
       <TemporaryWorkspaceInner />
     </NotebookProvider>
   );
