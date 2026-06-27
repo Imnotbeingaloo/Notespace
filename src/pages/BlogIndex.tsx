@@ -8,6 +8,14 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "evernote-alternatives-2026",
+    title: "Six Honest Evernote Alternatives for 2026",
+    excerpt:
+      "Evernote pioneered the digital shoebox — then the free tier shrank, the editor stayed in 2015, and the price kept climbing. The six apps people actually move to: Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "obsidian-alternatives-2026",
     title: "Six Honest Obsidian Alternatives for 2026",
     excerpt:

@@ -302,7 +302,17 @@ export default function UseCasesIndex() {
                 Comparing your options
               </h2>
             </div>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-3 gap-4">
+              <Link
+                to="/blog/evernote-alternatives-2026"
+                className="group block rounded-xl border border-border bg-card p-5 hover:border-primary/40 transition"
+              >
+                <p className="text-[11px] uppercase tracking-widest text-accent font-semibold mb-2">Comparison</p>
+                <h3 className="font-serif text-lg font-bold mb-2 group-hover:text-primary transition">
+                  Six Honest Evernote Alternatives for 2026
+                </h3>
+                <p className="text-sm text-muted-foreground">For people sick of Evernote's shrinking free tier, dated editor, and yearly price hikes.</p>
+              </Link>
               <Link
                 to="/blog/obsidian-alternatives-2026"
                 className="group block rounded-xl border border-border bg-card p-5 hover:border-primary/40 transition"
