@@ -66,6 +66,7 @@ export function UseCaseLayout({
   tips,
   faqs,
 }: UseCaseLayoutProps) {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   return (
     <main className="min-h-screen bg-background">
       <PageHeader />
