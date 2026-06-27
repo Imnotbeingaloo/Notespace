@@ -137,24 +137,11 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
 
           {/* Main card - index card / bookplate */}
           <div className="relative rounded-[14px] bg-card border border-border shadow-2xl overflow-hidden">
-            {/* Ruled lines */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-[0.35]"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(to bottom, transparent 0, transparent 33px, hsl(var(--border)) 33px, hsl(var(--border)) 34px)",
-                backgroundPosition: "0 56px",
-              }}
-            />
             {/* Left margin rule (notebook red/orange) */}
             <div
               aria-hidden
-              className="absolute top-0 bottom-0 left-[52px] w-px bg-orange-500/40"
+              className="absolute top-0 bottom-0 left-[52px] w-px bg-orange-500/60"
             />
-            {/* Top double rule */}
-            <div aria-hidden className="absolute top-[44px] left-0 right-0 h-px bg-border" />
-            <div aria-hidden className="absolute top-[48px] left-0 right-0 h-px bg-border/60" />
 
             {/* Punched holes accent (left edge) */}
             <div aria-hidden className="absolute left-[18px] top-1/4 h-2.5 w-2.5 rounded-full bg-background border border-border/70" />
@@ -169,32 +156,20 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.3, ease }}
-                  className="relative pl-[72px] pr-9 pt-4 pb-9"
+                  className="relative pl-[72px] pr-9 pt-9 pb-9"
                 >
-                  {/* Card header strip - leaves room for the close X on the right */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1, duration: 0.4, ease }}
-                    className="h-[44px] flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-muted-foreground/70 font-mono pr-10 whitespace-nowrap"
-                  >
-                    <span>No. 01</span>
-                    <span className="h-px flex-1 bg-border" />
-                    <span className="text-orange-500/90">{greetingRef.current}</span>
-                  </motion.div>
-
-
-                  {/* Headline - sits on the first rule */}
+                  {/* Headline */}
                   <motion.h2
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.18, duration: 0.5, ease }}
-                    className="mt-5 font-serif text-[30px] leading-[1.15] text-foreground tracking-tight"
+                    transition={{ delay: 0.12, duration: 0.5, ease }}
+                    className="font-serif text-[32px] leading-[1.15] text-foreground tracking-tight pr-10"
                   >
                     What should{" "}
                     <span className="italic text-primary">we</span>{" "}
                     call you?
                   </motion.h2>
+
 
                   <motion.p
                     initial={{ opacity: 0, y: 8 }}
