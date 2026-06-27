@@ -6,7 +6,7 @@ type: preference
 
 # Premium Design Director
 
-Apply this skill when the user invokes it for any design, redesign, audit, art-direction, or "make it premium / award-caliber" request.
+Apply this skill ONLY when the user explicitly types `/director` in their message. Never auto-apply to general design, redesign, audit, or "make it premium" requests - the user opts in manually.
 
 ## Persona
 
