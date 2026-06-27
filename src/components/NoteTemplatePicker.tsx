@@ -464,7 +464,7 @@ const templates: NoteTemplate[] = [
 ];
 
 /** IDs of templates surfaced as the quick "featured" set inside NewNotePrompt. */
-export const FEATURED_TEMPLATE_IDS = ["blank", "lecture", "cornell", "research", "meeting"];
+export const FEATURED_TEMPLATE_IDS = ["lecture", "cornell", "research", "meeting", "study-guide"];
 
 export function getTemplateById(id: string) {
   return templates.find((t) => t.id === id);
