@@ -107,7 +107,7 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center w-full h-full bg-background py-8">
+    <div className={`flex-1 flex flex-col w-full h-full bg-background ${view === "main" ? "items-center justify-center py-8" : "items-stretch overflow-y-auto py-6"}`}>
       <AnimatePresence mode="wait">
         {view === "gallery" ? (
           <NoteTemplatePicker
