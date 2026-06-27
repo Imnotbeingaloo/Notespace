@@ -27,7 +27,7 @@ const DISMISS_KEY = "onboarding-hint-dismissed";
 const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
 // Idle threshold — hint appears after 10s of no intentional interaction.
 const IDLE_STEPS_MS = [10000];
-const SHOW_MS = 6000;
+const SHOW_MS = 3000;
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 

@@ -901,8 +901,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           onClose={() => onFindReplaceChange?.(false)}
         />
 
-        {/* Content area */}
-        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+        {/* Content area — natural height, no inner scrollbar; page handles overflow */}
+        <div className="flex-1 min-h-0">
           <HybridEditor
             ref={hybridEditorRef}
             content={activeNote.content || ""}
@@ -914,7 +914,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         {/* Word count, goal & reading time */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
           <WordCount content={activeNote?.content || ""} />
-          <WordCountGoal content={activeNote?.content || ""} />
+          {wordCountGoalEnabled && <WordCountGoal content={activeNote?.content || ""} />}
         </div>
 
         {/* File upload */}

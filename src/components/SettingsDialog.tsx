@@ -306,6 +306,28 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </p>
                   </div>
                 </div>
+
+                <div className="rounded-xl border border-border p-4 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <Target className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <h4 className="text-sm font-semibold text-foreground">Word Count Goal</h4>
+                      <Switch
+                        checked={wordCountGoalEnabled}
+                        onCheckedChange={(v) => {
+                          setWordCountGoalEnabled(v);
+                          (v ? toast.success : toast.warning)(v ? "Word Count Goal enabled" : "Word Count Goal disabled");
+                        }}
+                        aria-label="Toggle Word Count Goal"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Show the daily word goal tracker and weekly writing chart in the editor footer.
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 
