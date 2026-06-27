@@ -71,17 +71,7 @@ const AuthPage = () => {
       if (error) {
         const m = error.message.toLowerCase();
         if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
-          // Disambiguate "no account" vs "wrong password" via admin lookup
-          try {
-            const { data } = await supabase.functions.invoke("check-email-exists", { body: { email } });
-            if (data && data.exists === false) {
-              setError("We couldn't find an account with this email. Create a new account to get started.");
-            } else {
-              setError("Password incorrect. Please double-check your password and try again.");
-            }
-          } catch {
-            setError(friendlyError(error.message, "login").message);
-          }
+          setError("Incorrect email or password. If you don't have an account yet, create one to get started.");
         } else {
           setError(friendlyError(error.message, "login").message);
         }
