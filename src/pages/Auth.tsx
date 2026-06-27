@@ -530,7 +530,7 @@ const AuthPage = () => {
             </div>
 
             <div>
-              <div className={`grid gap-3 ${mode === "signup" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
+              <div className="flex flex-col gap-3">
                 {/* Password */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
