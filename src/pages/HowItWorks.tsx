@@ -364,7 +364,7 @@ export default function HowItWorksPage() {
             <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">Why this exists</span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">The problem</h2>
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Most notes get written once and never opened again. They sit in folders nobody ever clicks. We wanted the opposite.
+              Most notes are written once and never revisited. They accumulate in folders that no one opens. We built Notebook Archive to change that.
             </p>
           </motion.div>
 
