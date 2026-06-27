@@ -163,11 +163,33 @@ export async function extractPdfText(file: File, onProgress?: (pct: number) => v
     onProgress?.(Math.round((p / pageCount) * 100));
   }
 
-  // No page numbers, no "---" page dividers — sections (headings) are the only separators.
-  const text = joinPages(pageTexts)
+  // Join pages so a section that spans page boundaries flows naturally,
+  // then insert `---` BEFORE each heading (except the first) so each completed
+  // section is visually separated from the next.
+  let text = joinPages(pageTexts)
     .replace(/[ \t]+\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+
+  // Insert a divider before every heading except the very first one.
+  const lines = text.split("\n");
+  const withDividers: string[] = [];
+  let seenFirstHeading = false;
+  for (const line of lines) {
+    if (/^#{1,6}\s/.test(line)) {
+      if (seenFirstHeading) {
+        // Ensure a blank line, then `---`, then a blank line before the heading.
+        while (withDividers.length && withDividers[withDividers.length - 1] === "") {
+          withDividers.pop();
+        }
+        withDividers.push("", "---", "");
+      }
+      seenFirstHeading = true;
+    }
+    withDividers.push(line);
+  }
+  text = withDividers.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+
   const isScanned = totalAlpha < pageCount * 40;
   return { text, pageCount, isScanned };
 }
