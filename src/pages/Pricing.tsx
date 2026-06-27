@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
 import { AnimatedHeading } from "@/components/AnimatedHeading";
 import { SeoHead } from "@/components/SeoHead";
+import { FurtherReading } from "@/components/FurtherReading";
 
 const tiers = [
   {
