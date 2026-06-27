@@ -40,6 +40,9 @@ const CompareIndex = lazy(() => import("./pages/CompareIndex"));
 const Compare = lazy(() => import("./pages/Compare"));
 const TemplatesGallery = lazy(() => import("./pages/TemplatesGallery"));
 const TemplateDetail = lazy(() => import("./pages/TemplateDetail"));
+const LearnIndex = lazy(() => import("./pages/LearnIndex"));
+const LearnEntry = lazy(() => import("./pages/LearnEntry"));
+
 
 
 import { captureReferralFromUrl } from "@/lib/referral";
@@ -163,6 +166,9 @@ const App = () => (
                 <Route path="/compare/:slug" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><Compare /></Suspense>} />
                 <Route path="/templates" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><TemplatesGallery /></Suspense>} />
                 <Route path="/templates/:id" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><TemplateDetail /></Suspense>} />
+                <Route path="/learn" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><LearnIndex /></Suspense>} />
+                <Route path="/learn/:slug" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><LearnEntry /></Suspense>} />
+
                 
                 <Route path="*" element={<NotFound />} />
 
