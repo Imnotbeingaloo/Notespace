@@ -346,18 +346,24 @@ const AuthPage = () => {
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
         <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
-          <div className="flex gap-1 bg-muted rounded-lg p-1 mb-6">
-            {(["login", "signup"] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => { setMode(m); setError(""); setConfirmPassword(""); }}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all duration-200 active:scale-95 ${
-                  mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {m === "login" ? "Sign In" : "Sign Up"}
-              </button>
-            ))}
+          <div role="tablist" aria-label="Authentication mode" className="flex gap-1 bg-muted rounded-lg p-1 mb-6">
+            {(["login", "signup"] as const).map((m) => {
+              const active = (mode === m) || (mode === "forgot" && m === "login");
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => { setMode(m); setError(""); setConfirmPassword(""); setForgotSent(false); }}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md border-0 outline-none transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-muted ${
+                    active ? "bg-background text-foreground shadow-sm" : "bg-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {m === "login" ? "Sign In" : "Sign Up"}
+                </button>
+              );
+            })}
           </div>
 
           {/* Google */}
