@@ -468,9 +468,7 @@ export default function LandingPage() {
               <p className="text-xs text-muted-foreground mb-5">Updated Jan 15, 2:30 PM</p>
               <div className="space-y-1.5 text-sm leading-relaxed">
                 {editorLines.slice(0, visibleLines).map((line, i) => (
-                  <p key={i} className={line.className}>
-                    {line.text || "\u00A0"}
-                  </p>
+                  <RenderMarkdownLine key={i} text={line.text} />
                 ))}
                 {visibleLines < editorLines.length && (
                   <p className={editorLines[visibleLines]?.className}>
