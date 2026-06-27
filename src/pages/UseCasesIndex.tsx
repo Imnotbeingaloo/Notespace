@@ -143,24 +143,25 @@ export default function UseCasesIndex() {
           </div>
         </section>
 
-        {/* STAT STRIP */}
-        <section className="py-10 border-b border-border bg-muted/30">
-          <div className="container mx-auto px-6 max-w-5xl grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="text-center"
-              >
-                <div className="font-serif text-3xl md:text-4xl font-bold text-primary">{s.value}</div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.label}</div>
-              </motion.div>
-            ))}
+        {/* MARQUEE STRIP — what's inside, scrolling */}
+        <section className="py-8 border-b border-border bg-muted/20 overflow-hidden marquee-pause">
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
+            <div className="marquee-track flex gap-10 whitespace-nowrap w-max">
+              {[...marqueeItems, ...marqueeItems].map((item, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-3 font-serif text-base md:text-lg text-foreground/80"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/70" />
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
         </section>
+
 
         {/* WORKFLOW ROWS — distinctly NOT cards */}
         <section className="py-24">
