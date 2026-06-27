@@ -44,6 +44,9 @@ const TemplatesGallery = lazy(() => import("./pages/TemplatesGallery"));
 const TemplateDetail = lazy(() => import("./pages/TemplateDetail"));
 const LearnIndex = lazy(() => import("./pages/LearnIndex"));
 const LearnEntry = lazy(() => import("./pages/LearnEntry"));
+const BlogHowToMakeStudyPlan = lazy(() => import("./pages/BlogHowToMakeStudyPlan"));
+const BlogHowToMakeStudyPlanForExams = lazy(() => import("./pages/BlogHowToMakeStudyPlanForExams"));
+const TemplateStudyPlanner = lazy(() => import("./pages/TemplateStudyPlanner"));
 
 
 
@@ -159,6 +162,8 @@ const App = () => (
                 <Route path="/blog/ai-voice-notes-meeting-transcription" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAIVoiceNotes /></Suspense>} />
                 <Route path="/blog/best-ai-writing-assistants-for-note-takers" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAIWritingAssistants /></Suspense>} />
                 <Route path="/blog/ai-literature-review-guide" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAILiteratureReview /></Suspense>} />
+                <Route path="/blog/how-to-make-a-study-plan" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeStudyPlan /></Suspense>} />
+                <Route path="/blog/how-to-make-a-study-plan-for-exams" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeStudyPlanForExams /></Suspense>} />
 
                 <Route path="/use-cases" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCasesIndex /></Suspense>} />
                 <Route path="/use-cases/students" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseStudents /></Suspense>} />
@@ -169,6 +174,7 @@ const App = () => (
                 <Route path="/compare" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><CompareIndex /></Suspense>} />
                 <Route path="/compare/:slug" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><Compare /></Suspense>} />
                 <Route path="/templates" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><TemplatesGallery /></Suspense>} />
+                <Route path="/templates/study-planner" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><TemplateStudyPlanner /></Suspense>} />
                 <Route path="/templates/:id" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><TemplateDetail /></Suspense>} />
                 <Route path="/learn" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><LearnIndex /></Suspense>} />
                 <Route path="/learn/:slug" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><LearnEntry /></Suspense>} />
