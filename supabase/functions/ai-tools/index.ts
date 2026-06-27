@@ -62,8 +62,9 @@ serve(async (req) => {
     }
 
     const { action, noteTitle, noteContent, editInstruction } = parsed.data;
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    if (!GEMINI_API_KEY && !LOVABLE_API_KEY) throw new Error("No AI key configured");
 
     const isStream = action !== "auto-tag";
     const isAnalyze = action === "analyze";
@@ -72,14 +73,20 @@ serve(async (req) => {
       ? `<note-title>${noteTitle || "Untitled"}</note-title>\n<note-content>${noteContent || "(empty note)"}</note-content>\n<edit-instruction>${editInstruction}</edit-instruction>`
       : `<note-title>${noteTitle || "Untitled"}</note-title>\n<note-content>${noteContent || "(empty note)"}</note-content>`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const endpoint = GEMINI_API_KEY
+      ? "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+      : "https://ai.gateway.lovable.dev/v1/chat/completions";
+    const authKey = GEMINI_API_KEY || LOVABLE_API_KEY!;
+    const model = GEMINI_API_KEY ? "gemini-2.5-flash" : "google/gemini-3-flash-preview";
+
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${authKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model,
         max_tokens: 4000,
         messages: [
           { role: "system", content: systemPrompts[action] },
