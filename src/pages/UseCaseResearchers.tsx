@@ -1,25 +1,22 @@
-import { useEffect } from "react";
 import { UseCaseLayout } from "@/components/UseCaseLayout";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 export default function UseCaseResearchers() {
-  useEffect(() => {
-    const ld = {
+  const jsonLd = [
+    {
       "@context": "https://schema.org",
       "@type": "WebPage",
       name: "Notebook Archive for Researchers",
       description:
         "Annotate papers, pull quotes from PDFs, and search across every notebook. A note-taking app for serious research workflows.",
       url: "https://notebookarchive.lovable.app/use-cases/researchers",
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(ld);
-    document.head.appendChild(script);
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
+    },
+    breadcrumbsJsonLd([
+      { name: "Use cases", path: "/use-cases" },
+      { name: "Researchers", path: "/use-cases/researchers" },
+    ]),
+  ];
 
   return (
     <>
@@ -27,7 +24,9 @@ export default function UseCaseResearchers() {
         title="Note-Taking App for Researchers - Notebook Archive"
         description="Annotate papers, summarize PDFs, and retrieve quotes across every notebook. Built for serious research."
         path="/use-cases/researchers"
+        jsonLd={jsonLd}
       />
+
       <UseCaseLayout
         eyebrow="For researchers"
         title={<>A serious notebook for <span className="text-primary">serious research</span>.</>}
