@@ -72,20 +72,27 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
     } catch {}
   }, []);
 
-  // Name-prompt logic still waits for the profile to resolve.
+  // Name prompt only fires for brand-new signups (flag set in Auth.tsx).
   useEffect(() => {
     if (profileLoading) return;
     if (profile?.display_name) {
       setNamePromptOpen(false);
+      try { localStorage.removeItem("pendingNamePrompt"); } catch {}
       return;
     }
-    setNamePromptOpen(true);
+    let pending = false;
+    try { pending = localStorage.getItem("pendingNamePrompt") === "1"; } catch {}
+    if (pending) setNamePromptOpen(true);
   }, [profile?.display_name, profileLoading]);
 
   const handleNamePromptChange = (open: boolean) => {
     if (!open && !profile?.display_name) return;
+    if (!open) {
+      try { localStorage.removeItem("pendingNamePrompt"); } catch {}
+    }
     setNamePromptOpen(open);
   };
+
 
 
 
