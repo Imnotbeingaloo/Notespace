@@ -42,6 +42,10 @@ function renderInline(text: string): ReactNode[] {
 }
 
 function RenderMarkdownLine({ text }: { text: string }) {
+  const isHeading = text.startsWith("# ") || text.startsWith("## ") || text.startsWith("### ");
+  const hasBold = /\*\*[^*]+\*\*/.test(text);
+  const shouldAnimate = isHeading || hasBold;
+
   const inner = (() => {
     if (text === "") return <p>{"\u00A0"}</p>;
     if (text.startsWith("### ")) {
@@ -55,10 +59,12 @@ function RenderMarkdownLine({ text }: { text: string }) {
     }
     return <p className="text-muted-foreground">{renderInline(text)}</p>;
   })();
+
+  if (!shouldAnimate) return <div>{inner}</div>;
   return (
     <div
-      className="animate-in fade-in slide-in-from-bottom-1 duration-300 ease-out"
-      style={{ willChange: "transform, opacity" }}
+      className="animate-in fade-in duration-500 ease-out"
+      style={{ willChange: "opacity" }}
     >
       {inner}
     </div>
