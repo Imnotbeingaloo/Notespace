@@ -113,7 +113,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
     >
 
       <DialogContent
-        className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-none duration-0"
+        className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.35s_ease-out,scale-out_0.35s_ease-out]"
         hideClose={step !== "ask"}
       >
         {/* Stacked paper effect: two offset sheets behind the main card */}
@@ -123,18 +123,22 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
           transition={reduceMotion ? { duration: 0.2 } : spring}
           className="relative"
         >
-          {/* Back sheet 2 */}
-          <div
-            aria-hidden
-            className="absolute inset-0 rounded-[14px] bg-card border border-border/40 shadow-md"
-            style={{ transform: "rotate(-2.2deg) translate(-6px, 6px)" }}
-          />
-          {/* Back sheet 1 */}
-          <div
-            aria-hidden
-            className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md"
-            style={{ transform: "rotate(1.4deg) translate(4px, 3px)" }}
-          />
+          {/* Back sheets - only shown on the ask step */}
+          {step === "ask" && (
+            <>
+              <div
+                aria-hidden
+                className="absolute inset-0 rounded-[14px] bg-card border border-border/40 shadow-md"
+                style={{ transform: "rotate(-2.2deg) translate(-6px, 6px)" }}
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md"
+                style={{ transform: "rotate(1.4deg) translate(4px, 3px)" }}
+              />
+            </>
+          )}
+
 
           {/* Main card - index card / bookplate */}
           <div className="relative rounded-[14px] bg-card border border-border shadow-2xl overflow-hidden">
