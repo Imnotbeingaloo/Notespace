@@ -208,8 +208,8 @@ export default function PricingPage() {
             <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
               <HelpCircle className="h-6 w-6 text-accent" />
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Questions people actually ask</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Short answers to the four things that come up most.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Frequently asked questions</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">Clear answers to the questions we hear most often.</p>
           </motion.div>
           <div className="space-y-6 mt-10">
             {faqs.map((faq, i) => (
