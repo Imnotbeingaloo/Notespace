@@ -377,9 +377,9 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                     <Layers className="h-6 w-6 text-accent" />
                   </div>
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">How we work</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-3">No feature gets built because a competitor has it. Things ship because someone actually using the app asked, or because we got tired of working around the same gap.</p>
-                  <p className="text-muted-foreground leading-relaxed">We ship small, often. The people on the beta channel are basically co-authors at this point.</p>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our approach</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">Features are not built to match competitors. They ship because an active user requested them, or because we encountered the gap ourselves.</p>
+                  <p className="text-muted-foreground leading-relaxed">We ship small, frequent improvements. Our beta users are partners in the process.</p>
                 </div>
               </motion.div>
             </div>
