@@ -110,8 +110,8 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                 </div>
 
                 <h2 className="mt-3 font-serif text-[28px] leading-[1.15] text-foreground tracking-tight">
-                  What should your<br />
-                  <span className="italic text-primary">notebook</span> call you?
+                  What should <span className="italic text-primary">we</span><br />
+                  call you?
                 </h2>
 
                 <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
