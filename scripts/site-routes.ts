@@ -30,6 +30,7 @@ export const PUBLIC_ROUTES: PublicRoute[] = [
   { path: "/blog/notion-alternatives-2026", changefreq: "monthly", priority: "0.9" },
   { path: "/blog/obsidian-alternatives-2026", changefreq: "monthly", priority: "0.9" },
   { path: "/blog/evernote-alternatives-2026", changefreq: "monthly", priority: "0.9" },
+  { path: "/blog/onenote-alternatives-2026", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases", changefreq: "monthly", priority: "0.8" },
   { path: "/use-cases/students", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases/writers", changefreq: "monthly", priority: "0.9" },
