@@ -241,10 +241,10 @@ export default function PricingPage() {
             className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
           >
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Pick a tier or just open the free one
+              Choose your plan
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              The free plan isn't a teaser. You can sit on it forever; we'd rather you stayed than felt squeezed.
+              The free plan is not a trial. You are welcome to use it indefinitely — upgrade only when you need more.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
               {user ? "Open App" : "Start on Free"} <ArrowRight className="h-4 w-4" />
