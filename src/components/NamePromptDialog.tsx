@@ -3,7 +3,9 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/components/ui/sonner";
+
 
 interface NamePromptDialogProps {
   open: boolean;
