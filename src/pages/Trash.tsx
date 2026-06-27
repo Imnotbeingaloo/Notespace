@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { NoindexHead } from "@/components/NoindexHead";
 
 const TRASH_EXPIRY_DAYS = 30;
 
@@ -505,6 +506,7 @@ function TrashPageContent() {
 export default function TrashPage() {
   return (
     <NotebookProvider>
+      <NoindexHead title="Trash — Notebook Archive" />
       <TrashPageContent />
     </NotebookProvider>
   );

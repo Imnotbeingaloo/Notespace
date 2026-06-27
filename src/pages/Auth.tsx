@@ -4,6 +4,7 @@ import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw } from "lucide-rea
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { NoindexHead } from "@/components/NoindexHead";
 
 const BTN_PRESS = "transition-all duration-100 active:scale-95";
 
@@ -217,6 +218,7 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 relative">
+      <NoindexHead title="Sign in — Notebook Archive" />
       <button
         onClick={() => navigate("/")}
         className={`absolute left-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}

@@ -67,6 +67,7 @@ export default function SharedNote() {
           title={`${note.title} — Notebook Archive`}
           description={(note.content || "").slice(0, 160).replace(/\s+/g, " ").trim() || "A shared note from Notebook Archive."}
           path={`/shared/${token ?? ""}`}
+          noindex
           jsonLd={{
             "@context": "https://schema.org",
             "@type": "Article",
