@@ -468,7 +468,10 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex-1 p-6 md:p-8">
-              <h2 className="font-serif text-xl font-bold text-foreground mb-1">Quantum Mechanics Intro</h2>
+              <div className="flex items-start justify-between gap-3 mb-1">
+                <h2 className="font-serif text-xl font-bold text-foreground">Quantum Mechanics Intro</h2>
+                <ReduceMotionToggle />
+              </div>
               <p className="text-xs text-muted-foreground mb-5">Updated Jan 15, 2:30 PM</p>
               <div className="space-y-1.5 text-sm leading-relaxed">
                 {editorLines.slice(0, visibleLines).map((line, i) => (
@@ -482,6 +485,7 @@ export default function LandingPage() {
                 )}
               </div>
             </div>
+
           </div>
         </motion.div>
         </div>
