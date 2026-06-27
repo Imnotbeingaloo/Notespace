@@ -573,13 +573,13 @@ export default function LandingPage() {
             className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
           >
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Want a quieter place to think?
+              Ready to think more clearly?
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              The free plan is the real product. No card, no countdown, no upsell wall later. Open it and start writing.
+              The free plan is the full product — no credit card, no trial timer, no upsell wall. Open it and start writing.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Open App" : "Open it now"} <ArrowRight className="h-4 w-4" />
+              {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
