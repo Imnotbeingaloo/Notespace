@@ -43,7 +43,12 @@ export default function SharedNote() {
     };
 
     fetchSharedNote();
-  }, [token]);
+    fetchSharedNote();
+  }, [tokenIsValid, token]);
+
+  // Bad/placeholder token → real 404
+  if (!tokenIsValid) return <Navigate to="/404" replace />;
+
 
   if (loading) {
     return (
