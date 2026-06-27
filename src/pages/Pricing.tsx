@@ -109,7 +109,7 @@ export default function PricingPage() {
               Plans that <span className="text-primary">grow</span> with you
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Start free. Move up when the AI starts feeling stingy. Editor, search, and auto-save are the same on every plan, so nothing essential is paywalled.
+              Start on Free. Upgrade when you need more capacity. The editor, search, and auto-save are identical on every plan — nothing essential is gated.
             </p>
           </motion.div>
         </div>
