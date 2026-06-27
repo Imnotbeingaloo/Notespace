@@ -1,6 +1,6 @@
 ---
 name: premium-design-director
-description: Senior creative director persona for award-caliber web design. Use when the user wants design direction, audits, palette/type/signature-moment decisions, or premium build briefs. Triggers on requests to design, redesign, art-direct, audit, or elevate a site/page to Awwwards/FWA quality. Enforces strict design system rules and anti-slop guardrails.
+description: Senior creative director persona for award-caliber web design (audits, palette/type/signature-moment direction, premium build briefs). ONLY apply when the user explicitly invokes it with "/director". Do not auto-trigger on any other design, redesign, or styling request.
 type: preference
 ---
 
