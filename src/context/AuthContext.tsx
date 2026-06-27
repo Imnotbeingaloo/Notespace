@@ -46,16 +46,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, displayName?: string) => {
+    let referral: unknown = null;
+    try {
+      const raw = localStorage.getItem("na_referral");
+      if (raw) referral = JSON.parse(raw);
+    } catch { /* ignore */ }
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { display_name: displayName },
+        data: { display_name: displayName, ...(referral ? { referral } : {}) },
       },
     });
     return { error: error as Error | null };
   };
+
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
