@@ -556,25 +556,21 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6"
+      className="flex flex-col w-full max-w-5xl mx-auto px-4 sm:px-8 py-6"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Compact header — no oversized hero copy */}
+      <div className="flex items-center justify-between mb-5">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back
         </button>
-        <div className="text-center">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-accent mb-1">— Template Gallery —</p>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">Pick a starting point</h2>
-          <p className="text-xs text-muted-foreground mt-1">Hand-crafted layouts — preview before you commit.</p>
-        </div>
+        <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground">Template Gallery</h2>
         <div className="w-10" />
       </div>
 
-      {/* Search + categories — sticky-feeling toolbar */}
+      {/* Search + categories */}
       <div className="flex flex-col gap-3 mb-5">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -602,8 +598,8 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
         </div>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[64vh] overflow-y-auto pr-1 pb-2">
+      {/* Grid — same generous card size as the featured chooser, page scrolls naturally */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
         {filtered.map((tmpl) => (
           <motion.button
             key={tmpl.id}
@@ -612,8 +608,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
             whileTap={{ scale: 0.98 }}
             className="group flex flex-col gap-3 p-3 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all text-left overflow-hidden"
           >
-            {/* Larger paper preview */}
-            <div className="relative h-40 w-full">
+            <div className="relative h-44 w-full">
               <TemplatePaper template={tmpl} compact />
               <div className={`absolute top-2 right-2 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${tmpl.accent ?? "bg-primary/10 text-primary"}`}>
                 {tmpl.icon}
@@ -635,6 +630,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
           </div>
         )}
       </div>
+
 
       {/* Preview modal */}
       <AnimatePresence>
