@@ -151,9 +151,22 @@ export function OnboardingHelp() {
 
   const undismiss = () => {
     dismissedRef.current = false;
-    try { localStorage.removeItem(DISMISS_KEY); } catch {}
+    try {
+      localStorage.removeItem(DISMISS_KEY);
+      localStorage.removeItem(DISMISS_DATE_KEY);
+    } catch {}
     showCountRef.current = 0;
     armIdle();
+  };
+
+  // Clicking the hint dismisses it for the rest of the day.
+  const dismissForToday = () => {
+    dismissedRef.current = true;
+    try { localStorage.setItem(DISMISS_DATE_KEY, todayStr()); } catch {}
+    setHintOpen(false);
+    hintOpenRef.current = false;
+    clearHide();
+    clearIdle();
   };
 
   const handleHelpClick = () => {
