@@ -1,25 +1,22 @@
-import { useEffect } from "react";
 import { UseCaseLayout } from "@/components/UseCaseLayout";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 export default function UseCaseWriters() {
-  useEffect(() => {
-    const ld = {
+  const jsonLd = [
+    {
       "@context": "https://schema.org",
       "@type": "WebPage",
       name: "Notebook Archive for Writers",
       description:
         "A quiet, structured note-taking app for writers. Draft long-form work with focus mode, word count goals, and frictionless export.",
       url: "https://notebookarchive.lovable.app/use-cases/writers",
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(ld);
-    document.head.appendChild(script);
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
+    },
+    breadcrumbsJsonLd([
+      { name: "Use cases", path: "/use-cases" },
+      { name: "Writers", path: "/use-cases/writers" },
+    ]),
+  ];
 
   return (
     <>
@@ -27,7 +24,9 @@ export default function UseCaseWriters() {
         title="Note-Taking App for Writers - Notebook Archive"
         description="A calm Markdown editor with focus mode, word-count goals, and tags that organize ideas across drafts."
         path="/use-cases/writers"
+        jsonLd={jsonLd}
       />
+
       <UseCaseLayout
         eyebrow="For writers"
         title={<>A quiet editor for <span className="text-primary">long-form work</span>.</>}

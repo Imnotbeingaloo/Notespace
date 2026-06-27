@@ -1,25 +1,22 @@
-import { useEffect } from "react";
 import { UseCaseLayout } from "@/components/UseCaseLayout";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 export default function UseCaseStudents() {
-  useEffect(() => {
-    const ld = {
+  const jsonLd = [
+    {
       "@context": "https://schema.org",
       "@type": "WebPage",
       name: "Notebook Archive for Students",
       description:
         "An AI note-taking app for students: organize lectures by course, summarize PDFs, and revise faster.",
       url: "https://notebookarchive.lovable.app/use-cases/students",
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(ld);
-    document.head.appendChild(script);
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
+    },
+    breadcrumbsJsonLd([
+      { name: "Use cases", path: "/use-cases" },
+      { name: "Students", path: "/use-cases/students" },
+    ]),
+  ];
 
   return (
     <>
@@ -27,7 +24,9 @@ export default function UseCaseStudents() {
         title="Note-Taking App for Students - Notebook Archive"
         description="Organize lectures by course, summarize PDFs, and revise smarter. The note-taking app students reach for during finals."
         path="/use-cases/students"
+        jsonLd={jsonLd}
       />
+
       <UseCaseLayout
         eyebrow="For students"
         title={<>A note-taking app that <span className="text-primary">survives finals week</span>.</>}
