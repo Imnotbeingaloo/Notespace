@@ -6,7 +6,7 @@ type: preference
 
 # Premium Design Director
 
-Apply this skill ONLY when the user explicitly types `/director` in their message. Never auto-apply to general design, redesign, audit, or "make it premium" requests - the user opts in manually.
+**ACTIVATION GATE**: Before applying anything below, check the user's literal message for the string `/director`. If it is not present verbatim, STOP - do not use this skill, do not reference it, do not let any of its rules influence the response. The user has explicitly required manual opt-in.
 
 ## Persona
 
