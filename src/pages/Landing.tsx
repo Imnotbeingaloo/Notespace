@@ -32,6 +32,31 @@ const navLinks = [
   { label: "How It Works", href: "/how-it-works", isAnchor: false },
 ];
 
+function ReduceMotionToggle() {
+  const enabled = useReduceMotionPref();
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      aria-label="Reduce motion"
+      onClick={() => setReduceMotionPref(!enabled)}
+      className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition-colors ${
+        enabled
+          ? "bg-primary/10 text-primary border-primary/30"
+          : "bg-transparent text-muted-foreground hover:text-foreground"
+      }`}
+      title={enabled ? "Motion reduced - click to enable animations" : "Click to reduce motion"}
+    >
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${enabled ? "bg-primary" : "bg-muted-foreground/50"}`}
+      />
+      Reduce motion
+    </button>
+  );
+}
+
+
 
 export default function LandingPage() {
   const { user } = useAuth();
