@@ -14,33 +14,33 @@ const groups = [
     title: "Writing",
     kicker: "The canvas",
     blurb:
-      "Writing should feel close to thinking. The editor stays quiet by default, and the tools you actually use sit one keystroke away when you reach for them.",
+      "Writing should feel close to thinking. The editor remains quiet by default, with the tools you use most a single keystroke away.",
     items: [
-      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a toolbar built around long pages, not landing copy. Word count, character count, and read time tick in the footer as you type.", deepLink: "/app", linkLabel: "Open the editor" },
-      { Icon: Wand2, name: "AI explanations", desc: "Highlight a phrase, hit Explain, and the answer streams in beside your note. You stay on the page; the model does the reading.", deepLink: "/app", linkLabel: "Try it in a note" },
-      { Icon: Layers, name: "Templates", desc: "Skip the blank page. Lectures, meetings, weekly reviews, research starts — pick a scaffold and start filling it in.", deepLink: "/app", linkLabel: "Pick a template" },
+      { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a toolbar designed for long-form work. Word count, character count, and read time update live in the footer.", deepLink: "/app", linkLabel: "Open the editor" },
+      { Icon: Wand2, name: "AI explanations", desc: "Highlight a phrase, select Explain, and a clear answer streams in beside your note. You stay focused on writing.", deepLink: "/app", linkLabel: "Try it in a note" },
+      { Icon: Layers, name: "Templates", desc: "Begin with a structured layout for lectures, meetings, weekly reviews, or research — then adapt to fit your work.", deepLink: "/app", linkLabel: "Pick a template" },
     ],
   },
   {
     title: "Organization",
     kicker: "The system",
     blurb:
-      "Notes only matter if you can find them again. Tags collect themselves across notebooks, sessions get planned, and a Pomodoro keeps you honest about the part where you actually sit and work.",
+      "Notes are only valuable when they remain accessible. Tags aggregate automatically, sessions are planned in advance, and a Pomodoro timer keeps your focus on the work.",
     items: [
-      { Icon: Tag, name: "Smart tags", desc: "Type `#anything` inside a note. It shows up in the sidebar cloud; click the chip later to pull every note that mentions it.", deepLink: "/app", linkLabel: "See your tag cloud" },
-      { Icon: Timer, name: "Pomodoro timer", desc: "A small 25/5 timer parked in the corner. Start a sprint, take a real break, and watch your completed sessions stack up over the day.", deepLink: "/app", linkLabel: "Start a sprint" },
-      { Icon: BookOpen, name: "Study planner", desc: "Schedule sessions per notebook, watch your day streak, and get a nudge when you're about to skip one.", deepLink: "/app", linkLabel: "Open the planner" },
+      { Icon: Tag, name: "Smart tags", desc: "Type `#anything` inside a note. It appears in the sidebar tag cloud; clicking it retrieves every note that references it.", deepLink: "/app", linkLabel: "See your tag cloud" },
+      { Icon: Timer, name: "Pomodoro timer", desc: "A 25/5 timer rests in the corner. Start a session, take a deliberate break, and review your completed sessions throughout the day.", deepLink: "/app", linkLabel: "Start a session" },
+      { Icon: BookOpen, name: "Study planner", desc: "Schedule sessions per notebook, track your daily streak, and receive a reminder before you miss one.", deepLink: "/app", linkLabel: "Open the planner" },
     ],
   },
   {
     title: "Sharing & Trust",
     kicker: "The foundation",
     blurb:
-      "Your notes belong to you. Everything is private unless you decide otherwise, the AI never reads anything without your say-so, and you can leave with your data any time.",
+      "Your notes belong to you. Everything remains private by default, the AI never accesses your content without explicit permission, and your data is portable at any time.",
     items: [
-      { Icon: Share2, name: "Public share links", desc: "Generate a read-only link with a secure token. The recipient gets a clean public page; you can revoke it with one click.", deepLink: "/app", linkLabel: "Share a note" },
-      { Icon: Lock, name: "Private by default", desc: "JWT auth, signed file URLs, and row-level security in the database. Nobody else sees your notes — including us, including the AI, until you ask.", deepLink: "/pricing", linkLabel: "See the security model" },
-      { Icon: Download, name: "Export anywhere", desc: "Markdown or PDF, one click, no proprietary wrappers. Your work walks out the same way it walked in.", deepLink: "/app", linkLabel: "Export a note" },
+      { Icon: Share2, name: "Public share links", desc: "Generate a read-only link secured by token. Recipients see a clean public page; revoke access in a single click.", deepLink: "/app", linkLabel: "Share a note" },
+      { Icon: Lock, name: "Private by default", desc: "JWT authentication, signed file URLs, and row-level security in the database. Your notes remain private — including from us and the AI — until you choose otherwise.", deepLink: "/pricing", linkLabel: "See the security model" },
+      { Icon: Download, name: "Export anywhere", desc: "Markdown or PDF, one click, no proprietary formats. Your work moves with you.", deepLink: "/app", linkLabel: "Export a note" },
     ],
   },
 ];
