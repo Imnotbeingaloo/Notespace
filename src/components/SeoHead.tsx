@@ -23,7 +23,7 @@ const BASE_URL = "https://notebookarchive.lovable.app";
  * Per-route head tags. Overrides the static <title>, meta description,
  * canonical, and og:* shipped in index.html for JS-executing crawlers.
  */
-export function SeoHead({ title, description, path, jsonLd, noindex, image }: SeoHeadProps) {
+export function SeoHead({ title, description, path, jsonLd, noindex, image, type }: SeoHeadProps) {
   const url = `${BASE_URL}${path}`;
   const imagePath = image ?? "/og-image.jpg";
   const imageUrl = imagePath.startsWith("http") ? imagePath : `${BASE_URL}${imagePath}`;
