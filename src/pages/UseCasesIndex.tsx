@@ -4,6 +4,7 @@ import {
   GraduationCap,
   PenLine,
   Microscope,
+  Briefcase,
   BookOpen,
   Sparkles,
   Search,
