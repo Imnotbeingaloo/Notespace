@@ -528,17 +528,17 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 relative">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              What <span className="text-accent">people</span> have said about it
+              What our <span className="text-accent">users</span> say
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Researchers, students, and small teams sent us notes after switching. A few of them are below.
+              Notes from researchers, students, and small teams who made the switch.
             </p>
           </motion.div>
           <div className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12">
             {[
-              { quote: "It's the first note app I've used that actually pushes back on what I write. The Explain panel is doing real work, not decoration.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
-              { quote: "Got me through finals. Highlighting a concept and getting a real explanation back is way faster than tabbing out to Google every two minutes.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-              { quote: "We tried moving our team docs over from another tool. Search alone made it stick — I find things in two keystrokes that used to take me a scroll-fest.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+              { quote: "The first note-taking tool that genuinely engages with what I write. The Explain panel adds real value to my research workflow.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
+              { quote: "Indispensable during finals. Highlighting a concept and receiving a clear explanation is far more efficient than searching elsewhere.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
+              { quote: "We migrated our team documentation from another platform. The search alone justified the move — I find information in seconds.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
             ].map((t, i) => (
               <motion.div
                 key={t.name}
