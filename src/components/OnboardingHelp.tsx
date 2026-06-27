@@ -190,7 +190,7 @@ export function OnboardingHelp() {
             <motion.button
               type="button"
               key="hint-desktop"
-              onClick={() => { setHintOpen(false); hintOpenRef.current = false; clearHide(); clearIdle(); }}
+              onClick={dismissForToday}
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
@@ -212,7 +212,7 @@ export function OnboardingHelp() {
             <motion.button
               type="button"
               key="hint-mobile"
-              onClick={() => { setHintOpen(false); hintOpenRef.current = false; clearHide(); clearIdle(); }}
+              onClick={dismissForToday}
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
