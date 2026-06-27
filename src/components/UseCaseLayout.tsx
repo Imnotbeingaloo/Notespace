@@ -106,7 +106,7 @@ export function UseCaseLayout({
 
       {/* Overview */}
       {overview && overview.length > 0 && (
-        <section className="py-16 border-b border-border">
+        <section className="py-20 border-b border-border">
           <div className="container mx-auto px-6 max-w-3xl space-y-5">
             {overview.map((p, i) => (
               <motion.p
@@ -159,7 +159,7 @@ export function UseCaseLayout({
 
       {/* Scenarios */}
       {scenarios && scenarios.length > 0 && (
-        <section className="py-20 border-t border-border bg-muted/20">
+        <section className="py-24 border-t border-border bg-muted/20">
           <div className="container mx-auto px-6 max-w-5xl">
             <div className="text-center mb-12">
               <div className="flex items-center justify-center gap-3 mb-4">
@@ -201,7 +201,7 @@ export function UseCaseLayout({
 
       {/* Pull quote */}
       {quote && (
-        <section className="py-16 border-t border-border">
+        <section className="py-20 border-t border-border">
           <div className="container mx-auto px-6 max-w-3xl text-center">
             <Quote className="h-8 w-8 text-primary mx-auto mb-6 opacity-60" />
             <p className="font-serif text-xl md:text-2xl text-foreground leading-relaxed italic mb-4">
@@ -214,7 +214,7 @@ export function UseCaseLayout({
 
       {/* Pain points */}
       {painPoints && painPoints.length > 0 && (
-        <section className="py-20 border-t border-border">
+        <section className="py-24 border-t border-border">
           <div className="container mx-auto px-6 max-w-4xl">
             <div className="text-center mb-12">
               <div className="flex items-center justify-center gap-3 mb-4">
@@ -251,7 +251,7 @@ export function UseCaseLayout({
 
       {/* Comparison */}
       {comparison && (
-        <section className="py-20 border-t border-border bg-muted/20">
+        <section className="py-24 border-t border-border bg-muted/20">
           <div className="container mx-auto px-6 max-w-5xl">
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-3 mb-4">
@@ -284,7 +284,7 @@ export function UseCaseLayout({
       )}
 
       {/* Workflow */}
-      <section className="py-20 border-t border-border">
+      <section className="py-24 border-t border-border">
         <div className="container mx-auto px-6 max-w-5xl">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -309,7 +309,7 @@ export function UseCaseLayout({
 
       {/* Tips */}
       {tips && tips.length > 0 && (
-        <section className="py-20 border-t border-border bg-muted/20">
+        <section className="py-24 border-t border-border bg-muted/20">
           <div className="container mx-auto px-6 max-w-4xl">
             <div className="text-center mb-12">
               <div className="flex items-center justify-center gap-3 mb-4">
@@ -333,7 +333,7 @@ export function UseCaseLayout({
       )}
 
       {/* FAQ */}
-      <section className="py-20 border-t border-border">
+      <section className="py-24 border-t border-border">
         <div className="container mx-auto px-6 max-w-3xl">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -357,7 +357,7 @@ export function UseCaseLayout({
       </section>
 
       {/* CTA */}
-      <section className="py-20 border-t border-border">
+      <section className="py-24 border-t border-border">
         <div className="container mx-auto px-6 max-w-2xl text-center">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
             Start with one notebook.
