@@ -48,6 +48,7 @@ export default function Footer() {
               <li><Link to="/#features" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Features</Link></li>
               <li><Link to="/pricing" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Pricing</Link></li>
               <li><Link to="/how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">How It Works</Link></li>
+              <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Blog</Link></li>
             </ul>
           </motion.div>
 

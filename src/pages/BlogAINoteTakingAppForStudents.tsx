@@ -1,46 +1,110 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, GraduationCap, BookMarked, Brain, FileText } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import Footer from "@/components/Footer";
+import { AppDetailCard } from "@/components/blog/AppDetailCard";
+
+import naShot from "@/assets/blog/notebook-archive.png.asset.json";
+import notionShot from "@/assets/blog/notion.png.asset.json";
+import obsidianShot from "@/assets/blog/obsidian.png.asset.json";
+import onenoteShot from "@/assets/blog/onenote.png.asset.json";
 
 const CTA = "/auth?ref=blog-students&utm_source=blog&utm_medium=organic&utm_campaign=ai-note-taking-app-for-students";
 
 const picks = [
   {
     name: "Notebook Archive",
+    pricing: "Free; Pro $19/mo",
+    imageUrl: naShot.url,
+    imageAlt: "Notebook Archive landing page — note-taker that thinks with you",
+    siteUrl: "https://notebookarchive.lovable.app",
     tagline: "Built for students who actually take notes by hand-typing them.",
-    why: "Notebooks per course, smart tags that pull themes out of your notes, AI that explains concepts and summarizes long PDFs without writing your essay for you, a daily word-count goal, focus mode for exam crunch, and free to start with no credit card. Everything exports to markdown so your notes outlive any one semester.",
-    pricing: "Free; Pro $19/mo (student-friendly free tier)",
+    description:
+      "One notebook per course, smart tags that pull themes out of your notes, and AI that explains concepts and summarizes long PDFs without writing your essay for you. Focus mode for exam crunch, daily word-count goal, free to start, and full markdown export so your notes outlive any one semester.",
+    pros: [
+      "Free tier covers a full semester of real note-taking",
+      "AI explains concepts and summarizes PDFs (lecture slides, papers)",
+      "Per-notebook organization — one per course, set up in seconds",
+      "Smart tags surface themes across all your notes for revision",
+    ],
+    cons: [
+      "No native mobile app yet (web works on phones)",
+      "Newer than the giants — smaller community",
+    ],
     bestFor: "University and high-school students juggling multiple subjects.",
-    disclosure: "Disclosure: this is the product we make. Criteria below.",
-    icon: GraduationCap,
+    disclosure: "Disclosure: this is the product we make. Criteria are listed up top.",
   },
   {
     name: "Notion",
-    tagline: "The wiki-style workspace lots of students already use.",
-    why: "Databases, templates, and a generous free tier. Heavy to set up — most students spend more time decorating the workspace than studying in it. AI is a $10/mo add-on.",
     pricing: "Free; AI add-on $10/mo",
-    bestFor: "Students who like building elaborate systems.",
-    icon: BookMarked,
+    imageUrl: notionShot.url,
+    imageAlt: "Notion landing page — Where teams and agents create together",
+    siteUrl: "https://www.notion.so",
+    tagline: "The wiki-style workspace lots of students already use.",
+    description:
+      "Databases, templates, calendars, and a generous free tier. Powerful, but the setup tax is real — students often spend more time decorating the workspace than studying in it. AI is a $10/mo add-on.",
+    pros: [
+      "Huge template library — class trackers, study planners, flashcards",
+      "Generous free tier for personal use",
+      "Shareable pages for group projects",
+    ],
+    cons: [
+      "Heavy to set up — easy to over-engineer instead of study",
+      "AI is a paid add-on on top of any plan",
+      "No real offline mode — needs internet",
+    ],
+    bestFor: "Students who genuinely enjoy building elaborate systems.",
+    ourTake:
+      "Notion is a workspace builder first, a notes app second. Notebook Archive starts working the moment you sign in — no template hunting, no database setup, and AI is in the free tier.",
   },
   {
     name: "Obsidian",
-    tagline: "Local markdown files with backlinks — your notes, forever.",
-    why: "Free for personal use, completely offline, and your notes live as plain files on your device. Steep learning curve and AI requires plugins, but unmatched for long-term knowledge.",
     pricing: "Free",
-    bestFor: "CS / philosophy / research-track students who like to tinker.",
-    icon: Brain,
+    imageUrl: obsidianShot.url,
+    imageAlt: "Obsidian landing page — Sharpen your thinking",
+    siteUrl: "https://obsidian.md",
+    tagline: "Local markdown files with backlinks — your notes, forever.",
+    description:
+      "Free for personal use, fully offline, and your notes live as plain files on your device. Unmatched for long-term knowledge — but the setup is a project and AI requires plugins with your own API key.",
+    pros: [
+      "Completely free for personal use",
+      "Works offline; notes are plain files you own",
+      "Graph view and backlinks are excellent for cross-subject revision",
+    ],
+    cons: [
+      "Steep learning curve — you assemble your own workflow",
+      "AI requires plugin setup and a separate API key",
+      "Cross-device sync is a paid add-on",
+    ],
+    bestFor: "CS / philosophy / research-track students who enjoy tinkering.",
+    ourTake:
+      "Obsidian is the right pick if a weekend of setup sounds fun. Notebook Archive gives you the same markdown portability with AI working from minute one — useful when finals are in two weeks.",
   },
   {
     name: "OneNote",
-    tagline: "Microsoft's notebook app, free with most school accounts.",
-    why: "Free with a school email, syncs across devices, handwriting on tablets. AI features (Copilot) require a paid Microsoft 365 plan most students don't have.",
     pricing: "Free with school account",
+    imageUrl: onenoteShot.url,
+    imageAlt: "OneNote landing page — capture ideas, organize projects",
+    siteUrl: "https://www.microsoft.com/en-us/microsoft-365/onenote/digital-note-taking-app",
+    tagline: "Microsoft's notebook app, free with most school accounts.",
+    description:
+      "Free with a school email, syncs across devices, and handwriting on tablets is genuinely excellent. AI features (Copilot) require a paid Microsoft 365 plan most students don't have.",
+    pros: [
+      "Free with most university Microsoft 365 accounts",
+      "Best handwriting experience on Surface and iPad",
+      "Tight integration with Word, Excel, Teams",
+    ],
+    cons: [
+      "AI (Copilot) requires a paid Microsoft 365 plan",
+      "Interface is busy — feels like Office 2013 at times",
+      "Hard to export your notes out of the Microsoft ecosystem",
+    ],
     bestFor: "Students whose school issues Microsoft accounts and tablets.",
-    icon: FileText,
+    ourTake:
+      "OneNote is great for handwritten notes on a Surface. For typed notes, AI help, and exports that aren't locked to Microsoft, Notebook Archive is the cleaner path.",
   },
 ];
 
@@ -100,7 +164,7 @@ export default function BlogAINoteTakingAppForStudents() {
     <>
       <SeoHead
         title="Best AI Note Taking App for Students (2026) — Free & Honest Picks"
-        description="The four AI note taking apps that actually fit how students study — Notebook Archive, Notion, Obsidian, and OneNote. Free tiers, AI features, and what each one is best for."
+        description="The four AI note taking apps that actually fit how students study — Notebook Archive, Notion, Obsidian, and OneNote. Free tiers, screenshots, pros and cons."
         path="/blog/ai-note-taking-app-for-students"
         jsonLd={jsonLd}
       />
@@ -123,14 +187,14 @@ export default function BlogAINoteTakingAppForStudents() {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Students don't need a productivity system — they need a place to dump lecture notes,
               find them again at 2 a.m. before an exam, and get a concept explained without
-              opening four more tabs. Here are the four apps that actually do that, ranked by who
-              they fit.
+              opening four more tabs. Here are the four apps that actually do that, with
+              screenshots, pros, cons, and where each one fits.
             </p>
           </motion.header>
 
-          <section className="prose prose-neutral max-w-none mb-12">
-            <h2 className="font-serif text-2xl font-bold mt-12 mb-4">What students actually need</h2>
-            <p className="text-muted-foreground leading-relaxed">
+          <section className="mb-12">
+            <h2 className="font-serif text-2xl font-bold mt-8 mb-4">What students actually need</h2>
+            <p className="text-muted-foreground leading-relaxed mb-12">
               We talked to undergrads, grad students, and a few high-schoolers about what they want
               from a notes app, and four things came up every time. <strong>Per-course organization</strong>{" "}
               that doesn't take an afternoon to set up. <strong>Search that works</strong> across every
@@ -140,38 +204,11 @@ export default function BlogAINoteTakingAppForStudents() {
               for everything.
             </p>
 
-            <h2 className="font-serif text-2xl font-bold mt-12 mb-4">The four picks</h2>
-
-            <div className="not-prose space-y-6 mt-6">
-              {picks.map((p, i) => {
-                const Icon = p.icon;
-                return (
-                  <motion.div
-                    key={p.name}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.05 }}
-                    className="border border-border rounded-lg p-6 bg-card"
-                  >
-                    <div className="flex items-baseline justify-between gap-4 mb-2">
-                      <h3 className="font-serif text-xl font-bold flex items-center gap-3">
-                        <Icon className="h-5 w-5 text-primary" />
-                        {i + 1}. {p.name}
-                      </h3>
-                      <span className="text-sm text-muted-foreground whitespace-nowrap">{p.pricing}</span>
-                    </div>
-                    <p className="italic text-foreground/80 mb-3">{p.tagline}</p>
-                    <p className="text-muted-foreground mb-3">{p.why}</p>
-                    <p className="text-sm"><strong className="text-primary">Best for:</strong> <span className="text-muted-foreground">{p.bestFor}</span></p>
-                    {p.disclosure && (
-                      <p className="text-xs italic text-muted-foreground mt-4 border-t border-border pt-3">
-                        {p.disclosure}
-                      </p>
-                    )}
-                  </motion.div>
-                );
-              })}
+            <h2 className="font-serif text-2xl font-bold mb-6">The four picks</h2>
+            <div className="space-y-8">
+              {picks.map((p, i) => (
+                <AppDetailCard key={p.name} index={i + 1} {...p} />
+              ))}
             </div>
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick one in 5 minutes</h2>
@@ -191,7 +228,7 @@ export default function BlogAINoteTakingAppForStudents() {
             </p>
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
-            <div className="not-prose space-y-6">
+            <div className="space-y-6">
               {faq.map((f) => (
                 <div key={f.q} className="border-l-2 border-primary/40 pl-4">
                   <h3 className="font-serif text-lg font-bold mb-2">{f.q}</h3>
