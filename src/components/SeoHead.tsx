@@ -11,6 +11,8 @@ interface SeoHeadProps {
    * Use for app-only routes: /app, /home, /trash, /shared/*, /auth.
    */
   noindex?: boolean;
+  /** Absolute or root-relative path to the social share image. Defaults to /og-image.jpg. */
+  image?: string;
 }
 
 const BASE_URL = "https://notebookarchive.lovable.app";
