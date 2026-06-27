@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { NoteTemplatePicker, NoteTemplate, templates, FEATURED_TEMPLATE_IDS, TemplatePaper } from "@/components/NoteTemplatePicker";
+import { NoteTemplatePicker, NoteTemplate, templates, FEATURED_TEMPLATE_IDS } from "@/components/NoteTemplatePicker";
 import { extractPdfText } from "@/lib/pdf-extract";
 import { formatImportedDocument } from "@/lib/document-import";
 
