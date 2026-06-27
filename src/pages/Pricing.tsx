@@ -53,10 +53,10 @@ const comparisons = [
 ];
 
 const faqs = [
-  { q: "Can I switch plans later?", a: "Yes. Upgrade, downgrade, or cancel whenever. Mid-cycle upgrades get prorated, and nothing is locked in." },
-  { q: "Is there a student discount?", a: "Yep — sign up with a .edu address and Pro drops to 50% off automatically. No form to fill out." },
-  { q: "What happens to my notes if I downgrade?", a: "They stay yours. You'll keep every note you've written; you just won't be able to create new notebooks past the free limit until you upgrade again." },
-  { q: "How does the free trial work?", a: "Fourteen days of Pro, no card required up front. When it ends you either subscribe or drop back to Free — nothing disappears either way." },
+  { q: "Can I switch plans later?", a: "Yes. You can upgrade, downgrade, or cancel at any time. Mid-cycle upgrades are prorated, and there are no long-term commitments." },
+  { q: "Is there a student discount?", a: "Yes — students who sign up with a .edu address receive 50% off Pro automatically. No application required." },
+  { q: "What happens to my notes if I downgrade?", a: "Your notes remain yours. You retain access to everything you've written; you simply cannot create notebooks beyond the free limit until you upgrade." },
+  { q: "How does the free trial work?", a: "Fourteen days of Pro access with no credit card required. When the trial ends, you may subscribe or revert to the Free plan — your work is preserved either way." },
 ];
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
