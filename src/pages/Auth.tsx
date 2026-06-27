@@ -479,8 +479,9 @@ const AuthPage = () => {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring ${
+                  onChange={(e) => { setEmail(e.target.value); if (notice) setNotice(""); }}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-all ${
+                    highlightEmail ? "border-primary ring-2 ring-primary/40" :
                     email && !emailValid ? "border-destructive/60" : "border-input"
                   }`}
                   placeholder="you@example.com"
