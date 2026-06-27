@@ -6,6 +6,8 @@ Disallow: /home
 Disallow: /trash
 Disallow: /shared/
 Disallow: /auth
+Disallow: /admin
+Disallow: /admin/
 
 User-agent: Bingbot
 Allow: /
@@ -15,6 +17,8 @@ Disallow: /home
 Disallow: /trash
 Disallow: /shared/
 Disallow: /auth
+Disallow: /admin
+Disallow: /admin/
 
 User-agent: Twitterbot
 Allow: /
@@ -30,5 +34,7 @@ Disallow: /home
 Disallow: /trash
 Disallow: /shared/
 Disallow: /auth
+Disallow: /admin
+Disallow: /admin/
 
 Sitemap: https://notebookarchive.lovable.app/sitemap.xml
