@@ -149,17 +149,43 @@ export default function LandingPage() {
         title="Notebook Archive - AI Note Taking App for Writing & Research"
         description="An AI note taking app for writers, students, and researchers. Capture ideas, organize notebooks, and let AI help only where it actually matters."
         path="/"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Notebook Archive",
-          url: "https://notebookarchive.lovable.app/",
-          potentialAction: {
-            "@type": "SearchAction",
-            target: "https://notebookarchive.lovable.app/?q={search_term_string}",
-            "query-input": "required name=search_term_string",
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Notebook Archive",
+            url: "https://notebookarchive.lovable.app/",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://notebookarchive.lovable.app/?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
           },
-        }}
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Notebook Archive",
+            url: "https://notebookarchive.lovable.app/",
+            logo: "https://notebookarchive.lovable.app/logo.png",
+            sameAs: [
+              "https://www.producthunt.com/products/notebook-archive",
+            ],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "Notebook Archive",
+            applicationCategory: "ProductivityApplication",
+            operatingSystem: "Web",
+            url: "https://notebookarchive.lovable.app/",
+            description: "AI note taking app with notebooks, global search, tags, Markdown export, and a quiet writing surface for writers, students, and researchers.",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+          },
+        ]}
       />
       <AnimatePresence>
         {showExitSplash && <ExitBookFlash key="exit-splash" onDone={() => setShowExitSplash(false)} />}
