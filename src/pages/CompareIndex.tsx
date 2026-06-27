@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import Footer from "@/components/Footer";
 import { COMPARISONS } from "@/data/comparisons";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 export default function CompareIndex() {
   useEffect(() => {
@@ -13,13 +14,30 @@ export default function CompareIndex() {
     document.documentElement.classList.remove("dark");
   }, []);
 
+  const jsonLd = [
+    breadcrumbsJsonLd([{ name: "Compare", path: "/compare" }]),
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Notebook Archive comparisons",
+      url: "https://notebookarchive.lovable.app/compare",
+      hasPart: COMPARISONS.map((c) => ({
+        "@type": "WebPage",
+        name: `Notebook Archive vs ${c.competitor}`,
+        url: `https://notebookarchive.lovable.app/compare/${c.slug}`,
+      })),
+    },
+  ];
+
   return (
     <>
       <SeoHead
         title="Compare Notebook Archive vs other note apps (2026)"
         description="Honest side-by-side comparisons of Notebook Archive against Notion, Obsidian, Evernote, OneNote, Roam, Bear, Mem, Reflect, Apple Notes, and Google Keep."
         path="/compare"
+        jsonLd={jsonLd}
       />
+
       <main className="min-h-screen bg-background">
         <PageHeader />
 
