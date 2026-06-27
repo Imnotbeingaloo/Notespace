@@ -26,6 +26,7 @@ const getGreeting = () => {
 
 export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) {
   const { updateDisplayName } = useProfile();
+  const { user } = useAuth();
   const reduceMotion = useReducedMotion();
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
@@ -45,6 +46,19 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
       if (closeTimer.current) window.clearTimeout(closeTimer.current);
     };
   }, [open]);
+
+  const deriveFromEmail = () => {
+    const email = user?.email ?? "";
+    const prefix = email.split("@")[0] ?? "";
+    const cleaned = prefix.replace(/[._\-+]+/g, " ").trim();
+    if (!cleaned) return "";
+    return cleaned
+      .split(" ")
+      .filter(Boolean)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ")
+      .slice(0, 60);
+  };
 
   const handleSave = async () => {
     const trimmed = name.trim();
@@ -71,6 +85,16 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
     );
   };
 
+  const handleDismiss = async () => {
+    if (saving) return;
+    const fallback = deriveFromEmail();
+    if (fallback) {
+      // Fire-and-forget; don't block the close.
+      updateDisplayName(fallback).catch(() => {});
+    }
+    onOpenChange(false);
+  };
+
   const ease = [0.22, 1, 0.36, 1] as const;
   const spring = { type: "spring" as const, stiffness: 220, damping: 24, mass: 0.9 };
 
@@ -79,13 +103,14 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
       open={open}
       onOpenChange={(o) => {
         if (saving) return;
-        if (step === "welcome" && o === false) {
-          onOpenChange(false);
+        if (o === false) {
+          handleDismiss();
           return;
         }
         if (step === "ask") onOpenChange(o);
       }}
     >
+
       <DialogContent
         className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-none duration-0"
         hideClose={step !== "ask"}
