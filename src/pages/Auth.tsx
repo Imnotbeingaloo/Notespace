@@ -383,6 +383,71 @@ const AuthPage = () => {
             <div className="flex-1 h-px bg-border" />
           </div>
 
+          {mode === "forgot" ? (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
+              {forgotSent ? (
+                <div className="text-center py-2">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-3">
+                    <Check className="h-6 w-6 text-emerald-500" />
+                  </div>
+                  <p className="text-sm text-foreground font-medium mb-1">Reset link sent</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    We sent a password reset link to <span className="text-foreground">{email}</span>.<br />
+                    Check your inbox or spam folder.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => { setMode("login"); setForgotSent(false); setError(""); }}
+                    className="mt-5 text-xs text-primary hover:underline"
+                  >
+                    Back to sign in
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground -mt-1">
+                    Enter your email and we'll send you a link to reset your password.
+                  </p>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring ${
+                          email && !emailValid ? "border-destructive/60" : "border-input"
+                        }`}
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        required
+                      />
+                    </div>
+                  </div>
+                  {error && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive" role="alert">
+                      {error}
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
+                  >
+                    {forgotLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : (<>Send reset link <ArrowRight className="h-4 w-4" /></>)}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setMode("login"); setError(""); }}
+                    className="w-full text-center text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    Back to sign in
+                  </button>
+                </>
+              )}
+            </form>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
@@ -406,7 +471,18 @@ const AuthPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-sm font-medium text-foreground">Password</label>
+                {mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => { setMode("forgot"); setError(""); setForgotSent(false); }}
+                    className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
@@ -524,6 +600,7 @@ const AuthPage = () => {
               )}
             </button>
           </form>
+          )}
         </div>
       </motion.div>
     </div>
