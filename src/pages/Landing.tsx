@@ -42,33 +42,17 @@ function renderInline(text: string): ReactNode[] {
 }
 
 function RenderMarkdownLine({ text }: { text: string }) {
-  const isHeading = text.startsWith("# ") || text.startsWith("## ") || text.startsWith("### ");
-  const hasBold = /\*\*[^*]+\*\*/.test(text);
-  const shouldAnimate = isHeading || hasBold;
-
-  const inner = (() => {
-    if (text === "") return <p>{"\u00A0"}</p>;
-    if (text.startsWith("### ")) {
-      return <h4 className="font-serif text-base font-bold text-foreground mt-2">{renderInline(text.slice(4))}</h4>;
-    }
-    if (text.startsWith("## ")) {
-      return <h3 className="font-serif text-lg font-bold text-foreground mt-2">{renderInline(text.slice(3))}</h3>;
-    }
-    if (text.startsWith("# ")) {
-      return <h2 className="font-serif text-xl font-bold text-foreground mt-2">{renderInline(text.slice(2))}</h2>;
-    }
-    return <p className="text-muted-foreground">{renderInline(text)}</p>;
-  })();
-
-  if (!shouldAnimate) return <div>{inner}</div>;
-  return (
-    <div
-      className="animate-in fade-in duration-500 ease-out"
-      style={{ willChange: "opacity" }}
-    >
-      {inner}
-    </div>
-  );
+  if (text === "") return <p>{"\u00A0"}</p>;
+  if (text.startsWith("### ")) {
+    return <h4 className="font-serif text-base font-bold text-foreground mt-2">{renderInline(text.slice(4))}</h4>;
+  }
+  if (text.startsWith("## ")) {
+    return <h3 className="font-serif text-lg font-bold text-foreground mt-2">{renderInline(text.slice(3))}</h3>;
+  }
+  if (text.startsWith("# ")) {
+    return <h2 className="font-serif text-xl font-bold text-foreground mt-2">{renderInline(text.slice(2))}</h2>;
+  }
+  return <p className="text-muted-foreground">{renderInline(text)}</p>;
 }
 
 
