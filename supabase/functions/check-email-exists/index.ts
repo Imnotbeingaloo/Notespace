@@ -17,32 +17,39 @@ Deno.serve(async (req) => {
       });
     }
 
-    const admin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
-
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const target = email.trim().toLowerCase();
-    let page = 1;
+
+    // Fast path: GoTrue admin endpoint supports filtering by email directly,
+    // avoiding a multi-page scan of every user in the project.
     let exists = false;
-    while (page <= 20) {
-      const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
-      if (error) break;
-      if (data.users.some((u) => u.email?.toLowerCase() === target)) {
-        exists = true;
-        break;
+    try {
+      const url = `${SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(target)}`;
+      const res = await fetch(url, {
+        headers: {
+          apikey: SERVICE_ROLE,
+          Authorization: `Bearer ${SERVICE_ROLE}`,
+        },
+      });
+      if (res.ok) {
+        const body = await res.json();
+        const users = Array.isArray(body) ? body : body.users ?? [];
+        exists = users.some((u: { email?: string }) => u.email?.toLowerCase() === target);
       }
-      if (data.users.length < 1000) break;
-      page++;
+    } catch {
+      // fall through with exists=false
     }
 
     if (logFailure) {
+      const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
       const userAgent = req.headers.get("user-agent") ?? null;
-      await admin.from("auth_failure_logs").insert({
+      // Fire and forget - don't block the response on logging.
+      admin.from("auth_failure_logs").insert({
         email: target,
         reason: exists ? "wrong_password" : "email_not_found",
         user_agent: userAgent,
-      });
+      }).then(() => {}).catch(() => {});
     }
 
     return new Response(JSON.stringify({ exists }), {
