@@ -138,7 +138,7 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
               {featured.map((tmpl) => (
                 <motion.button
                   key={tmpl.id}
-                  onClick={() => setPreviewTemplate(tmpl)}
+                  onClick={() => handleTemplateSelect(tmpl)}
                   whileHover={{ x: 2 }}
                   whileTap={{ scale: 0.99 }}
                   className="group flex items-center gap-3 p-3 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all text-left"
