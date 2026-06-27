@@ -24,12 +24,18 @@ const toolbarTips: Tip[] = [
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
+const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
 // Idle threshold — hint appears after 10s of no intentional interaction.
 const IDLE_STEPS_MS = [10000];
 const SHOW_MS = 6000;
 
+const todayStr = () => new Date().toISOString().slice(0, 10);
+
 export function OnboardingHelp() {
   const isMobile = useIsMobile();
+  const { notebooks, standaloneNotes } = useNotebooks();
+  // Beginner = no notebooks AND no standalone notes yet. Hint only targets beginners.
+  const isBeginner = (notebooks?.length ?? 0) === 0 && (standaloneNotes?.length ?? 0) === 0;
   const [open, setOpen] = useState(false);
   const [hintOpen, setHintOpen] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
