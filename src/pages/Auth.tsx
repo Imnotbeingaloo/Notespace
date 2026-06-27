@@ -597,6 +597,28 @@ const AuthPage = () => {
               )}
             </AnimatePresence>
 
+            {notice && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-foreground"
+                role="status"
+              >
+                <p className="leading-snug">{notice}</p>
+              </motion.div>
+            )}
+
+            {mode === "login" && unknownEmail && unknownEmail === email.trim() && (
+              <button
+                type="button"
+                onClick={() => { setMode("signup"); setNotice(`Creating an account for ${unknownEmail}.`); setHighlightEmail(true); setTimeout(() => setHighlightEmail(false), 2000); }}
+                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-primary/40 bg-primary/5 text-primary font-medium text-sm hover:bg-primary/10 ${BTN_PRESS}`}
+              >
+                Create account for {unknownEmail}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
+
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -4 }}
