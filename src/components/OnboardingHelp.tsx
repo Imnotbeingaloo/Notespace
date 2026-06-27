@@ -10,22 +10,22 @@ import { useNotebooks } from "@/context/NotebookContext";
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
 
 const toolbarTips: Tip[] = [
-  { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind the selected text — great for marking key passages you'll come back to." },
+  { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind the selected text - great for marking key passages you'll come back to." },
   { Icon: Code, title: "Inline code", body: "Wraps the selected text in a monospaced code style. Use for variable names, file paths, or short snippets." },
-  { Icon: Link2, title: "Insert link", body: "Highlight any text first and click this — the title pre-fills with what you selected and you just paste the URL." },
+  { Icon: Link2, title: "Insert link", body: "Highlight any text first and click this - the title pre-fills with what you selected and you just paste the URL." },
   { Icon: ImageIcon, title: "Insert image", body: "Opens your file picker. Images upload to your private storage and embed inline. PNG, JPG, WEBP up to 10MB." },
-  { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections — useful between topics or before a summary." },
+  { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections - useful between topics or before a summary." },
   { Icon: Table2, title: "Table", body: "Pick a size from the popover. Once inserted, the table edit toolbar appears for adding rows, columns, or deleting cells." },
-  { Icon: TableProperties, title: "Edit table", body: "When the cursor is inside a table, the table toolbar appears next to the main one — add/remove rows & columns, delete the whole table, all inline." },
-  { glyph: "Ω", title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor — no shortcuts to memorise." },
+  { Icon: TableProperties, title: "Edit table", body: "When the cursor is inside a table, the table toolbar appears next to the main one - add/remove rows & columns, delete the whole table, all inline." },
+  { glyph: "Ω", title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor - no shortcuts to memorise." },
   { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search & replace. Supports regex via the toggle." },
-  { Icon: Maximize2, title: "Focus Mode", body: "Top bar button — hides the sidebar and chrome so only your note remains. Click again to exit." },
+  { Icon: Maximize2, title: "Focus Mode", body: "Top bar button - hides the sidebar and chrome so only your note remains. Click again to exit." },
   { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
 const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
-// Idle threshold — hint appears after 10s of no intentional interaction.
+// Idle threshold - hint appears after 10s of no intentional interaction.
 const IDLE_STEPS_MS = [10000];
 const SHOW_MS = 3000;
 
@@ -80,7 +80,7 @@ export function OnboardingHelp() {
         setHintOpen(false);
         hintOpenRef.current = false;
         hideTimerRef.current = null;
-        // Don't auto-restart — only re-arm when the user becomes idle again.
+        // Don't auto-restart - only re-arm when the user becomes idle again.
       }, SHOW_MS);
     }, currentDelay());
   };
@@ -103,7 +103,7 @@ export function OnboardingHelp() {
 
   useEffect(() => { openRef.current = open; }, [open]);
 
-  // Activity listener — any interaction immediately hides the hint and
+  // Activity listener - any interaction immediately hides the hint and
   // restarts the idle timer (no continuous looping).
   useEffect(() => {
     if (dismissedRef.current) return;
@@ -120,7 +120,7 @@ export function OnboardingHelp() {
       armIdle();
     };
 
-    // Only intentional inputs dismiss/reset — exclude mousemove & scroll (too noisy).
+    // Only intentional inputs dismiss/reset - exclude mousemove & scroll (too noisy).
     const events = ["keydown", "click", "touchstart", "pointerdown"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     armIdle();
@@ -254,7 +254,7 @@ export function OnboardingHelp() {
           <DialogHeader>
             <DialogTitle className="font-serif text-xl">Toolbar cheatsheet</DialogTitle>
             <DialogDescription>
-              The buttons that aren't obvious — what each one actually does.
+              The buttons that aren't obvious - what each one actually does.
             </DialogDescription>
           </DialogHeader>
           <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">

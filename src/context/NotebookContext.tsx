@@ -484,7 +484,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       if (takenLower.has(note.title.trim().toLowerCase())) {
         const newName = await promptRenameForDuplicate(note.title, takenList);
         if (!newName) {
-          toast("Move cancelled — a note with that name already exists in the destination.");
+          toast("Move cancelled - a note with that name already exists in the destination.");
           return false;
         }
         finalTitle = newName;
@@ -590,7 +590,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
               .map((n) => n.title);
             const newName = await promptRenameForDuplicate(desired, takenList);
             if (!newName) {
-              // User cancelled — drop the title change so the saved title stays put.
+              // User cancelled - drop the title change so the saved title stays put.
               const { title: _drop, ...rest } = updates;
               updates = rest;
               window.dispatchEvent(new CustomEvent("lovable:note-title-revert", { detail: { noteId } }));
@@ -613,7 +613,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       } else {
         const { error } = await supabase.from("notes").update(updates as any).eq("id", noteId);
         if (error) {
-          // Network failure mid-flight — queue it so we don't lose the edit.
+          // Network failure mid-flight - queue it so we don't lose the edit.
           queueNoteUpdate(noteId, updates as Record<string, unknown>);
         }
       }

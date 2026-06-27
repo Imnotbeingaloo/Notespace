@@ -273,7 +273,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             {totalNotes === 1 ? "note" : "notes"}. Pick one up where you left off.
           </p>
 
-          {/* Quick actions row — separated from the notebook grid */}
+          {/* Quick actions row - separated from the notebook grid */}
           <div className="flex flex-wrap items-center gap-2 mt-6">
             {tempEnabled ? (
               (onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
@@ -330,7 +330,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
               <button
                 onClick={onCreateScratchNote}
                 data-testid="home-create-temporary"
-                title="Open a temporary workspace — auto-deletes after 24h."
+                title="Open a temporary workspace - auto-deletes after 24h."
                 className="group inline-flex min-w-[10.5rem] items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/[0.07] text-amber-600 dark:text-amber-400 text-sm font-medium hover:bg-amber-500/[0.13] transition-all duration-150 active:scale-[0.97]"
               >
                 <ScratchIcon className="h-4 w-4 transition-transform duration-200 group-hover:rotate-[-3deg]" />

@@ -11,7 +11,7 @@ const posts = [
     slug: "best-ai-writing-assistants-for-note-takers",
     title: "Best AI Writing Assistants for Note-Takers (2026)",
     excerpt:
-      "Grammarly owns the search — but note-takers need something different. Six honest picks for AI writing assistants that live inside your notebook: Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
+      "Grammarly owns the search - but note-takers need something different. Six honest picks for AI writing assistants that live inside your notebook: Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
     date: "Jun 2026",
     tag: "AI Writing",
   },
@@ -19,15 +19,15 @@ const posts = [
     slug: "ai-voice-notes-meeting-transcription",
     title: "Best AI Voice Note Taking & Meeting Transcription Apps (2026)",
     excerpt:
-      "Voice in, organized notes out. Five honest picks for AI voice notes and meeting transcription — Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
+      "Voice in, organized notes out. Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
     date: "Jun 2026",
     tag: "AI Voice",
   },
   {
     slug: "best-note-taking-app-2026",
-    title: "The Best Note Taking App in 2026 — 7 Honest Picks",
+    title: "The Best Note Taking App in 2026 - 7 Honest Picks",
     excerpt:
-      "Seven note taking apps compared honestly — Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and a clear pick for each kind of person.",
+      "Seven note taking apps compared honestly - Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and a clear pick for each kind of person.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -35,7 +35,7 @@ const posts = [
     slug: "evernote-alternatives-2026",
     title: "Six Honest Evernote Alternatives for 2026",
     excerpt:
-      "Evernote pioneered the digital shoebox — then the free tier shrank, the editor stayed in 2015, and the price kept climbing. The six apps people actually move to: Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive.",
+      "Evernote pioneered the digital shoebox - then the free tier shrank, the editor stayed in 2015, and the price kept climbing. The six apps people actually move to: Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -43,7 +43,7 @@ const posts = [
     slug: "onenote-alternatives-2026",
     title: "Six Honest OneNote Alternatives for 2026",
     excerpt:
-      "OneNote is free and generous — and a freeform canvas that gets messy fast, locks your notes in, and gates the good AI behind Microsoft 365. The six apps people actually move to.",
+      "OneNote is free and generous - and a freeform canvas that gets messy fast, locks your notes in, and gates the good AI behind Microsoft 365. The six apps people actually move to.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -51,7 +51,7 @@ const posts = [
     slug: "obsidian-alternatives-2026",
     title: "Six Honest Obsidian Alternatives for 2026",
     excerpt:
-      "Obsidian is brilliant — and it's a tool you have to build. If you're tired of maintaining a vault, paying for sync, and configuring plugins before you can write, here are the six apps people actually move to.",
+      "Obsidian is brilliant - and it's a tool you have to build. If you're tired of maintaining a vault, paying for sync, and configuring plugins before you can write, here are the six apps people actually move to.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -59,7 +59,7 @@ const posts = [
     slug: "notion-alternatives-2026",
     title: "Six Honest Notion Alternatives for 2026",
     excerpt:
-      "Notion grew into an everything-tool. If you only ever used it for notes, here are the six apps people actually leave for — Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive.",
+      "Notion grew into an everything-tool. If you only ever used it for notes, here are the six apps people actually leave for - Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -67,7 +67,7 @@ const posts = [
     slug: "best-ai-note-taking-apps-2026",
     title: "Best AI Note Taking Apps for Writers and Researchers in 2026",
     excerpt:
-      "An honest comparison of the seven AI note taking apps that actually earn the label — Notebook Archive, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
+      "An honest comparison of the seven AI note taking apps that actually earn the label - Notebook Archive, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -75,7 +75,7 @@ const posts = [
     slug: "best-note-taking-app-for-writers",
     title: "The Best Note Taking App for Writers in 2026",
     excerpt:
-      "Most lists are written for project managers. Writers need something else. The four apps that actually fit how writers work — Scrivener, Obsidian, Ulysses, and Notebook Archive.",
+      "Most lists are written for project managers. Writers need something else. The four apps that actually fit how writers work - Scrivener, Obsidian, Ulysses, and Notebook Archive.",
     date: "Jun 2026",
     tag: "For Writers",
   },
@@ -112,7 +112,7 @@ export default function BlogIndex() {
   return (
     <>
       <SeoHead
-        title="Blog — Notebook Archive"
+        title="Blog - Notebook Archive"
         description="Honest writing on note taking apps, AI for writers and researchers, and the tools we build at Notebook Archive."
         path="/blog"
         jsonLd={jsonLd}
@@ -128,7 +128,7 @@ export default function BlogIndex() {
             className="mb-16 text-center"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — The Notebook Archive Blog
+              - The Notebook Archive Blog
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Writing about <span className="text-primary">writing, notes, and the tools between them</span>

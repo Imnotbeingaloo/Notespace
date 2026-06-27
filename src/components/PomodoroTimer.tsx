@@ -51,7 +51,7 @@ export function PomodoroTimer({ onClose }: { onClose: () => void }) {
               return PHASE_CONFIG.break.duration;
             }
           } else {
-            toast.info("☕ Break's over — time to focus!");
+            toast.info("☕ Break's over - time to focus!");
             setPhase("work");
             return PHASE_CONFIG.work.duration;
           }

@@ -252,15 +252,15 @@ const templates: NoteTemplate[] = [
 - Thesis statement:
 
 ### Body
-**Argument 1 —**
+**Argument 1 -**
 - Evidence:
 - Analysis:
 
-**Argument 2 —**
+**Argument 2 -**
 - Evidence:
 - Analysis:
 
-**Argument 3 —**
+**Argument 3 -**
 - Evidence:
 - Analysis:
 
@@ -299,7 +299,7 @@ const templates: NoteTemplate[] = [
 - 
 
 ### Important Quotes
-> "" — p.
+> "" - p.
 
 ### Vocabulary
 | Word | Definition |
@@ -363,7 +363,7 @@ const templates: NoteTemplate[] = [
     category: "Productivity",
     accent: "bg-lime-100 text-lime-700 dark:bg-lime-500/15 dark:text-lime-300",
     swatch: "from-lime-200 to-lime-50 dark:from-lime-500/30 dark:to-lime-900/30",
-    content: `## Weekly Review — Week of ${today()}
+    content: `## Weekly Review - Week of ${today()}
 
 ---
 
@@ -415,7 +415,7 @@ const templates: NoteTemplate[] = [
 - 
 
 ### Action Items
-- [ ] [Task] — Owner: [Name] — Due: [Date]
+- [ ] [Task] - Owner: [Name] - Due: [Date]
 
 ### Next Meeting
 **Date:** 
@@ -452,7 +452,7 @@ const templates: NoteTemplate[] = [
 3. 
 
 ### Favourite Quotes
-> "" — p.
+> "" - p.
 
 ### How I'll Apply This
 - 
@@ -558,7 +558,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
       exit={{ opacity: 0, y: -10 }}
       className="flex flex-col w-full max-w-5xl mx-auto px-4 sm:px-8 py-6"
     >
-      {/* Compact header — no oversized hero copy */}
+      {/* Compact header - no oversized hero copy */}
       <div className="flex items-center justify-between mb-5">
         <button
           onClick={onBack}
@@ -598,7 +598,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
         </div>
       </div>
 
-      {/* Grid — same generous card size as the featured chooser, page scrolls naturally */}
+      {/* Grid - same generous card size as the featured chooser, page scrolls naturally */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
         {filtered.map((tmpl) => (
           <motion.button
@@ -678,7 +678,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
                     </article>
                   ) : (
                     <div className="text-center text-sm text-muted-foreground py-10">
-                      A clean, empty page — yours to fill.
+                      A clean, empty page - yours to fill.
                     </div>
                   )}
                 </motion.div>

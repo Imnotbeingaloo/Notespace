@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /**
- * "Leaving the app" splash — mirrors the entry SplashScreen sequence
+ * "Leaving the app" splash - mirrors the entry SplashScreen sequence
  * (logo pop → title fade-in → animated dots) so the hand-off feels symmetrical.
  * Timer is stabilised via a ref so the landing page's typewriter re-renders
  * cannot reset the completion countdown.

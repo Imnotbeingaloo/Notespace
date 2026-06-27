@@ -178,7 +178,7 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
             <p className="text-base text-muted-foreground leading-relaxed">
               {noteCount === 0
                 ? "This notebook is empty. Create your first note!"
-                : `${noteCount} note${noteCount > 1 ? "s" : ""} — select one to edit.`}
+                : `${noteCount} note${noteCount > 1 ? "s" : ""} - select one to edit.`}
             </p>
 
             <div className="flex flex-col gap-3 w-full">
@@ -254,7 +254,7 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
                     </article>
                   ) : (
                     <div className="text-center text-sm text-muted-foreground py-10">
-                      A clean, empty page — yours to fill.
+                      A clean, empty page - yours to fill.
                     </div>
                   )}
                 </motion.div>

@@ -66,7 +66,7 @@ export default function Footer() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }}>
             <h4 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">Get Started</h4>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5">
-              Start organizing your thoughts today — it's completely free. No credit card, no commitment, no catch.
+              Start organizing your thoughts today - it's completely free. No credit card, no commitment, no catch.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-shadow duration-300">
               {user ? "Open App" : "Sign Up Free"} <ArrowRight className="h-4 w-4" />

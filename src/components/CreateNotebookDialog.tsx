@@ -4,7 +4,7 @@ import { BookOpen, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Two curated sets — subject-themed for notebooks, note-action themed for notes.
+// Two curated sets - subject-themed for notebooks, note-action themed for notes.
 // Both render in a 6-column grid → ~4 visible rows each.
 const NOTEBOOK_EMOJIS = [
   "📓", "📕", "📗", "📘", "📙", "📔",

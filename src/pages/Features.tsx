@@ -19,7 +19,7 @@ const groups = [
     items: [
       { Icon: FileText, name: "Markdown editor", desc: "Headings, tables, code blocks, callouts, and a toolbar designed for long-form work. Word count, character count, and read time update live in the footer.", deepLink: "/app", linkLabel: "Open the editor" },
       { Icon: Wand2, name: "AI explanations", desc: "Highlight a phrase, select Explain, and a clear answer streams in beside your note. You stay focused on writing.", deepLink: "/app", linkLabel: "Try it in a note" },
-      { Icon: Layers, name: "Templates", desc: "Begin with a structured layout for lectures, meetings, weekly reviews, or research — then adapt to fit your work.", deepLink: "/app", linkLabel: "Pick a template" },
+      { Icon: Layers, name: "Templates", desc: "Begin with a structured layout for lectures, meetings, weekly reviews, or research - then adapt to fit your work.", deepLink: "/app", linkLabel: "Pick a template" },
     ],
   },
   {
@@ -40,7 +40,7 @@ const groups = [
       "Your notes belong to you. Everything remains private by default, the AI never accesses your content without explicit permission, and your data is portable at any time.",
     items: [
       { Icon: Share2, name: "Public share links", desc: "Generate a read-only link secured by token. Recipients see a clean public page; revoke access in a single click.", deepLink: "/app", linkLabel: "Share a note" },
-      { Icon: Lock, name: "Private by default", desc: "JWT authentication, signed file URLs, and row-level security in the database. Your notes remain private — including from us and the AI — until you choose otherwise.", deepLink: "/pricing", linkLabel: "See the security model" },
+      { Icon: Lock, name: "Private by default", desc: "JWT authentication, signed file URLs, and row-level security in the database. Your notes remain private - including from us and the AI - until you choose otherwise.", deepLink: "/pricing", linkLabel: "See the security model" },
       { Icon: Download, name: "Export anywhere", desc: "Markdown or PDF, one click, no proprietary formats. Your work moves with you.", deepLink: "/app", linkLabel: "Export a note" },
     ],
   },
@@ -50,9 +50,9 @@ export default function FeaturesPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    document.title = "Features — Notebook Archive";
+    document.title = "Features - Notebook Archive";
     const meta = document.querySelector('meta[name="description"]');
-    const content = "Every feature that makes Notebook Archive a calm, intelligent place to think — writing, organization, and trust.";
+    const content = "Every feature that makes Notebook Archive a calm, intelligent place to think - writing, organization, and trust.";
     if (meta) meta.setAttribute("content", content);
     else {
       const m = document.createElement("meta");
@@ -65,8 +65,8 @@ export default function FeaturesPage() {
   return (
     <>
       <SeoHead
-        title="Features — Notebook Archive"
-        description="Markdown editor, AI explanations, focus mode, study planner, smart tags, find & replace, and frictionless sharing — every feature explained."
+        title="Features - Notebook Archive"
+        description="Markdown editor, AI explanations, focus mode, study planner, smart tags, find & replace, and frictionless sharing - every feature explained."
         path="/features"
       />
       <main className="min-h-screen bg-background">
@@ -93,7 +93,7 @@ export default function FeaturesPage() {
               Every feature, <span className="text-primary">purposefully</span> built.
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              A focused toolkit for writing, organizing, and retrieving ideas. AI is integrated where it genuinely improves the experience — never as decoration.
+              A focused toolkit for writing, organizing, and retrieving ideas. AI is integrated where it genuinely improves the experience - never as decoration.
             </p>
           </motion.div>
         </div>
@@ -103,7 +103,7 @@ export default function FeaturesPage() {
 
 
 
-      {/* Feature groups — editorial zigzag */}
+      {/* Feature groups - editorial zigzag */}
       <section className="py-20">
         <div className="container mx-auto px-6 max-w-6xl space-y-24 md:space-y-32">
           {groups.map((group, gIdx) => {
@@ -111,7 +111,7 @@ export default function FeaturesPage() {
             return (
               <div key={group.title} className="relative">
                 <div className={`grid gap-10 md:gap-14 lg:gap-20 md:grid-cols-12 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}>
-                  {/* Left column — narrative */}
+                  {/* Left column - narrative */}
                   <motion.div
                     initial={{ opacity: 0, x: reverse ? 30 : -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -132,7 +132,7 @@ export default function FeaturesPage() {
                     </p>
                   </motion.div>
 
-                  {/* Right column — feature list (vertical, no plain card grid) */}
+                  {/* Right column - feature list (vertical, no plain card grid) */}
                   <motion.div
                     initial="hidden"
                     whileInView="show"
@@ -141,7 +141,7 @@ export default function FeaturesPage() {
                     className="md:col-span-7 relative"
                   >
                     <ul className="relative space-y-5">
-                      {/* Connector line — sits behind icons, capped to the icon column width */}
+                      {/* Connector line - sits behind icons, capped to the icon column width */}
                       <div
                         aria-hidden
                         className="absolute left-[27px] top-6 bottom-6 w-[2px] rounded-full bg-border/70 hidden sm:block"

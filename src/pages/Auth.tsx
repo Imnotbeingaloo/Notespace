@@ -39,7 +39,7 @@ const AuthPage = () => {
       };
     }
     if (m.includes("email not confirmed") || m.includes("not confirmed")) {
-      return { message: "Please confirm your email first — check your inbox for the verification link." };
+      return { message: "Please confirm your email first - check your inbox for the verification link." };
     }
     if (m.includes("user already registered") || m.includes("already registered") || m.includes("already exists")) {
       return { message: "An account with this email already exists. Try signing in instead." };
@@ -172,7 +172,7 @@ const AuthPage = () => {
             disabled={verifying}
             className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
           >
-            {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <>I've verified — sign me in <ArrowRight className="h-4 w-4" /></>}
+            {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <>I've verified - sign me in <ArrowRight className="h-4 w-4" /></>}
           </button>
 
           {verifyError && (
@@ -218,7 +218,7 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 relative">
-      <NoindexHead title="Sign in — Notebook Archive" />
+      <NoindexHead title="Sign in - Notebook Archive" />
       <button
         onClick={() => navigate("/")}
         className={`absolute left-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}

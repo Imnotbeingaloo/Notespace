@@ -203,7 +203,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           </button>
         </div>
 
-        {/* Mode toggle + quick actions — wraps on narrow screens so nothing gets clipped */}
+        {/* Mode toggle + quick actions - wraps on narrow screens so nothing gets clipped */}
         <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3 border-b border-border">
           <div className="inline-flex items-center gap-0.5 p-0.5 rounded-xl bg-muted/60 shrink-0">
             <button

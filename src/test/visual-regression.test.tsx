@@ -57,7 +57,7 @@ const breakpoints: Array<[string, number]> = [
   ["desktop-1440", 1440],
 ];
 
-describe("Visual regression — PageHeader markup snapshots", () => {
+describe("Visual regression - PageHeader markup snapshots", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
   });
@@ -75,7 +75,7 @@ describe("Visual regression — PageHeader markup snapshots", () => {
   }
 });
 
-describe("Visual regression — HomeView markup snapshots", () => {
+describe("Visual regression - HomeView markup snapshots", () => {
   for (const [name, w] of breakpoints) {
     it(`HomeView matches snapshot @ ${name}`, () => {
       setViewport(w);

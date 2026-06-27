@@ -225,7 +225,7 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
             <ChevronLeft className="h-3 w-3" />
           </Button>
           <span className="text-xs font-medium text-muted-foreground">
-            {format(weekStart, "MMM d")} — {format(addDays(weekStart, 6), "MMM d, yyyy")}
+            {format(weekStart, "MMM d")} - {format(addDays(weekStart, 6), "MMM d, yyyy")}
           </span>
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setWeekStart(addWeeks(weekStart, 1))}>
             <ChevronRight className="h-3 w-3" />

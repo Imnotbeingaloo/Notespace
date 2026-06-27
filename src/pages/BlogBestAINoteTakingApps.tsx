@@ -24,17 +24,17 @@ const apps = [
     imageUrl: naShot.url,
     imageAlt: "Notebook Archive landing page showing the editor and AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
-    tagline: "An AI note-taker that helps you think — not one that writes for you.",
+    tagline: "An AI note-taker that helps you think - not one that writes for you.",
     description:
       "Notebook Archive is built around a calm markdown editor with focus mode, daily word-count goal, and a side AI panel that explains and summarizes on demand. Notebooks nest, tags are global and clickable, and everything exports to plain markdown so your work is never trapped.",
     pros: [
-      "AI side panel: explain a concept, summarize a source, pull smart tags — never auto-writes your prose",
+      "AI side panel: explain a concept, summarize a source, pull smart tags - never auto-writes your prose",
       "Generous free tier, no credit card",
       "Clean serif typography and focus mode designed for long writing sessions",
       "Full markdown export at any time",
     ],
     cons: [
-      "Newer product — smaller community than Notion or Evernote",
+      "Newer product - smaller community than Notion or Evernote",
       "No native mobile app yet (web is fully responsive)",
     ],
     bestFor: "Writers and researchers who want AI as a second pair of eyes, not a ghostwriter.",
@@ -45,11 +45,11 @@ const apps = [
     name: "Evernote",
     pricing: "Free; Personal $14.99/mo",
     imageUrl: evernoteShot.url,
-    imageAlt: "Evernote landing page — 'Your second brain'",
+    imageAlt: "Evernote landing page - 'Your second brain'",
     siteUrl: "https://evernote.com",
-    tagline: "The original 'second brain' — pivoting to AI search after the Bending Spoons acquisition.",
+    tagline: "The original 'second brain' - pivoting to AI search after the Bending Spoons acquisition.",
     description:
-      "Evernote has been around since 2008 and still has the deepest web-clipper of any app on this list. The 2023 acquisition slowed development and tightened the free tier — but AI search and transcription have steadily improved through 2025.",
+      "Evernote has been around since 2008 and still has the deepest web-clipper of any app on this list. The 2023 acquisition slowed development and tightened the free tier - but AI search and transcription have steadily improved through 2025.",
     pros: [
       "Industry-best web clipper and document scanner",
       "AI search across your full library",
@@ -58,51 +58,51 @@ const apps = [
     cons: [
       "Free tier limited to one notebook with 50 notes",
       "Editor feels dated next to modern markdown apps",
-      "Pricing climbed sharply after 2023 — $14.99/mo for everyday use",
+      "Pricing climbed sharply after 2023 - $14.99/mo for everyday use",
     ],
     bestFor: "People already invested in Evernote who want a lightweight AI bolted on top.",
     ourTake:
-      "Evernote treats AI as a search-and-transcribe layer over a 17-year-old database. Notebook Archive treats AI as a thinking partner inside a modern markdown editor — and the free tier isn't crippled.",
+      "Evernote treats AI as a search-and-transcribe layer over a 17-year-old database. Notebook Archive treats AI as a thinking partner inside a modern markdown editor - and the free tier isn't crippled.",
   },
   {
     name: "Notion AI",
     pricing: "Free; AI add-on $10/mo",
     imageUrl: notionShot.url,
-    imageAlt: "Notion landing page — 'Where teams and agents create together'",
+    imageAlt: "Notion landing page - 'Where teams and agents create together'",
     siteUrl: "https://www.notion.so",
-    tagline: "A wiki, a database, and a notes app rolled into one — with AI agents on top.",
+    tagline: "A wiki, a database, and a notes app rolled into one - with AI agents on top.",
     description:
-      "Notion is the productivity-app Swiss Army knife: pages, databases, calendars, kanban boards, and now AI agents that can answer questions across your workspace. Powerful, but the setup tax is real — most users spend more time decorating the workspace than working in it.",
+      "Notion is the productivity-app Swiss Army knife: pages, databases, calendars, kanban boards, and now AI agents that can answer questions across your workspace. Powerful, but the setup tax is real - most users spend more time decorating the workspace than working in it.",
     pros: [
-      "Most flexible workspace in the category — pages, databases, embeds, automations",
+      "Most flexible workspace in the category - pages, databases, embeds, automations",
       "Excellent for team wikis and shared docs",
       "Q&A agent searches across every page in your workspace",
     ],
     cons: [
-      "No real offline mode — needs a connection for almost everything",
+      "No real offline mode - needs a connection for almost everything",
       "Steep setup, easy to over-engineer",
       "AI is a separate $10/mo charge on top of the team plan",
     ],
     bestFor: "Teams that need a wiki, a project tracker, and a notes app in one place.",
     ourTake:
-      "Notion shines as a team workspace. For solo writers and researchers, it's overkill — and the editor doesn't reward long-form prose the way a calm markdown surface does. Notebook Archive is the focused tool when the workspace is just you.",
+      "Notion shines as a team workspace. For solo writers and researchers, it's overkill - and the editor doesn't reward long-form prose the way a calm markdown surface does. Notebook Archive is the focused tool when the workspace is just you.",
   },
   {
     name: "Obsidian",
     pricing: "Free; Sync $5/mo",
     imageUrl: obsidianShot.url,
-    imageAlt: "Obsidian landing page — 'Sharpen your thinking'",
+    imageAlt: "Obsidian landing page - 'Sharpen your thinking'",
     siteUrl: "https://obsidian.md",
     tagline: "Local markdown files with backlinks, a graph view, and a plugin for everything.",
     description:
-      "Obsidian stores your notes as plain markdown files on your disk. No cloud lock-in, no proprietary database — just folders you own. AI is available via community plugins (BYO API key), which means power and tinkering in equal measure.",
+      "Obsidian stores your notes as plain markdown files on your disk. No cloud lock-in, no proprietary database - just folders you own. AI is available via community plugins (BYO API key), which means power and tinkering in equal measure.",
     pros: [
-      "Plain markdown files on your device — your notes outlive any app",
+      "Plain markdown files on your device - your notes outlive any app",
       "Huge plugin ecosystem (1,500+) including BYO-AI plugins",
       "Free for personal use; works fully offline",
     ],
     cons: [
-      "Steep learning curve — you assemble your own workflow",
+      "Steep learning curve - you assemble your own workflow",
       "AI requires plugin setup and your own API keys",
       "Sync across devices is a paid add-on",
     ],
@@ -114,41 +114,41 @@ const apps = [
     name: "Mem",
     pricing: "Free; Mem X $14.99/mo",
     imageUrl: memShot.url,
-    imageAlt: "Mem landing page — 'One place for everything on your mind'",
+    imageAlt: "Mem landing page - 'One place for everything on your mind'",
     siteUrl: "https://get.mem.ai",
-    tagline: "AI-first notes that auto-organize for you — no folders required.",
+    tagline: "AI-first notes that auto-organize for you - no folders required.",
     description:
-      "Mem skips folders entirely. You dump notes in, and the app tags and links them automatically. The pitch is 'never organize anything again,' which is compelling — until you need to find a specific note and the AI's idea of relevance differs from yours.",
+      "Mem skips folders entirely. You dump notes in, and the app tags and links them automatically. The pitch is 'never organize anything again,' which is compelling - until you need to find a specific note and the AI's idea of relevance differs from yours.",
     pros: [
       "Auto-tagging and similar-notes surfacing",
       "Clean, minimal capture UI",
       "Chat-with-your-notes works well for retrieval",
     ],
     cons: [
-      "No real folder/notebook structure — frustrating for people who think in categories",
+      "No real folder/notebook structure - frustrating for people who think in categories",
       "Online-only",
       "Smaller export options than markdown-native apps",
     ],
     bestFor: "People who hate organizing and want the app to do it.",
     ourTake:
-      "Mem's bet is that AI organizes better than you do. We disagree — categories you choose are easier to navigate than categories a model invents. Notebook Archive gives you nested notebooks and global smart-tags, so AI helps with retrieval but never owns your structure.",
+      "Mem's bet is that AI organizes better than you do. We disagree - categories you choose are easier to navigate than categories a model invents. Notebook Archive gives you nested notebooks and global smart-tags, so AI helps with retrieval but never owns your structure.",
   },
   {
     name: "Reflect",
     pricing: "$10/mo",
     imageUrl: reflectShot.url,
-    imageAlt: "Reflect landing page — 'Think better with Reflect'",
+    imageAlt: "Reflect landing page - 'Think better with Reflect'",
     siteUrl: "https://reflect.app",
     tagline: "Daily-notes app with a graph view and GPT-4 built in.",
     description:
-      "Reflect is the polished, modern take on Roam Research — daily notes, backlinks, and a graph view, plus GPT-4 baked in for outlining and transcribing voice memos. Beautiful, fast, and opinionated.",
+      "Reflect is the polished, modern take on Roam Research - daily notes, backlinks, and a graph view, plus GPT-4 baked in for outlining and transcribing voice memos. Beautiful, fast, and opinionated.",
     pros: [
-      "Stunning daily-notes interface — fast and keyboard-driven",
+      "Stunning daily-notes interface - fast and keyboard-driven",
       "GPT-4 built in for voice transcription and outlining",
       "Works offline",
     ],
     cons: [
-      "No free tier — paid from day one",
+      "No free tier - paid from day one",
       "Daily-notes model doesn't fit everyone (project-based workflows feel awkward)",
       "Smaller ecosystem than Obsidian or Notion",
     ],
@@ -160,24 +160,24 @@ const apps = [
     name: "Otter.ai",
     pricing: "Free; Pro $16.99/mo",
     imageUrl: otterShot.url,
-    imageAlt: "Otter.ai landing page — 'Your AI notetaker'",
+    imageAlt: "Otter.ai landing page - 'Your AI notetaker'",
     siteUrl: "https://otter.ai",
     tagline: "AI transcription for meetings, with summaries and action items.",
     description:
-      "Otter isn't really a notes app — it's a meeting transcription service that produces note-shaped output. If your work day is back-to-back Zoom calls, it's indispensable. If you write notes by hand-typing them, it's the wrong category of tool.",
+      "Otter isn't really a notes app - it's a meeting transcription service that produces note-shaped output. If your work day is back-to-back Zoom calls, it's indispensable. If you write notes by hand-typing them, it's the wrong category of tool.",
     pros: [
       "Best-in-class live meeting transcription",
       "Auto-generates summaries and action items",
       "Integrates with Zoom, Meet, and Teams natively",
     ],
     cons: [
-      "Not built for written notes — the editor is an afterthought",
+      "Not built for written notes - the editor is an afterthought",
       "Free tier capped at 300 transcription minutes/month",
       "Cloud-only, no offline writing",
     ],
     bestFor: "Meeting-heavy roles where notes start as voice, not as writing.",
     ourTake:
-      "Otter is a transcription tool wearing a notes-app label. Notebook Archive is built for the moment after the meeting — when you sit down to think through what was said, and you want AI to help you understand it, not just to spit out a transcript.",
+      "Otter is a transcription tool wearing a notes-app label. Notebook Archive is built for the moment after the meeting - when you sit down to think through what was said, and you want AI to help you understand it, not just to spit out a transcript.",
   },
 ];
 
@@ -196,7 +196,7 @@ const faq = [
   },
   {
     q: "Is there a free AI note taking app worth using?",
-    a: "Yes — Notebook Archive, Evernote, Notion, and Obsidian all have free tiers that cover real daily use. Free tiers usually cap how often AI features run per month; that cap is the thing to compare, not the headline price.",
+    a: "Yes - Notebook Archive, Evernote, Notion, and Obsidian all have free tiers that cover real daily use. Free tiers usually cap how often AI features run per month; that cap is the thing to compare, not the headline price.",
   },
 ];
 
@@ -206,7 +206,7 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best AI Note Taking Apps for Writers and Researchers in 2026",
     description:
-      "An honest comparison of the seven AI note taking apps that actually earn the label — Notebook Archive, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
+      "An honest comparison of the seven AI note taking apps that actually earn the label - Notebook Archive, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
     datePublished: "2026-06-27",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
@@ -234,7 +234,7 @@ export default function BlogBestAINoteTakingApps() {
       <SeoHead
         type="article"
         title="Best AI Note Taking Apps for Writers & Researchers (2026)"
-        description="A real comparison of the seven AI note taking apps that actually earn the label — pricing, AI features, offline support, screenshots, and who each one is for."
+        description="A real comparison of the seven AI note taking apps that actually earn the label - pricing, AI features, offline support, screenshots, and who each one is for."
         path="/blog/best-ai-note-taking-apps-2026"
         jsonLd={jsonLd}
       />
@@ -249,7 +249,7 @@ export default function BlogBestAINoteTakingApps() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — Comparison · Updated June 2026
+              - Comparison · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">AI Note Taking Apps</span> for Writers and Researchers in 2026
@@ -266,7 +266,7 @@ export default function BlogBestAINoteTakingApps() {
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked these seven</h2>
             <p className="text-muted-foreground leading-relaxed mb-12">
               An "AI note taking app" should let you write notes, organize them, and get genuine
-              help from a model — not just a button labeled "AI" that opens a chat window. We
+              help from a model - not just a button labeled "AI" that opens a chat window. We
               dropped anything that was meeting-transcription-only with no real editor, anything
               that's really a wiki with an AI bolt-on, and anything where the AI couldn't reason
               about your own notes. Seven were left. We used each for a week of real writing and

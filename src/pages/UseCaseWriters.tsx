@@ -24,7 +24,7 @@ export default function UseCaseWriters() {
   return (
     <>
       <SeoHead
-        title="Note-Taking App for Writers — Notebook Archive"
+        title="Note-Taking App for Writers - Notebook Archive"
         description="A calm Markdown editor with focus mode, word-count goals, and tags that organize ideas across drafts."
         path="/use-cases/writers"
       />
@@ -35,14 +35,14 @@ export default function UseCaseWriters() {
         primaryCta={{ label: "Open the editor", to: "/auth" }}
         overview={[
           "Writing tools tend to come in two flavors: bloated suites that interrupt you with comments and version histories, or minimalist editors that look beautiful but can't hold a 90,000-word manuscript without falling apart.",
-          "Notebook Archive sits between them. It treats writing as the primary act — focus mode, fast keyboard shortcuts, a Markdown editor that doesn't fight you — while still giving you the structure a long project needs: nested notebooks for chapters, tags for characters and themes, and a research notebook that stays one click away from the draft.",
+          "Notebook Archive sits between them. It treats writing as the primary act - focus mode, fast keyboard shortcuts, a Markdown editor that doesn't fight you - while still giving you the structure a long project needs: nested notebooks for chapters, tags for characters and themes, and a research notebook that stays one click away from the draft.",
           "It's not pretending to be Scrivener. It's not trying to replace your word processor on the day you ship to an editor. It's the app you live in while the work is being made.",
         ]}
         sections={[
           {
             title: "A canvas that gets out of the way",
             body:
-              "Focus mode hides every element except your draft. Word count, character count, and read time live in a footer you can ignore until you want them. Headings, callouts, and tables are a keystroke away. The editor renders cleanly even at 30,000 words — nothing lags, nothing stutters.",
+              "Focus mode hides every element except your draft. Word count, character count, and read time live in a footer you can ignore until you want them. Headings, callouts, and tables are a keystroke away. The editor renders cleanly even at 30,000 words - nothing lags, nothing stutters.",
             bullets: [
               "Markdown editor with a quiet, customizable toolbar",
               "Focus mode for distraction-free sessions",
@@ -53,18 +53,18 @@ export default function UseCaseWriters() {
           {
             title: "Structure that scales with the manuscript",
             body:
-              "Use notebooks for projects, nested notebooks for parts or arcs, individual notes for chapters or scenes. Tags handle the cross-cutting concerns — themes, characters, settings, research strands — that don't fit a tree structure. Smart tags surface every note that mentions a name, which matters the day a side character becomes central and you need to find every scene they've appeared in.",
+              "Use notebooks for projects, nested notebooks for parts or arcs, individual notes for chapters or scenes. Tags handle the cross-cutting concerns - themes, characters, settings, research strands - that don't fit a tree structure. Smart tags surface every note that mentions a name, which matters the day a side character becomes central and you need to find every scene they've appeared in.",
             bullets: [
               "Notebooks → nested notebooks → notes (as deep as the work requires)",
               "Drag to reorder when the structure of the book changes",
-              "Tag chips in the sidebar — click any tag to see every note that uses it",
+              "Tag chips in the sidebar - click any tag to see every note that uses it",
               "Standalone notes for stray ideas that don't belong to a project yet",
             ],
           },
           {
             title: "A daily word-count goal you can actually hit",
             body:
-              "Set a target, watch the weekly graph fill in. The goal is optional and off by default — turn it on the weeks you need accountability, leave it off when you don't. The graph never shames you. Streaks reward consistency without punishing a missed day.",
+              "Set a target, watch the weekly graph fill in. The goal is optional and off by default - turn it on the weeks you need accountability, leave it off when you don't. The graph never shames you. Streaks reward consistency without punishing a missed day.",
           },
           {
             title: "Research and draft, side by side",
@@ -86,12 +86,12 @@ export default function UseCaseWriters() {
           {
             situation: "You're 40,000 words into a novel and a side character is becoming the protagonist.",
             problem: "Their early scenes are scattered across fifteen chapters. You need to find every one and revise their voice.",
-            solution: "Click the character's tag in the sidebar. Every scene they appear in lists in chronological order. Open them one by one and rewrite — the tag stays as you go.",
+            solution: "Click the character's tag in the sidebar. Every scene they appear in lists in chronological order. Open them one by one and rewrite - the tag stays as you go.",
           },
           {
             situation: "You're drafting a long essay with twelve cited sources.",
             problem: "You can't remember which source had the statistic you want to use.",
-            solution: "Drop all twelve PDFs in a research notebook. Search the statistic — Notebook Archive finds it across the extracted text. Drag the quote into the draft, keep the source link in the margin.",
+            solution: "Drop all twelve PDFs in a research notebook. Search the statistic - Notebook Archive finds it across the extracted text. Drag the quote into the draft, keep the source link in the margin.",
           },
           {
             situation: "You wrote 3,000 words on a flight in airplane mode.",
@@ -107,7 +107,7 @@ export default function UseCaseWriters() {
         painPoints={[
           {
             problem: "Markdown intimidates me.",
-            answer: "The toolbar inserts the syntax for you — bold, italic, headings, lists, links, tables. You can write a full draft without typing a single asterisk. Once you start noticing the patterns, the keyboard shortcuts become faster than reaching for a mouse.",
+            answer: "The toolbar inserts the syntax for you - bold, italic, headings, lists, links, tables. You can write a full draft without typing a single asterisk. Once you start noticing the patterns, the keyboard shortcuts become faster than reaching for a mouse.",
           },
           {
             problem: "I write longhand first.",
@@ -129,7 +129,7 @@ export default function UseCaseWriters() {
         comparison={{
           headingOther: "Scrivener / Ulysses",
           rows: [
-            { capability: "Where it runs", notebookArchive: "Browser, any device.", others: "Native apps — usually Mac and iOS only." },
+            { capability: "Where it runs", notebookArchive: "Browser, any device.", others: "Native apps - usually Mac and iOS only." },
             { capability: "Markdown-first", notebookArchive: "Yes. The editor is Markdown.", others: "Scrivener uses rich text; Ulysses is Markdown but Apple-only." },
             { capability: "Manuscript binder", notebookArchive: "Notebooks + nested notebooks + tags.", others: "Scrivener's binder is more elaborate; Ulysses uses groups." },
             { capability: "AI for clarification", notebookArchive: "Inline explanations and summaries.", others: "Limited or none." },
@@ -157,13 +157,13 @@ export default function UseCaseWriters() {
           { title: "Export to Markdown often", body: "Even if you never need the backup, it forces you to feel the manuscript as a whole rather than a list of scenes." },
         ]}
         faqs={[
-          { q: "Does it replace Scrivener?", a: "For many writers, yes — especially if you live in Markdown and want something cross-platform. Scrivener has a deeper manuscript binder and a more powerful Compile feature. Notebook Archive is faster, browser-based, and easier to share from." },
+          { q: "Does it replace Scrivener?", a: "For many writers, yes - especially if you live in Markdown and want something cross-platform. Scrivener has a deeper manuscript binder and a more powerful Compile feature. Notebook Archive is faster, browser-based, and easier to share from." },
           { q: "Can I write offline?", a: "Edits queue locally when you go offline and sync automatically when you reconnect. You won't lose work to a flight or a dropped connection." },
-          { q: "Will AI write my book?", a: "No, and that's intentional. AI is for explaining a term or summarizing source material — not for generating prose." },
+          { q: "Will AI write my book?", a: "No, and that's intentional. AI is for explaining a term or summarizing source material - not for generating prose." },
           { q: "Are my drafts backed up?", a: "Every save is persisted to the cloud. You can also export to Markdown or PDF for a local copy." },
           { q: "Can I write in non-English languages?", a: "Yes. The editor is Unicode and works in any language. AI features support most major languages." },
           { q: "Does it integrate with my publishing workflow?", a: "Markdown export plus pandoc covers most publishing pipelines. Direct integrations with Substack, Medium, and WordPress are on the roadmap." },
-          { q: "Can collaborators leave comments?", a: "Not yet — Notebook Archive is single-author focused today. Public share links give read-only access to drafts; back-and-forth happens elsewhere." },
+          { q: "Can collaborators leave comments?", a: "Not yet - Notebook Archive is single-author focused today. Public share links give read-only access to drafts; back-and-forth happens elsewhere." },
         ]}
       />
     </>

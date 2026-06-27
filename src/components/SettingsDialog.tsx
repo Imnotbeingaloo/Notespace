@@ -205,7 +205,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                             redirectTo: `${window.location.origin}/auth?reset=1`,
                           });
                           if (error) toast.error(error.message);
-                          else toast.success("Reset link sent — check your inbox or spam folder.");
+                          else toast.success("Reset link sent - check your inbox or spam folder.");
                         }}
                         className="text-[11px] text-primary/80 hover:text-primary hover:underline underline-offset-2 transition-colors"
                       >
@@ -282,7 +282,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                       />
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Show classic ruled lines and a red margin on the writing surface — like an actual notebook page.
+                      Show classic ruled lines and a red margin on the writing surface - like an actual notebook page.
                     </p>
                   </div>
                 </div>

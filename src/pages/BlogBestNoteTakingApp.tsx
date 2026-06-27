@@ -29,14 +29,14 @@ const picks = [
     name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive — a quiet markdown notebook with an AI explain panel",
+    imageAlt: "Notebook Archive - a quiet markdown notebook with an AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "A calm, serif markdown notebook with AI that explains instead of writing for you.",
     description:
       "Notebook Archive is the note app for people who actually write. Notebooks, nesting, global tags, and an AI explain panel that summarizes your sources without rewriting your notes. Real markdown export so your work outlives the app.",
     pros: [
       "Serif editor that's pleasant for long-form writing",
-      "AI explain panel — no autowriting your essay for you",
+      "AI explain panel - no autowriting your essay for you",
       "Markdown export means your notes are portable",
       "Free tier covers daily writing, sync, and AI",
     ],
@@ -53,7 +53,7 @@ const picks = [
     imageUrl: notionShot.url,
     imageAlt: "Notion landing page",
     siteUrl: "https://www.notion.so",
-    tagline: "The everything-app — wikis, databases, docs, and notes in one place.",
+    tagline: "The everything-app - wikis, databases, docs, and notes in one place.",
     description:
       "Notion is the default mainstream pick. Excellent for teams who need wikis and docs alongside notes. The downsides are a slower block-based editor, lossy markdown export, and AI as a paid add-on on top of any paid plan.",
     pros: [
@@ -95,7 +95,7 @@ const picks = [
     imageUrl: evernoteShot.url,
     imageAlt: "Evernote landing page",
     siteUrl: "https://evernote.com",
-    tagline: "The original digital shoebox — still strong on capture, weak on price.",
+    tagline: "The original digital shoebox - still strong on capture, weak on price.",
     description:
       "Evernote pioneered the notebook-tags-search model. The web clipper and mobile capture are still excellent. The catch: a gutted free tier (2 notebooks, 50 notes) and steady price climbs that have pushed most longtime users to look elsewhere.",
     pros: [
@@ -116,7 +116,7 @@ const picks = [
     imageUrl: onenoteShot.url,
     imageAlt: "Microsoft OneNote landing page",
     siteUrl: "https://www.onenote.com",
-    tagline: "Free, infinite-canvas notebooks — the king of stylus input.",
+    tagline: "Free, infinite-canvas notebooks - the king of stylus input.",
     description:
       "If you're already inside Microsoft 365 and you use a stylus, OneNote is hard to beat on price. Genuinely free with no real caps. The free-canvas layout encourages clutter, and markdown export is essentially impossible.",
     pros: [
@@ -135,7 +135,7 @@ const picks = [
     name: "Reflect",
     pricing: "$10/mo",
     imageUrl: reflectShot.url,
-    imageAlt: "Reflect landing page — a thinking tool",
+    imageAlt: "Reflect landing page - a thinking tool",
     siteUrl: "https://reflect.app",
     tagline: "Daily notes plus backlinks, with AI built in.",
     description:
@@ -146,7 +146,7 @@ const picks = [
       "Fast, calm editor",
     ],
     cons: [
-      "Subscription only — no free tier",
+      "Subscription only - no free tier",
       "Daily-notes structure isn't for everyone",
     ],
     bestFor: "Writers and thinkers who keep a daily journal and want a thinking layer on top.",
@@ -155,7 +155,7 @@ const picks = [
     name: "Mem",
     pricing: "Free; Mem+ $10/mo",
     imageUrl: memShot.url,
-    imageAlt: "Mem landing page — self-organizing workspace for AI",
+    imageAlt: "Mem landing page - self-organizing workspace for AI",
     siteUrl: "https://mem.ai",
     tagline: "AI-first capture that organizes itself.",
     description:
@@ -177,11 +177,11 @@ const picks = [
 const faq = [
   {
     q: "What's the best note taking app overall in 2026?",
-    a: "There isn't one — there's a best one for how you work. For writers and students who want quiet structure and honest AI, Notebook Archive. For teams who need wikis, Notion. For tinkerers who want full ownership, Obsidian. For stylus users in Microsoft 365, OneNote. The picks above each list who they're actually best for.",
+    a: "There isn't one - there's a best one for how you work. For writers and students who want quiet structure and honest AI, Notebook Archive. For teams who need wikis, Notion. For tinkerers who want full ownership, Obsidian. For stylus users in Microsoft 365, OneNote. The picks above each list who they're actually best for.",
   },
   {
     q: "What's the best free note taking app?",
-    a: "OneNote is the most generous free plan if you're on Windows. Notebook Archive's free tier is the best for typing — it includes sync, tags, and AI explain. Notion's free plan is fine for one person. Evernote, Reflect, and Mem don't have meaningful free tiers anymore.",
+    a: "OneNote is the most generous free plan if you're on Windows. Notebook Archive's free tier is the best for typing - it includes sync, tags, and AI explain. Notion's free plan is fine for one person. Evernote, Reflect, and Mem don't have meaningful free tiers anymore.",
   },
   {
     q: "What's the best note taking app for students?",
@@ -193,7 +193,7 @@ const faq = [
   },
   {
     q: "Which note taking app lets me actually own my notes?",
-    a: "Notebook Archive and Obsidian. Both export real markdown, so your notes outlive whichever app you use. Notion, Mem, OneNote, Reflect, and Evernote all store notes in proprietary formats — their exports are lossy.",
+    a: "Notebook Archive and Obsidian. Both export real markdown, so your notes outlive whichever app you use. Notion, Mem, OneNote, Reflect, and Evernote all store notes in proprietary formats - their exports are lossy.",
   },
 ];
 
@@ -201,7 +201,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "The Best Note Taking Apps in 2026 — Honest Comparison",
+    headline: "The Best Note Taking Apps in 2026 - Honest Comparison",
     description:
       "Seven note taking apps compared honestly: Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
@@ -240,8 +240,8 @@ export default function BlogBestNoteTakingApp() {
     <>
       <SeoHead
         type="article"
-        title="The Best Note Taking App in 2026 — 7 Honest Picks Compared"
-        description="The seven best note taking apps in 2026, compared honestly — Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, pricing."
+        title="The Best Note Taking App in 2026 - 7 Honest Picks Compared"
+        description="The seven best note taking apps in 2026, compared honestly - Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, pricing."
         path="/blog/best-note-taking-app-2026"
         jsonLd={jsonLd}
       />
@@ -256,7 +256,7 @@ export default function BlogBestNoteTakingApp() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — Best Note Taking App · Updated June 2026
+              - Best Note Taking App · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">Note Taking App</span> in 2026

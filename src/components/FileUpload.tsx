@@ -94,11 +94,11 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
           const { text, pageCount, isScanned } = await extractPdfText(file);
           console.info("[upload-diagnostics] Inline PDF extraction finished", { fileName: file.name, pageCount, isScanned, textLength: text.length });
           if (isScanned || !text.trim()) {
-            // No useful text — fall through to binary upload.
+            // No useful text - fall through to binary upload.
             toast.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
           } else if (pageCount > 5) {
             setUploadStep("Creating notebook…");
-            toast.info(`"${file.name}" has ${pageCount} pages — creating a new notebook note for it.`, { duration: 6000 });
+            toast.info(`"${file.name}" has ${pageCount} pages - creating a new notebook note for it.`, { duration: 6000 });
             const baseName = uniqueNotebookName(file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported PDF");
             const nbId = await createNotebook(baseName);
             if (nbId) {
@@ -108,7 +108,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
                 await updateNote(nbId, noteId, { content: formatImportedDocument(text, file.name) });
                 setActiveNotebookId(nbId);
                 setActiveNoteId(noteId);
-                toast.success(`"${file.name}" had ${pageCount} pages — created a new notebook for it.`);
+                toast.success(`"${file.name}" had ${pageCount} pages - created a new notebook for it.`);
                 continue;
               }
             }
@@ -203,7 +203,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
         if (data?.signedUrl) url = data.signedUrl;
       }
       const win = window.open(url, "_blank", "noopener,noreferrer");
-      if (!win) toast.error("Popup blocked — allow popups to preview attachments.");
+      if (!win) toast.error("Popup blocked - allow popups to preview attachments.");
     } catch (err: any) {
       toast.error(err.message || "Could not open this file.");
     }
@@ -232,7 +232,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
       <div className="flex flex-col gap-1 min-w-0 flex-1 max-w-[260px]">
         <span className="text-sm text-muted-foreground select-none truncate">
           {uploading && progress
-            ? `${uploadStep} ${progress.current + 1}/${progress.total} — ${progress.name}`
+            ? `${uploadStep} ${progress.current + 1}/${progress.total} - ${progress.name}`
             : uploading
               ? uploadStep
               : "Attach files or drag & drop"}

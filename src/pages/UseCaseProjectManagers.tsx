@@ -24,25 +24,25 @@ export default function UseCaseProjectManagers() {
   return (
     <>
       <SeoHead
-        title="Best AI Note Taking App for Meetings — Notebook Archive for Project Managers"
+        title="Best AI Note Taking App for Meetings - Notebook Archive for Project Managers"
         description="Capture meetings, extract action items, and keep stakeholder context organized. The note-taking system built for project managers running multiple workstreams."
         path="/use-cases/project-managers"
       />
       <UseCaseLayout
         eyebrow="For project managers"
         title={<>The notebook that survives <span className="text-primary">every status meeting</span>.</>}
-        intro="Capture decisions, extract action items, and keep every workstream's context in one searchable place — from kickoff to retrospective."
+        intro="Capture decisions, extract action items, and keep every workstream's context in one searchable place - from kickoff to retrospective."
         primaryCta={{ label: "Start free", to: "/auth" }}
         overview={[
-          "A project manager's week is meetings. Kickoffs, stakeholder check-ins, standups, escalations, retros. Each one produces decisions, action items, dependencies, and risks that need to land somewhere — and most of them land in a notebook that becomes unreadable by month two.",
+          "A project manager's week is meetings. Kickoffs, stakeholder check-ins, standups, escalations, retros. Each one produces decisions, action items, dependencies, and risks that need to land somewhere - and most of them land in a notebook that becomes unreadable by month two.",
           "Notebook Archive is structured for that volume. One notebook per project, sub-notebooks per workstream, tags for the people and risks that cut across them, and a global search that finds the meeting where a decision was made without paging through twelve weeks of notes.",
-          "It is not a Jira replacement. Jira owns tickets, sprints, and burndowns. Notebook Archive owns the unstructured reality around them — the conversations, the context, the why behind the ticket.",
+          "It is not a Jira replacement. Jira owns tickets, sprints, and burndowns. Notebook Archive owns the unstructured reality around them - the conversations, the context, the why behind the ticket.",
         ]}
         sections={[
           {
             title: "Capture meetings without losing the room",
             body:
-              "Open a note in the relevant notebook, type while the meeting runs. Markdown headings keep agenda items separate; checkboxes capture action items inline. AI explanations summarize a long thread on demand — useful when a stakeholder spends ten minutes on context you need to compress into two sentences for the rest of the team.",
+              "Open a note in the relevant notebook, type while the meeting runs. Markdown headings keep agenda items separate; checkboxes capture action items inline. AI explanations summarize a long thread on demand - useful when a stakeholder spends ten minutes on context you need to compress into two sentences for the rest of the team.",
             bullets: [
               "Checkbox action items with owner tags (#alex, #priya)",
               "Inline AI summary for long meeting threads",
@@ -74,12 +74,12 @@ export default function UseCaseProjectManagers() {
           {
             title: "Private, portable, audit-ready",
             body:
-              "Notes are encrypted at rest and private by default. Export to Markdown or PDF for compliance, handovers, or end-of-project archives. Nothing is locked into a proprietary format — when a project ends or the team changes tools, the corpus is yours to take.",
+              "Notes are encrypted at rest and private by default. Export to Markdown or PDF for compliance, handovers, or end-of-project archives. Nothing is locked into a proprietary format - when a project ends or the team changes tools, the corpus is yours to take.",
           },
           {
             title: "Works alongside Jira, Linear, and Slack",
             body:
-              "Notebook Archive is not where tickets live. It's where the context around tickets lives — the meeting that produced the ticket, the decision that changed its scope, the stakeholder who needs to be in the loop. Tickets stay in your tracker; the why stays here, linked when useful.",
+              "Notebook Archive is not where tickets live. It's where the context around tickets lives - the meeting that produced the ticket, the decision that changed its scope, the stakeholder who needs to be in the loop. Tickets stay in your tracker; the why stays here, linked when useful.",
           },
         ]}
         scenarios={[
@@ -107,7 +107,7 @@ export default function UseCaseProjectManagers() {
         painPoints={[
           {
             problem: "We already use Confluence / Notion for documentation.",
-            answer: "Keep using it for permanent docs (PRDs, runbooks, team wikis). Notebook Archive is faster for the working layer — the live meeting notes, the daily captures, the personal stash that feeds into formal docs. Many PMs use both.",
+            answer: "Keep using it for permanent docs (PRDs, runbooks, team wikis). Notebook Archive is faster for the working layer - the live meeting notes, the daily captures, the personal stash that feeds into formal docs. Many PMs use both.",
           },
           {
             problem: "I need automatic meeting transcription.",
@@ -119,15 +119,15 @@ export default function UseCaseProjectManagers() {
           },
           {
             problem: "I need Gantt charts, dependencies, and resource planning.",
-            answer: "Notebook Archive is not a project planning tool — keep using Jira, Linear, Asana, MS Project, or whatever your team has standardized on. This is the unstructured layer around those tools, not a replacement.",
+            answer: "Notebook Archive is not a project planning tool - keep using Jira, Linear, Asana, MS Project, or whatever your team has standardized on. This is the unstructured layer around those tools, not a replacement.",
           },
           {
             problem: "Our security policy forbids cloud notes.",
-            answer: "Notes are encrypted at rest, private by default, and AI features are opt-in per request — content is never sent unless you explicitly ask. For environments that forbid any cloud storage at all, this isn't the right tool.",
+            answer: "Notes are encrypted at rest, private by default, and AI features are opt-in per request - content is never sent unless you explicitly ask. For environments that forbid any cloud storage at all, this isn't the right tool.",
           },
           {
             problem: "I work across many time zones and asynchronous teams.",
-            answer: "Standalone notes work well for async captures — log a quick note in two taps from any device, sort it into the right project later. Public share links let async stakeholders read updates without a login.",
+            answer: "Standalone notes work well for async captures - log a quick note in two taps from any device, sort it into the right project later. Public share links let async stakeholders read updates without a login.",
           },
         ]}
         comparison={{
@@ -137,9 +137,9 @@ export default function UseCaseProjectManagers() {
             { capability: "Meeting summarization", notebookArchive: "Inline AI summary on selection.", others: "Plugin or AI add-on, varies by tier." },
             { capability: "PDF text search", notebookArchive: "Native, across every PDF you upload.", others: "Limited; depends on plan and plugins." },
             { capability: "Structure", notebookArchive: "Nested notebooks + tags + standalone notes.", others: "Pages, databases, and properties." },
-            { capability: "Best for", notebookArchive: "The PM's working notes — meetings, captures, retros.", others: "Permanent team documentation and structured databases." },
+            { capability: "Best for", notebookArchive: "The PM's working notes - meetings, captures, retros.", others: "Permanent team documentation and structured databases." },
             { capability: "Mobile", notebookArchive: "Browser, fully responsive, two-tap capture.", others: "Native app available; quality varies." },
-            { capability: "Setup time", notebookArchive: "Minutes — one notebook per project, start typing.", others: "Hours to design templates and databases." },
+            { capability: "Setup time", notebookArchive: "Minutes - one notebook per project, start typing.", others: "Hours to design templates and databases." },
           ],
         }}
         quote={{
@@ -156,15 +156,15 @@ export default function UseCaseProjectManagers() {
           { title: "One notebook per project, sub-notebooks per workstream", body: "Resists collapse as the project grows. Workstream sub-notebooks keep the right people focused on the right notes." },
           { title: "Owner tags on every action item", body: "#alex, #priya, #me. A weekly search for your own tag surfaces every outstanding item across every project." },
           { title: "Standalone notes for in-between captures", body: "Hallway conversations and elevator pitches don't belong in a project notebook until you've thought about them. Standalone notes hold them until they earn a home." },
-          { title: "Meeting note template per recurring meeting", body: "Markdown stays simple. Copy-paste a template — Agenda, Decisions, Action Items, Risks — at the start of each recurring meeting." },
+          { title: "Meeting note template per recurring meeting", body: "Markdown stays simple. Copy-paste a template - Agenda, Decisions, Action Items, Risks - at the start of each recurring meeting." },
           { title: "Export weekly to a backup folder", body: "Markdown export to local disk. Insurance against platform risk, useful for audits, and forces you to feel the project as a whole." },
           { title: "Use share links for stakeholder summaries", body: "One-off public read-only links beat sending a Word doc that gets edited and lost. Revoke when the project ends." },
         ]}
         faqs={[
-          { q: "Is this an AI note-taking app for meetings?", a: "Yes. AI summarizes long meeting threads on demand, extracts action items, and compresses stakeholder context into shareable updates. AI is opt-in per request — content is never sent unless you ask." },
+          { q: "Is this an AI note-taking app for meetings?", a: "Yes. AI summarizes long meeting threads on demand, extracts action items, and compresses stakeholder context into shareable updates. AI is opt-in per request - content is never sent unless you ask." },
           { q: "Does it transcribe meetings automatically?", a: "Not yet. The standard workflow is to type notes live (most PMs already do) or paste a transcript from a separate tool (Otter, Granola) and use AI to summarize. Native transcription is on the roadmap." },
           { q: "Can my team edit the same note?", a: "Public read-only share links work today. Real-time co-editing is on the roadmap. If simultaneous editing is required, the current workflow is one owner per notebook with shared read links." },
-          { q: "Does it replace Jira or Asana?", a: "No. Tickets and sprints belong in your tracker. Notebook Archive owns the unstructured context — meetings, decisions, retros — that feeds into and follows from the tickets." },
+          { q: "Does it replace Jira or Asana?", a: "No. Tickets and sprints belong in your tracker. Notebook Archive owns the unstructured context - meetings, decisions, retros - that feeds into and follows from the tickets." },
           { q: "How is my data stored?", a: "Encrypted at rest, private by default, accessible only to you unless you explicitly share. AI access is opt-in per request and never trains models." },
           { q: "Can I export a project for handover?", a: "Yes. Export the entire notebook to Markdown or PDF. The new PM gets every meeting, decision, and tagged risk from day one." },
           { q: "What happens if you shut down?", a: "Markdown export gives you the entire corpus in a universal, plain-text format. No data is locked in. We're transparent about this because we'd want the same guarantee in your shoes." },

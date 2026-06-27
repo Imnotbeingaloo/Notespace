@@ -16,7 +16,7 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
 
   useEffect(() => {
     if (fast) {
-      // Quick crossfade — under 600ms total
+      // Quick crossfade - under 600ms total
       const t1 = setTimeout(() => setPhase("text"), 80);
       const t2 = setTimeout(() => setPhase("done"), 350);
       const t3 = setTimeout(onComplete, 550);

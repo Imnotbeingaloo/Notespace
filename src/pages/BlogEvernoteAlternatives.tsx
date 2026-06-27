@@ -28,13 +28,13 @@ const picks = [
     name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive — a quiet markdown notebook with an AI explain panel",
+    imageAlt: "Notebook Archive - a quiet markdown notebook with an AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
-    tagline: "Evernote's organization — without the bloat or the price hikes.",
+    tagline: "Evernote's organization - without the bloat or the price hikes.",
     description:
-      "A serif markdown editor with notebooks, nesting, global tags, AI explain, and plain-text export. The shoebox metaphor Evernote pioneered — without the dated editor, the gutted free tier, or the steady price creep.",
+      "A serif markdown editor with notebooks, nesting, global tags, AI explain, and plain-text export. The shoebox metaphor Evernote pioneered - without the dated editor, the gutted free tier, or the steady price creep.",
     pros: [
-      "Free tier is genuinely usable — no 2-notebook cap",
+      "Free tier is genuinely usable - no 2-notebook cap",
       "Markdown export means your notes outlive the app",
       "AI explain panel summarizes sources without rewriting your notes",
       "Sync, search, and tags work across devices on free",
@@ -75,7 +75,7 @@ const picks = [
     siteUrl: "https://obsidian.md",
     tagline: "Local-first markdown with a backlinked graph.",
     description:
-      "If you left Evernote because you didn't trust the cloud, Obsidian is the answer. Notes are plain markdown files on your disk, plugins extend everything, and there's no subscription unless you want sync. The cost is setup — Obsidian is a tool you have to build.",
+      "If you left Evernote because you didn't trust the cloud, Obsidian is the answer. Notes are plain markdown files on your disk, plugins extend everything, and there's no subscription unless you want sync. The cost is setup - Obsidian is a tool you have to build.",
     pros: [
       "Notes are plain markdown files you own",
       "Massive plugin ecosystem",
@@ -96,7 +96,7 @@ const picks = [
     siteUrl: "https://www.onenote.com",
     tagline: "Free, infinite-canvas notebooks from Microsoft.",
     description:
-      "If you mostly want a free, generous container for notes and you're already in Microsoft 365, OneNote is hard to beat on price. Excellent stylus support and no real limits on the free plan — but the free-canvas layout can get messy fast.",
+      "If you mostly want a free, generous container for notes and you're already in Microsoft 365, OneNote is hard to beat on price. Excellent stylus support and no real limits on the free plan - but the free-canvas layout can get messy fast.",
     pros: [
       "Genuinely free with no real limits",
       "Best-in-class handwriting and stylus support",
@@ -113,7 +113,7 @@ const picks = [
     name: "Reflect",
     pricing: "$10/mo",
     imageUrl: reflectShot.url,
-    imageAlt: "Reflect landing page — a thinking tool",
+    imageAlt: "Reflect landing page - a thinking tool",
     siteUrl: "https://reflect.app",
     tagline: "Daily notes plus backlinks, with AI built in.",
     description:
@@ -124,7 +124,7 @@ const picks = [
       "Fast, calm editor",
     ],
     cons: [
-      "Subscription only — no free tier",
+      "Subscription only - no free tier",
       "Daily-notes structure isn't for everyone",
     ],
     bestFor: "People who want Evernote's permanence with a thinking layer on top.",
@@ -133,11 +133,11 @@ const picks = [
     name: "Mem",
     pricing: "Free; Mem+ $10/mo",
     imageUrl: memShot.url,
-    imageAlt: "Mem landing page — self-organizing workspace for AI",
+    imageAlt: "Mem landing page - self-organizing workspace for AI",
     siteUrl: "https://mem.ai",
     tagline: "AI-first capture that organizes itself.",
     description:
-      "Mem is the closest spiritual successor to Evernote's capture-first model. Fast capture from anywhere, AI search across your full library, and almost zero setup. The trade-off is less manual control over structure — you mostly trust the AI to file things.",
+      "Mem is the closest spiritual successor to Evernote's capture-first model. Fast capture from anywhere, AI search across your full library, and almost zero setup. The trade-off is less manual control over structure - you mostly trust the AI to file things.",
     pros: [
       "Fast capture from anywhere",
       "AI search across your full notes library",
@@ -167,11 +167,11 @@ const faq = [
   },
   {
     q: "Which Evernote alternative is best for capture?",
-    a: "Mem, hands down — its mobile capture and AI filing are the closest to what Evernote pioneered. OneNote is a close second if you use a stylus. For text-first writers, Notebook Archive's quick-capture flow plus tags covers most Evernote workflows.",
+    a: "Mem, hands down - its mobile capture and AI filing are the closest to what Evernote pioneered. OneNote is a close second if you use a stylus. For text-first writers, Notebook Archive's quick-capture flow plus tags covers most Evernote workflows.",
   },
   {
     q: "Is there an Evernote alternative that keeps notes in plain text?",
-    a: "Notebook Archive and Obsidian. Both let you export real markdown so your notes outlive whichever app you use. Notion, Mem, OneNote, and Reflect all store notes in proprietary formats — their exports are lossy.",
+    a: "Notebook Archive and Obsidian. Both let you export real markdown so your notes outlive whichever app you use. Notion, Mem, OneNote, and Reflect all store notes in proprietary formats - their exports are lossy.",
   },
 ];
 
@@ -179,7 +179,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Evernote Alternatives in 2026 — Honest Comparison",
+    headline: "Evernote Alternatives in 2026 - Honest Comparison",
     description:
       "Six Evernote alternatives compared honestly: Notebook Archive, Notion, Obsidian, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
@@ -208,8 +208,8 @@ export default function BlogEvernoteAlternatives() {
     <>
       <SeoHead
         type="article"
-        title="Evernote Alternatives in 2026 — 6 Honest Picks Compared"
-        description="Six Evernote alternatives compared with screenshots, pros and cons, and pricing — Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive."
+        title="Evernote Alternatives in 2026 - 6 Honest Picks Compared"
+        description="Six Evernote alternatives compared with screenshots, pros and cons, and pricing - Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive."
         path="/blog/evernote-alternatives-2026"
         jsonLd={jsonLd}
       />
@@ -224,7 +224,7 @@ export default function BlogEvernoteAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              — Evernote Alternatives · Updated June 2026
+              - Evernote Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">Evernote Alternatives</span> for 2026
@@ -232,7 +232,7 @@ export default function BlogEvernoteAlternatives() {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Evernote pioneered the digital shoebox. Then the free tier shrank, the editor
               stayed in 2015, and the price kept climbing. These are the six apps people
-              actually move to — what each does well, where it falls short, and who it's for.
+              actually move to - what each does well, where it falls short, and who it's for.
             </p>
           </motion.header>
 

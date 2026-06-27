@@ -10,11 +10,11 @@ import { SeoHead } from "@/components/SeoHead";
 import { FurtherReading } from "@/components/FurtherReading";
 
 const steps = [
-  { icon: FolderOpen, title: "Make a notebook", description: "One per topic, class, or project — whatever shape your brain prefers. You can change your mind later." },
+  { icon: FolderOpen, title: "Make a notebook", description: "One per topic, class, or project - whatever shape your brain prefers. You can change your mind later." },
   { icon: PenLine, title: "Write in markdown", description: "Headings, lists, code blocks, checklists. The toolbar handles the syntax if you don't feel like typing it." },
   { icon: Sparkles, title: "Ask for an explanation", description: "Highlight a phrase, hit Explain, and a streaming answer slides in beside your note. You stay where you were." },
   { icon: Brain, title: "Let tags do the filing", description: "Drop `#anything` mid-sentence. It joins the sidebar cloud automatically, ready to pull related notes back." },
-  { icon: Search, title: "Find anything fast", description: "⌘K opens search across every notebook. Title, body, tag — it doesn't really matter which." },
+  { icon: Search, title: "Find anything fast", description: "⌘K opens search across every notebook. Title, body, tag - it doesn't really matter which." },
   { icon: FileOutput, title: "Take it with you", description: "Markdown or PDF on the way out. No proprietary wrapper, no lock-in if you ever decide to leave." },
 ];
 
@@ -253,7 +253,7 @@ const zigzagItems = [
   { title: "Recall, not storage", desc: "Flashcards and summaries pulled from your own notes turn passive writing into something you can actually quiz yourself on later.", icon: Brain },
   { title: "Things connect themselves", desc: "Write a tag once and it shows up everywhere it's mentioned. Your map of ideas builds itself in the background.", icon: Sparkles },
   { title: "No taxonomy homework", desc: "Skip the deep folder trees and color-coded systems. Write what you mean and let search and tags do the sorting.", icon: PenLine },
-  { title: "Always one keystroke away", desc: "⌘K finds anything. A lecture from last spring, a meeting note from yesterday — same shortcut, same speed.", icon: Search },
+  { title: "Always one keystroke away", desc: "⌘K finds anything. A lecture from last spring, a meeting note from yesterday - same shortcut, same speed.", icon: Search },
 ];
 
 function ZigzagCard({ item, index }: { item: typeof zigzagItems[0]; index: number }) {
@@ -309,7 +309,7 @@ export default function HowItWorksPage() {
   return (
     <>
       <SeoHead
-        title="How it works — Notebook Archive"
+        title="How it works - Notebook Archive"
         description="From first note to a full knowledge base: a step-by-step walk-through of how Notebook Archive turns scattered thoughts into organized understanding."
         path="/how-it-works"
       />
@@ -337,7 +337,7 @@ export default function HowItWorksPage() {
               How Notebook Archive <span className="text-primary">works</span>
             </motion.h1>
             <motion.p style={{ y: subtitleY }} className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              From a blank page to a note you will revisit — six deliberate steps, with no setup overhead.
+              From a blank page to a note you will revisit - six deliberate steps, with no setup overhead.
             </motion.p>
           </motion.div>
         </div>
@@ -350,7 +350,7 @@ export default function HowItWorksPage() {
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10 md:mb-16">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps, end to end</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold — each step builds on the one before it.</p>
+            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold - each step builds on the one before it.</p>
           </motion.div>
           <StepReel />
         </div>
@@ -358,7 +358,7 @@ export default function HowItWorksPage() {
 
       <AnimatedDivider />
 
-      {/* Why It Matters — zigzag */}
+      {/* Why It Matters - zigzag */}
       <section className="py-16 md:py-28 overflow-hidden">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12 md:mb-20">

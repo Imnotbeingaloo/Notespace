@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Visual regression — HomeView markup snapshots > HomeView matches snapshot @ desktop-1440 1`] = `
+exports[`Visual regression - HomeView markup snapshots > HomeView matches snapshot @ desktop-1440 1`] = `
 <div
   class="flex-1 overflow-y-auto bg-background"
   data-testid="home-view"
@@ -230,7 +230,7 @@ exports[`Visual regression — HomeView markup snapshots > HomeView matches snap
 </div>
 `;
 
-exports[`Visual regression — HomeView markup snapshots > HomeView matches snapshot @ mobile-375 1`] = `
+exports[`Visual regression - HomeView markup snapshots > HomeView matches snapshot @ mobile-375 1`] = `
 <div
   class="flex-1 overflow-y-auto bg-background"
   data-testid="home-view"
@@ -460,7 +460,7 @@ exports[`Visual regression — HomeView markup snapshots > HomeView matches snap
 </div>
 `;
 
-exports[`Visual regression — HomeView markup snapshots > HomeView matches snapshot @ tablet-820 1`] = `
+exports[`Visual regression - HomeView markup snapshots > HomeView matches snapshot @ tablet-820 1`] = `
 <div
   class="flex-1 overflow-y-auto bg-background"
   data-testid="home-view"
@@ -690,7 +690,7 @@ exports[`Visual regression — HomeView markup snapshots > HomeView matches snap
 </div>
 `;
 
-exports[`Visual regression — PageHeader markup snapshots > PageHeader matches snapshot @ desktop-1440 1`] = `
+exports[`Visual regression - PageHeader markup snapshots > PageHeader matches snapshot @ desktop-1440 1`] = `
 <header
   animate="[object Object]"
   class="fixed top-4 inset-x-0 mx-auto z-50 w-[94%] max-w-5xl transition-all duration-500 rounded-2xl bg-transparent"
@@ -812,7 +812,7 @@ exports[`Visual regression — PageHeader markup snapshots > PageHeader matches 
 </header>
 `;
 
-exports[`Visual regression — PageHeader markup snapshots > PageHeader matches snapshot @ mobile-375 1`] = `
+exports[`Visual regression - PageHeader markup snapshots > PageHeader matches snapshot @ mobile-375 1`] = `
 <header
   animate="[object Object]"
   class="fixed top-4 inset-x-0 mx-auto z-50 w-[94%] max-w-5xl transition-all duration-500 rounded-2xl bg-transparent"
@@ -934,7 +934,7 @@ exports[`Visual regression — PageHeader markup snapshots > PageHeader matches 
 </header>
 `;
 
-exports[`Visual regression — PageHeader markup snapshots > PageHeader matches snapshot @ tablet-820 1`] = `
+exports[`Visual regression - PageHeader markup snapshots > PageHeader matches snapshot @ tablet-820 1`] = `
 <header
   animate="[object Object]"
   class="fixed top-4 inset-x-0 mx-auto z-50 w-[94%] max-w-5xl transition-all duration-500 rounded-2xl bg-transparent"

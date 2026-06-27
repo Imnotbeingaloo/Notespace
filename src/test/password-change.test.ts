@@ -56,7 +56,7 @@ describe("changePassword reauth flow", () => {
     expect(updateUser).toHaveBeenCalledWith({ password: "brand-new-pass" });
     expect(markPasswordChanged).toHaveBeenCalledOnce();
 
-    // Reauth must happen before the update — order matters.
+    // Reauth must happen before the update - order matters.
     const reauthOrder = signInWithPassword.mock.invocationCallOrder[0];
     const updateOrder = updateUser.mock.invocationCallOrder[0];
     expect(reauthOrder).toBeLessThan(updateOrder);

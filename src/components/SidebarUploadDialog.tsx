@@ -34,7 +34,7 @@ interface SidebarUploadDialogProps {
 type Stage = "choose" | "attaching" | "done" | "error";
 
 /**
- * Pre-processed payload — populated by the background upload that fires as soon
+ * Pre-processed payload - populated by the background upload that fires as soon
  * as the user picks a file. By the time they choose a destination, the heavy
  * work (storage upload OR PDF extraction OR text read) is already finished.
  */
@@ -96,7 +96,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         preparedRef.current = payload;
         setBgReady(true);
         if (payload.kind === "pdf" && (payload.pageCount ?? 0) > 5) {
-          toast.info(`"${file.name}" has ${payload.pageCount} pages — we'll import the full extracted text.`, { duration: 6000 });
+          toast.info(`"${file.name}" has ${payload.pageCount} pages - we'll import the full extracted text.`, { duration: 6000 });
         }
       } catch (e: any) {
         if (cancelled) return;
@@ -177,7 +177,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     onProgress: (p: number, label?: string) => void,
   ): Promise<PreparedPayload> {
     onProgress(15, "Uploading file…");
-    // Stage under a temporary noteId — we'll associate it with the real note when the user picks.
+    // Stage under a temporary noteId - we'll associate it with the real note when the user picks.
     const stagingNoteId = `staging-${crypto.randomUUID()}`;
     const path = buildStoragePath(userId, stagingNoteId, f.name);
     const { error } = await supabase.storage
@@ -204,7 +204,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
 
   async function attachPreparedTo(targetNotebookId: string, targetNoteId: string) {
     const payload = preparedRef.current;
-    if (!payload) throw new Error("Upload isn't ready yet — please try again in a moment.");
+    if (!payload) throw new Error("Upload isn't ready yet - please try again in a moment.");
     await updateNote(targetNotebookId, targetNoteId, {
       content: payload.body,
       ...(payload.attachments ? { attachments: payload.attachments } : {}),
@@ -289,14 +289,14 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
           </DialogTitle>
 
           <DialogDescription>
-            {stage === "choose" && (bgReady ? "Ready — where should this go?" : message)}
+            {stage === "choose" && (bgReady ? "Ready - where should this go?" : message)}
             {stage === "attaching" && "Attaching to your notebook…"}
             {stage === "done" && "Done!"}
             {stage === "error" && (errorMsg || "Something went wrong.")}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Background-upload progress bar — visible while prep is running so the user
+        {/* Background-upload progress bar - visible while prep is running so the user
             knows the upload is already happening even before they pick a destination. */}
         {stage === "choose" && !bgReady && (
           <div className="space-y-2 -mt-1 rounded-xl bg-primary/5 p-3">

@@ -46,7 +46,7 @@ export function NetworkStatusToasts() {
         if (inflightRef.current > 0 && navigator.onLine !== false) {
           toast.warning(
             "Slow connection",
-            { id: SLOW_TOAST_ID, duration: 6000, description: "Hang tight — we're still syncing your data." }
+            { id: SLOW_TOAST_ID, duration: 6000, description: "Hang tight - we're still syncing your data." }
           );
         }
       }, SLOW_MS);

@@ -1,4 +1,4 @@
-/* Inter & JetBrains Mono are loaded via <link> in index.html — using @import here
+/* Inter & JetBrains Mono are loaded via <link> in index.html - using @import here
    delays font fetch until CSS is parsed (causes 2-3s font swap delay). */
 
 
@@ -231,7 +231,7 @@
     background-color: hsl(var(--muted-foreground) / 0.6);
   }
 
-  /* Global minimalist scrollbar — only shows on hover/scroll */
+  /* Global minimalist scrollbar - only shows on hover/scroll */
   html, body {
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;

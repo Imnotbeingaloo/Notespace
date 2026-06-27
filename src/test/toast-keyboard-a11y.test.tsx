@@ -16,7 +16,7 @@ function renderToaster() {
   );
 }
 
-describe("Sonner toast — keyboard + a11y", () => {
+describe("Sonner toast - keyboard + a11y", () => {
   beforeEach(() => resetToastQueue());
 
   it("exposes the toaster as a labelled live region", async () => {
