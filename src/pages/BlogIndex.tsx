@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
+
 import Footer from "@/components/Footer";
 
 const posts = [
@@ -115,8 +117,9 @@ export default function BlogIndex() {
         title="Blog - Notebook Archive"
         description="Honest writing on note taking apps, AI for writers and researchers, and the tools we build at Notebook Archive."
         path="/blog"
-        jsonLd={jsonLd}
+        jsonLd={[jsonLd, breadcrumbsJsonLd([{ name: "Blog", path: "/blog" }])]}
       />
+
       <div className="min-h-screen bg-background text-foreground">
         <PageHeader />
 

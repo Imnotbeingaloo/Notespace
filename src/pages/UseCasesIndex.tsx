@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 import Footer from "@/components/Footer";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
+
 
 const cases = [
   {
@@ -109,7 +111,9 @@ export default function UseCasesIndex() {
         title="Use Cases - Notebook Archive"
         description="Notebook Archive for students, writers, and researchers. See how a calm, AI-assisted note-taking app fits each workflow."
         path="/use-cases"
+        jsonLd={breadcrumbsJsonLd([{ name: "Use cases", path: "/use-cases" }])}
       />
+
       <main className="min-h-screen bg-background">
         <PageHeader />
 
