@@ -10,17 +10,17 @@ import { SeoHead } from "@/components/SeoHead";
 import { AnimatedHeading } from "@/components/AnimatedHeading";
 
 const values = [
-  { icon: Heart, title: "User-First Design", description: "Every feature is designed around how people actually think and write. No bloat, no clutter — just clarity. We obsess over every interaction to make sure it feels natural." },
-  { icon: Zap, title: "Speed & Simplicity", description: "Fast, distraction-free tools that get out of your way and let you focus on what matters: your ideas. Every millisecond of latency matters to us." },
-  { icon: Shield, title: "Privacy & Security", description: "Your notes are yours. We use end-to-end encryption and strict data policies. We never sell your data, track your content, or share it with third parties." },
-  { icon: Lightbulb, title: "AI That Assists, Not Replaces", description: "Our AI helps you understand, organize, and recall — but your thinking stays yours. We enhance your workflow, we don't automate your brain." },
+  { icon: Heart, title: "Built around the writer", description: "We design for the person staring at a blank page, not the slide where the feature gets shown off. If a thing doesn't help you write or find a note, it doesn't ship." },
+  { icon: Zap, title: "Quiet by default", description: "Latency is a tax on thinking. Pages should open fast, the editor should never lag, and animations should know when to get out of the way." },
+  { icon: Shield, title: "Your notes stay yours", description: "Encrypted in transit, scoped per user in the database, never sold, never used for training. The AI doesn't see a note unless you point at it." },
+  { icon: Lightbulb, title: "AI as a second pair of eyes", description: "We use the model to explain, summarize, and tag — never to write the note for you. Your voice is the point of taking notes in the first place." },
 ];
 
 const timeline = [
-  { year: "2024 Q1", title: "The Idea", description: "Born from frustration with note apps that were either too simple or too complex. We wanted both power and elegance in a single tool — something that could grow with the user." },
-  { year: "2024 Q3", title: "First Beta", description: "Launched with markdown editing, notebooks, and instant search. Early adopters loved the clean interface and immediately started requesting AI features." },
-  { year: "2025 Q1", title: "AI Integration", description: "Added AI-powered explanations, smart tagging, and auto-summaries. Notes became intelligent — users reported 40% faster study sessions." },
-  { year: "2025 Q3", title: "Teams & Collaboration", description: "Shared notebooks, real-time co-editing, and team knowledge bases for study groups and workplaces. Now used by 200+ teams worldwide." },
+  { year: "2024 Q1", title: "The annoyance", description: "We kept bouncing between apps that were either too plain or too over-engineered. None of them helped us think; they just stored. So we sketched something else." },
+  { year: "2024 Q3", title: "First usable build", description: "Markdown editor, notebooks, search. We put it in front of a small group, and what they kept asking for was the AI side, not more file management." },
+  { year: "2025 Q1", title: "Explain shows up", description: "Streaming explanations beside the note, smart tags pulled from the prose itself, auto-summaries that don't lie about what's in the page." },
+  { year: "2025 Q3", title: "Sharing & teams", description: "Shared notebooks for study groups and small teams. Quieter version of co-editing than most apps ship — designed to stay out of your way." },
 ];
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
@@ -108,21 +108,21 @@ function PhilosophySection() {
     };
   }, []);
 
-  const oldItems = ["Scattered notes everywhere", "No connections between ideas", "Information gets forgotten", "You do all the organizing"];
+  const oldItems = ["Notes scattered across apps", "Ideas never link up", "You forget what's in there", "All the filing falls on you"];
   const newItems = [
-    { text: "AI explains concepts as you write", icon: "✨" },
-    { text: "Ideas connect automatically", icon: "🔗" },
-    { text: "Smart recall & study tools", icon: "🎯" },
-    { text: "Your notes grow smarter with you", icon: "🌱" },
+    { text: "AI explains what you're writing", icon: "✨" },
+    { text: "Tags link related notes for you", icon: "🔗" },
+    { text: "Recall built into the editor", icon: "🎯" },
+    { text: "The collection gets smarter over time", icon: "🌱" },
   ];
 
   return (
     <section className="bg-foreground/[0.03] py-24 overflow-hidden">
       <div className="container mx-auto px-6 max-w-5xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-          <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">Our Philosophy</p>
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">We moved from the old way to something better</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">See how Notebook Archive transforms how you work with notes.</p>
+          <p className="text-xs uppercase tracking-widest font-mono text-primary mb-3">Our philosophy</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">From storing notes to actually using them</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">Two ways of working with a notebook, side by side.</p>
         </motion.div>
 
         {/* Progress bar */}
@@ -304,10 +304,10 @@ export default function AboutPage() {
               <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Our Story</span>
             </div>
             <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
-              We're building the <span className="text-primary">notebook</span> you always wanted
+              The <span className="text-primary">notebook</span> we kept wishing existed
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Notebook Archive was created for thinkers — students, researchers, writers, and anyone who believes better tools lead to better ideas. We're a small, passionate team on a mission to make knowledge management feel effortless.
+              Notebook Archive started because nothing on the market did the boring parts well. We're a small team writing it for people who care about their notes more than the average person probably should.
             </p>
           </motion.div>
         </div>
@@ -336,9 +336,9 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                     <Target className="h-6 w-6 text-primary" />
                   </div>
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Mission</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-3">We believe that the tools you use to think should be as smart as you are. Most note-taking apps treat your notes as static files — we treat them as living knowledge.</p>
-                  <p className="text-muted-foreground leading-relaxed">Our goal is to build the most intelligent, beautiful, and privacy-respecting note-taking platform in the world.</p>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">What we're trying to do</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">We think the tool you use to think should be at least as sharp as you are. Most note apps treat your writing like dead text in a folder — we'd rather treat it like something that talks back.</p>
+                  <p className="text-muted-foreground leading-relaxed">The goal: the calmest, most useful, most private place to keep your thinking on the internet.</p>
                 </div>
               </motion.div>
               {/* Dot on the center line */}
@@ -377,9 +377,9 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                     <Layers className="h-6 w-6 text-accent" />
                   </div>
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Our Approach</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-3">We don't chase features for the sake of features. Every capability exists because real users asked for it.</p>
-                  <p className="text-muted-foreground leading-relaxed">We ship fast, listen carefully, and iterate constantly. Our beta users aren't just testers — they're co-designers.</p>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">How we work</h2>
+                  <p className="text-muted-foreground leading-relaxed mb-3">No feature gets built because a competitor has it. Things ship because someone actually using the app asked, or because we got tired of working around the same gap.</p>
+                  <p className="text-muted-foreground leading-relaxed">We ship small, often. The people on the beta channel are basically co-authors at this point.</p>
                 </div>
               </motion.div>
             </div>
@@ -397,8 +397,8 @@ export default function AboutPage() {
       {/* Values */}
       <section className="container mx-auto px-6 py-28 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">What We Believe</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">These are the principles that guide every decision we make.</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">What we believe</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">Four short rules that decide most arguments inside the team.</p>
         </motion.div>
         <div className="relative mt-12">
           <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
@@ -422,8 +422,8 @@ export default function AboutPage() {
       <section className="bg-foreground/[0.03] py-28">
         <div className="container mx-auto px-6 max-w-3xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our Journey</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">From a late-night idea to a platform used by thousands.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">A short history</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">The honest version of how we got here.</p>
           </motion.div>
           <div className="relative mt-12">
             <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
@@ -453,13 +453,13 @@ export default function AboutPage() {
             className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto"
           >
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Join us on the journey
+              Come write with us
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-              We're just getting started. Be part of a community that thinks better, together — free to use, open to feedback.
+              The app is free to use and we read every piece of feedback that comes through. If something's off, tell us — we'll probably fix it next week.
             </p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Open App" : "Get Started Free"} <ArrowRight className="h-4 w-4" />
+              {user ? "Open App" : "Open the app"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>

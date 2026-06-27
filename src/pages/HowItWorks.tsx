@@ -9,19 +9,19 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 
 const steps = [
-  { icon: FolderOpen, title: "Create a Notebook", description: "Organize your notes by topic, class, or project. Each notebook is a dedicated space for related ideas." },
-  { icon: PenLine, title: "Write in Markdown", description: "Distraction-free editor with full markdown. Bold, headings, checklists, code blocks — all built in." },
-  { icon: Sparkles, title: "Get AI Insights", description: "Highlight any topic and get AI-powered explanations, summaries, and flashcards instantly." },
-  { icon: Brain, title: "Auto-Tag & Link", description: "AI tags concepts and links related notes across notebooks. Your knowledge graph builds itself." },
-  { icon: Search, title: "Find Anything", description: "⌘K search finds any note across all notebooks in milliseconds. Search by content, tags, or date." },
-  { icon: FileOutput, title: "Export & Share", description: "Export to PDF, Markdown, or Notion. Share notebooks with granular permission controls." },
+  { icon: FolderOpen, title: "Make a notebook", description: "One per topic, class, or project — whatever shape your brain prefers. You can change your mind later." },
+  { icon: PenLine, title: "Write in markdown", description: "Headings, lists, code blocks, checklists. The toolbar handles the syntax if you don't feel like typing it." },
+  { icon: Sparkles, title: "Ask for an explanation", description: "Highlight a phrase, hit Explain, and a streaming answer slides in beside your note. You stay where you were." },
+  { icon: Brain, title: "Let tags do the filing", description: "Drop `#anything` mid-sentence. It joins the sidebar cloud automatically, ready to pull related notes back." },
+  { icon: Search, title: "Find anything fast", description: "⌘K opens search across every notebook. Title, body, tag — it doesn't really matter which." },
+  { icon: FileOutput, title: "Take it with you", description: "Markdown or PDF on the way out. No proprietary wrapper, no lock-in if you ever decide to leave." },
 ];
 
 const useCases = [
-  { emoji: "🎓", title: "Students", description: "Capture lectures, generate study materials, and ace your exams with AI-powered review.", extra: "Used by students at 50+ universities worldwide" },
-  { emoji: "🔬", title: "Researchers", description: "Organize papers, extract key findings, and build a connected knowledge base that grows with your research.", extra: "Supports LaTeX, code blocks, and citation formats" },
-  { emoji: "✍️", title: "Writers", description: "Draft, outline, and refine your writing in a beautiful distraction-free editor with AI brainstorming.", extra: "Export to PDF, Markdown, or publish directly" },
-  { emoji: "💼", title: "Professionals", description: "Meeting notes, project briefs, and team knowledge — all searchable and AI-enhanced.", extra: "Integrates with your existing workflow tools" },
+  { emoji: "🎓", title: "Students", description: "Catch lectures live, build study sets from your own notes, and stop tabbing out to Google mid-page.", extra: "Markdown + LaTeX + code blocks in one editor" },
+  { emoji: "🔬", title: "Researchers", description: "Park papers, dump quotes, and let the tag cloud quietly map the connections between them.", extra: "LaTeX, citations, code, and file attachments" },
+  { emoji: "✍️", title: "Writers", description: "Outline, draft, and rewrite in a page that doesn't fight you. The AI is around if you want a second pass.", extra: "Clean export to Markdown or PDF" },
+  { emoji: "💼", title: "Professionals", description: "Meeting notes, briefs, and shared docs that you can actually search next quarter instead of giving up.", extra: "Works alongside the tools you already use" },
 ];
 
 /* ─── Animation helpers ─── */
@@ -249,10 +249,10 @@ function RevealCard({ uc, index }: { uc: typeof useCases[0]; index: number }) {
 
 /* ─── Zigzag Item ─── */
 const zigzagItems = [
-  { title: "Active Recall, Not Passive Storage", desc: "AI-generated flashcards and summaries turn passive notes into active study materials. Research shows active recall improves retention by 50%.", icon: Brain },
-  { title: "Connected Knowledge", desc: "Auto-linking creates a web of related concepts across your notebooks. When you write about quantum physics, it connects to your math notes.", icon: Sparkles },
-  { title: "Zero Friction", desc: "No complex folder structures. No tagging taxonomies. Just write, and the AI handles organization. Your knowledge graph builds itself.", icon: PenLine },
-  { title: "Always Accessible", desc: "Instant search means you can find any idea in milliseconds. Whether it's a lecture from last semester or a meeting note from yesterday.", icon: Search },
+  { title: "Recall, not storage", desc: "Flashcards and summaries pulled from your own notes turn passive writing into something you can actually quiz yourself on later.", icon: Brain },
+  { title: "Things connect themselves", desc: "Write a tag once and it shows up everywhere it's mentioned. Your map of ideas builds itself in the background.", icon: Sparkles },
+  { title: "No taxonomy homework", desc: "Skip the deep folder trees and color-coded systems. Write what you mean and let search and tags do the sorting.", icon: PenLine },
+  { title: "Always one keystroke away", desc: "⌘K finds anything. A lecture from last spring, a meeting note from yesterday — same shortcut, same speed.", icon: Search },
 ];
 
 function ZigzagCard({ item, index }: { item: typeof zigzagItems[0]; index: number }) {
@@ -336,7 +336,7 @@ export default function HowItWorksPage() {
               How Notebook Archive <span className="text-primary">works</span>
             </motion.h1>
             <motion.p style={{ y: subtitleY }} className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              From first note to full knowledge base — here's how you go from scattered thoughts to organized understanding.
+              The path from a blank page to something you'll actually open again next month. Six small steps, no setup ceremony.
             </motion.p>
           </motion.div>
         </div>
@@ -348,8 +348,8 @@ export default function HowItWorksPage() {
       <section className="py-16 md:py-28">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10 md:mb-16">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps to smarter notes</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold — each step builds on the last.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps, in order</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the loop play out — each step picks up where the last one left off.</p>
           </motion.div>
           <StepReel />
         </div>
@@ -361,10 +361,10 @@ export default function HowItWorksPage() {
       <section className="py-16 md:py-28 overflow-hidden">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12 md:mb-20">
-            <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">The Problem We Solve</span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Why it matters</h2>
+            <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">Why this exists</span>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">The problem</h2>
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Traditional note-taking is broken. You write things down, file them away, and never look at them again.
+              Most notes get written once and never opened again. They sit in folders nobody ever clicks. We wanted the opposite.
             </p>
           </motion.div>
 
@@ -383,9 +383,9 @@ export default function HowItWorksPage() {
       <section className="bg-foreground/[0.02] py-16 md:py-28">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who It's For</span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Built for every kind of thinker</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Click to reveal who it's built for.</p>
+            <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who tends to like it</span>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">A few different kinds of thinkers</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Tap a card to see how each one tends to use it.</p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -402,10 +402,10 @@ export default function HowItWorksPage() {
       <section className="bg-foreground/[0.04] py-20">
         <div className="container mx-auto px-6">
           <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Ready to think better?</h2>
-            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">Start capturing, organizing, and understanding your knowledge today. Free to start, no credit card required.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Open the editor</h2>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">Start with one note. See how it feels. The free plan stays free — there's no clock ticking somewhere.</p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Go to Dashboard" : "Get Started Free"} <ArrowRight className="h-4 w-4" />
+              {user ? "Go to App" : "Write something"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
