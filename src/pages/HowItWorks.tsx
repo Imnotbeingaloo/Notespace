@@ -348,8 +348,8 @@ export default function HowItWorksPage() {
       <section className="py-16 md:py-28">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10 md:mb-16">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps, in order</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the loop play out — each step picks up where the last one left off.</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Six steps, end to end</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto text-sm">Watch the workflow unfold — each step builds on the one before it.</p>
           </motion.div>
           <StepReel />
         </div>
