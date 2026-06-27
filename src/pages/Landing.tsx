@@ -329,7 +329,7 @@ export default function LandingPage() {
                   className="relative rounded-2xl border border-border bg-card p-7 shadow-xl shadow-primary/[0.08] -rotate-1 cursor-default hover:shadow-2xl hover:shadow-primary/15 transition-shadow duration-500"
                 >
                   <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
-                    §  Chapter One
+                    {"\u00a0"}CHAPTER ONE
                   </div>
                   <div className="font-serif text-lg md:text-xl font-bold text-foreground mb-5 leading-tight">
                     On wave theory
