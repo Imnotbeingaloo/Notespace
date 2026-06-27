@@ -383,9 +383,9 @@ export default function HowItWorksPage() {
       <section className="bg-foreground/[0.02] py-16 md:py-28">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who tends to like it</span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">A few different kinds of thinkers</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Tap a card to see how each one tends to use it.</p>
+            <span className="text-[10px] font-mono font-bold text-accent/60 tracking-[0.2em] uppercase">Who it serves</span>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">Built for different kinds of thinkers</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm">Select a card to see how each user typically works.</p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
