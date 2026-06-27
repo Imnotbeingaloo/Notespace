@@ -7,11 +7,23 @@ interface WordCountProps {
 
 export function WordCount({ content }: WordCountProps) {
   const stats = useMemo(() => {
-    const text = content.replace(/[#*_~`>\-\[\]()!|]/g, "").trim();
-    if (!text) return { words: 0, chars: 0, readTime: "0 min" };
+    // 1) Strip HTML tags (editor sometimes stores `<p><br></p>` etc).
+    // 2) Decode common entities to whitespace.
+    // 3) Strip markdown syntax characters.
+    // 4) Collapse whitespace and trim.
+    const text = (content ?? "")
+      .replace(/<[^>]*>/g, " ")
+      .replace(/&nbsp;|&#160;/gi, " ")
+      .replace(/&amp;/gi, "&")
+      .replace(/[#*_~`>\-\[\]()!|]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!text) return { words: 0, chars: 0, readTime: "" };
 
     const words = text.split(/\s+/).filter(Boolean).length;
     const chars = text.length;
+    if (words === 0) return { words: 0, chars: 0, readTime: "" };
     const minutes = Math.max(1, Math.ceil(words / 200));
     const readTime = minutes === 1 ? "1 min read" : `${minutes} min read`;
 
