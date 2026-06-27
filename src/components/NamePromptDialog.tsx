@@ -81,8 +81,9 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
     setStep("welcome");
     closeTimer.current = window.setTimeout(
       () => onOpenChange(false),
-      reduceMotion ? 1200 : 2000
+      reduceMotion ? 1600 : 3200
     );
+
 
   };
 
