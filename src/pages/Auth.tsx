@@ -192,11 +192,12 @@ const AuthPage = () => {
             });
             if (data && data.exists === false) {
               setUnknownEmail(email.trim());
-              setMode("signup");
               setConfirmPassword(password);
+              setNotice("");
+              setError("");
+              setMode("signup");
               setHighlightEmail(true);
-              setNotice(`Oops, no account for ${email.trim()}. We've switched you to sign up - finish creating it below.`);
-              setTimeout(() => setHighlightEmail(false), 2200);
+              setTimeout(() => setHighlightEmail(false), 1600);
             } else {
               setError("Incorrect password. Try again or reset it below.");
             }
