@@ -62,7 +62,21 @@ export const PUBLIC_ROUTES: PublicRoute[] = [
   { path: "/templates/weekly-review", changefreq: "monthly", priority: "0.8" },
   { path: "/templates/meeting", changefreq: "monthly", priority: "0.8" },
   { path: "/templates/book-notes", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/zettelkasten", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/cornell-notes", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/pkm", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/para-method", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/second-brain", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/atomic-notes", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/evergreen-notes", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/spaced-repetition", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/active-recall", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/markdown", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/backlinks", changefreq: "monthly", priority: "0.8" },
+  { path: "/learn/bullet-journal", changefreq: "monthly", priority: "0.8" },
 ];
+
 
 /**
  * App-only routes. These must:
