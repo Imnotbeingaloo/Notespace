@@ -204,8 +204,8 @@ export default function LandingPage() {
   return (
     <>
       <SeoHead
-        title="Notebook Archive - AI Note Taking App for Writing & Research"
-        description="An AI note taking app for writers, students, and researchers. Capture ideas, organize notebooks, and let AI help only where it actually matters."
+        title="Notebook Archive - AI Study Planner & Note Taking App for Students"
+        description="Build a study plan, organize a study schedule, and take smarter notes in one place. A free AI study planner and note taking app for students, writers, and researchers."
         path="/"
         jsonLd={[
           {
@@ -236,7 +236,7 @@ export default function LandingPage() {
             applicationCategory: "ProductivityApplication",
             operatingSystem: "Web",
             url: "https://notebookarchive.lovable.app/",
-            description: "AI note taking app with notebooks, global search, tags, Markdown export, and a quiet writing surface for writers, students, and researchers.",
+            description: "Notebook Archive is an AI study planner and note taking app: build a study schedule per notebook, organize lecture and research notes, search across everything, and export to Markdown.",
             offers: {
               "@type": "Offer",
               price: "0",
@@ -344,7 +344,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.35 }}
                 className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed"
               >
-                A quiet place to write, link, and revisit your ideas - with intelligence woven in only where it actually helps.
+                A quiet place to write, link, and revisit your ideas - with a built-in study planner and study schedule that keeps your sessions on track, and intelligence woven in only where it actually helps.
               </motion.p>
 
               <motion.div

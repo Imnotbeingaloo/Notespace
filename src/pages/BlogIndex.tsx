@@ -10,6 +10,22 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "how-to-make-a-study-plan",
+    title: "How to Make a Study Plan (With a Free Weekly Template)",
+    excerpt:
+      "A practical guide to building a weekly study plan and study schedule you'll actually follow - including a free copy-pasteable template.",
+    date: "Jun 2026",
+    tag: "Guides",
+  },
+  {
+    slug: "how-to-make-a-study-plan-for-exams",
+    title: "How to Make a Study Plan for Exams (Six-Week Template)",
+    excerpt:
+      "A six-week exam study plan template for finals, GCSEs, A-levels, MCAT, GRE, and LSAT - with a copy-pasteable schedule.",
+    date: "Jun 2026",
+    tag: "Guides",
+  },
+  {
     slug: "ai-literature-review-guide",
     title: "Using AI for Literature Reviews: A Workflow for Researchers",
     excerpt:

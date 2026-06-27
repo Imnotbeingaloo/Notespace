@@ -1,0 +1,238 @@
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { PageHeader } from "@/components/PageHeader";
+import { SeoHead } from "@/components/SeoHead";
+import Footer from "@/components/Footer";
+
+const REF = "blog-how-to-make-a-study-plan";
+const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=how-to-make-a-study-plan`;
+
+const faq = [
+  {
+    q: "What should a good study plan include?",
+    a: "Three things: the subjects you have to cover, the hours you actually have free each week, and a weekly review slot to catch up. Everything else (colour-coding, productivity systems, apps) is optional.",
+  },
+  {
+    q: "How many hours a day should I study?",
+    a: "Most students underestimate breaks and overestimate stamina. Two to four focused hours a day - in 50-minute blocks with real breaks - beats six unfocused hours. Quality of attention matters more than total time logged.",
+  },
+  {
+    q: "Is there a free study plan template?",
+    a: "Yes - copy the weekly template lower down on this page into any document, or open it as a ready-made note inside Notebook Archive's study planner template.",
+  },
+  {
+    q: "How do I stick to a study plan?",
+    a: "Make the plan smaller than feels right, schedule it at the same times each week, and tick sessions off as you finish them. Visible progress is the single biggest reason people keep going.",
+  },
+  {
+    q: "What's the difference between a study plan and a study schedule?",
+    a: "A study plan is the strategy (what you'll cover, in what order, by when). A study schedule is the calendar (which day, which time slot, which subject). You need both - the plan tells you why, the schedule tells you when.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to make a study plan",
+    description:
+      "A simple, repeatable way to build a weekly study plan that you'll actually follow - including a copy-pasteable template.",
+    step: [
+      { "@type": "HowToStep", name: "List every subject and deadline", text: "Write down every course, exam, and assignment with its date." },
+      { "@type": "HowToStep", name: "Count your real available hours", text: "Subtract sleep, classes, commute, meals, and one rest day from your week." },
+      { "@type": "HowToStep", name: "Block subjects into fixed time slots", text: "Assign each subject a recurring slot, not a vague 'when I can'." },
+      { "@type": "HowToStep", name: "Add a weekly review", text: "Keep one 30-minute slot every week to catch up and re-plan." },
+      { "@type": "HowToStep", name: "Track completion, not perfection", text: "Tick sessions off as done. Don't redesign the plan every week." },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "How to Make a Study Plan (With a Free Weekly Template)",
+    description:
+      "A practical, no-fluff guide to building a study plan that survives the semester - including a copy-pasteable weekly template and a study schedule example.",
+    datePublished: "2026-06-27",
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/how-to-make-a-study-plan",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+
+export default function BlogHowToMakeStudyPlan() {
+  useEffect(() => {
+    document.documentElement.classList.add("light");
+    document.documentElement.classList.remove("dark");
+  }, []);
+
+  return (
+    <>
+      <SeoHead
+        type="article"
+        title="How to Make a Study Plan (With a Free Weekly Template) - 2026"
+        description="A practical guide to building a weekly study plan and study schedule you'll actually follow. Includes a free copy-pasteable template."
+        path="/blog/how-to-make-a-study-plan"
+        jsonLd={jsonLd}
+      />
+      <div className="min-h-screen bg-background text-foreground">
+        <PageHeader />
+
+        <article className="max-w-3xl mx-auto px-6 pt-32 pb-20">
+          <motion.header
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-12"
+          >
+            <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
+              - Guides · Updated June 2026
+            </p>
+            <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
+              How to make a <span className="text-primary">study plan</span> (with a free weekly template)
+            </h1>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Most study plans fail because they're built for a fantasy version of you.
+              This guide builds one for the real one - including a copy-pasteable
+              weekly study schedule you can use today.
+            </p>
+          </motion.header>
+
+          <section className="mb-12 space-y-12">
+            <div>
+              <h2 className="font-serif text-2xl font-bold mb-3">
+                The five steps, in order
+              </h2>
+
+              <h3 className="font-serif text-lg font-bold mt-6 mb-2">1. List every subject and deadline</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Open a single page. Write every course you're taking, every exam date,
+                and every assignment due in the next four weeks. Don't sort yet -
+                just get the full picture in one place.
+              </p>
+
+              <h3 className="font-serif text-lg font-bold mt-6 mb-2">2. Count your real available hours</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                A week has 168 hours. Subtract sleep (56), classes, commute, meals,
+                and one full rest day. What's left is usually 15-25 hours - the
+                actual budget for your study plan. Most plans fail because they
+                pretend the budget is double that.
+              </p>
+
+              <h3 className="font-serif text-lg font-bold mt-6 mb-2">3. Block subjects into fixed time slots</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Don't write "study chemistry when I have time". Write
+                "Chemistry, Mon/Wed/Fri, 4-5:30pm". A study schedule is just a
+                study plan with times on it. Recurring slots build the habit;
+                vague intentions don't.
+              </p>
+
+              <h3 className="font-serif text-lg font-bold mt-6 mb-2">4. Add a weekly review</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Keep one 30-minute slot every Sunday (or whichever day works) to
+                check what got done, what slipped, and what changes next week.
+                This single habit is what separates a study plan that lasts a
+                semester from one that lasts two weeks.
+              </p>
+
+              <h3 className="font-serif text-lg font-bold mt-6 mb-2">5. Track completion, not perfection</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Tick sessions off as you finish them. Don't redesign the plan
+                every week - small tweaks at the review slot only. Visible streaks
+                are the single biggest reason students keep showing up.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="font-serif text-2xl font-bold mb-3">
+                Free weekly study plan template
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Copy this into any document - or open it as a ready-made note in
+                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link>.
+              </p>
+              <pre className="bg-muted rounded-lg p-5 text-sm leading-relaxed overflow-x-auto whitespace-pre">{`# Weekly Study Plan - Week of [date]
+
+## Subjects this week
+- [ ] Subject A - chapter 4 + practice problems
+- [ ] Subject B - lecture notes + 1 essay outline
+- [ ] Subject C - past paper, timed
+
+## Study schedule
+Mon  16:00-17:30  Subject A
+Tue  16:00-17:00  Subject B
+Wed  16:00-17:30  Subject A
+Thu  16:00-17:00  Subject C (past paper)
+Fri  16:00-17:30  Subject B (essay)
+Sat  REST
+Sun  10:00-10:30  Weekly review
+
+## Weekly review (Sun)
+- What got done?
+- What slipped?
+- What changes next week?`}</pre>
+            </div>
+
+            <div>
+              <h2 className="font-serif text-2xl font-bold mb-3">
+                The honest limits
+              </h2>
+              <ul className="space-y-2 text-muted-foreground leading-relaxed">
+                <li>• A plan won't fix motivation. It just removes the daily decision of "what should I work on?"</li>
+                <li>• The first week always feels too easy. Resist the urge to double it - hold the plan for three weeks before scaling up.</li>
+                <li>• If you miss a session, do not "catch up" - just move to the next scheduled slot. Catch-up debt is what kills study plans.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="font-serif text-2xl font-bold mt-12 mb-6">Frequently asked</h2>
+              <Accordion type="single" collapsible className="w-full">
+                {faq.map((f, i) => (
+                  <AccordionItem key={f.q} value={`item-${i}`}>
+                    <AccordionTrigger className="font-serif text-lg text-left">{f.q}</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground leading-relaxed">{f.a}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </section>
+
+          <div className="border-t border-border pt-10 mt-10 text-center">
+            <p className="font-serif text-2xl font-bold mb-4">
+              Build your study schedule inside Notebook Archive
+            </p>
+            <p className="text-muted-foreground mb-6">
+              Open the study planner template, edit the slots to match your week,
+              and tick sessions off as you finish them. Free to start.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link to="/templates/study-planner" className="inline-flex items-center gap-2 border border-border bg-card px-5 py-3 rounded-lg font-semibold hover:bg-muted transition">
+                Open the study planner template
+              </Link>
+              <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                Start using Notebook Archive <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </article>
+
+        <Footer />
+      </div>
+    </>
+  );
+}
