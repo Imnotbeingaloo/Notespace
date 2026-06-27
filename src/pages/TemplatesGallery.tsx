@@ -61,6 +61,14 @@ export default function TemplatesGallery() {
               Twelve well-built templates for studying, meetings, research, and personal reflection.
               Open with one click in Notebook Archive, or copy the markdown to use anywhere.
             </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                to="/templates/study-planner"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition"
+              >
+                Featured: free study planner template <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </section>
 
