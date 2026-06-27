@@ -104,12 +104,40 @@ const AuthPage = () => {
   const handleGoogle = async () => {
     setError("");
     setGoogleLoading(true);
+
+    // If the user closes the Google popup or never completes sign-in, the
+    // promise can hang indefinitely. Detect when the tab regains focus and,
+    // if no session has been established shortly after, surface a cancel
+    // notice and reset the loading state.
+    let cancelled = false;
+    let watcherTimer: ReturnType<typeof setTimeout> | null = null;
+    const onFocus = () => {
+      if (watcherTimer) clearTimeout(watcherTimer);
+      watcherTimer = setTimeout(async () => {
+        const { data } = await supabase.auth.getSession();
+        if (!data.session && !cancelled) {
+          cancelled = true;
+          setGoogleLoading(false);
+          const { toast } = await import("sonner");
+          toast.error("Google sign-in was cancelled. Try again when you're ready.");
+          window.removeEventListener("focus", onFocus);
+        }
+      }, 1500);
+    };
+    window.addEventListener("focus", onFocus);
+
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
         redirect_uri: window.location.origin,
       });
+      cancelled = true;
+      window.removeEventListener("focus", onFocus);
+      if (watcherTimer) clearTimeout(watcherTimer);
       if (result.error) {
-        setError(result.error.message || "Google sign-in failed. Try again.");
+        const msg = result.error.message || "Google sign-in failed. Try again.";
+        setError(msg);
+        const { toast } = await import("sonner");
+        toast.error(msg);
         setGoogleLoading(false);
         return;
       }
@@ -117,7 +145,13 @@ const AuthPage = () => {
       try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
       navigate("/app");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Google sign-in failed.");
+      cancelled = true;
+      window.removeEventListener("focus", onFocus);
+      if (watcherTimer) clearTimeout(watcherTimer);
+      const msg = e instanceof Error ? e.message : "Google sign-in failed.";
+      setError(msg);
+      const { toast } = await import("sonner");
+      toast.error(msg);
       setGoogleLoading(false);
     }
   };
