@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useNotebooks } from "@/context/NotebookContext";
 
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
 
@@ -23,12 +24,18 @@ const toolbarTips: Tip[] = [
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
+const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
 // Idle threshold — hint appears after 10s of no intentional interaction.
 const IDLE_STEPS_MS = [10000];
 const SHOW_MS = 6000;
 
+const todayStr = () => new Date().toISOString().slice(0, 10);
+
 export function OnboardingHelp() {
   const isMobile = useIsMobile();
+  const { notebooks, standaloneNotes } = useNotebooks();
+  // Beginner = no notebooks AND no standalone notes yet. Hint only targets beginners.
+  const isBeginner = (notebooks?.length ?? 0) === 0 && (standaloneNotes?.length ?? 0) === 0;
   const [open, setOpen] = useState(false);
   const [hintOpen, setHintOpen] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
@@ -78,15 +85,21 @@ export function OnboardingHelp() {
     }, currentDelay());
   };
 
-  // Init from storage
+  // Init from storage + beginner gating. Re-evaluates if the user creates content.
   useEffect(() => {
     try {
-      if (localStorage.getItem(DISMISS_KEY) === "1") {
+      const permanent = localStorage.getItem(DISMISS_KEY) === "1";
+      const dayDismissed = localStorage.getItem(DISMISS_DATE_KEY) === todayStr();
+      if (permanent) setDontShowAgain(true);
+      if (permanent || dayDismissed || !isBeginner) {
         dismissedRef.current = true;
-        setDontShowAgain(true);
+        setHintOpen(false);
+        hintOpenRef.current = false;
+        clearIdle();
+        clearHide();
       }
     } catch {}
-  }, []);
+  }, [isBeginner]);
 
   useEffect(() => { openRef.current = open; }, [open]);
 
@@ -142,9 +155,22 @@ export function OnboardingHelp() {
 
   const undismiss = () => {
     dismissedRef.current = false;
-    try { localStorage.removeItem(DISMISS_KEY); } catch {}
+    try {
+      localStorage.removeItem(DISMISS_KEY);
+      localStorage.removeItem(DISMISS_DATE_KEY);
+    } catch {}
     showCountRef.current = 0;
     armIdle();
+  };
+
+  // Clicking the hint dismisses it for the rest of the day.
+  const dismissForToday = () => {
+    dismissedRef.current = true;
+    try { localStorage.setItem(DISMISS_DATE_KEY, todayStr()); } catch {}
+    setHintOpen(false);
+    hintOpenRef.current = false;
+    clearHide();
+    clearIdle();
   };
 
   const handleHelpClick = () => {
@@ -168,7 +194,7 @@ export function OnboardingHelp() {
             <motion.button
               type="button"
               key="hint-desktop"
-              onClick={() => { setHintOpen(false); hintOpenRef.current = false; clearHide(); clearIdle(); }}
+              onClick={dismissForToday}
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
@@ -190,7 +216,7 @@ export function OnboardingHelp() {
             <motion.button
               type="button"
               key="hint-mobile"
-              onClick={() => { setHintOpen(false); hintOpenRef.current = false; clearHide(); clearIdle(); }}
+              onClick={dismissForToday}
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
