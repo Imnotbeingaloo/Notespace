@@ -220,8 +220,14 @@ const AuthPage = () => {
           localStorage.setItem("pendingNamePrompt", "1");
           sessionStorage.setItem("welcomeVariant", "new");
         } catch {}
-        setCheckEmail(true);
-        setResendCountdown(45);
+        // If a session was created immediately (email confirmation disabled), go straight to /home
+        const { data: { session: newSession } } = await supabase.auth.getSession();
+        if (newSession) {
+          navigate("/home");
+        } else {
+          setCheckEmail(true);
+          setResendCountdown(45);
+        }
       }
     }
     setLoading(false);
