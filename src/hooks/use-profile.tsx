@@ -26,8 +26,10 @@ function writeCachedDisplayName(userId: string, name: string | null) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(DISPLAY_NAME_CACHE_KEY, JSON.stringify({ user_id: userId, display_name: name }));
+    window.dispatchEvent(new CustomEvent("display-name-updated", { detail: { user_id: userId, display_name: name } }));
   } catch {}
 }
+
 
 export function useProfile() {
   const { user } = useAuth();
@@ -81,6 +83,36 @@ export function useProfile() {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // Cross-instance sync: when any useProfile updates the name, mirror it here.
+  useEffect(() => {
+    if (!user?.id) return;
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { user_id?: string; display_name?: string | null } | undefined;
+      if (!detail || detail.user_id !== user.id) return;
+      setProfile((p) => ({
+        user_id: user.id,
+        display_name: detail.display_name ?? null,
+        password_last_changed_at: p?.password_last_changed_at ?? null,
+      }));
+    };
+    const storageHandler = (e: StorageEvent) => {
+      if (e.key !== DISPLAY_NAME_CACHE_KEY) return;
+      const cached = readCachedDisplayName(user.id);
+      setProfile((p) => ({
+        user_id: user.id,
+        display_name: cached,
+        password_last_changed_at: p?.password_last_changed_at ?? null,
+      }));
+    };
+    window.addEventListener("display-name-updated", handler);
+    window.addEventListener("storage", storageHandler);
+    return () => {
+      window.removeEventListener("display-name-updated", handler);
+      window.removeEventListener("storage", storageHandler);
+    };
+  }, [user?.id]);
+
 
   const updateDisplayName = useCallback(
     async (name: string) => {
