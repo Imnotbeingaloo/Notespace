@@ -403,9 +403,9 @@ export default function HowItWorksPage() {
         <div className="container mx-auto px-6">
           <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="rounded-[2rem] bg-gradient-to-br from-primary/8 via-card to-accent/8 border border-border p-8 md:p-12 text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Open the editor</h2>
-            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">Start with one note. See how it feels. The free plan stays free — there's no clock ticking somewhere.</p>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">Begin with a single note. The free plan remains free, with no time limits.</p>
             <Link to={user ? "/app" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Go to App" : "Write something"} <ArrowRight className="h-4 w-4" />
+              {user ? "Go to App" : "Get Started"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
