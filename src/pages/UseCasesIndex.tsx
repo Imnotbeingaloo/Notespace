@@ -48,11 +48,19 @@ const cases = [
   },
 ];
 
-const stats = [
-  { value: "3", label: "audience-built workflows" },
-  { value: "1 GB", label: "per-file uploads on Pro" },
-  { value: "⌘K", label: "search across everything" },
-  { value: "0", label: "ads, ever" },
+const marqueeItems = [
+  "Course-based notebooks",
+  "PDF text extraction",
+  "Global ⌘K search",
+  "Distraction-free focus mode",
+  "Daily word-count goal",
+  "Smart tag aggregation",
+  "Nested manuscript structure",
+  "Markdown export, always",
+  "Private by default",
+  "Cross-notebook search",
+  "AI that explains, never replaces",
+  "Encrypted storage",
 ];
 
 const principles = [
