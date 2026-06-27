@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import Landing from "./pages/Landing";
 import AppPage from "./pages/Index";
 import AuthPage from "./pages/Auth";
+import ResetPasswordPage from "./pages/ResetPassword";
 import PricingPage from "./pages/Pricing";
 import FeaturesPage from "./pages/Features";
 import AboutPage from "./pages/About";
@@ -136,7 +137,8 @@ const App = () => (
                 <Route path="/" element={<Landing />} />
                 <Route path="/app" element={<AppPage />} />
                 <Route path="/home" element={<AppPage />} />
-                <Route path="/auth" element={<AuthPage />} />
+               <Route path="/auth" element={<AuthPage />} />
+               <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/features" element={<FeaturesPage />} />
                 <Route path="/about" element={<AboutPage />} />
