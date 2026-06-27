@@ -59,6 +59,10 @@ function buildPageMarkdown(items: PdfItem[]): string {
   const out: string[] = [];
   let prevWasList = false;
 
+  const pushBlankOnce = () => {
+    if (out.length && out[out.length - 1] !== "") out.push("");
+  };
+
   for (const { text, height } of lines) {
     // Bullet / dash list
     const bulletMatch = text.match(/^[•·●○◦▪►‣\-*]\s+(.*)$/);
@@ -66,11 +70,13 @@ function buildPageMarkdown(items: PdfItem[]): string {
     const numberedMatch = text.match(/^(?:\(?\d+[.)])\s+(.*)$/);
 
     if (bulletMatch) {
+      if (!prevWasList) pushBlankOnce();
       out.push(`- ${bulletMatch[1].trim()}`);
       prevWasList = true;
       continue;
     }
     if (numberedMatch) {
+      if (!prevWasList) pushBlankOnce();
       out.push(`1. ${numberedMatch[1].trim()}`);
       prevWasList = true;
       continue;
@@ -85,20 +91,52 @@ function buildPageMarkdown(items: PdfItem[]): string {
 
     if (isHeading) {
       const level = height >= median * 1.7 ? 1 : height >= median * 1.4 ? 2 : 3;
-      if (out.length) out.push("");
+      pushBlankOnce();
       out.push(`${"#".repeat(level)} ${text}`);
       out.push("");
       prevWasList = false;
       continue;
     }
 
-    if (prevWasList) out.push("");
+    if (prevWasList) pushBlankOnce();
     out.push(text);
-    out.push("");
     prevWasList = false;
   }
 
   return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+// Strip common header/footer noise: standalone page numbers, "Page X of Y", etc.
+function stripPageChrome(text: string): string {
+  return text
+    .replace(/^\s*(?:page\s+)?\d+\s*(?:\/|of)\s*\d+\s*$/gim, "")
+    .replace(/^\s*[-–—]?\s*\d{1,4}\s*[-–—]?\s*$/gm, "")
+    .trim();
+}
+
+// Join pages so a paragraph or section that wraps across a page break stays continuous.
+// If the previous page ends mid-sentence and the next page starts with lowercase text
+// (not a heading or list), merge them with a space instead of a paragraph break.
+function joinPages(pages: string[]): string {
+  let result = "";
+  for (let i = 0; i < pages.length; i++) {
+    const cur = pages[i].trim();
+    if (!cur) continue;
+    if (!result) {
+      result = cur;
+      continue;
+    }
+    const prevEnd = result.slice(-1);
+    const firstLine = cur.split("\n", 1)[0];
+    const continuesParagraph =
+      !/[.?!:)"']$/.test(prevEnd) &&
+      !/^#{1,6}\s/.test(firstLine) &&
+      !/^[-*]\s/.test(firstLine) &&
+      !/^\d+\.\s/.test(firstLine) &&
+      /^[a-z(,;]/.test(firstLine);
+    result += continuesParagraph ? " " + cur : "\n\n" + cur;
+  }
+  return result;
 }
 
 export async function extractPdfText(file: File, onProgress?: (pct: number) => void): Promise<PdfExtractionResult> {
@@ -119,15 +157,17 @@ export async function extractPdfText(file: File, onProgress?: (pct: number) => v
         y: i.transform ? i.transform[5] : 0,
         hasEOL: i.hasEOL,
       }));
-    const md = buildPageMarkdown(items);
+    const md = stripPageChrome(buildPageMarkdown(items));
     if (md) pageTexts.push(md);
     totalAlpha += (md.match(/[a-zA-Z]/g) || []).length;
     onProgress?.(Math.round((p / pageCount) * 100));
   }
 
-  const text = pageTexts
-    .map((t, i) => (pageCount > 1 ? `## Page ${i + 1}\n\n${t}` : t))
-    .join("\n\n---\n\n");
+  // No page numbers, no "---" page dividers — sections (headings) are the only separators.
+  const text = joinPages(pageTexts)
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
   const isScanned = totalAlpha < pageCount * 40;
   return { text, pageCount, isScanned };
 }
