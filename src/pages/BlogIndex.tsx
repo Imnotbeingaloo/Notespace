@@ -10,6 +10,14 @@ import Footer from "@/components/Footer";
 
 const posts = [
   {
+    slug: "ai-literature-review-guide",
+    title: "Using AI for Literature Reviews: A Workflow for Researchers",
+    excerpt:
+      "A practical workflow for PhD students and researchers - PDF extraction, per-paper notes, thematic synthesis, and how to keep citations honest when AI is in the loop.",
+    date: "Jun 2026",
+    tag: "For Researchers",
+  },
+  {
     slug: "best-ai-writing-assistants-for-note-takers",
     title: "Best AI Writing Assistants for Note-Takers (2026)",
     excerpt:
