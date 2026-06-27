@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { FurtherReading } from "@/components/FurtherReading";
 
 const steps = [
   { icon: FolderOpen, title: "Make a notebook", description: "One per topic, class, or project — whatever shape your brain prefers. You can change your mind later." },
@@ -395,6 +396,17 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </section>
+
+      <AnimatedDivider />
+
+      <FurtherReading
+        slugs={[
+          "ai-note-taking-app-for-students",
+          "best-note-taking-app-for-writers",
+          "best-ai-note-taking-apps-2026",
+        ]}
+        heading="Workflows for the way you work"
+      />
 
       <AnimatedDivider />
 

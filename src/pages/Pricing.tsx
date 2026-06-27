@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { PageHeader } from "@/components/PageHeader";
 import { AnimatedHeading } from "@/components/AnimatedHeading";
 import { SeoHead } from "@/components/SeoHead";
+import { FurtherReading } from "@/components/FurtherReading";
 
 const tiers = [
   {
@@ -239,6 +240,17 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
+
+      <AnimatedDivider />
+
+      <FurtherReading
+        slugs={[
+          "notion-alternatives-2026",
+          "evernote-alternatives-2026",
+          "obsidian-alternatives-2026",
+        ]}
+        heading="Comparing tools? Start here."
+      />
 
       <AnimatedDivider />
 

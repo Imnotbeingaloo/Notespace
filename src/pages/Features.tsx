@@ -8,6 +8,7 @@ import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { FurtherReading } from "@/components/FurtherReading";
 
 const groups = [
   {
@@ -198,6 +199,17 @@ export default function FeaturesPage() {
           })}
         </div>
       </section>
+
+      <AnimatedDivider />
+
+      <FurtherReading
+        slugs={[
+          "best-note-taking-app-2026",
+          "best-ai-note-taking-apps-2026",
+          "notion-alternatives-2026",
+        ]}
+        heading="See how it stacks up"
+      />
 
       <AnimatedDivider />
 
