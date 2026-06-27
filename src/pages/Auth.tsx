@@ -653,7 +653,7 @@ const AuthPage = () => {
             {mode === "login" && unknownEmail && unknownEmail === email.trim() && (
               <button
                 type="button"
-                onClick={() => { setMode("signup"); setNotice(`Creating an account for ${unknownEmail}.`); setHighlightEmail(true); setTimeout(() => setHighlightEmail(false), 2000); }}
+                onClick={() => { setMode("signup"); setHighlightEmail(true); setTimeout(() => setHighlightEmail(false), 1600); }}
                 className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-primary/40 bg-primary/5 text-primary font-medium text-sm hover:bg-primary/10 ${BTN_PRESS}`}
               >
                 Create account for {unknownEmail}
