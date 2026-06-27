@@ -50,7 +50,7 @@ const emailDomainProvider = (email: string): { name: string; url: string } | nul
 };
 
 const AuthPage = () => {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
