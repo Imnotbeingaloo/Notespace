@@ -121,56 +121,48 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex flex-col w-full max-w-4xl mx-auto px-4 sm:px-8"
+            className="flex flex-col w-full max-w-xl mx-auto px-4 sm:px-6"
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-5">
               <button
                 onClick={() => setView("main")}
                 className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft className="h-3.5 w-3.5" /> Back
               </button>
-              <div className="text-center">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-accent mb-1">— Quick start —</p>
-                <h2 className="font-serif text-2xl font-bold text-foreground">Choose a template</h2>
-                <p className="text-xs text-muted-foreground mt-1">Our most-loved layouts to start writing instantly.</p>
-              </div>
+              <h2 className="font-serif text-xl font-bold text-foreground">Choose a template</h2>
               <div className="w-10" />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-2">
               {featured.map((tmpl) => (
                 <motion.button
                   key={tmpl.id}
                   onClick={() => setPreviewTemplate(tmpl)}
-                  whileHover={{ y: -3 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group flex flex-col gap-3 p-3 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all text-left overflow-hidden"
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.99 }}
+                  className="group flex items-center gap-3 p-3 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all text-left"
                 >
-                  <div className="relative h-40 w-full">
-                    <TemplatePaper template={tmpl} compact />
-                    <div className={`absolute top-2 right-2 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${tmpl.accent ?? "bg-primary/10 text-primary"}`}>
-                      {tmpl.icon}
-                    </div>
+                  <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${tmpl.accent ?? "bg-primary/10 text-primary"}`}>
+                    {tmpl.icon}
                   </div>
-                  <div className="px-1 pb-1">
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-foreground truncate">{tmpl.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{tmpl.description}</p>
+                    <p className="text-xs text-muted-foreground truncate">{tmpl.description}</p>
                   </div>
                 </motion.button>
               ))}
             </div>
 
-            <div className="mt-6 flex justify-center">
-              <button
-                onClick={() => setView("gallery")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-dashed border-primary/40 text-sm font-medium text-primary hover:bg-primary/5 transition-colors"
-              >
-                <LayoutGrid className="h-4 w-4" />
-                Choose from Gallery
-              </button>
-            </div>
+            <button
+              onClick={() => setView("gallery")}
+              className="mt-4 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/10 text-primary text-sm font-semibold hover:bg-primary/15 transition-colors"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              More Templates
+            </button>
           </motion.div>
+
         ) : (
           <motion.div
             key="main"
