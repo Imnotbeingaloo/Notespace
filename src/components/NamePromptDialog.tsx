@@ -124,16 +124,14 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
           transition={reduceMotion ? { duration: 0.2 } : spring}
           className="relative"
         >
-          {/* Back sheets - peek out from behind the main card */}
+          {/* Back sheets - peek out from behind the main card (reduced offsets on small screens) */}
           <div
             aria-hidden
-            className="absolute inset-0 rounded-[14px] bg-card border border-border/40 shadow-md"
-            style={{ transform: "rotate(-2.2deg) translate(-6px, 6px)" }}
+            className="absolute inset-0 rounded-[14px] bg-card border border-border/40 shadow-md rotate-[-1.2deg] translate-x-[-3px] translate-y-[3px] sm:rotate-[-2.2deg] sm:translate-x-[-6px] sm:translate-y-[6px]"
           />
           <div
             aria-hidden
-            className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md"
-            style={{ transform: "rotate(1.4deg) translate(4px, 3px)" }}
+            className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md rotate-[0.8deg] translate-x-[2px] translate-y-[2px] sm:rotate-[1.4deg] sm:translate-x-[4px] sm:translate-y-[3px]"
           />
 
           {/* Main card - index card / bookplate */}
