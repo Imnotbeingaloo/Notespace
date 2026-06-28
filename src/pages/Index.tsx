@@ -421,8 +421,13 @@ function AppContent() {
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
-  const [splashDone, setSplashDone] = useState(false);
-  const handleSplashComplete = useCallback(() => setSplashDone(true), []);
+  const [splashDone, setSplashDone] = useState(() => {
+    try { return sessionStorage.getItem("splashShown") === "1"; } catch { return false; }
+  });
+  const handleSplashComplete = useCallback(() => {
+    setSplashDone(true);
+    try { sessionStorage.setItem("splashShown", "1"); } catch {}
+  }, []);
 
   if (authLoading) {
     return (

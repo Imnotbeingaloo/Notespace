@@ -218,19 +218,19 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
   };
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
+    <div className="flex items-center gap-2 px-2 py-1.5 sm:gap-3 sm:px-4 sm:py-3">
       <button
         type="button"
         onMouseDown={() => onSaveSelection?.()}
         onClick={openPicker}
         disabled={uploading}
-        className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
+        className="p-1.5 sm:p-3 rounded-lg sm:rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
         title={uploading ? "Uploading..." : "Attach files"}
       >
-        {uploading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Paperclip className="h-6 w-6" />}
+        {uploading ? <Loader2 className="h-4 w-4 sm:h-6 sm:w-6 animate-spin" /> : <Paperclip className="h-4 w-4 sm:h-6 sm:w-6" />}
       </button>
       <div className="flex flex-col gap-1 min-w-0 flex-1 max-w-[260px]">
-        <span className="text-sm text-muted-foreground select-none truncate">
+        <span className="text-[11px] sm:text-sm text-muted-foreground select-none truncate">
           {uploading && progress
             ? `${uploadStep} ${progress.current + 1}/${progress.total} - ${progress.name}`
             : uploading

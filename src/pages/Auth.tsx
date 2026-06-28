@@ -18,6 +18,15 @@ const GoogleIcon = () => (
   </svg>
 );
 
+const MicrosoftIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+    <path fill="#F25022" d="M1 1h10v10H1z"/>
+    <path fill="#7FBA00" d="M13 1h10v10H13z"/>
+    <path fill="#00A4EF" d="M1 13h10v10H1z"/>
+    <path fill="#FFB900" d="M13 13h10v10H13z"/>
+  </svg>
+);
+
 interface PasswordCheck { label: string; ok: boolean; }
 
 const getPasswordChecks = (pw: string): PasswordCheck[] => [
@@ -51,6 +60,7 @@ const emailDomainProvider = (email: string): { name: string; url: string } | nul
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
+  const [authMethod, setAuthMethod] = useState<null | "email">(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -62,6 +72,7 @@ const AuthPage = () => {
   const [highlightEmail, setHighlightEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [microsoftLoading, setMicrosoftLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -156,6 +167,28 @@ const AuthPage = () => {
     }
   };
 
+  const handleMicrosoft = async () => {
+    setError("");
+    setMicrosoftLoading(true);
+    try {
+      // Lovable Cloud managed OAuth only supports google/apple natively.
+      // Attempt Microsoft (azure) via Supabase; surface a friendly note if not configured.
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "azure" as any,
+        options: { redirectTo: window.location.origin },
+      });
+      if (error) {
+        const { toast } = await import("sonner");
+        toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
+        setMicrosoftLoading(false);
+      }
+    } catch {
+      const { toast } = await import("sonner");
+      toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
+      setMicrosoftLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -186,27 +219,27 @@ const AuthPage = () => {
       if (error) {
         const m = error.message.toLowerCase();
         if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
-          // Show immediate friendly message - no waiting on check-email-exists.
-          setError("Oops - we couldn't find that account. Try creating one if you don't have an account yet, or double-check your password.");
+          // Wait for the email-existence check to know whether to say
+          // "no account" vs "incorrect password" - never assume.
+          try {
+            const { data } = await supabase.functions.invoke("check-email-exists", {
+              body: { email: email.trim(), logFailure: true },
+            });
+            if (data && data.exists === false) {
+              setUnknownEmail(email.trim());
+              setConfirmPassword(password);
+              setNotice("");
+              setError("Oops - we couldn't find an account with that email. Try creating one below.");
+              setMode("signup");
+              setHighlightEmail(true);
+              setTimeout(() => setHighlightEmail(false), 1600);
+            } else {
+              setError("Incorrect password. Try again or reset it below.");
+            }
+          } catch {
+            setError("Sign-in failed. Double-check your email and password, then try again.");
+          }
           setLoading(false);
-          // Fire-and-forget existence check in the background so we can refine the
-          // message + auto-switch to signup when the email truly isn't registered.
-          supabase.functions
-            .invoke("check-email-exists", { body: { email: email.trim(), logFailure: true } })
-            .then(({ data }) => {
-              if (data && data.exists === false) {
-                setUnknownEmail(email.trim());
-                setConfirmPassword(password);
-                setNotice("");
-                setError("Oops - we couldn't find an account with that email. Try creating one below.");
-                setMode("signup");
-                setHighlightEmail(true);
-                setTimeout(() => setHighlightEmail(false), 1600);
-              } else if (data && data.exists === true) {
-                setError("Incorrect password. Try again or reset it below.");
-              }
-            })
-            .catch(() => {});
           return;
         } else {
           setError(friendlyError(error.message, "login").message);
@@ -430,28 +463,51 @@ const AuthPage = () => {
             })}
           </div>
 
-          {mode !== "forgot" && (
-            <>
+          {mode !== "forgot" && authMethod === null && (
+            <div className="space-y-3">
               <button
                 type="button"
                 onClick={handleGoogle}
-                disabled={googleLoading || loading}
-                className={`w-full mb-4 flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                disabled={googleLoading || microsoftLoading}
+                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                 Continue with Google
               </button>
+              <button
+                type="button"
+                onClick={handleMicrosoft}
+                disabled={googleLoading || microsoftLoading}
+                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+              >
+                {microsoftLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MicrosoftIcon />}
+                Continue with Microsoft
+              </button>
+              <button
+                type="button"
+                onClick={() => { setAuthMethod("email"); setError(""); }}
+                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+              >
+                <Mail className="h-4 w-4" />
+                Continue with Email
+              </button>
+            </div>
+          )}
 
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-1 h-px bg-border" />
-                <span className="text-[11px] uppercase tracking-wider text-muted-foreground">or</span>
-                <div className="flex-1 h-px bg-border" />
-              </div>
-            </>
+          {mode !== "forgot" && authMethod === "email" && (
+            <button
+              type="button"
+              onClick={() => { setAuthMethod(null); setError(""); setNotice(""); }}
+              className="mb-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Other sign-in options
+            </button>
           )}
 
 
-          {mode === "forgot" ? (
+
+          {(mode === "forgot" || authMethod === "email") && (mode === "forgot" ? (
             <form onSubmit={handleForgotPassword} className="space-y-4">
               {forgotSent ? (
                 <div className="text-center py-2">
@@ -698,7 +754,7 @@ const AuthPage = () => {
               )}
             </button>
           </form>
-          )}
+          ))}
         </div>
       </motion.div>
     </div>
