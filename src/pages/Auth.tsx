@@ -463,25 +463,48 @@ const AuthPage = () => {
             })}
           </div>
 
-          {mode !== "forgot" && (
-            <>
+          {mode !== "forgot" && authMethod === null && (
+            <div className="space-y-3">
               <button
                 type="button"
                 onClick={handleGoogle}
-                disabled={googleLoading || loading}
-                className={`w-full mb-4 flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                disabled={googleLoading || microsoftLoading}
+                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                 Continue with Google
               </button>
-
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-1 h-px bg-border" />
-                <span className="text-[11px] uppercase tracking-wider text-muted-foreground">or</span>
-                <div className="flex-1 h-px bg-border" />
-              </div>
-            </>
+              <button
+                type="button"
+                onClick={handleMicrosoft}
+                disabled={googleLoading || microsoftLoading}
+                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+              >
+                {microsoftLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MicrosoftIcon />}
+                Continue with Microsoft
+              </button>
+              <button
+                type="button"
+                onClick={() => { setAuthMethod("email"); setError(""); }}
+                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+              >
+                <Mail className="h-4 w-4" />
+                Continue with Email
+              </button>
+            </div>
           )}
+
+          {mode !== "forgot" && authMethod === "email" && (
+            <button
+              type="button"
+              onClick={() => { setAuthMethod(null); setError(""); setNotice(""); }}
+              className="mb-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Other sign-in options
+            </button>
+          )}
+
 
 
           {mode === "forgot" ? (
