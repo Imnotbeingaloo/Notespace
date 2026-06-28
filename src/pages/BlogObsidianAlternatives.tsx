@@ -200,7 +200,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "Obsidian Alternatives in 2026 - Honest Comparison", path: "/blog/obsidian-alternatives-2026" },

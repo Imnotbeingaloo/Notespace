@@ -197,7 +197,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "Evernote Alternatives in 2026 - Honest Comparison", path: "/blog/evernote-alternatives-2026" },

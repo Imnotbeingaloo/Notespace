@@ -149,7 +149,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "Best Note Taking App for Writers in 2026", path: "/blog/best-note-taking-app-for-writers" },

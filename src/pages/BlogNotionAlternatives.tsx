@@ -201,7 +201,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "Notion Alternatives in 2026 - Honest Comparison", path: "/blog/notion-alternatives-2026" },

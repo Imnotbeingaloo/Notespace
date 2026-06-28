@@ -74,7 +74,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "How to Make a Revision Timetable (GCSE & A-level, With Free Template)", path: "/blog/how-to-make-a-revision-timetable" },

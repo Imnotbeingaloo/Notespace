@@ -74,7 +74,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "How to Make a Study Plan (With a Free Weekly Template)", path: "/blog/how-to-make-a-study-plan" },

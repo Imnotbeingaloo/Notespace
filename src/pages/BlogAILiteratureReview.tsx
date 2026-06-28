@@ -61,7 +61,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "Using AI for Literature Reviews: A Workflow for Researchers", path: "/blog/ai-literature-review-guide" },

@@ -87,7 +87,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "Die beste KI-Notizen-App 2026 - ehrlicher Vergleich", path: "/blog/ki-notizen-app" },

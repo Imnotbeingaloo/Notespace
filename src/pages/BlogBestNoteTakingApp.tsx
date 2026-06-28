@@ -219,7 +219,7 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },,
+  },
   breadcrumbsJsonLd([
     { name: "Blog", path: "/blog" },
     { name: "The Best Note Taking Apps in 2026 - Honest Comparison", path: "/blog/best-note-taking-app-2026" },
