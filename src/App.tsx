@@ -53,6 +53,7 @@ const TemplateStudyPlanner = lazy(() => import("./pages/TemplateStudyPlanner"));
 
 import { captureReferralFromUrl } from "@/lib/referral";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { BlogSkeleton } from "@/components/blog/BlogSkeleton";
 import { usePaperStyleTransition } from "@/hooks/use-paper-style";
 import { PaperStyleSwitcher } from "@/components/PaperStyleSwitcher";
 import { NetworkStatusToasts } from "@/components/NetworkStatusToasts";
