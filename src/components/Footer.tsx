@@ -41,7 +41,7 @@ export default function Footer() {
               <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap leading-none">Notebook Archive</span>
             </motion.div>
 
-            <p className="text-sm text-muted-foreground leading-relaxed mb-6 lg:max-w-[231px]">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6 lg:max-w-[203px]">
               The intelligent note-taking app that helps you capture, organize, and truly understand your ideas. Built for thinkers who demand more from their tools.
             </p>
             <motion.div
