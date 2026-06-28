@@ -220,7 +220,7 @@ export default function BlogNotionAlternatives() {
         type="article"
         title="Notion Alternatives in 2026 - 6 Honest Picks Compared"
         description="Six Notion alternatives compared with screenshots, pros and cons, and pricing - Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive."
-        path="/blog/notion-alternatives-2026"
+        path="/blog/notion-alternatives-2026" image="/og/og-notion-alternatives-2026.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">

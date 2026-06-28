@@ -80,7 +80,7 @@ export default function BlogAILiteratureReview() {
         type="article"
         title="Using AI for Literature Reviews: A Workflow for Researchers (2026)"
         description="A practical workflow for using AI to speed up academic literature reviews without losing rigor. PDF extraction, per-paper notes, thematic synthesis, and citation safety."
-        path="/blog/ai-literature-review-guide"
+        path="/blog/ai-literature-review-guide" image="/og/og-ai-literature-review-guide.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">

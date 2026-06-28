@@ -172,7 +172,7 @@ export default function BlogAINoteTakingAppForStudents() {
         type="article"
         title="Best AI Note Taking App for Students (2026) - Free & Honest Picks"
         description="The four AI note taking apps that actually fit how students study - Notebook Archive, Notion, Obsidian, and OneNote. Free tiers, screenshots, pros and cons."
-        path="/blog/ai-note-taking-app-for-students"
+        path="/blog/ai-note-taking-app-for-students" image="/og/og-ai-note-taking-app-for-students.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">

@@ -248,7 +248,7 @@ export default function BlogBestNoteTakingApp() {
         type="article"
         title="The Best Note Taking App in 2026 - 7 Honest Picks Compared"
         description="The seven best note taking apps in 2026, compared honestly - Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, pricing."
-        path="/blog/best-note-taking-app-2026"
+        path="/blog/best-note-taking-app-2026" image="/og/og-best-note-taking-app-2026.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
