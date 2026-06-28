@@ -99,7 +99,9 @@ export default function Footer() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }}>
             <h4 className={headingClass}>Get Started</h4>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5">
-              Start organizing your thoughts today - it's completely free. No credit card, no commitment, no catch.
+              Start organizing your thoughts today<br />
+              it's completely free.&nbsp;<br />
+              No credit card, no commitment, no catch.
             </p>
             <Link
               to={user ? "/app" : "/auth"}
