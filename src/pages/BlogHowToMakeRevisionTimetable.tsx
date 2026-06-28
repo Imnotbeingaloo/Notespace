@@ -94,7 +94,7 @@ export default function BlogHowToMakeRevisionTimetable() {
         type="article"
         title="How to Make a Revision Timetable (GCSE & A-level) - Free Template 2026"
         description="A practical guide to building a GCSE or A-level revision timetable you'll actually follow. Includes a free weekly template."
-        path="/blog/how-to-make-a-revision-timetable"
+        path="/blog/how-to-make-a-revision-timetable" image="/og/og-how-to-make-a-revision-timetable.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">

@@ -94,7 +94,7 @@ export default function BlogHowToMakeStudyPlan() {
         type="article"
         title="How to Make a Study Plan (With a Free Weekly Template) - 2026"
         description="A practical guide to building a weekly study plan and study schedule you'll actually follow. Includes a free copy-pasteable template."
-        path="/blog/how-to-make-a-study-plan"
+        path="/blog/how-to-make-a-study-plan" image="/og/og-how-to-make-a-study-plan.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
