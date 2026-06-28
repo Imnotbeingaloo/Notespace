@@ -241,7 +241,7 @@ export default function BlogBestAINoteTakingApps() {
         type="article"
         title="Best AI Note Taking Apps for Writers & Researchers (2026)"
         description="A real comparison of the seven AI note taking apps that actually earn the label - pricing, AI features, offline support, screenshots, and who each one is for."
-        path="/blog/best-ai-note-taking-apps-2026"
+        path="/blog/best-ai-note-taking-apps-2026" image="/og/og-best-ai-note-taking-apps-2026.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
