@@ -48,6 +48,7 @@ const BlogHowToMakeStudyPlan = lazy(() => import("./pages/BlogHowToMakeStudyPlan
 const BlogHowToMakeStudyPlanForExams = lazy(() => import("./pages/BlogHowToMakeStudyPlanForExams"));
 const BlogHowToMakeRevisionTimetable = lazy(() => import("./pages/BlogHowToMakeRevisionTimetable"));
 const TemplateStudyPlanner = lazy(() => import("./pages/TemplateStudyPlanner"));
+const VerifiedPage = lazy(() => import("./pages/Verified"));
 
 
 
@@ -143,6 +144,7 @@ const App = () => (
                 <Route path="/app" element={<AppPage />} />
                 <Route path="/home" element={<AppPage />} />
                <Route path="/auth" element={<AuthPage />} />
+               <Route path="/verified" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><VerifiedPage /></Suspense>} />
                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/features" element={<FeaturesPage />} />
