@@ -327,10 +327,8 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         />
       </div>
     );
-
-      </div>
-    );
   }
 );
+
 
 HybridEditor.displayName = "HybridEditor";
