@@ -18,7 +18,7 @@ export default function Footer() {
         >
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
             <motion.div
-              className="flex items-center gap-2 mb-4"
+              className="flex items-center gap-2.5 mb-4"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -27,11 +27,11 @@ export default function Footer() {
               <img
                 src="/logo.png"
                 alt="Notebook Archive"
-                width={32}
-                height={32}
+                width={28}
+                height={28}
                 loading="lazy"
                 decoding="async"
-                className="h-8 w-8 object-contain shrink-0"
+                className="h-[1.35rem] w-[1.35rem] object-contain shrink-0 -translate-y-[2px]"
               />
               <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap">Notebook Archive</span>
             </motion.div>
