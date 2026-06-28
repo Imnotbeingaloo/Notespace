@@ -13,6 +13,15 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
+import {
+  BlogHero,
+  BlogKeyTakeaways,
+  BlogPullQuote,
+  BlogCallout,
+  BlogStatGrid,
+  BlogDivider,
+} from "@/components/blog/BlogVisuals";
+import heroAsset from "@/assets/blog/hero-exam-plan.jpg.asset.json";
 
 const REF = "blog-how-to-make-a-study-plan-for-exams";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=how-to-make-a-study-plan-for-exams`;
