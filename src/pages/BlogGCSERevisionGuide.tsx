@@ -240,12 +240,12 @@ export default function BlogGCSERevisionGuide() {
             <BlogCompareTable
               headers={["Week", "Focus", "What to do"]}
               rows={[
-                ["Wk 6", "Diagnostic", "One past paper per priority subject. Untimed. Mark them honestly."],
-                ["Wk 5", "Weak topics", "Flashcards + targeted questions on the 5 weakest topics."],
-                ["Wk 4", "Content rotation", "All subjects in rotation. 45-min blocks, mixed timing."],
-                ["Wk 3", "Mixed practice", "1 timed paper. Continue rotation. Start mark-scheme reviews."],
-                ["Wk 2", "Timed practice", "3 timed papers across the week. Mistakes notebook to bed."],
-                ["Wk 1", "Sleep + review", "Light review only. 8 hours sleep, every night."],
+                ["Week 6", "Diagnostic", "One past paper per priority subject. Untimed. Mark them honestly."],
+                ["Week 5", "Weak topics", "Flashcards + targeted questions on the 5 weakest topics."],
+                ["Week 4", "Content rotation", "All subjects in rotation. 45-min blocks, mixed timing."],
+                ["Week 3", "Mixed practice", "1 timed paper. Continue rotation. Start mark-scheme reviews."],
+                ["Week 2", "Timed practice", "3 timed papers across the week. Mistakes notebook to bed."],
+                ["Week 1", "Sleep + review", "Light review only. 8 hours sleep, every night."],
               ]}
               caption="A workable shape - shift the dates, not the structure."
             />

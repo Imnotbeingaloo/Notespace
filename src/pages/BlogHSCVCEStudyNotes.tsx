@@ -205,7 +205,7 @@ export default function BlogHSCVCEStudyNotes() {
             <BlogStatGrid
               stats={[
                 { value: "30-60", label: "Pages per subject", sub: "Any more, you won't re-read" },
-                { value: "Wk 1", label: "Start your notes", sub: "Term 1, Year 12" },
+                { value: "Week 1", label: "Start your notes", sub: "Term 1, Year 12" },
                 { value: "8 wks", label: "Trial / Mock prep", sub: "Drop new content; past papers only" },
               ]}
             />

@@ -215,12 +215,12 @@ export default function BlogALevelRevisionGuide() {
             <BlogCompareTable
               headers={["Week", "Focus", "Daily move"]}
               rows={[
-                ["Wk 8", "Diagnostic", "1 past paper per subject. Untimed. Honest marking."],
-                ["Wk 7", "Weak topics", "Targeted questions on lowest-scoring topics. Mistakes notebook starts."],
-                ["Wks 5-6", "Content rotation", "All three subjects in rotation. Past papers by topic."],
-                ["Wks 3-4", "Synoptic + timed", "1 timed paper per subject per week. Mark scheme review the next day."],
-                ["Wk 2", "Volume", "2 timed papers across the week. Mistakes notebook every night."],
-                ["Wk 1", "Sleep + review", "Light review only. 8 hours sleep. Trust the work you've already done."],
+                ["Week 8", "Diagnostic", "1 past paper per subject. Untimed. Honest marking."],
+                ["Week 7", "Weak topics", "Targeted questions on lowest-scoring topics. Mistakes notebook starts."],
+                ["Weeks 5-6", "Content rotation", "All three subjects in rotation. Past papers by topic."],
+                ["Weeks 3-4", "Synoptic + timed", "1 timed paper per subject per week. Mark scheme review the next day."],
+                ["Week 2", "Volume", "2 timed papers across the week. Mistakes notebook every night."],
+                ["Week 1", "Sleep + review", "Light review only. 8 hours sleep. Trust the work you've already done."],
               ]}
             />
           </section>
