@@ -59,6 +59,35 @@ function AppContent() {
   }, [isMobile]);
   const { setActiveNotebookId, setActiveNoteId, notebooks, activeNotebookId, activeNoteId, loading: notebooksLoading, refreshData, createScratchNote, createStandaloneNote, isScratchNotebook, moveNoteToNotebook, activeNote, activeNotebook, updateNote, createNotebook, createNote } = useNotebooks();
 
+  // Cross-tab dedup: when arriving from an email verification link
+  // (?welcome=1), tell any open Auth tab to take over. If it acks within a
+  // short window, close this tab so the user is left with a single session.
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return;
+    if (!searchParams.get("welcome")) return;
+    const ch = new BroadcastChannel("na-auth");
+    let acked = false;
+    const onMsg = (e: MessageEvent) => {
+      if (e.data?.type === "awaiting-ack" || e.data?.type === "awaiting") {
+        acked = true;
+        try { window.close(); } catch {}
+      }
+    };
+    ch.addEventListener("message", onMsg);
+    ch.postMessage({ type: "verified" });
+    const t = setTimeout(() => {
+      if (!acked) {
+        ch.removeEventListener("message", onMsg);
+        ch.close();
+      }
+    }, 800);
+    return () => {
+      clearTimeout(t);
+      ch.removeEventListener("message", onMsg);
+      ch.close();
+    };
+  }, [searchParams]);
+
   // Dynamic browser tab title - reflects the current note / notebook / view
   useEffect(() => {
     const base = "Notebook Archive";
