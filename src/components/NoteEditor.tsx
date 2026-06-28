@@ -764,7 +764,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             ref={titleRef}
             defaultValue={activeNote.title}
             onChange={(e) => debouncedUpdate("title", e.target.value)}
-            className="w-full text-xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50"
+            className="w-full text-xl sm:text-3xl font-sans font-bold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground"
             placeholder="Note title..."
           />
 
