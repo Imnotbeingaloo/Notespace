@@ -242,16 +242,16 @@ function AppContent() {
       <AnimatePresence>
         {!focusMode && (!showHome || (isMobile && sidebarOpen)) && (
           <motion.div
-            initial={false}
-            animate={{ width: "auto", opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className={`overflow-hidden ${
+            initial={isMobile ? { x: "-100%", opacity: 0 } : false}
+            animate={isMobile ? { x: 0, opacity: 1 } : { width: "auto", opacity: 1 }}
+            exit={isMobile ? { x: "-100%", opacity: 0 } : { width: 0, opacity: 0 }}
+            transition={
               isMobile
-                ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
-                    sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                  }`
-                : ""
+                ? { type: "spring", stiffness: 320, damping: 32, mass: 0.7 }
+                : { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
+            }
+            className={`overflow-hidden ${
+              isMobile ? "fixed inset-y-0 left-0 z-40" : ""
             }`}
           >
             <AppSidebar
@@ -266,6 +266,7 @@ function AppContent() {
           </motion.div>
         )}
       </AnimatePresence>
+
 
       {/* Editor / Home */}
       <div className="flex-1 flex flex-col min-w-0">

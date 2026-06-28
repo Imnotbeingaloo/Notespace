@@ -267,12 +267,23 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
 
             <div className="flex items-center gap-1">
+              {/* Mobile-only ambient progress chip */}
+              {(notebooks.length > 0 || standaloneNotes.length > 0) && (
+                <span
+                  className="md:hidden mr-1 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-medium tabular-nums"
+                  aria-label={`${totalNotes + standaloneNotes.length} notes in your library`}
+                >
+                  <FileText className="h-3 w-3" />
+                  {totalNotes + standaloneNotes.length}
+                </span>
+              )}
               <OnboardingHelp />
               <HomeHeaderMenu trashCount={trashCount} />
             </div>
           </div>
         </header>
       </TooltipProvider>
+
 
       {/* Hero */}
       <div className="relative border-b border-border overflow-hidden">
