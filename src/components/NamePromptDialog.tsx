@@ -114,7 +114,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
     >
 
       <DialogContent
-        className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.45s_ease-out,scale-out_0.45s_ease-out]"
+        className="w-[calc(100vw-2rem)] max-w-[460px] sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.45s_ease-out,scale-out_0.45s_ease-out]"
         hideClose={step !== "ask"}
       >
         {/* Stacked paper effect: two offset sheets behind the main card */}
