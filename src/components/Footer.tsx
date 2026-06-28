@@ -85,8 +85,8 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link to="/about" className={linkClass}>About</Link></li>
               <li><a href="mailto:support@notebookarchive.com" className={linkClass}>Contact</a></li>
-              <li><Link to="/privacy" className={linkClass}>Privacy Policy</Link></li>
-              <li><Link to="/terms" className={linkClass}>Terms of Service</Link></li>
+              <li><span className="text-sm text-muted-foreground">Privacy Policy</span></li>
+              <li><span className="text-sm text-muted-foreground">Terms of Service</span></li>
             </ul>
           </motion.div>
 
