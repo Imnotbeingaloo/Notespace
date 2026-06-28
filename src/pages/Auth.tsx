@@ -167,6 +167,28 @@ const AuthPage = () => {
     }
   };
 
+  const handleMicrosoft = async () => {
+    setError("");
+    setMicrosoftLoading(true);
+    try {
+      // Lovable Cloud managed OAuth only supports google/apple natively.
+      // Attempt Microsoft (azure) via Supabase; surface a friendly note if not configured.
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "azure" as any,
+        options: { redirectTo: window.location.origin },
+      });
+      if (error) {
+        const { toast } = await import("sonner");
+        toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
+        setMicrosoftLoading(false);
+      }
+    } catch {
+      const { toast } = await import("sonner");
+      toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
+      setMicrosoftLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
