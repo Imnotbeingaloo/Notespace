@@ -108,7 +108,16 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
   };
 
   return (
-    <div className={`flex-1 flex flex-col w-full h-full bg-background ${view === "main" ? "items-center justify-center py-8" : "items-stretch overflow-y-auto py-6"}`}>
+    <div className={`flex-1 flex flex-col w-full h-full bg-background relative ${view === "main" ? "items-center justify-center py-8" : "items-stretch overflow-y-auto py-6"}`}>
+      {onBack && view === "main" && (
+        <button
+          onClick={onBack}
+          className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          aria-label="Back to home"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Back
+        </button>
+      )}
       <AnimatePresence mode="wait">
         {view === "gallery" ? (
           <NoteTemplatePicker
