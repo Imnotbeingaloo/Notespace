@@ -51,6 +51,7 @@ const emailDomainProvider = (email: string): { name: string; url: string } | nul
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
+  const [authMethod, setAuthMethod] = useState<null | "email">(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -62,6 +63,7 @@ const AuthPage = () => {
   const [highlightEmail, setHighlightEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [microsoftLoading, setMicrosoftLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
