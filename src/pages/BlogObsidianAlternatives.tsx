@@ -233,7 +233,7 @@ export default function BlogObsidianAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Obsidian Alternatives · Updated June 2026
+              Obsidian Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">Obsidian Alternatives</span> for 2026

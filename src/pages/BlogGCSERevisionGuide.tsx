@@ -188,7 +188,7 @@ export default function BlogGCSERevisionGuide() {
               <Link to="/templates/revision-timetable-template" className="text-primary underline underline-offset-2 hover:text-primary/80">
                 free template
               </Link>{" "}
-              - both pre-set for typical 11-subject GCSE loads.
+              both pre-set for typical 11-subject GCSE loads.
             </BlogCallout>
           </section>
 

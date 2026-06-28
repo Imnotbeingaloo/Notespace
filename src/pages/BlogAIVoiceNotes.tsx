@@ -204,7 +204,7 @@ export default function BlogAIVoiceNotes() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - AI Voice Notes · Updated June 2026
+              AI Voice Notes · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">AI Voice Note Taking</span> Apps in 2026

@@ -108,7 +108,7 @@ export default function BlogHowToMakeRevisionTimetable() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Guides · Updated June 2026
+              Guides · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               How to make a <span className="text-primary">revision timetable</span> (GCSE &amp; A-level)

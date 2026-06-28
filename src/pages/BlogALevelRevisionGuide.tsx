@@ -161,7 +161,7 @@ export default function BlogALevelRevisionGuide() {
               <Link to="/templates/revision-timetable-template" className="text-primary underline underline-offset-2 hover:text-primary/80">
                 free template
               </Link>{" "}
-              - it accounts for three subjects, synoptic blocks, and a built-in
+              it accounts for three subjects, synoptic blocks, and a built-in
               rest day so you don't burn out in week four.
             </BlogCallout>
           </section>

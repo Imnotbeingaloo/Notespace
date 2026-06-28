@@ -94,7 +94,7 @@ export default function BlogAILiteratureReview() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - For Researchers · Updated June 2026
+              For Researchers · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Using <span className="text-primary">AI for Literature Reviews</span>:

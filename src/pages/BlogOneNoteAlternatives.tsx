@@ -230,7 +230,7 @@ export default function BlogOneNoteAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - OneNote Alternatives · Updated June 2026
+              OneNote Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">OneNote Alternatives</span> for 2026

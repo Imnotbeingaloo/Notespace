@@ -126,7 +126,7 @@ export default function BlogHSCVCEStudyNotes() {
             <p className="text-muted-foreground leading-relaxed mb-4">
               Copying out the textbook feels productive. It isn't. The grade-mover is{" "}
               <strong className="text-foreground">putting the content in your own words against the syllabus dot points</strong>
-              - that act of compression is the learning. The page count drops, the
+              that act of compression is the learning. The page count drops, the
               comprehension rises, and the version you re-read in October is one
               you can actually use.
             </p>

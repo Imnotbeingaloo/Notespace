@@ -234,7 +234,7 @@ export default function BlogNotionAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Notion Alternatives · Updated June 2026
+              Notion Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">Notion Alternatives</span> for 2026

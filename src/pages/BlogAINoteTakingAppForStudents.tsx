@@ -186,7 +186,7 @@ export default function BlogAINoteTakingAppForStudents() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - For Students · Updated June 2026
+              For Students · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">AI Note Taking App for Students</span> in 2026
