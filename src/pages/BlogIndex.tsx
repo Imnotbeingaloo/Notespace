@@ -2,12 +2,109 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { prefetchOnHover } from "@/lib/prefetch-route";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  GraduationCap,
+  Sparkles,
+  Mic,
+  Scale,
+  PenLine,
+  Users,
+} from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 import Footer from "@/components/Footer";
+
+const tagVisuals: Record<
+  string,
+  { gradient: string; Icon: typeof BookOpen; accent: string }
+> = {
+  Guides: {
+    gradient: "from-amber-100 via-orange-50 to-rose-100",
+    Icon: BookOpen,
+    accent: "text-amber-700",
+  },
+  "For Students": {
+    gradient: "from-sky-100 via-indigo-50 to-violet-100",
+    Icon: GraduationCap,
+    accent: "text-indigo-700",
+  },
+  "For Researchers": {
+    gradient: "from-emerald-100 via-teal-50 to-cyan-100",
+    Icon: Sparkles,
+    accent: "text-emerald-700",
+  },
+  "For Writers": {
+    gradient: "from-rose-100 via-pink-50 to-fuchsia-100",
+    Icon: PenLine,
+    accent: "text-rose-700",
+  },
+  "AI Writing": {
+    gradient: "from-violet-100 via-fuchsia-50 to-pink-100",
+    Icon: Sparkles,
+    accent: "text-violet-700",
+  },
+  "AI Voice": {
+    gradient: "from-cyan-100 via-sky-50 to-blue-100",
+    Icon: Mic,
+    accent: "text-cyan-700",
+  },
+  Comparison: {
+    gradient: "from-stone-100 via-neutral-50 to-zinc-100",
+    Icon: Scale,
+    accent: "text-stone-700",
+  },
+};
+
+function CardVisual({ tag, title }: { tag: string; title: string }) {
+  const v = tagVisuals[tag] ?? tagVisuals.Guides;
+  const { Icon, gradient, accent } = v;
+  const initials = title
+    .replace(/[^a-zA-Z ]/g, "")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
+  return (
+    <div
+      className={`relative h-40 w-full overflow-hidden bg-gradient-to-br ${gradient}`}
+      aria-hidden
+    >
+      {/* soft grid texture */}
+      <svg
+        className="absolute inset-0 h-full w-full opacity-[0.18] mix-blend-multiply"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern id={`g-${tag}`} width="22" height="22" patternUnits="userSpaceOnUse">
+            <path d="M22 0H0V22" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#g-${tag})`} />
+      </svg>
+      {/* decorative blurred orb */}
+      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/40 blur-2xl" />
+      <div className="absolute -left-8 -bottom-10 h-28 w-28 rounded-full bg-white/30 blur-2xl" />
+      {/* big serif initials */}
+      <span
+        className={`absolute right-4 bottom-2 font-serif text-[5rem] leading-none font-bold ${accent} opacity-25 select-none`}
+      >
+        {initials}
+      </span>
+      {/* icon badge */}
+      <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/70 backdrop-blur px-3 py-1.5 shadow-sm">
+        <Icon className={`h-3.5 w-3.5 ${accent}`} />
+        <span className={`text-[0.65rem] uppercase tracking-widest font-semibold ${accent}`}>
+          {tag}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 const posts = [
   {
@@ -180,12 +277,12 @@ export default function BlogIndex() {
       <div className="min-h-screen bg-background text-foreground">
         <PageHeader />
 
-        <main className="max-w-3xl mx-auto px-6 pt-32 pb-20">
+        <main className="max-w-6xl mx-auto px-6 pt-32 pb-20">
           <motion.header
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-16 text-center"
+            className="mb-16 text-center max-w-3xl mx-auto"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
               The Notebook Archive Blog
@@ -199,37 +296,41 @@ export default function BlogIndex() {
             </p>
           </motion.header>
 
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((p, i) => (
               <motion.article
                 key={p.slug}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
+                transition={{ duration: 0.4, delay: (i % 3) * 0.06 }}
               >
                 <Link
                   to={`/blog/${p.slug}`}
                   {...prefetchOnHover(`/blog/${p.slug}`)}
-                  className="block border border-border rounded-lg p-6 bg-card hover:border-primary/40 transition group"
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-[0_18px_48px_-22px_hsl(var(--foreground)/0.18)] transition"
                 >
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-                    <span className="uppercase tracking-widest text-accent font-semibold">{p.tag}</span>
-                    <span>·</span>
-                    <span>{p.date}</span>
+                  <CardVisual tag={p.tag} title={p.title} />
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                      <span>{p.date}</span>
+                    </div>
+                    <h2 className="font-serif text-xl font-bold mb-3 leading-snug group-hover:text-primary transition">
+                      {p.title}
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed text-sm mb-5 line-clamp-4">
+                      {p.excerpt}
+                    </p>
+                    <span className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                      Read post <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition" />
+                    </span>
                   </div>
-                  <h2 className="font-serif text-2xl font-bold mb-3 group-hover:text-primary transition">
-                    {p.title}
-                  </h2>
-                  <p className="text-muted-foreground leading-relaxed mb-4">{p.excerpt}</p>
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                    Read post <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition" />
-                  </span>
                 </Link>
               </motion.article>
             ))}
           </div>
         </main>
+
 
         <Footer />
       </div>
