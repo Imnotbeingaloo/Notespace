@@ -42,7 +42,7 @@ export default function Footer() {
             </motion.div>
 
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 lg:max-w-[203px]">
-              The intelligent note-taking app that helps you capture, organize, and truly understand your ideas. Built for thinkers who demand more from their tools.
+              The intelligent note-taking app that helps you capture,&nbsp;organize, and truly understand your ideas. Built for thinkers who demand more from their tools.
             </p>
             <motion.div
               className="flex items-center gap-2"
