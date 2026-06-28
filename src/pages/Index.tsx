@@ -409,6 +409,27 @@ function AppContent() {
         }}
       />
 
+      {/* Home dropdown - Note name + emoji prompt (mirrors notebook flow) */}
+      <CreateNotebookDialog
+        mode="single"
+        kind="note"
+        open={homeCreateKind === "note"}
+        onOpenChange={(o) => !o && setHomeCreateKind(null)}
+        onCreate={async (name, emoji) => {
+          setHomeCreateKind(null);
+          setOpening(true);
+          try {
+            const created = await createStandaloneNote(name, emoji);
+            if (created) {
+              setShowHome(false);
+              navigate(`/app?note=${created.noteId}`, { replace: true });
+            }
+          } finally {
+            window.setTimeout(() => setOpening(false), 400);
+          }
+        }}
+      />
+
       <RenameDuplicateDialog />
 
       {/* Temporary-note FAB removed - entry points are sidebar + home button + route */}
