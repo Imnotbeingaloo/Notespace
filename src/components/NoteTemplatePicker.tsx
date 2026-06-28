@@ -603,7 +603,7 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
         {filtered.map((tmpl) => (
           <motion.button
             key={tmpl.id}
-            onClick={() => setPreview(tmpl)}
+            onClick={() => (tmpl.id === "blank" ? onSelect(tmpl) : setPreview(tmpl))}
             whileHover={{ y: -3 }}
             whileTap={{ scale: 0.98 }}
             className="group flex flex-col gap-3 p-3 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all text-left overflow-hidden"
