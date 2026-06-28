@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 
 const REF = "blog-how-to-make-a-revision-timetable";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=how-to-make-a-revision-timetable`;
@@ -237,6 +238,7 @@ Sun  10:00-10:30  Weekly review
           </div>
         </article>
 
+        <RelatedReading currentPath="/blog/how-to-make-a-revision-timetable" items={STUDY_PLANNER_RELATED} />
         <Footer />
       </div>
     </>
