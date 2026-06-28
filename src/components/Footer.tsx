@@ -72,7 +72,8 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div className="lg:-translate-x-[15%]" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}>
+          <div className="lg:-translate-x-[15%]">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}>
             <h4 className={headingClass}>For Students</h4>
             <ul className="space-y-3">
               <li><Link to="/study-planner" className={linkClass}>Study Planner</Link></li>
@@ -83,6 +84,7 @@ export default function Footer() {
               <li><Link to="/templates/revision-timetable-template" className={linkClass}>Revision Timetable Template</Link></li>
             </ul>
           </motion.div>
+          </div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }}>
             <h4 className={headingClass}>Company</h4>
