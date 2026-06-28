@@ -257,7 +257,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
               {step === "welcome" && (
                 <motion.div
                   key="welcome"
-                  className="relative pl-[72px] pr-9 py-12 min-h-[300px] flex flex-col justify-center"
+                  className="relative pl-[64px] sm:pl-[72px] pr-6 sm:pr-9 py-10 sm:py-12 min-h-[300px] flex flex-col justify-center"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
