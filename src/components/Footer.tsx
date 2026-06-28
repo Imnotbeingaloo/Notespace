@@ -24,7 +24,15 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.15 }}
             >
-              <BookOpen className="h-6 w-6 text-primary" />
+              <img
+                src="/logo.png"
+                alt="Notebook Archive"
+                width={32}
+                height={32}
+                loading="lazy"
+                decoding="async"
+                className="h-7 w-7 object-contain shrink-0"
+              />
               <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap">Notebook Archive</span>
             </motion.div>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
