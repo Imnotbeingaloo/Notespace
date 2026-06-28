@@ -194,7 +194,7 @@ export function OnboardingHelp() {
             <motion.button
               type="button"
               key="hint-desktop"
-              onClick={dismissForToday}
+              onClick={dismissForever}
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
