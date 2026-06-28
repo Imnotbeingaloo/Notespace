@@ -11,6 +11,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import Footer from "@/components/Footer";
+import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 
 const REF = "template-study-planner";
