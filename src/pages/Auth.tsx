@@ -474,7 +474,7 @@ const AuthPage = () => {
 
         <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
           <div role="tablist" aria-label="Authentication mode" className="flex gap-1 bg-muted rounded-lg p-1 mb-6">
-            {(["login", "signup"] as const).map((m) => {
+            {(["signup", "login"] as const).map((m) => {
               const active = (mode === m) || (mode === "forgot" && m === "login");
               return (
                 <button
