@@ -126,8 +126,9 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    // Reset splash flag so the entry animation replays when user navigates from website -> app/home
-    try { sessionStorage.removeItem("splashShown"); } catch {}
+    // Arm the splash so it plays the next time the user crosses into /home or /app.
+    // Direct deep links bypass the Landing page and therefore won't trigger it.
+    try { sessionStorage.setItem("playSplash", "1"); } catch {}
     if (fromApp) {
       // Clear state so refreshes don't replay the splash
       navigate(location.pathname, { replace: true, state: {} });
