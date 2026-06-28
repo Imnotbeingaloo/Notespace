@@ -308,8 +308,15 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             {totalNotes === 1 ? "note" : "notes"}. Pick one up where you left off.
           </p>
 
-          {/* Quick actions row - separated from the notebook grid */}
-          <div className="flex flex-wrap items-center gap-2 mt-6">
+          {/* Quick actions row - separated from the notebook grid.
+              When the library is empty, the first Create button pulses a soft ring to draw the eye. */}
+          {(() => null)()}
+          <div className={`flex flex-wrap items-center gap-2 mt-6 ${
+            (notebooks.length === 0 && standaloneNotes.length === 0)
+              ? "[&>button:first-child,&>div:first-child_button]:ring-2 [&>button:first-child,&>div:first-child_button]:ring-primary/50 [&>button:first-child,&>div:first-child_button]:ring-offset-2 [&>button:first-child,&>div:first-child_button]:ring-offset-background [&>button:first-child,&>div:first-child_button]:animate-pulse"
+              : ""
+          }`}>
+
             {tempEnabled ? (
               (onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
                 <DropdownMenu>
