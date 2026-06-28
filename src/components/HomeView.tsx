@@ -267,7 +267,6 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
 
             <div className="flex items-center gap-1">
-              <OnboardingHelp />
               <HomeHeaderMenu trashCount={trashCount} />
             </div>
           </div>
