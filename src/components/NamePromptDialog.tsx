@@ -89,6 +89,11 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
 
   const handleDismiss = async () => {
     if (saving) return;
+    // If the user already saved a name (welcome step), just close - no fallback.
+    if (step === "welcome") {
+      onOpenChange(false);
+      return;
+    }
     const fallback = deriveFromEmail();
     if (fallback) {
       // Fire-and-forget; don't block the close.
