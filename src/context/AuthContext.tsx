@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/home?welcome=1`,
+        emailRedirectTo: `${window.location.origin}/verified`,
         data: { display_name: displayName, ...(referral ? { referral } : {}) },
       },
     });
