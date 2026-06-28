@@ -292,12 +292,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
               className="flex items-center gap-2 min-w-0"
             >
-              <motion.img
+              <img
                 src="/logo.png"
                 alt="Notebook Archive"
                 className="h-[1.05rem] w-[1.05rem] sm:h-[1.2rem] sm:w-[1.2rem] object-contain flex-shrink-0"
-                whileHover={{ rotate: -6, scale: 1.06 }}
-                transition={{ type: "spring", stiffness: 320, damping: 18 }}
               />
               <span className="font-serif font-bold text-foreground text-base whitespace-nowrap">Notebook Archive</span>
               <button
@@ -325,7 +323,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 <img
                   src="/logo.png"
                   alt="Notebook Archive"
-                  className="absolute h-[1.05rem] w-[1.05rem] sm:h-[1.2rem] sm:w-[1.2rem] object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
+                  className="absolute h-6 w-6 sm:h-7 sm:w-7 object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
                 />
                 <Menu className="absolute h-5 w-5 text-foreground opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />
               </button>
