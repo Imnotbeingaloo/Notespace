@@ -314,14 +314,14 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                   <DropdownMenuContent align="start" className="w-44">
                     <DropdownMenuItem
                       onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
-                      className="gap-2 cursor-pointer"
+                      className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
                     >
                       <FileText className="h-4 w-4 text-primary" />
                       <span>Note</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
-                      className="gap-2 cursor-pointer"
+                      className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
                     >
                       <BookOpen className="h-4 w-4 text-primary" />
                       <span>Notebook</span>
