@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw, Check, X, Eye, EyeOff, ExternalLink } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { NoindexHead } from "@/components/NoindexHead";
@@ -82,14 +82,26 @@ const AuthPage = () => {
   const [checkEmail, setCheckEmail] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  // The page the user was trying to reach before we bounced them to /auth.
+  // Falls back to /home for fresh signups / direct visits.
+  const fromPath = useMemo(() => {
+    const raw = (location.state as { from?: string } | null)?.from;
+    if (typeof raw !== "string") return null;
+    // Hard guard: never bounce back to /auth, /verified, or external URLs.
+    if (!raw.startsWith("/") || raw.startsWith("//")) return null;
+    if (raw.startsWith("/auth") || raw.startsWith("/verified") || raw.startsWith("/reset-password")) return null;
+    return raw;
+  }, [location.state]);
+  const postAuthTarget = fromPath ?? "/home";
 
   useEffect(() => {
     try { localStorage.setItem("hasVisitedAuth", "1"); } catch {}
   }, []);
 
   useEffect(() => {
-    if (!authLoading && user) navigate("/", { replace: true });
-  }, [user, authLoading, navigate]);
+    if (!authLoading && user) navigate(postAuthTarget, { replace: true });
+  }, [user, authLoading, navigate, postAuthTarget]);
 
   // Cross-tab dedup: if the user verifies their email in another tab, that
   // tab broadcasts 'verified'. This tab takes over and acks so the
@@ -184,7 +196,7 @@ const AuthPage = () => {
       }
       if (result.redirected) return;
       try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
-      navigate("/app");
+      navigate(postAuthTarget);
     } catch (e) {
       cancelled = true;
       window.removeEventListener("focus", onFocus);
@@ -276,7 +288,7 @@ const AuthPage = () => {
 
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
-        navigate("/app");
+        navigate(postAuthTarget);
       }
     } else {
       const { error } = await signUp(email, password);
@@ -287,10 +299,10 @@ const AuthPage = () => {
           localStorage.setItem("pendingNamePrompt", "1");
           sessionStorage.setItem("welcomeVariant", "new");
         } catch {}
-        // If a session was created immediately (email confirmation disabled), go straight to /home
+        // If a session was created immediately (email confirmation disabled), go straight to the target
         const { data: { session: newSession } } = await supabase.auth.getSession();
         if (newSession) {
-          navigate("/home");
+          navigate(postAuthTarget);
         } else {
           setCheckEmail(true);
           setResendCountdown(45);
