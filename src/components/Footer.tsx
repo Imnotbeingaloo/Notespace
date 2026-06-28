@@ -58,6 +58,7 @@ export default function Footer() {
             <h4 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">For Students</h4>
             <ul className="space-y-3">
               <li><Link to="/study-planner" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Study Planner</Link></li>
+              <li><Link to="/pomodoro-notes" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Pomodoro Timer + Notes</Link></li>
               <li><Link to="/revision-timetable" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Revision Timetable Maker</Link></li>
               <li><Link to="/templates/revision-timetable-template" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Revision Timetable Template</Link></li>
               <li><Link to="/blog/gcse-revision-guide-2026" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">GCSE Revision Guide</Link></li>
