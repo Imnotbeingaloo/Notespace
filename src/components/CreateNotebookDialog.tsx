@@ -201,9 +201,9 @@ export function CreateNotebookDialog({
               ) : (
                 <motion.div
                   key="form"
-                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
                   transition={stepTransition}
                 >
                   <div className="px-6 py-4 space-y-4">
