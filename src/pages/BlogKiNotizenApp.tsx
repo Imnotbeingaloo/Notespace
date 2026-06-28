@@ -120,10 +120,10 @@ export default function BlogKiNotizenApp() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-12"
+            className="mb-10"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Vergleich · Aktualisiert Juni 2026
+              Vergleich · Aktualisiert Juni 2026 · 9 Min. Lesezeit
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Die beste <span className="text-primary">KI-Notizen-App</span> im Jahr 2026
@@ -136,8 +136,23 @@ export default function BlogKiNotizenApp() {
             </p>
           </motion.header>
 
+          <BlogHero
+            src={heroAsset.url}
+            alt="Ein Laptop mit einer aufgeschlagenen Notizbuch-App auf einem ruhigen Schreibtisch."
+            caption="Eine echte KI-Notizen-App denkt mit dir - sie schreibt nicht für dich."
+          />
+
+          <BlogKeyTakeaways
+            points={[
+              "Eine echte KI-Notizen-App denkt über deine eigenen Notizen nach - nicht nur ein Chat-Fenster mit GPT.",
+              "Meeting-Transkribierer und Notizen-Apps sind verschiedene Werkzeuge. Verwechsle sie nicht.",
+              "Lokale Dateien (Markdown) bedeuten: deine Notizen überleben jede App.",
+              "Notebook Archive, Notion, Obsidian und Mem - vier sehr unterschiedliche Antworten auf dieselbe Frage.",
+            ]}
+          />
+
           <section className="prose prose-neutral max-w-none mb-12">
-            <h2 className="font-serif text-2xl font-bold mt-12 mb-4">Was eine echte KI-Notizen-App ausmacht</h2>
+            <h2 className="font-serif text-3xl font-bold mt-8 mb-4">Was eine echte KI-Notizen-App ausmacht</h2>
             <p className="text-muted-foreground leading-relaxed">
               Eine KI-Notizen-App sollte dich Notizen schreiben lassen, sie organisieren und dir
               echte Hilfe vom Modell geben - nicht nur einen Knopf namens „KI", der ein Chatfenster
@@ -145,6 +160,12 @@ export default function BlogKiNotizenApp() {
               im Kern ein Wiki mit aufgesetzter KI ist, und alles, bei dem die KI nicht über deine
               eigenen Notizen nachdenken kann. Vier sind übrig geblieben.
             </p>
+
+            <BlogPullQuote cite="Eine ehrliche Beobachtung nach vierzig Demos">
+              Die Hälfte der „KI-Notizen-Apps" auf dem Markt sind eigentlich Suchfenster. Die
+              andere Hälfte sind Ghostwriter, die deine Stimme glätten. Beides ist nützlich -
+              aber selten das, was du wirklich brauchst.
+            </BlogPullQuote>
 
             <h2 className="font-serif text-2xl font-bold mt-12 mb-4">Die Auswahl</h2>
 
