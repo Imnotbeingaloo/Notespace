@@ -196,7 +196,7 @@ const AuthPage = () => {
       }
       if (result.redirected) return;
       try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
-      navigate("/app");
+      navigate(postAuthTarget);
     } catch (e) {
       cancelled = true;
       window.removeEventListener("focus", onFocus);
