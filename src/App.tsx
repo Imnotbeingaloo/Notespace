@@ -55,6 +55,7 @@ const TemplateRevisionTimetable = lazy(() => import("./pages/TemplateRevisionTim
 const BlogGCSERevisionGuide = lazy(() => import("./pages/BlogGCSERevisionGuide"));
 const BlogALevelRevisionGuide = lazy(() => import("./pages/BlogALevelRevisionGuide"));
 const BlogHSCVCEStudyNotes = lazy(() => import("./pages/BlogHSCVCEStudyNotes"));
+const PomodoroNotes = lazy(() => import("./pages/PomodoroNotes"));
 
 
 
