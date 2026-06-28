@@ -137,9 +137,15 @@ function AppContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlNotebook, urlNote, notebooks.length]);
 
-  // Keep URL in sync when active selection changes (editor mode)
+  // Keep URL in sync when active selection changes (editor mode).
+  // IMPORTANT: don't strip URL params that haven't been hydrated into state
+  // yet (e.g. on a direct /app?notebook=...&note=... deep link). Otherwise
+  // we'd nuke the URL before the hydration effect runs, causing a redirect
+  // back to /home.
   useEffect(() => {
     if (showHome) return;
+    if (urlNotebook && !activeNotebookId) return; // still hydrating
+    if (urlNote && !activeNoteId) return; // still hydrating
     const next = new URLSearchParams(searchParams);
     if (activeNotebookId) next.set("notebook", activeNotebookId);
     else next.delete("notebook");
