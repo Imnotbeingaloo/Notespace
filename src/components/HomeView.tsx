@@ -26,6 +26,7 @@ interface HomeViewProps {
   onCreateScratchNote?: () => void;
   onCreateSimpleNote?: () => void;
   onExitToWebsite?: () => void;
+  onOpenSidebar?: () => void;
 }
 
 type SortKey = "newest" | "oldest" | "title";
@@ -40,7 +41,7 @@ const looksLikeStandaloneNoteWrapper = (nb: any) => {
 
 const PAGE_SIZE = 9;
 
-export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateNotebookDirect, onCreateNoteDirect, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite }: HomeViewProps) {
+export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreateNotebookDirect, onCreateNoteDirect, onCreateScratchNote, onCreateSimpleNote, onExitToWebsite, onOpenSidebar }: HomeViewProps) {
   const { notebooks, standaloneNotes, trashedNotebooks, trashedNotes, deleteNotebook, deleteNote, loading, refreshData } = useNotebooks();
   const [tempEnabled] = useTempNotesEnabled();
   const { profile, loading: profileLoading } = useProfile();
