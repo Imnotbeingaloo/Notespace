@@ -157,14 +157,23 @@ function AppContent() {
     navigate("/home", { replace: false });
   }, [isMobile, navigate]);
 
-  // React to route changes. /home → Home; /app without a notebook → redirect to /home.
+  // React to route changes. /home → Home; /app without a notebook → soft fade then redirect to /home.
+  const [appRedirecting, setAppRedirecting] = useState(false);
   useEffect(() => {
     if (location.pathname === "/home") setShowHome(true);
     else if (location.pathname === "/app") {
       if (urlNotebook) setShowHome(false);
-      else navigate("/home", { replace: true });
+      else {
+        setAppRedirecting(true);
+        const t = window.setTimeout(() => {
+          navigate("/home", { replace: true });
+          setAppRedirecting(false);
+        }, 250);
+        return () => window.clearTimeout(t);
+      }
     }
   }, [location.pathname, urlNotebook, navigate]);
+
 
   const openNotebookFromHome = useCallback(
     (notebookId: string) => {
@@ -200,28 +209,49 @@ function AppContent() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background relative">
+      {/* Soft fade overlay during /app → /home auto-redirect */}
+      <AnimatePresence>
+        {appRedirecting && (
+          <motion.div
+            key="app-redirect-fade"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[60] bg-background pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
       {/* Mobile overlay backdrop */}
-      {isMobile && sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-30"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {isMobile && sidebarOpen && (
+          <motion.div
+            key="sidebar-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="fixed inset-0 bg-black/40 z-30"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
 
       {/* Sidebar */}
       <AnimatePresence>
         {!focusMode && (!showHome || (isMobile && sidebarOpen)) && (
           <motion.div
-            initial={false}
-            animate={{ width: "auto", opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className={`overflow-hidden ${
+            initial={isMobile ? { x: "-100%", opacity: 0 } : false}
+            animate={isMobile ? { x: 0, opacity: 1 } : { width: "auto", opacity: 1 }}
+            exit={isMobile ? { x: "-100%", opacity: 0 } : { width: 0, opacity: 0 }}
+            transition={
               isMobile
-                ? `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ${
-                    sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                  }`
-                : ""
+                ? { type: "spring", stiffness: 320, damping: 32, mass: 0.7 }
+                : { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
+            }
+            className={`overflow-hidden ${
+              isMobile ? "fixed inset-y-0 left-0 z-40" : ""
             }`}
           >
             <AppSidebar
@@ -236,6 +266,7 @@ function AppContent() {
           </motion.div>
         )}
       </AnimatePresence>
+
 
       {/* Editor / Home */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -455,7 +486,16 @@ function AppContent() {
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
   const [splashDone, setSplashDone] = useState(() => {
-    try { return sessionStorage.getItem("splashShown") === "1"; } catch { return false; }
+    try {
+      if (sessionStorage.getItem("splashShown") === "1") return true;
+      // Post-signup hand-off: skip the splash so the NamePromptDialog itself
+      // is the transition (avoids auth → splash → home → dialog stacking).
+      if (localStorage.getItem("pendingNamePrompt") === "1") {
+        sessionStorage.setItem("splashShown", "1");
+        return true;
+      }
+    } catch {}
+    return false;
   });
   const handleSplashComplete = useCallback(() => {
     setSplashDone(true);
@@ -480,5 +520,6 @@ const AppPage = () => {
     </NotebookProvider>
   );
 };
+
 
 export default AppPage;

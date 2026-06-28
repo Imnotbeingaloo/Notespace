@@ -25,8 +25,9 @@ const toolbarTips: Tip[] = [
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
 const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
-// Idle threshold - hint appears after 5s of no intentional interaction.
-const IDLE_STEPS_MS = [5000];
+// Idle threshold - hint appears after 5s desktop / 8s mobile of no intentional interaction.
+const IDLE_STEPS_MS_DESKTOP = [5000];
+const IDLE_STEPS_MS_MOBILE = [8000];
 const SHOW_MS = 3000;
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
@@ -63,7 +64,10 @@ export function OnboardingHelp() {
     }
   };
 
-  const currentDelay = () => IDLE_STEPS_MS[Math.min(showCountRef.current, IDLE_STEPS_MS.length - 1)];
+  const currentDelay = () => {
+    const steps = isMobile ? IDLE_STEPS_MS_MOBILE : IDLE_STEPS_MS_DESKTOP;
+    return steps[Math.min(showCountRef.current, steps.length - 1)];
+  };
 
   const armIdle = () => {
     clearIdle();
