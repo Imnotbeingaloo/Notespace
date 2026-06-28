@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -267,6 +268,19 @@ export default function BlogBestAINoteTakingApps() {
               pros, the cons, and where each one fits.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "Most 'AI notes' apps are search bars with extra steps. The good ones reason over your notes.",
+              "If the AI can't see your notebook, it's not really an AI notes app - it's a chatbot you tab to.",
+              "Pricing tiers usually limit AI requests per month. That cap is what to compare, not the headline price.",
+              "Local-first apps (Obsidian) give you portability. Cloud-first apps (Notion) give you collaboration. Pick your tradeoff.",
+            ]}
+          />
+
+          <BlogPullQuote cite="The honest measure after a year of testing">
+            The interesting category isn't 'AI notes'. It's 'notes that get smarter as you fill them'. Most apps in this list don't actually clear that bar.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked these seven</h2>

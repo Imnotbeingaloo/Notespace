@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -273,6 +274,19 @@ export default function BlogBestNoteTakingApp() {
               cons, and a clear pick for each kind of person.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "There is no single best note-taking app. There's a best one for how you actually work.",
+              "Writers, students, researchers, and PMs need very different shapes. Buy for the shape, not the brand.",
+              "Plain-text export is the only real guarantee that your notes outlive the app.",
+              "Free tiers are how you should test - any app worth using has a real free tier.",
+            ]}
+          />
+
+          <BlogPullQuote cite="Anyone who has switched apps more than twice">
+            The best note-taking app is the one you'll still be using in three years. Almost everything else is a feature war.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>

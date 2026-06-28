@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -215,6 +216,19 @@ export default function BlogAIVoiceNotes() {
               from full meeting transcripts to quick dictated thoughts.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "Voice notes are great for capture, terrible for retrieval - unless the app transcribes them well.",
+              "Test accent accuracy on your own voice before committing. Demo videos are not representative.",
+              "Privacy matters: where do the audio files actually live, and who can read the transcripts?",
+              "The best voice apps let you edit the transcript inline. The worst lock you into the raw transcription forever.",
+            ]}
+          />
+
+          <BlogPullQuote cite="The unspoken rule of every voice-note app review">
+            A voice note you never re-listen to is the same as a voice note you never recorded. Transcription is the part that makes the capture useful.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>
