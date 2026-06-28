@@ -719,6 +719,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         notebookName={activeNotebook.name}
         notebookEmoji={activeNotebook.emoji}
         noteCount={activeNotebook.notes.length}
+        onBack={() => navigate("/home")}
         onCreateNew={(title?: string, content?: string) => activeNotebookId && createNote(activeNotebookId, title, content)}
         onImportAndCreate={async (content: string, fileName: string) => {
           if (!activeNotebookId) return;
