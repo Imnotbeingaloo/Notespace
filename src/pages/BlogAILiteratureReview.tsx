@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 
 const REF = "blog-ai-literature-review";
@@ -46,6 +47,7 @@ const jsonLd = [
     description:
       "A practical, honest workflow for using AI to speed up academic literature reviews without losing rigor - covering PDF extraction, per-paper notes, thematic synthesis, and citation safety.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage:
@@ -59,7 +61,11 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },
+  },,
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Using AI for Literature Reviews: A Workflow for Researchers", path: "/blog/ai-literature-review-guide" },
+  ])
 ];
 
 export default function BlogAILiteratureReview() {

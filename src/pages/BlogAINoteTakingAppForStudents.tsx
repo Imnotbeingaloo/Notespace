@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
@@ -139,6 +140,7 @@ const jsonLd = [
     description:
       "An honest comparison of AI note taking apps built for how students actually study - Notebook Archive, Notion, Obsidian, and OneNote.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/ai-note-taking-app-for-students",
@@ -151,7 +153,11 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },
+  },,
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Best AI Note Taking App for Students in 2026", path: "/blog/ai-note-taking-app-for-students" },
+  ])
 ];
 
 export default function BlogAINoteTakingAppForStudents() {

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 
 const REF = "blog-how-to-make-a-study-plan-for-exams";
@@ -60,6 +61,7 @@ const jsonLd = [
     description:
       "A practical six-week exam study plan template for finals, GCSEs, A-levels, the MCAT, GRE, and LSAT - with a copy-pasteable schedule.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/how-to-make-a-study-plan-for-exams",
@@ -72,7 +74,11 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },
+  },,
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "How to Make a Study Plan for Exams (Six-Week Template)", path: "/blog/how-to-make-a-study-plan-for-exams" },
+  ])
 ];
 
 export default function BlogHowToMakeStudyPlanForExams() {

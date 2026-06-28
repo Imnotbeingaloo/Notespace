@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
@@ -208,6 +209,7 @@ const jsonLd = [
     description:
       "An honest comparison of the seven AI note taking apps that actually earn the label - Notebook Archive, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/best-ai-note-taking-apps-2026",
@@ -220,7 +222,11 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
-  },
+  },,
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Best AI Note Taking Apps for Writers and Researchers in 2026", path: "/blog/best-ai-note-taking-apps-2026" },
+  ])
 ];
 
 export default function BlogBestAINoteTakingApps() {
