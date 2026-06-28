@@ -19,7 +19,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid gap-10 md:gap-x-10 md:gap-y-10 md:grid-cols-2 lg:gap-12 lg:[grid-template-columns:2fr_1fr_1fr_1fr_1.5fr] mb-16"
+          className="grid gap-10 md:gap-x-10 md:gap-y-10 md:grid-cols-2 lg:gap-12 lg:[grid-template-columns:minmax(320px,auto)_repeat(4,1fr)] mb-16"
         >
           <motion.div className="lg:max-w-[320px]" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
             <motion.div
