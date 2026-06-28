@@ -288,7 +288,7 @@ const AuthPage = () => {
 
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
-        navigate("/app");
+        navigate(postAuthTarget);
       }
     } else {
       const { error } = await signUp(email, password);
@@ -299,10 +299,10 @@ const AuthPage = () => {
           localStorage.setItem("pendingNamePrompt", "1");
           sessionStorage.setItem("welcomeVariant", "new");
         } catch {}
-        // If a session was created immediately (email confirmation disabled), go straight to /home
+        // If a session was created immediately (email confirmation disabled), go straight to the target
         const { data: { session: newSession } } = await supabase.auth.getSession();
         if (newSession) {
-          navigate("/home");
+          navigate(postAuthTarget);
         } else {
           setCheckEmail(true);
           setResendCountdown(45);
