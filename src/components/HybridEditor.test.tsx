@@ -17,7 +17,7 @@ describe("HybridEditor auto-resize / scroll behavior", () => {
     render(<HybridEditor content="" onChange={() => {}} />);
     const wrapper = screen.getByTestId("hybrid-editor-wrapper");
     expect(wrapper.className).toMatch(/\bmin-h-full\b/);
-    expect(wrapper.className).not.toMatch(/\bh-full\b/);
+    expect(wrapper.className).not.toMatch(/(?<!min-)h-full/);
   });
 
   it("contenteditable region uses h-auto + flex-1 so its height tracks content", () => {
