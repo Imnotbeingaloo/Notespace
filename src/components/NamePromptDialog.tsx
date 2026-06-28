@@ -114,7 +114,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
     >
 
       <DialogContent
-        className="sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.45s_ease-out,scale-out_0.45s_ease-out]"
+        className="w-[calc(100vw-2rem)] max-w-[460px] sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.45s_ease-out,scale-out_0.45s_ease-out]"
         hideClose={step !== "ask"}
       >
         {/* Stacked paper effect: two offset sheets behind the main card */}
@@ -167,7 +167,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.3, ease }}
-                  className="relative pl-[72px] pr-9 pt-9 pb-9"
+                  className="relative pl-[64px] sm:pl-[72px] pr-6 sm:pr-9 pt-8 sm:pt-9 pb-8 sm:pb-9"
                 >
                   {/* Headline */}
                   <motion.h2
@@ -257,7 +257,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
               {step === "welcome" && (
                 <motion.div
                   key="welcome"
-                  className="relative pl-[72px] pr-9 py-12 min-h-[300px] flex flex-col justify-center"
+                  className="relative pl-[64px] sm:pl-[72px] pr-6 sm:pr-9 py-10 sm:py-12 min-h-[300px] flex flex-col justify-center"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}

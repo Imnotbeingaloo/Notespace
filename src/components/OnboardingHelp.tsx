@@ -212,30 +212,7 @@ export function OnboardingHelp() {
               </motion.span>
             </motion.button>
           )}
-          {hintOpen && isMobile && (
-            <motion.button
-              type="button"
-              key="hint-mobile"
-              onClick={dismissForToday}
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.25 }}
-              className="absolute top-full right-0 mt-1.5 flex flex-col items-end gap-1 z-50"
-              aria-label="Hide hint"
-            >
-              <motion.span
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                className="inline-flex text-primary mr-[10px]"
-              >
-                <ArrowUp className="h-3.5 w-3.5" />
-              </motion.span>
-              <span className="whitespace-nowrap rounded-md bg-popover/95 backdrop-blur px-2 py-1 text-[11px] font-medium text-foreground shadow-md border border-border">
-                Confused? Tap here
-              </span>
-            </motion.button>
-          )}
+          {/* Mobile hint intentionally removed - cramped header space. */}
         </AnimatePresence>
 
         <Button
