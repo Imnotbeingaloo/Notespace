@@ -277,12 +277,12 @@ export default function BlogIndex() {
       <div className="min-h-screen bg-background text-foreground">
         <PageHeader />
 
-        <main className="max-w-3xl mx-auto px-6 pt-32 pb-20">
+        <main className="max-w-6xl mx-auto px-6 pt-32 pb-20">
           <motion.header
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-16 text-center"
+            className="mb-16 text-center max-w-3xl mx-auto"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
               The Notebook Archive Blog
@@ -296,37 +296,41 @@ export default function BlogIndex() {
             </p>
           </motion.header>
 
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((p, i) => (
               <motion.article
                 key={p.slug}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
+                transition={{ duration: 0.4, delay: (i % 3) * 0.06 }}
               >
                 <Link
                   to={`/blog/${p.slug}`}
                   {...prefetchOnHover(`/blog/${p.slug}`)}
-                  className="block border border-border rounded-lg p-6 bg-card hover:border-primary/40 transition group"
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-[0_18px_48px_-22px_hsl(var(--foreground)/0.18)] transition"
                 >
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-                    <span className="uppercase tracking-widest text-accent font-semibold">{p.tag}</span>
-                    <span>·</span>
-                    <span>{p.date}</span>
+                  <CardVisual tag={p.tag} title={p.title} />
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                      <span>{p.date}</span>
+                    </div>
+                    <h2 className="font-serif text-xl font-bold mb-3 leading-snug group-hover:text-primary transition">
+                      {p.title}
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed text-sm mb-5 line-clamp-4">
+                      {p.excerpt}
+                    </p>
+                    <span className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                      Read post <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition" />
+                    </span>
                   </div>
-                  <h2 className="font-serif text-2xl font-bold mb-3 group-hover:text-primary transition">
-                    {p.title}
-                  </h2>
-                  <p className="text-muted-foreground leading-relaxed mb-4">{p.excerpt}</p>
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                    Read post <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition" />
-                  </span>
                 </Link>
               </motion.article>
             ))}
           </div>
         </main>
+
 
         <Footer />
       </div>
