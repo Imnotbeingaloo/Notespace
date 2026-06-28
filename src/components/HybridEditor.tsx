@@ -301,13 +301,14 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       emitChange();
     }, [emitChange]);
 
-    // Fill the visible editor pane without making padding count as extra
-    // scrollable height. The parent owns real overflow once content grows.
+    // Auto-resizing pane: `min-h-full` lets the editor fill the visible area
+    // when empty but grow with content. The ancestor scroll container only
+    // surfaces a scrollbar once the editor's natural height exceeds the pane.
     const wrapperClass = paperStyle
-      ? "w-full h-full min-h-0 relative flex flex-col box-border"
-      : "w-full h-full min-h-0 px-3 sm:px-8 py-4 sm:py-6 relative flex flex-col box-border";
+      ? "w-full min-h-full relative flex flex-col box-border"
+      : "w-full min-h-full px-3 sm:px-8 py-4 sm:py-6 relative flex flex-col box-border";
     return (
-      <div className={wrapperClass}>
+      <div className={wrapperClass} data-testid="hybrid-editor-wrapper">
         <FloatingToolbar
           selectionRect={selectionRect}
           onAction={handleToolbarAction}
@@ -321,8 +322,12 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           data-placeholder={placeholder}
-          className={`wysiwyg-editor w-full flex-1 bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}
+          data-testid="hybrid-editor-content"
+          className={`wysiwyg-editor w-full flex-1 h-auto bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}
         />
+      </div>
+    );
+
       </div>
     );
   }
