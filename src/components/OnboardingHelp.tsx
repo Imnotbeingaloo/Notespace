@@ -188,9 +188,10 @@ export function OnboardingHelp() {
 
   return (
     <>
-      <div className="relative flex items-center">
+      {/* Desktop / tablet: inline header button with adjacent hint */}
+      <div className="relative hidden md:flex items-center">
         <AnimatePresence>
-          {hintOpen && !isMobile && (
+          {hintOpen && (
             <motion.button
               type="button"
               key="hint-desktop"
@@ -212,7 +213,6 @@ export function OnboardingHelp() {
               </motion.span>
             </motion.button>
           )}
-          {/* Mobile hint intentionally removed - cramped header space. */}
         </AnimatePresence>
 
         <Button
@@ -224,6 +224,42 @@ export function OnboardingHelp() {
         >
           <HelpCircle className="h-5 w-5" />
         </Button>
+      </div>
+
+      {/* Mobile: floating action button, bottom-right, safe from header chrome,
+          with a tap-friendly target and an idle hint pill that pops above it. */}
+      <div className="md:hidden">
+        <div
+          className="fixed z-40 right-4"
+          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}
+        >
+          <AnimatePresence>
+            {hintOpen && (
+              <motion.button
+                type="button"
+                key="hint-mobile"
+                onClick={dismissForever}
+                initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                animate={{ opacity: 1, y: -8, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                transition={{ duration: 0.25 }}
+                className="absolute bottom-full right-0 mb-1 whitespace-nowrap rounded-full bg-foreground text-background text-xs font-medium px-3 py-1.5 shadow-lg"
+                aria-label="Hide hint"
+              >
+                Need help? Tap →
+              </motion.button>
+            )}
+          </AnimatePresence>
+          <Button
+            onClick={handleHelpClick}
+            variant="default"
+            size="icon"
+            className="h-12 w-12 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
+            aria-label="Help"
+          >
+            <HelpCircle className="h-6 w-6" />
+          </Button>
+        </div>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
