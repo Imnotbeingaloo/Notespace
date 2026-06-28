@@ -56,7 +56,7 @@ export default function Footer() {
             </motion.div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
+          <motion.div className="lg:pl-[60px]" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
             <h4 className={headingClass}>Product</h4>
             <ul className="space-y-3">
               <li><Link to="/#features" className={linkClass}>Features</Link></li>
