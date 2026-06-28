@@ -13,6 +13,15 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
+import {
+  BlogHero,
+  BlogKeyTakeaways,
+  BlogPullQuote,
+  BlogCallout,
+  BlogStatGrid,
+  BlogDivider,
+} from "@/components/blog/BlogVisuals";
+import heroAsset from "@/assets/blog/hero-exam-plan.jpg.asset.json";
 
 const REF = "blog-how-to-make-a-study-plan-for-exams";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=how-to-make-a-study-plan-for-exams`;
@@ -105,10 +114,10 @@ export default function BlogHowToMakeStudyPlanForExams() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-12"
+            className="mb-10"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Guides · Updated June 2026
+              Guides · Updated June 2026 · 8 min read
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               How to make a <span className="text-primary">study plan for exams</span> (six-week template)
@@ -116,14 +125,30 @@ export default function BlogHowToMakeStudyPlanForExams() {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Whether you're prepping for finals, GCSEs, A-levels, the MCAT, GRE,
               or LSAT - the structure is the same. Six weeks out, diagnostic
-              first, timed practice last, sleep protected. Here's the template.
+              first, timed practice last, sleep protected. Here's the template,
+              the reasoning, and where most plans break down.
             </p>
           </motion.header>
 
+          <BlogHero
+            src={heroAsset.url}
+            alt="A wall calendar with six weeks of color-coded study blocks, a clipboard, a desk timer, and an open notebook."
+            caption="The schedule does the remembering. Your job is to show up."
+          />
+
+          <BlogKeyTakeaways
+            points={[
+              "Reverse-engineer from the exam date. Week 1 is for timed practice; week 6 is for the diagnostic.",
+              "Rotate subjects daily. Single-subject days kill retention by the end of week three.",
+              "The 48 hours before each exam are for sleep and light review - never for new content.",
+              "Standardised tests (MCAT, GRE, LSAT) need a daily spaced-repetition slot. Subject exams usually don't.",
+            ]}
+          />
+
           <section className="mb-12 space-y-12">
             <div>
-              <h2 className="font-serif text-2xl font-bold mb-3">The six-week shape</h2>
-              <p className="text-muted-foreground leading-relaxed mb-3">
+              <h2 className="font-serif text-3xl font-bold mb-3">The six-week shape</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
                 Most exam study plans fail because they treat week six the same as week one.
                 They shouldn't be. The shape of a good exam study plan changes as the date
                 gets closer:
@@ -135,7 +160,23 @@ export default function BlogHowToMakeStudyPlanForExams() {
                 <li>• <strong>Week 1:</strong> Timed practice only. No new content. Sleep protected.</li>
                 <li>• <strong>Final 48 hours per exam:</strong> Light review, no all-nighters. Sleep wins points.</li>
               </ul>
+
+              <BlogStatGrid
+                stats={[
+                  { value: "6 wks", label: "Out, ideally", sub: "4 wks minimum" },
+                  { value: "7-8 hrs", label: "Sleep, every night", sub: "Non-negotiable" },
+                  { value: "1", label: "Rest day per week", sub: "Sunday is traditional" },
+                ]}
+              />
+
+              <BlogPullQuote cite="The most consistent piece of exam-prep advice from every actual examiner">
+                Sleep, not extra revision, is what most students should be adding in the final
+                week. The grade ceiling for a sleep-deprived candidate is brutally lower than they
+                think.
+              </BlogPullQuote>
             </div>
+
+            <BlogDivider />
 
             <div>
               <h2 className="font-serif text-2xl font-bold mb-3">Free exam study plan template</h2>
@@ -180,6 +221,13 @@ Sun  REST
                 <li>• <strong>For finals season (multiple exams in two weeks):</strong> Duplicate the Week 1 block for each exam. Assign the 48 hours before each to that subject only.</li>
                 <li>• <strong>For GCSEs / A-levels:</strong> Treat each subject as its own six-week run, staggered so the diagnostic and timed-practice weeks don't all collide.</li>
               </ul>
+
+              <BlogCallout title="The common failure mode" tone="accent">
+                Almost everyone overestimates what they'll do in week 6 and underestimates how
+                tired they'll be in week 1. Build the plan for the version of you that's already
+                been studying for a month - tired, distracted, slightly sick of it - not for the
+                version writing the plan today.
+              </BlogCallout>
             </div>
 
             <div>

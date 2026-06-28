@@ -110,7 +110,7 @@ function PhilosophySection() {
 
   const oldItems = ["Notes scattered across apps", "Ideas never link up", "You forget what's in there", "All the filing falls on you"];
   const newItems = [
-    { text: "AI explains what you're writing", icon: "✨" },
+    { text: "AI explains what you're writing", icon: "🧠" },
     { text: "Tags link related notes for you", icon: "🔗" },
     { text: "Recall built into the editor", icon: "🎯" },
     { text: "The collection gets smarter over time", icon: "🌱" },

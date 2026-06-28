@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 
 const REF = "blog-ai-literature-review";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ai-literature-review`;
@@ -94,7 +95,7 @@ export default function BlogAILiteratureReview() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - For Researchers · Updated June 2026
+              For Researchers · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Using <span className="text-primary">AI for Literature Reviews</span>:
@@ -107,6 +108,19 @@ export default function BlogAILiteratureReview() {
               wrangling more than twenty papers at once.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "AI is a research assistant, not a research substitute. Verify every claim before it lands in your literature review.",
+              "Use AI to summarise and cluster sources - never to write the synthesis paragraph.",
+              "Keep a 'citation provenance' column in your notes. Hallucinated references derail more theses than missed deadlines.",
+              "The best AI workflows leave a paper trail you'd be happy to show your supervisor.",
+            ]}
+          />
+
+          <BlogPullQuote cite="Every research advisor reviewing AI-assisted drafts in 2026">
+            An AI literature review tool should make you a better reader, not a faster fabricator.
+          </BlogPullQuote>
 
           <section className="mb-12 space-y-12">
             <div>

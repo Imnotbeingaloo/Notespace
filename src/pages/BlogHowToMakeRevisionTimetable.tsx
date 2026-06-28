@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 
 const REF = "blog-how-to-make-a-revision-timetable";
@@ -108,7 +109,7 @@ export default function BlogHowToMakeRevisionTimetable() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Guides · Updated June 2026
+              Guides · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               How to make a <span className="text-primary">revision timetable</span> (GCSE &amp; A-level)
@@ -119,6 +120,19 @@ export default function BlogHowToMakeRevisionTimetable() {
               free weekly template you can copy today.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "Build the timetable for your real schedule - not the idealised one you wish you had.",
+              "Rotate subjects daily. Single-subject days kill retention by week three.",
+              "Plan rest days in. The plan that doesn't include rest is the plan you'll abandon by week two.",
+              "A timetable you keep imperfectly beats a perfect timetable you abandon.",
+            ]}
+          />
+
+          <BlogPullQuote cite="Every tutor who has watched a beautiful plan get binned">
+            The best revision timetable isn't the one with the most colour-coded blocks. It's the one you still follow on a wet Wednesday in March.
+          </BlogPullQuote>
 
           <section className="mb-12 space-y-12">
             <div>

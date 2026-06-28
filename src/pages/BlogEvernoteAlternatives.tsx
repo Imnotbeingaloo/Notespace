@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -230,7 +231,7 @@ export default function BlogEvernoteAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Evernote Alternatives · Updated June 2026
+              Evernote Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">Evernote Alternatives</span> for 2026
@@ -241,6 +242,19 @@ export default function BlogEvernoteAlternatives() {
               actually move to - what each does well, where it falls short, and who it's for.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "Evernote's pricing changes and feature cuts pushed most long-time users out by 2025.",
+              "The best alternative depends on what you used Evernote for: web clipping, journaling, or research.",
+              "Plain-markdown exports are the new Evernote-defensive feature - check it before you migrate.",
+              "Migration is easier than it sounds. Most modern apps import .enex directly.",
+            ]}
+          />
+
+          <BlogPullQuote cite="Ten years of Evernote refugee stories, distilled">
+            Switching from Evernote isn't really a tooling problem. It's a trust problem. The app you pick next is the one you have to believe in for the next decade.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>

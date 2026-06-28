@@ -7,6 +7,14 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
+import {
+  BlogHero,
+  BlogKeyTakeaways,
+  BlogPullQuote,
+  BlogCallout,
+  BlogDivider,
+} from "@/components/blog/BlogVisuals";
+import heroAsset from "@/assets/blog/hero-writers.jpg.asset.json";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import scrivenerShot from "@/assets/blog/scrivener.png.asset.json";
@@ -179,10 +187,10 @@ export default function BlogBestNoteTakingAppForWriters() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-12"
+            className="mb-10"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - For Writers · Updated June 2026
+              For Writers · Updated June 2026 · 11 min read
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">Note Taking App for Writers</span> in 2026
@@ -195,24 +203,51 @@ export default function BlogBestNoteTakingAppForWriters() {
             </p>
           </motion.header>
 
+          <BlogHero
+            src={heroAsset.url}
+            alt="A writer's desk with a vintage typewriter, an open notebook with handwritten manuscript notes, and coffee."
+            caption="The tool matters less than the ritual. Pick one that survives the ritual."
+          />
+
+          <BlogKeyTakeaways
+            points={[
+              "Calm typography matters more than feature lists. You will type in this app for thousands of hours.",
+              "Research and drafting need to live in the same app, or the friction wins.",
+              "If the app dies tomorrow, can you get your words out? If no, walk away.",
+              "AI is useful as a second pair of eyes, not as a ghostwriter. Apps that try to draft for you tend to homogenise your voice.",
+            ]}
+          />
+
           <section className="mb-12">
-            <h2 className="font-serif text-2xl font-bold mt-8 mb-4">What writers actually need from a notes app</h2>
-            <p className="text-muted-foreground leading-relaxed mb-12">
+            <h2 className="font-serif text-3xl font-bold mt-8 mb-4">What writers actually need from a notes app</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
               We watched what writers do with notes - not what productivity blogs say they should
               do - and ended up with four criteria. The app has to feel calm to type in. It has to
               hold research alongside drafts without making you switch tools. It has to let you
               export, so the work outlives the app. And if it has AI, the AI should help you
               think, not write the sentence for you.
             </p>
+            <BlogPullQuote cite="Every writer with more than three abandoned apps in their dock">
+              The tool is not the writing. But the wrong tool is a tax you pay every morning, and
+              by month four you stop opening it.
+            </BlogPullQuote>
 
-            <h2 className="font-serif text-2xl font-bold mb-6">The four picks</h2>
+            <h2 className="font-serif text-3xl font-bold mb-6 mt-10">The four picks</h2>
             <div className="space-y-8">
               {picks.map((p, i) => (
                 <AppDetailCard key={p.name} index={i + 1} {...p} />
               ))}
             </div>
 
-            <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
+            <BlogDivider />
+
+            <BlogCallout title="Most writers end up running two apps">
+              One for the manuscript, one for everything around it. Scrivener + Notebook Archive
+              is the most common combination we see; Obsidian + Ulysses is the runner-up. Pick
+              the manuscript tool for the project at hand, and the notes tool for the next decade.
+            </BlogCallout>
+
+            <h2 className="font-serif text-3xl font-bold mt-10 mb-4">How to pick the right one</h2>
             <ul className="space-y-3 text-muted-foreground">
               <li>• <strong>You're drafting a book:</strong> Scrivener, with Notebook Archive for the research notes.</li>
               <li>• <strong>You write essays, articles, or research notes daily:</strong> Notebook Archive.</li>

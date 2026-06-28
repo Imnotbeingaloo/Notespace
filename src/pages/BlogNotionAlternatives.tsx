@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -234,7 +235,7 @@ export default function BlogNotionAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Notion Alternatives · Updated June 2026
+              Notion Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">Notion Alternatives</span> for 2026
@@ -246,6 +247,19 @@ export default function BlogNotionAlternatives() {
               and who it's for.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "Notion is brilliant for teams and brutal for solo note-takers. Pick the alternative that matches the actual use case.",
+              "Speed matters more than feature counts. If you don't open it, the features don't matter.",
+              "Markdown export is your insurance policy. Verify it before you migrate.",
+              "The best Notion alternative for you might just be: less Notion.",
+            ]}
+          />
+
+          <BlogPullQuote cite="The pattern after years of switcher stories">
+            Most people who switch from Notion don't switch to one app. They switch to two simpler ones that don't try to be everything.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>

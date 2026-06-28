@@ -188,7 +188,7 @@ export default function BlogIndex() {
             className="mb-16 text-center"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - The Notebook Archive Blog
+              The Notebook Archive Blog
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Writing about <span className="text-primary">writing, notes, and the tools between them</span>

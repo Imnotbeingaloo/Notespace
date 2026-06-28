@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -186,7 +187,7 @@ export default function BlogAINoteTakingAppForStudents() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - For Students · Updated June 2026
+              For Students · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">AI Note Taking App for Students</span> in 2026
@@ -198,6 +199,19 @@ export default function BlogAINoteTakingAppForStudents() {
               screenshots, pros, cons, and where each one fits.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "The best AI for students explains - it doesn't write your essay.",
+              "Free tiers vary wildly. Compare the AI usage cap, not the headline price.",
+              "Look for apps where the AI has read your notes, not just generic GPT-in-a-sidebar.",
+              "If you can't export your notes as plain markdown, you don't really own them.",
+            ]}
+          />
+
+          <BlogPullQuote cite="Consistent finding across recent learning-science studies">
+            Students who use AI to skip the thinking score worse than students who don't use AI at all. Use it to deepen understanding, never to bypass it.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">What students actually need</h2>

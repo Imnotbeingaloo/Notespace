@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 
 const REF = "blog-how-to-make-a-study-plan";
@@ -108,7 +109,7 @@ export default function BlogHowToMakeStudyPlan() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Guides · Updated June 2026
+              Guides · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               How to make a <span className="text-primary">study plan</span> (with a free weekly template)
@@ -119,6 +120,19 @@ export default function BlogHowToMakeStudyPlan() {
               weekly study schedule you can use today.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "A study plan is a contract with future-you. Make it one you'd actually sign.",
+              "Reverse-engineer from the goal, not from the textbook chapters.",
+              "Weekly review beats daily perfection. Reset on Sundays, not Mondays.",
+              "If your plan has no slack week, it's not a plan - it's a wish.",
+            ]}
+          />
+
+          <BlogPullQuote cite="What experienced tutors quietly know">
+            Every working study plan eventually has to survive a bad week. Build for that week, not the first one.
+          </BlogPullQuote>
 
           <section className="mb-12 space-y-12">
             <div>

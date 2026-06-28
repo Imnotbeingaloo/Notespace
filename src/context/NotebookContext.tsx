@@ -77,7 +77,7 @@ interface NotebookContextType {
 const NotebookContext = createContext<NotebookContextType | null>(null);
 
 const EMOJIS = ["📓", "📕", "📗", "📘", "📙", "📔", "📒", "🗂️", "💡", "🔬", "🎯", "✏️"];
-const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "✨"];
+const NOTE_EMOJIS = ["📝", "📄", "🗒️", "✏️", "💭", "💡", "⭐", "🔖", "📌", "🎯", "🧠", "📓"];
 const STANDALONE_NOTES_LABEL = "Notes";
 const SYSTEM_NOTE_CONTAINER_NAMES = new Set([STANDALONE_NOTES_LABEL, "Legacy Notes"]);
 

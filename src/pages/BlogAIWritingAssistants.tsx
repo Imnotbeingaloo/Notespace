@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 import { FurtherReading } from "@/components/FurtherReading";
 
@@ -226,7 +227,7 @@ export default function BlogAIWritingAssistants() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - AI Writing · Updated June 2026
+              AI Writing · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               The Best <span className="text-primary">AI Writing Assistants</span> for Note-Takers in 2026
@@ -238,6 +239,19 @@ export default function BlogAIWritingAssistants() {
               These are the six apps that actually do that.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "AI writing assistants flatten voice by default. The best ones offer options instead of overwrites.",
+              "Real-time grammar tools (Grammarly) and generative drafting tools (ChatGPT) solve different problems.",
+              "Watch what AI tools do to your sentences after a month. If they all sound similar, the tool is winning.",
+              "Treat AI suggestions like a copy editor's notes - useful, but you have the final say.",
+            ]}
+          />
+
+          <BlogPullQuote cite="A working writer's quiet preference, repeated everywhere">
+            The goal isn't to write faster. It's to write better, more often. Most AI tools optimise for the wrong one.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>

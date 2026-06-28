@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -230,7 +231,7 @@ export default function BlogOneNoteAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - OneNote Alternatives · Updated June 2026
+              OneNote Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">OneNote Alternatives</span> for 2026
@@ -242,6 +243,19 @@ export default function BlogOneNoteAlternatives() {
               actually move to.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "OneNote's free-form canvas is unique. Most alternatives are tidier but less flexible.",
+              "If you live in the Microsoft ecosystem, the case to leave is weaker than it looks.",
+              "Students and tablet writers should test handwriting support before switching - it's uneven across the field.",
+              "Search is the silent killer feature. The best OneNote alternative is the one whose search you can't trip up.",
+            ]}
+          />
+
+          <BlogPullQuote cite="An honest assessment after years of cross-app testing">
+            OneNote isn't really competing with the modern note app stack. It's a different category of tool, and that's both its strength and its problem.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>

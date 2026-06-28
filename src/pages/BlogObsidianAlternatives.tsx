@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -233,7 +234,7 @@ export default function BlogObsidianAlternatives() {
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              - Obsidian Alternatives · Updated June 2026
+              Obsidian Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Six Honest <span className="text-primary">Obsidian Alternatives</span> for 2026
@@ -245,6 +246,19 @@ export default function BlogObsidianAlternatives() {
               where it falls short, and who it's for.
             </p>
           </motion.header>
+
+          <BlogKeyTakeaways
+            points={[
+              "Obsidian's strength is local files. Its weakness is that you assemble the workflow yourself.",
+              "The right alternative depends on whether you want less setup, more collaboration, or built-in AI.",
+              "Plain markdown files travel between most apps in this list. Migration is genuinely easy.",
+              "If you love Obsidian's plugin model, almost nothing else compares. Don't switch just to switch.",
+            ]}
+          />
+
+          <BlogPullQuote cite="A long-time Obsidian user, eventually">
+            Obsidian is the IDE of note-taking. If you want a notebook, that distinction matters.
+          </BlogPullQuote>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>
