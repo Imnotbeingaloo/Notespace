@@ -284,14 +284,14 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             backgroundSize: "24px 24px",
           }}
         />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-12">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-primary/80 font-mono mb-3">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
+          <p className="text-[11px] uppercase tracking-[0.25em] text-primary/80 font-mono mb-2">
             ◆ Your Library
           </p>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-foreground tracking-tight break-words">
+          <h1 className="font-serif text-2xl sm:text-4xl font-bold text-foreground tracking-tight break-words">
             {profile?.display_name ? `Welcome back, ${profile.display_name}.` : "Welcome back."}
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-3 max-w-xl">
+          <p className="text-sm text-muted-foreground mt-2 max-w-xl">
             {notebooks.length} {notebooks.length === 1 ? "notebook" : "notebooks"} · {totalNotes}{" "}
             {totalNotes === 1 ? "note" : "notes"}. Pick one up where you left off.
           </p>
@@ -314,14 +314,14 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                   <DropdownMenuContent align="start" className="w-44">
                     <DropdownMenuItem
                       onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
-                      className="gap-2 cursor-pointer"
+                      className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
                     >
                       <FileText className="h-4 w-4 text-primary" />
                       <span>Note</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
-                      className="gap-2 cursor-pointer"
+                      className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
                     >
                       <BookOpen className="h-4 w-4 text-primary" />
                       <span>Notebook</span>
