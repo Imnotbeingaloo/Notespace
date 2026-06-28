@@ -19,9 +19,9 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid gap-10 md:gap-x-10 md:gap-y-10 md:grid-cols-2 lg:gap-12 lg:grid-cols-[minmax(0,1fr)_210px_210px_210px_minmax(0,1fr)] mb-16"
+          className="grid gap-10 md:gap-x-10 md:gap-y-10 md:grid-cols-2 lg:gap-12 lg:grid-cols-[240px_180px_180px_180px_minmax(0,1fr)] mb-16"
         >
-          <motion.div className="lg:w-min" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
+          <motion.div className="lg:max-w-[230px]" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
             <motion.div
               className="flex items-center gap-2 mb-4"
               initial={{ opacity: 0, x: -20 }}
