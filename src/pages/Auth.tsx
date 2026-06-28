@@ -59,7 +59,13 @@ const emailDomainProvider = (email: string): { name: string; url: string } | nul
 };
 
 const AuthPage = () => {
-  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">(() => {
+    try {
+      return localStorage.getItem("hasVisitedAuth") ? "login" : "signup";
+    } catch {
+      return "signup";
+    }
+  });
   const [authMethod, setAuthMethod] = useState<null | "email">(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,8 +84,32 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    try { localStorage.setItem("hasVisitedAuth", "1"); } catch {}
+  }, []);
+
+  useEffect(() => {
     if (!authLoading && user) navigate("/", { replace: true });
   }, [user, authLoading, navigate]);
+
+  // Cross-tab dedup: if the user verifies their email in another tab, that
+  // tab broadcasts 'verified'. This tab takes over and acks so the
+  // verification tab can close itself instead of leaving two tabs open.
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return;
+    const ch = new BroadcastChannel("na-auth");
+    const onMsg = (e: MessageEvent) => {
+      if (e.data?.type === "verified") {
+        ch.postMessage({ type: "awaiting-ack" });
+        navigate("/home?welcome=1", { replace: true });
+      }
+    };
+    ch.addEventListener("message", onMsg);
+    if (checkEmail) ch.postMessage({ type: "awaiting" });
+    return () => {
+      ch.removeEventListener("message", onMsg);
+      ch.close();
+    };
+  }, [checkEmail, navigate]);
 
   const emailValid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), [email]);
   const pwChecks = useMemo(() => getPasswordChecks(password), [password]);
@@ -444,7 +474,7 @@ const AuthPage = () => {
 
         <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
           <div role="tablist" aria-label="Authentication mode" className="flex gap-1 bg-muted rounded-lg p-1 mb-6">
-            {(["login", "signup"] as const).map((m) => {
+            {(["signup", "login"] as const).map((m) => {
               const active = (mode === m) || (mode === "forgot" && m === "login");
               return (
                 <button
