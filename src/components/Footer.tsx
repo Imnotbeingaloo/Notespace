@@ -14,7 +14,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid gap-10 md:grid-cols-2 lg:grid-cols-5 mb-16"
+          className="grid gap-10 md:gap-8 md:grid-cols-2 lg:gap-6 xl:gap-8 lg:grid-cols-[1.1fr_1fr_1.15fr_1fr_1fr] mb-16"
         >
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
             <motion.div
@@ -31,10 +31,11 @@ export default function Footer() {
                 height={28}
                 loading="lazy"
                 decoding="async"
-                className="h-[1.35rem] w-[1.35rem] object-contain shrink-0 -translate-y-[2px]"
+                className="h-[1.4rem] w-[1.4rem] object-contain shrink-0"
               />
-              <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap -translate-y-[2px]">Notebook Archive</span>
+              <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap leading-none">Notebook Archive</span>
             </motion.div>
+
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
               The intelligent note-taking app that helps you capture, organize, and truly understand your ideas. Built for thinkers who demand more from their tools.
             </p>
