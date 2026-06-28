@@ -447,6 +447,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote, isOverrideActive } = useNotebooks();
   const { user } = useAuth();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [wordCountGoalEnabled] = useWordCountGoalEnabled();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
