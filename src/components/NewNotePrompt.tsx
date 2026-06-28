@@ -19,6 +19,7 @@ interface NewNotePromptProps {
   noteCount: number;
   onCreateNew: (title?: string, content?: string) => void;
   onImportAndCreate: (content: string, fileName: string) => void;
+  onBack?: () => void;
 }
 
 const ALLOWED_EXTENSIONS = [".txt", ".md", ".markdown", ".html", ".htm", ".csv", ".json", ".pdf"];
@@ -28,7 +29,7 @@ function stripHtml(html: string): string {
   return doc.body.textContent || "";
 }
 
-export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreateNew, onImportAndCreate }: NewNotePromptProps) {
+export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreateNew, onImportAndCreate, onBack }: NewNotePromptProps) {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState("");
