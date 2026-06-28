@@ -122,26 +122,12 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
         className="w-[calc(100vw-2rem)] max-w-[460px] sm:max-w-[460px] p-0 overflow-visible border-0 bg-transparent shadow-none data-[state=open]:animate-none data-[state=closed]:animate-[fade-out_0.45s_ease-out,scale-out_0.45s_ease-out]"
         hideClose={step !== "ask"}
       >
-        {/* Stacked paper effect with subtle pointer-driven parallax tilt */}
+        {/* Stacked paper effect: two offset sheets behind the main card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.82, y: 32, rotate: -1.5 }}
           animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
           transition={reduceMotion ? { duration: 0.2 } : spring}
-          onPointerMove={(e) => {
-            if (reduceMotion) return;
-            const el = e.currentTarget as HTMLDivElement;
-            const r = el.getBoundingClientRect();
-            const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
-            const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
-            const rx = (-dy * 3).toFixed(2);
-            const ry = (dx * 3).toFixed(2);
-            el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-          }}
-          onPointerLeave={(e) => {
-            (e.currentTarget as HTMLDivElement).style.transform = "";
-          }}
-          className="relative will-change-transform transition-transform duration-200"
-          style={{ transformStyle: "preserve-3d" }}
+          className="relative"
         >
           {/* Back sheets - peek out from behind the main card (reduced offsets on small screens) */}
           <div
@@ -152,7 +138,6 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
             aria-hidden
             className="absolute inset-0 rounded-[14px] bg-card border border-border/50 shadow-md rotate-[0.8deg] translate-x-[2px] translate-y-[2px] sm:rotate-[1.4deg] sm:translate-x-[4px] sm:translate-y-[3px]"
           />
-
 
           {/* Main card - index card / bookplate */}
           <div className="relative rounded-[14px] bg-card border border-border shadow-2xl overflow-hidden">

@@ -267,23 +267,12 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
 
             <div className="flex items-center gap-1">
-              {/* Mobile-only ambient progress chip */}
-              {(notebooks.length > 0 || standaloneNotes.length > 0) && (
-                <span
-                  className="md:hidden mr-1 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-medium tabular-nums"
-                  aria-label={`${totalNotes + standaloneNotes.length} notes in your library`}
-                >
-                  <FileText className="h-3 w-3" />
-                  {totalNotes + standaloneNotes.length}
-                </span>
-              )}
               <OnboardingHelp />
               <HomeHeaderMenu trashCount={trashCount} />
             </div>
           </div>
         </header>
       </TooltipProvider>
-
 
       {/* Hero */}
       <div className="relative border-b border-border overflow-hidden">
@@ -308,60 +297,59 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             {totalNotes === 1 ? "note" : "notes"}. Pick one up where you left off.
           </p>
 
-          {/* Quick actions row. First button pulses a soft ring when library is empty. */}
+          {/* Quick actions row - separated from the notebook grid */}
           <div className="flex flex-wrap items-center gap-2 mt-6">
-            {(() => {
-              const isEmpty = notebooks.length === 0 && standaloneNotes.length === 0;
-              const pulseRing = isEmpty
-                ? " ring-2 ring-primary/50 ring-offset-2 ring-offset-background animate-pulse"
-                : "";
-              return tempEnabled ? (
-                (onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        data-testid="home-create"
-                        className={`inline-flex w-44 items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]${pulseRing}`}
-                      >
-                        <Plus className="h-4 w-4" />
-                        Create
-                        <ChevronDown className="h-3.5 w-3.5 opacity-80" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-44">
-                      <DropdownMenuItem onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()} className="gap-2">
-                        <FileText className="h-4 w-4 text-primary" />
-                        <span>Note</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()} className="gap-2">
-                        <BookOpen className="h-4 w-4 text-primary" />
-                        <span>Notebook</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )
-              ) : (
-                <>
-                  <button
-                    onClick={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
-                    data-testid="home-create-note"
-                    className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]${pulseRing}`}
-                  >
-                    <FileText className="h-4 w-4" />
-                    New Note
-                  </button>
-                  <button
-                    onClick={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
-                    data-testid="home-create-notebook"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
-                  >
-                    <BookOpen className="h-4 w-4" />
-                    New Notebook
-                  </button>
-                </>
-              );
-            })()}
-
+            {tempEnabled ? (
+              (onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      data-testid="home-create"
+                      className="inline-flex w-44 items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Create
+                      <ChevronDown className="h-3.5 w-3.5 opacity-80" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-44">
+                    <DropdownMenuItem
+                      onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
+                      className="gap-2"
+                    >
+                      <FileText className="h-4 w-4 text-primary" />
+                      <span>Note</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
+                      className="gap-2"
+                    >
+                      <BookOpen className="h-4 w-4 text-primary" />
+                      <span>Notebook</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )
+            ) : (
+              <>
+                <button
+                  onClick={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
+                  data-testid="home-create-note"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                >
+                  <FileText className="h-4 w-4" />
+                  New Note
+                </button>
+                <button
+                  onClick={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
+                  data-testid="home-create-notebook"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  New Notebook
+                </button>
+              </>
+            )}
             {tempEnabled && onCreateScratchNote && (
               <button
                 onClick={onCreateScratchNote}
