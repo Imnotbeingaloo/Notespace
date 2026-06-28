@@ -215,35 +215,35 @@ const AuthPage = () => {
     setLoading(true);
 
     if (mode === "login") {
+      // Kick off the existence check in parallel with sign-in so the
+      // post-error branch resolves instantly instead of waiting on a cold call.
+      const existsPromise = supabase.functions
+        .invoke("check-email-exists", { body: { email: email.trim(), logFailure: true } })
+        .then(({ data }) => (data?.exists ?? null) as boolean | null)
+        .catch(() => null);
+
       const { error } = await signIn(email, password);
       if (error) {
         const m = error.message.toLowerCase();
         if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
-          // Wait for the email-existence check to know whether to say
-          // "no account" vs "incorrect password" - never assume.
-          try {
-            const { data } = await supabase.functions.invoke("check-email-exists", {
-              body: { email: email.trim(), logFailure: true },
-            });
-            if (data && data.exists === false) {
-              setUnknownEmail(email.trim());
-              setConfirmPassword(password);
-              setNotice("");
-              setError("Oops - we couldn't find an account with that email. Try creating one below.");
-              setMode("signup");
-              setHighlightEmail(true);
-              setTimeout(() => setHighlightEmail(false), 1600);
-            } else {
-              setError("Incorrect password. Try again or reset it below.");
-            }
-          } catch {
-            setError("Sign-in failed. Double-check your email and password, then try again.");
+          const exists = await existsPromise;
+          if (exists === false) {
+            setUnknownEmail(email.trim());
+            setConfirmPassword(password);
+            setNotice("");
+            setError("Oops - we couldn't find an account with that email. Try creating one below.");
+            setMode("signup");
+            setHighlightEmail(true);
+            setTimeout(() => setHighlightEmail(false), 1600);
+          } else {
+            setError("Incorrect password. Try again or reset it below.");
           }
           setLoading(false);
           return;
         } else {
           setError(friendlyError(error.message, "login").message);
         }
+
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
         navigate("/app");

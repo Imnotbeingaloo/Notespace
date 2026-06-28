@@ -271,7 +271,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
           <p className="text-[11px] uppercase tracking-[0.25em] text-primary/80 font-mono mb-3">
             ◆ Your Library
           </p>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-foreground tracking-tight">
+          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-foreground tracking-tight break-words">
             {profile?.display_name ? `Welcome back, ${profile.display_name}.` : "Welcome back."}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-3 max-w-xl">
