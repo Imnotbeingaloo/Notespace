@@ -55,6 +55,7 @@ const TemplateRevisionTimetable = lazy(() => import("./pages/TemplateRevisionTim
 const BlogGCSERevisionGuide = lazy(() => import("./pages/BlogGCSERevisionGuide"));
 const BlogALevelRevisionGuide = lazy(() => import("./pages/BlogALevelRevisionGuide"));
 const BlogHSCVCEStudyNotes = lazy(() => import("./pages/BlogHSCVCEStudyNotes"));
+const PomodoroNotes = lazy(() => import("./pages/PomodoroNotes"));
 
 
 
@@ -181,6 +182,7 @@ const App = () => (
                 <Route path="/study-planner" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><StudyPlanner /></Suspense>} />
                 <Route path="/revision-timetable" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><RevisionTimetable /></Suspense>} />
                 <Route path="/templates/revision-timetable-template" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><TemplateRevisionTimetable /></Suspense>} />
+                <Route path="/pomodoro-notes" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><PomodoroNotes /></Suspense>} />
 
 
                 <Route path="/use-cases" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCasesIndex /></Suspense>} />

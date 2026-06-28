@@ -44,6 +44,7 @@ export const PUBLIC_ROUTES: PublicRoute[] = [
   { path: "/study-planner", changefreq: "monthly", priority: "0.9" },
   { path: "/revision-timetable", changefreq: "monthly", priority: "0.9" },
   { path: "/templates/revision-timetable-template", changefreq: "monthly", priority: "0.9" },
+  { path: "/pomodoro-notes", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases", changefreq: "monthly", priority: "0.8" },
   { path: "/use-cases/students", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases/writers", changefreq: "monthly", priority: "0.9" },
