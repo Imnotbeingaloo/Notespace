@@ -167,7 +167,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.3, ease }}
-                  className="relative pl-[72px] pr-9 pt-9 pb-9"
+                  className="relative pl-[64px] sm:pl-[72px] pr-6 sm:pr-9 pt-8 sm:pt-9 pb-8 sm:pb-9"
                 >
                   {/* Headline */}
                   <motion.h2
