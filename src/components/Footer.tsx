@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 const linkClass =
-  "inline-block text-sm text-muted-foreground hover:text-primary transition-all duration-200 hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm";
+  "inline-block text-sm text-muted-foreground hover:text-primary focus-visible:text-primary transition-all duration-200 hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:hover:translate-x-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm";
 const headingClass =
-  "text-sm font-semibold text-foreground mb-5 uppercase tracking-wider transition-colors duration-200 hover:text-primary";
+  "text-sm font-semibold text-foreground mb-5 uppercase tracking-wider";
 
 export default function Footer() {
   const { user } = useAuth();
