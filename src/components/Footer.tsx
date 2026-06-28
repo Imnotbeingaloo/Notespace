@@ -14,7 +14,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid gap-10 md:grid-cols-4 mb-16"
+          className="grid gap-10 md:grid-cols-2 lg:grid-cols-5 mb-16"
         >
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
             <motion.div
@@ -50,6 +50,18 @@ export default function Footer() {
               <li><Link to="/how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">How It Works</Link></li>
               <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Blog</Link></li>
               <li><Link to="/use-cases" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Use Cases</Link></li>
+              <li><Link to="/templates" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Templates</Link></li>
+            </ul>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}>
+            <h4 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">For Students</h4>
+            <ul className="space-y-3">
+              <li><Link to="/study-planner" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Study Planner</Link></li>
+              <li><Link to="/revision-timetable" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Revision Timetable Maker</Link></li>
+              <li><Link to="/templates/revision-timetable-template" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">Revision Timetable Template</Link></li>
+              <li><Link to="/blog/gcse-revision-guide-2026" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">GCSE Revision Guide</Link></li>
+              <li><Link to="/blog/a-level-revision-guide-2026" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">A-Level Revision Guide</Link></li>
             </ul>
           </motion.div>
 

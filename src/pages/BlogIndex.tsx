@@ -27,6 +27,30 @@ const posts = [
     tag: "Guides",
   },
   {
+    slug: "gcse-revision-guide-2026",
+    title: "The 2026 GCSE Revision Guide - How to Revise for Every Subject",
+    excerpt:
+      "Subject-by-subject GCSE revision techniques, how many hours to do, and a free revision timetable you can copy in one click.",
+    date: "Jun 2026",
+    tag: "Guides",
+  },
+  {
+    slug: "a-level-revision-guide-2026",
+    title: "The 2026 A-Level Revision Guide - How to Revise for Every Subject",
+    excerpt:
+      "Subject-by-subject A-level revision techniques, pacing for the final 8 weeks, and a free A-level revision timetable template.",
+    date: "Jun 2026",
+    tag: "Guides",
+  },
+  {
+    slug: "hsc-vce-study-notes-guide",
+    title: "HSC & VCE Study Notes - How to Make Notes That Actually Work",
+    excerpt:
+      "Structure, per-subject techniques, and the principle that separates HSC and VCE notes that move ATAR from notes that just look pretty.",
+    date: "Jun 2026",
+    tag: "For Students",
+  },
+  {
     slug: "how-to-make-a-revision-timetable",
     title: "How to Make a Revision Timetable (GCSE & A-level)",
     excerpt:
