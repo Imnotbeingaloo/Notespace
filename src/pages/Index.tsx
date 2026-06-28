@@ -16,7 +16,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { HomeView } from "@/components/HomeView";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
-import { NewNotePrompt } from "@/components/NewNotePrompt";
+
 import { RenameDuplicateDialog } from "@/components/RenameDuplicateDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 import { NoindexHead } from "@/components/NoindexHead";
@@ -330,49 +330,6 @@ function AppContent() {
               </div>
             ) : opening ? (
               <LoadingScreen label="Opening notebook…" />
-            ) : homeCreateKind === "note" ? (
-              <NewNotePrompt
-                notebookName="New Note"
-                notebookEmoji="📝"
-                noteCount={0}
-                onCreateNew={async (title?: string, content?: string) => {
-                  setHomeCreateKind(null);
-                  setOpening(true);
-                  try {
-                    const created = await createStandaloneNote(title, undefined);
-                    if (created) {
-                      if (content) {
-                        await updateNote(null, created.noteId, { content });
-                      }
-                      setShowHome(false);
-                      const next = new URLSearchParams(searchParams);
-                      next.delete("notebook");
-                      next.set("note", created.noteId);
-                      setSearchParams(next, { replace: true });
-                    }
-                  } finally {
-                    window.setTimeout(() => setOpening(false), 400);
-                  }
-                }}
-                onImportAndCreate={async (content: string, fileName: string) => {
-                  setHomeCreateKind(null);
-                  setOpening(true);
-                  try {
-                    const baseTitle = fileName.replace(/\.[^.]+$/, "") || "Imported Note";
-                    const created = await createStandaloneNote(baseTitle, undefined);
-                    if (created) {
-                      await updateNote(null, created.noteId, { content });
-                      setShowHome(false);
-                      const next = new URLSearchParams(searchParams);
-                      next.delete("notebook");
-                      next.set("note", created.noteId);
-                      setSearchParams(next, { replace: true });
-                    }
-                  } finally {
-                    window.setTimeout(() => setOpening(false), 400);
-                  }
-                }}
-              />
             ) : showHome ? (
               <HomeView
                 onOpenNotebook={openNotebookFromHome}
@@ -387,6 +344,7 @@ function AppContent() {
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />
             )}
+
           </div>
           <AnimatePresence>
             {plannerOpen && (
@@ -448,6 +406,27 @@ function AppContent() {
           const id = await createNotebook(name, emoji);
           setHomeCreateKind(null);
           if (id) openNotebookFromHome(id);
+        }}
+      />
+
+      {/* Home dropdown - Note name + emoji prompt (mirrors notebook flow) */}
+      <CreateNotebookDialog
+        mode="single"
+        kind="note"
+        open={homeCreateKind === "note"}
+        onOpenChange={(o) => !o && setHomeCreateKind(null)}
+        onCreate={async (name, emoji) => {
+          setHomeCreateKind(null);
+          setOpening(true);
+          try {
+            const created = await createStandaloneNote(name, emoji);
+            if (created) {
+              setShowHome(false);
+              navigate(`/app?note=${created.noteId}`, { replace: true });
+            }
+          } finally {
+            window.setTimeout(() => setOpening(false), 400);
+          }
         }}
       />
 

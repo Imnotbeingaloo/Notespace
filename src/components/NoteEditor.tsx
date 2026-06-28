@@ -25,6 +25,7 @@ import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
+import { useNavigate } from "react-router-dom";
 
 import { X as XIcon, ChevronLeft, ChevronRight, RotateCcw, Sparkles, Trophy } from "lucide-react";
 
@@ -446,6 +447,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const { activeNotebook, activeNote, activeNotebookId, updateNote, createNote, isOverrideActive } = useNotebooks();
   const { user } = useAuth();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [wordCountGoalEnabled] = useWordCountGoalEnabled();
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -717,6 +719,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         notebookName={activeNotebook.name}
         notebookEmoji={activeNotebook.emoji}
         noteCount={activeNotebook.notes.length}
+        onBack={() => navigate("/home")}
         onCreateNew={(title?: string, content?: string) => activeNotebookId && createNote(activeNotebookId, title, content)}
         onImportAndCreate={async (content: string, fileName: string) => {
           if (!activeNotebookId) return;
