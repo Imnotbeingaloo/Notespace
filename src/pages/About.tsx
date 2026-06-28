@@ -135,10 +135,11 @@ function PhilosophySection() {
             />
           </div>
           <div className="flex justify-between mt-2 px-1">
-            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "old" ? "text-foreground font-semibold" : "text-muted-foreground/50"}`}>
+            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "old" ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
               Old Way
             </span>
-            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "new" ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
+            <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "new" ? "text-primary font-semibold" : "text-muted-foreground"}`}>
+
               Notebook Archive
             </span>
           </div>

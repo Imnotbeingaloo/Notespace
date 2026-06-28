@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 
 const REF = "blog-how-to-make-a-revision-timetable";
@@ -60,6 +61,7 @@ const jsonLd = [
     description:
       "A practical guide to building a GCSE or A-level revision timetable that survives until exams - includes a free weekly template.",
     datePublished: "2026-06-28",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/how-to-make-a-revision-timetable",
@@ -73,6 +75,10 @@ const jsonLd = [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "How to Make a Revision Timetable (GCSE & A-level, With Free Template)", path: "/blog/how-to-make-a-revision-timetable" },
+  ])
 ];
 
 export default function BlogHowToMakeRevisionTimetable() {

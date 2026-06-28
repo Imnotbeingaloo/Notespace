@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, NotebookPen, Layers, Brain, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 
 const CTA = "/auth?ref=blog-de&utm_source=blog&utm_medium=organic&utm_campaign=ki-notizen-app";
@@ -72,6 +73,7 @@ const jsonLd = [
     description:
       "Ein ehrlicher Vergleich der besten KI-Notizen-Apps für Autoren, Studierende und Forschende - Notebook Archive, Notion, Obsidian und Mem.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/ki-notizen-app",
@@ -86,6 +88,10 @@ const jsonLd = [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Die beste KI-Notizen-App 2026 - ehrlicher Vergleich", path: "/blog/ki-notizen-app" },
+  ])
 ];
 
 export default function BlogKiNotizenApp() {

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
@@ -187,6 +188,7 @@ const jsonLd = [
     description:
       "Six Notion alternatives compared honestly: Notebook Archive, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/notion-alternatives-2026",
@@ -200,6 +202,10 @@ const jsonLd = [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Notion Alternatives in 2026 - Honest Comparison", path: "/blog/notion-alternatives-2026" },
+  ])
 ];
 
 export default function BlogNotionAlternatives() {

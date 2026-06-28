@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
@@ -135,6 +136,7 @@ const jsonLd = [
     description:
       "An honest comparison of the four note taking apps that actually fit how writers work - Notebook Archive, Scrivener, Obsidian, and Ulysses.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/best-note-taking-app-for-writers",
@@ -148,6 +150,10 @@ const jsonLd = [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Best Note Taking App for Writers in 2026", path: "/blog/best-note-taking-app-for-writers" },
+  ])
 ];
 
 export default function BlogBestNoteTakingAppForWriters() {

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 import { FurtherReading } from "@/components/FurtherReading";
@@ -178,6 +179,7 @@ const jsonLd = [
     description:
       "Six honest picks for AI writing assistants built for note-takers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage:
@@ -192,6 +194,10 @@ const jsonLd = [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Best AI Writing Assistants for Note-Takers in 2026", path: "/blog/best-ai-writing-assistants-for-note-takers" },
+  ])
 ];
 
 export default function BlogAIWritingAssistants() {

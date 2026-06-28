@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
+import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
@@ -157,6 +158,7 @@ const jsonLd = [
     description:
       "Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
     datePublished: "2026-06-27",
+    dateModified: "2026-06-28",
     author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/ai-voice-notes-meeting-transcription",
@@ -170,6 +172,10 @@ const jsonLd = [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+  breadcrumbsJsonLd([
+    { name: "Blog", path: "/blog" },
+    { name: "Best AI Voice Note Taking and Meeting Transcription Apps in 2026", path: "/blog/ai-voice-notes-meeting-transcription" },
+  ])
 ];
 
 export default function BlogAIVoiceNotes() {
