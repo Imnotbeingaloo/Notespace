@@ -126,6 +126,8 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
+    // Reset splash flag so the entry animation replays when user navigates from website -> app/home
+    try { sessionStorage.removeItem("splashShown"); } catch {}
     if (fromApp) {
       // Clear state so refreshes don't replay the splash
       navigate(location.pathname, { replace: true, state: {} });
