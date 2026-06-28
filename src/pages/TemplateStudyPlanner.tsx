@@ -254,6 +254,7 @@ export default function TemplateStudyPlanner() {
           </div>
         </section>
 
+        <RelatedReading currentPath="/templates/study-planner" items={STUDY_PLANNER_RELATED} />
         <Footer />
       </main>
     </>

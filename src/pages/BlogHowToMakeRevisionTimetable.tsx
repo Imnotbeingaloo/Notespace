@@ -238,6 +238,7 @@ Sun  10:00-10:30  Weekly review
           </div>
         </article>
 
+        <RelatedReading currentPath="/blog/how-to-make-a-revision-timetable" items={STUDY_PLANNER_RELATED} />
         <Footer />
       </div>
     </>

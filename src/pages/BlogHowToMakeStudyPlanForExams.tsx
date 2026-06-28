@@ -214,6 +214,7 @@ Sun  REST
           </div>
         </article>
 
+        <RelatedReading currentPath="/blog/how-to-make-a-study-plan-for-exams" items={STUDY_PLANNER_RELATED} />
         <Footer />
       </div>
     </>
