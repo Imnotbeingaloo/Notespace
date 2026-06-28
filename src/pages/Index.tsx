@@ -167,10 +167,10 @@ function AppContent() {
   useEffect(() => {
     if (location.pathname === "/home") setShowHome(true);
     else if (location.pathname === "/app") {
-      if (urlNotebook) setShowHome(false);
-      else navigate("/home", { replace: true });
+      if (urlNotebook || urlNote) setShowHome(false);
+      else if (!notebooksLoading) navigate("/home", { replace: true });
     }
-  }, [location.pathname, urlNotebook, navigate]);
+  }, [location.pathname, urlNotebook, urlNote, notebooksLoading, navigate]);
 
   const openNotebookFromHome = useCallback(
     (notebookId: string) => {
