@@ -25,6 +25,7 @@ import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
+import { useNavigate } from "react-router-dom";
 
 import { X as XIcon, ChevronLeft, ChevronRight, RotateCcw, Sparkles, Trophy } from "lucide-react";
 
