@@ -7,6 +7,14 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
+import {
+  BlogHero,
+  BlogKeyTakeaways,
+  BlogPullQuote,
+  BlogCallout,
+  BlogDivider,
+} from "@/components/blog/BlogVisuals";
+import heroAsset from "@/assets/blog/hero-writers.jpg.asset.json";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import scrivenerShot from "@/assets/blog/scrivener.png.asset.json";
