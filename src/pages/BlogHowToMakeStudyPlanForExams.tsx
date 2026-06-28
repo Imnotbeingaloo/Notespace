@@ -221,6 +221,13 @@ Sun  REST
                 <li>• <strong>For finals season (multiple exams in two weeks):</strong> Duplicate the Week 1 block for each exam. Assign the 48 hours before each to that subject only.</li>
                 <li>• <strong>For GCSEs / A-levels:</strong> Treat each subject as its own six-week run, staggered so the diagnostic and timed-practice weeks don't all collide.</li>
               </ul>
+
+              <BlogCallout title="The common failure mode" tone="accent">
+                Almost everyone overestimates what they'll do in week 6 and underestimates how
+                tired they'll be in week 1. Build the plan for the version of you that's already
+                been studying for a month - tired, distracted, slightly sick of it - not for the
+                version writing the plan today.
+              </BlogCallout>
             </div>
 
             <div>
