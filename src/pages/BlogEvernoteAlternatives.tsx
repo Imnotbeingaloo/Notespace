@@ -216,7 +216,7 @@ export default function BlogEvernoteAlternatives() {
         type="article"
         title="Evernote Alternatives in 2026 - 6 Honest Picks Compared"
         description="Six Evernote alternatives compared with screenshots, pros and cons, and pricing - Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive."
-        path="/blog/evernote-alternatives-2026"
+        path="/blog/evernote-alternatives-2026" image="/og/og-evernote-alternatives-2026.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
