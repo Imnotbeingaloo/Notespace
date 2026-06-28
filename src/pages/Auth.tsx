@@ -186,27 +186,27 @@ const AuthPage = () => {
       if (error) {
         const m = error.message.toLowerCase();
         if (m.includes("invalid login credentials") || m.includes("invalid_credentials")) {
-          // Show immediate friendly message - no waiting on check-email-exists.
-          setError("Oops - we couldn't find that account. Try creating one if you don't have an account yet, or double-check your password.");
+          // Wait for the email-existence check to know whether to say
+          // "no account" vs "incorrect password" - never assume.
+          try {
+            const { data } = await supabase.functions.invoke("check-email-exists", {
+              body: { email: email.trim(), logFailure: true },
+            });
+            if (data && data.exists === false) {
+              setUnknownEmail(email.trim());
+              setConfirmPassword(password);
+              setNotice("");
+              setError("Oops - we couldn't find an account with that email. Try creating one below.");
+              setMode("signup");
+              setHighlightEmail(true);
+              setTimeout(() => setHighlightEmail(false), 1600);
+            } else {
+              setError("Incorrect password. Try again or reset it below.");
+            }
+          } catch {
+            setError("Sign-in failed. Double-check your email and password, then try again.");
+          }
           setLoading(false);
-          // Fire-and-forget existence check in the background so we can refine the
-          // message + auto-switch to signup when the email truly isn't registered.
-          supabase.functions
-            .invoke("check-email-exists", { body: { email: email.trim(), logFailure: true } })
-            .then(({ data }) => {
-              if (data && data.exists === false) {
-                setUnknownEmail(email.trim());
-                setConfirmPassword(password);
-                setNotice("");
-                setError("Oops - we couldn't find an account with that email. Try creating one below.");
-                setMode("signup");
-                setHighlightEmail(true);
-                setTimeout(() => setHighlightEmail(false), 1600);
-              } else if (data && data.exists === true) {
-                setError("Incorrect password. Try again or reset it below.");
-              }
-            })
-            .catch(() => {});
           return;
         } else {
           setError(friendlyError(error.message, "login").message);
