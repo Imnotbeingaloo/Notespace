@@ -207,7 +207,7 @@ function AppContent() {
 
       {/* Sidebar */}
       <AnimatePresence>
-        {!focusMode && !showHome && (
+        {!focusMode && (!showHome || (isMobile && sidebarOpen)) && (
           <motion.div
             initial={false}
             animate={{ width: "auto", opacity: 1 }}
@@ -373,6 +373,7 @@ function AppContent() {
                 onCreateScratchNote={tempNotesEnabled ? () => navigate("/app/temporary") : undefined}
                 onCreateSimpleNote={() => setCreateMenuOpen(true)}
                 onExitToWebsite={handleExitToWebsite}
+                onOpenSidebar={isMobile ? () => setSidebarOpen(true) : undefined}
               />
             ) : (
               <NoteEditor focusMode={focusMode} findReplaceOpen={findReplaceOpen} onFindReplaceChange={setFindReplaceOpen} />

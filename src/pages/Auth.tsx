@@ -464,7 +464,7 @@ const AuthPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md sm:max-w-[540px]"
       >
         <div className="flex items-center justify-center gap-2 mb-8">
           <img src="/logo.png" alt="" aria-hidden="true" className="h-[1.2rem] w-[1.2rem] object-contain" />
