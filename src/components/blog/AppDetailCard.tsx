@@ -43,7 +43,8 @@ export function AppDetailCard(p: AppDetailCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5 }}
-      className="border border-border rounded-xl overflow-hidden bg-card shadow-sm"
+      className="border border-border rounded-xl overflow-hidden bg-card shadow-sm cv-auto-card"
+      style={{ contentVisibility: p.index === 1 ? "visible" : "auto", containIntrinsicSize: "900px 720px" }}
     >
       <a
         href={resolvedHref}
@@ -54,7 +55,11 @@ export function AppDetailCard(p: AppDetailCardProps) {
         <img
           src={p.imageUrl}
           alt={p.imageAlt}
-          loading="lazy"
+          width={1600}
+          height={1000}
+          loading={p.index === 1 ? "eager" : "lazy"}
+          decoding="async"
+          {...({ fetchpriority: p.index === 1 ? "high" : "low" } as any)}
           className="w-full h-auto aspect-[16/10] object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
         />
       </a>
