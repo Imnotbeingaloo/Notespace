@@ -53,6 +53,7 @@ const TemplateStudyPlanner = lazy(() => import("./pages/TemplateStudyPlanner"));
 
 import { captureReferralFromUrl } from "@/lib/referral";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { BlogSkeleton } from "@/components/blog/BlogSkeleton";
 import { usePaperStyleTransition } from "@/hooks/use-paper-style";
 import { PaperStyleSwitcher } from "@/components/PaperStyleSwitcher";
 import { NetworkStatusToasts } from "@/components/NetworkStatusToasts";
@@ -150,22 +151,22 @@ const App = () => (
                 <Route path="/trash" element={<TrashPage />} />
                 <Route path="/app/temporary" element={<TemporaryWorkspacePage />} />
                 <Route path="/shared/:token" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><SharedNotePage /></Suspense>} />
-                <Route path="/blog/best-ai-note-taking-apps-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogBestAINoteTakingApps /></Suspense>} />
-                <Route path="/blog/best-note-taking-app-for-writers" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogBestNoteTakingAppForWriters /></Suspense>} />
-                <Route path="/blog" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogIndex /></Suspense>} />
-                <Route path="/blog/ai-note-taking-app-for-students" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAINoteTakingAppForStudents /></Suspense>} />
-                <Route path="/blog/ki-notizen-app" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogKiNotizenApp /></Suspense>} />
-                <Route path="/blog/notion-alternatives-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogNotionAlternatives /></Suspense>} />
-                <Route path="/blog/obsidian-alternatives-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogObsidianAlternatives /></Suspense>} />
-                <Route path="/blog/evernote-alternatives-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogEvernoteAlternatives /></Suspense>} />
-                <Route path="/blog/onenote-alternatives-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogOneNoteAlternatives /></Suspense>} />
-                <Route path="/blog/best-note-taking-app-2026" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogBestNoteTakingApp /></Suspense>} />
-                <Route path="/blog/ai-voice-notes-meeting-transcription" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAIVoiceNotes /></Suspense>} />
-                <Route path="/blog/best-ai-writing-assistants-for-note-takers" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAIWritingAssistants /></Suspense>} />
-                <Route path="/blog/ai-literature-review-guide" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAILiteratureReview /></Suspense>} />
-                <Route path="/blog/how-to-make-a-study-plan" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeStudyPlan /></Suspense>} />
-                <Route path="/blog/how-to-make-a-study-plan-for-exams" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeStudyPlanForExams /></Suspense>} />
-                <Route path="/blog/how-to-make-a-revision-timetable" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeRevisionTimetable /></Suspense>} />
+                <Route path="/blog/best-ai-note-taking-apps-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogBestAINoteTakingApps /></Suspense>} />
+                <Route path="/blog/best-note-taking-app-for-writers" element={<Suspense fallback={<BlogSkeleton />}><BlogBestNoteTakingAppForWriters /></Suspense>} />
+                <Route path="/blog" element={<Suspense fallback={<BlogSkeleton />}><BlogIndex /></Suspense>} />
+                <Route path="/blog/ai-note-taking-app-for-students" element={<Suspense fallback={<BlogSkeleton />}><BlogAINoteTakingAppForStudents /></Suspense>} />
+                <Route path="/blog/ki-notizen-app" element={<Suspense fallback={<BlogSkeleton />}><BlogKiNotizenApp /></Suspense>} />
+                <Route path="/blog/notion-alternatives-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogNotionAlternatives /></Suspense>} />
+                <Route path="/blog/obsidian-alternatives-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogObsidianAlternatives /></Suspense>} />
+                <Route path="/blog/evernote-alternatives-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogEvernoteAlternatives /></Suspense>} />
+                <Route path="/blog/onenote-alternatives-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogOneNoteAlternatives /></Suspense>} />
+                <Route path="/blog/best-note-taking-app-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogBestNoteTakingApp /></Suspense>} />
+                <Route path="/blog/ai-voice-notes-meeting-transcription" element={<Suspense fallback={<BlogSkeleton />}><BlogAIVoiceNotes /></Suspense>} />
+                <Route path="/blog/best-ai-writing-assistants-for-note-takers" element={<Suspense fallback={<BlogSkeleton />}><BlogAIWritingAssistants /></Suspense>} />
+                <Route path="/blog/ai-literature-review-guide" element={<Suspense fallback={<BlogSkeleton />}><BlogAILiteratureReview /></Suspense>} />
+                <Route path="/blog/how-to-make-a-study-plan" element={<Suspense fallback={<BlogSkeleton />}><BlogHowToMakeStudyPlan /></Suspense>} />
+                <Route path="/blog/how-to-make-a-study-plan-for-exams" element={<Suspense fallback={<BlogSkeleton />}><BlogHowToMakeStudyPlanForExams /></Suspense>} />
+                <Route path="/blog/how-to-make-a-revision-timetable" element={<Suspense fallback={<BlogSkeleton />}><BlogHowToMakeRevisionTimetable /></Suspense>} />
 
 
                 <Route path="/use-cases" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCasesIndex /></Suspense>} />

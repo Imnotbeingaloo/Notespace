@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { prefetchOnHover } from "@/lib/prefetch-route";
 
 interface RelatedItem {
   to: string;
@@ -27,6 +28,7 @@ export function RelatedReading({ currentPath, items }: RelatedReadingProps) {
             <li key={item.to}>
               <Link
                 to={item.to}
+                {...prefetchOnHover(item.to)}
                 className="block border border-border rounded-lg p-4 bg-card hover:bg-muted transition"
               >
                 <div className="font-semibold mb-1">{item.title}</div>

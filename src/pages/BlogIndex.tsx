@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { prefetchOnHover } from "@/lib/prefetch-route";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
@@ -185,6 +186,7 @@ export default function BlogIndex() {
               >
                 <Link
                   to={`/blog/${p.slug}`}
+                  {...prefetchOnHover(`/blog/${p.slug}`)}
                   className="block border border-border rounded-lg p-6 bg-card hover:border-primary/40 transition group"
                 >
                   <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">

@@ -52,16 +52,45 @@ export function AppDetailCard(p: AppDetailCardProps) {
         rel={linkRel}
         className="block border-b border-border bg-muted/30 overflow-hidden group"
       >
-        <img
-          src={p.imageUrl}
-          alt={p.imageAlt}
-          width={1600}
-          height={1000}
-          loading={p.index === 1 ? "eager" : "lazy"}
-          decoding="async"
-          {...({ fetchpriority: p.index === 1 ? "high" : "low" } as any)}
-          className="w-full h-auto aspect-[16/10] object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
-        />
+        {(() => {
+          // Derive optimized WebP variants from the original filename (e.g. /…/notebook-archive.png -> notebook-archive)
+          const m = /([^/]+)\.(png|jpg|jpeg)(?:\?|$)/i.exec(p.imageUrl);
+          const slug = m ? m[1] : null;
+          const eager = p.index === 1;
+          if (slug) {
+            return (
+              <picture>
+                <source
+                  type="image/webp"
+                  srcSet={`/blog-img/${slug}-800.webp 800w, /blog-img/${slug}-1600.webp 1600w`}
+                  sizes="(max-width: 768px) 100vw, 900px"
+                />
+                <img
+                  src={`/blog-img/${slug}-1600.webp`}
+                  alt={p.imageAlt}
+                  width={1600}
+                  height={1000}
+                  loading={eager ? "eager" : "lazy"}
+                  decoding="async"
+                  {...({ fetchpriority: eager ? "high" : "low" } as any)}
+                  className="w-full h-auto aspect-[16/10] object-cover object-top transition-transform duration-700 group-hover:scale-[1.02] bg-muted/40"
+                />
+              </picture>
+            );
+          }
+          return (
+            <img
+              src={p.imageUrl}
+              alt={p.imageAlt}
+              width={1600}
+              height={1000}
+              loading={eager ? "eager" : "lazy"}
+              decoding="async"
+              {...({ fetchpriority: eager ? "high" : "low" } as any)}
+              className="w-full h-auto aspect-[16/10] object-cover object-top transition-transform duration-700 group-hover:scale-[1.02] bg-muted/40"
+            />
+          );
+        })()}
       </a>
 
       <div className="p-6 md:p-8">
