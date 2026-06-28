@@ -212,7 +212,7 @@ export default function BlogAIWritingAssistants() {
         type="article"
         title="Best AI Writing Assistants for Note-Takers (2026)"
         description="Six honest picks for AI writing assistants built for note-takers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses. With pricing, pros and cons."
-        path="/blog/best-ai-writing-assistants-for-note-takers"
+        path="/blog/best-ai-writing-assistants-for-note-takers" image="/og/og-best-ai-writing-assistants-for-note-takers.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
