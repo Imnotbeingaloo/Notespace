@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 const linkClass =
-  "inline-block text-sm text-muted-foreground hover:text-primary transition-all duration-200 hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm";
+  "inline-block text-sm text-muted-foreground hover:text-primary focus-visible:text-primary transition-all duration-200 hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:hover:translate-x-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm";
 const headingClass =
-  "text-sm font-semibold text-foreground mb-5 uppercase tracking-wider transition-colors duration-200 hover:text-primary";
+  "text-sm font-semibold text-foreground mb-5 uppercase tracking-wider";
 
 export default function Footer() {
   const { user } = useAuth();
@@ -19,7 +19,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid gap-10 md:gap-x-10 md:gap-y-10 md:grid-cols-2 lg:gap-16 lg:grid-cols-[min-content_auto_auto_auto_1fr] mb-16"
+          className="grid gap-10 md:gap-x-10 md:gap-y-10 md:grid-cols-2 lg:gap-12 lg:grid-cols-[minmax(0,1fr)_210px_210px_210px_minmax(0,1fr)] mb-16"
         >
           <motion.div className="lg:w-min" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
             <motion.div
@@ -68,7 +68,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div className="lg:pl-[9px]" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}>
             <h4 className={headingClass}>For Students</h4>
             <ul className="space-y-3">
               <li><Link to="/study-planner" className={linkClass}>Study Planner</Link></li>
@@ -97,7 +97,7 @@ export default function Footer() {
             </p>
             <Link
               to={user ? "/app" : "/auth"}
-              className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300 motion-reduce:transition-none motion-reduce:hover:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               {user ? "Open App" : "Sign Up Free"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
