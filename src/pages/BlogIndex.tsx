@@ -26,6 +26,14 @@ const posts = [
     tag: "Guides",
   },
   {
+    slug: "how-to-make-a-revision-timetable",
+    title: "How to Make a Revision Timetable (GCSE & A-level)",
+    excerpt:
+      "A step-by-step guide to building a GCSE or A-level revision timetable you'll actually follow - includes a free weekly template.",
+    date: "Jun 2026",
+    tag: "Guides",
+  },
+  {
     slug: "ai-literature-review-guide",
     title: "Using AI for Literature Reviews: A Workflow for Researchers",
     excerpt:

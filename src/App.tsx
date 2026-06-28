@@ -46,6 +46,7 @@ const LearnIndex = lazy(() => import("./pages/LearnIndex"));
 const LearnEntry = lazy(() => import("./pages/LearnEntry"));
 const BlogHowToMakeStudyPlan = lazy(() => import("./pages/BlogHowToMakeStudyPlan"));
 const BlogHowToMakeStudyPlanForExams = lazy(() => import("./pages/BlogHowToMakeStudyPlanForExams"));
+const BlogHowToMakeRevisionTimetable = lazy(() => import("./pages/BlogHowToMakeRevisionTimetable"));
 const TemplateStudyPlanner = lazy(() => import("./pages/TemplateStudyPlanner"));
 
 
@@ -164,6 +165,8 @@ const App = () => (
                 <Route path="/blog/ai-literature-review-guide" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogAILiteratureReview /></Suspense>} />
                 <Route path="/blog/how-to-make-a-study-plan" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeStudyPlan /></Suspense>} />
                 <Route path="/blog/how-to-make-a-study-plan-for-exams" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeStudyPlanForExams /></Suspense>} />
+                <Route path="/blog/how-to-make-a-revision-timetable" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><BlogHowToMakeRevisionTimetable /></Suspense>} />
+
 
                 <Route path="/use-cases" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCasesIndex /></Suspense>} />
                 <Route path="/use-cases/students" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><UseCaseStudents /></Suspense>} />
