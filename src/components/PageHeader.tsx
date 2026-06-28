@@ -45,7 +45,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
             height={32}
             loading="eager"
             decoding="sync"
-            fetchPriority="high"
+            {...({ fetchpriority: "high" } as any)}
             className="h-[1.05rem] w-[1.05rem] sm:h-[1.2rem] sm:w-[1.2rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
           />
           <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">
