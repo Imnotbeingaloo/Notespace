@@ -106,7 +106,7 @@ export default function TemplateStudyPlanner() {
       <SeoHead
         title="Free Study Planner App & Exam Study Planner Template - Notebook Archive"
         description="A free study planner app with ready-made weekly and exam study planner templates. Build a study schedule, plan exam revision, and tick sessions off as you go."
-        path="/templates/study-planner"
+        path="/templates/study-planner" image="/og/og-templates-study-planner.jpg"
         jsonLd={jsonLd}
       />
 

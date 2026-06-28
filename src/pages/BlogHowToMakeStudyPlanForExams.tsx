@@ -94,7 +94,7 @@ export default function BlogHowToMakeStudyPlanForExams() {
         type="article"
         title="How to Make a Study Plan for Exams (Six-Week Template) - 2026"
         description="A six-week exam study plan template for finals, GCSEs, A-levels, MCAT, GRE, and LSAT. Includes a free study schedule you can copy."
-        path="/blog/how-to-make-a-study-plan-for-exams"
+        path="/blog/how-to-make-a-study-plan-for-exams" image="/og/og-how-to-make-a-study-plan-for-exams.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
