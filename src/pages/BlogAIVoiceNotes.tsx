@@ -190,7 +190,7 @@ export default function BlogAIVoiceNotes() {
         type="article"
         title="Best AI Voice Note Taking & Meeting Transcription Apps (2026)"
         description="Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem. With pricing, pros and cons."
-        path="/blog/ai-voice-notes-meeting-transcription"
+        path="/blog/ai-voice-notes-meeting-transcription" image="/og/og-ai-voice-notes-meeting-transcription.jpg"
         jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
