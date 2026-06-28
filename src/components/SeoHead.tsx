@@ -15,6 +15,8 @@ interface SeoHeadProps {
   image?: string;
   /** og:type value. Use "article" for blog posts; defaults to "website". */
   type?: "website" | "article";
+  /** Extra hreflang locales (e.g. ["en-GB","en-AU","en-US"]) all pointing at this same URL. */
+  alternateLocales?: string[];
 }
 
 const BASE_URL = "https://notebookarchive.lovable.app";
@@ -23,7 +25,7 @@ const BASE_URL = "https://notebookarchive.lovable.app";
  * Per-route head tags. Overrides the static <title>, meta description,
  * canonical, and og:* shipped in index.html for JS-executing crawlers.
  */
-export function SeoHead({ title, description, path, jsonLd, noindex, image, type }: SeoHeadProps) {
+export function SeoHead({ title, description, path, jsonLd, noindex, image, type, alternateLocales }: SeoHeadProps) {
   const url = `${BASE_URL}${path}`;
   const imagePath = image ?? "/og-image.jpg";
   const imageUrl = imagePath.startsWith("http") ? imagePath : `${BASE_URL}${imagePath}`;
@@ -32,6 +34,7 @@ export function SeoHead({ title, description, path, jsonLd, noindex, image, type
       ? jsonLd
       : [jsonLd]
     : [];
+  const extraLocales = alternateLocales ?? [];
 
   return (
     <Helmet>
@@ -39,6 +42,9 @@ export function SeoHead({ title, description, path, jsonLd, noindex, image, type
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
       <link rel="alternate" hrefLang="en" href={url} />
+      {extraLocales.map((loc) => (
+        <link key={loc} rel="alternate" hrefLang={loc} href={url} />
+      ))}
       <link rel="alternate" hrefLang="x-default" href={url} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
