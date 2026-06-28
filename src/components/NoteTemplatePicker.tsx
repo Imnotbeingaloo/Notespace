@@ -559,14 +559,14 @@ export function NoteTemplatePicker({ onSelect, onBack }: NoteTemplatePickerProps
       className="flex flex-col w-full max-w-5xl mx-auto px-4 sm:px-8 py-6"
     >
       {/* Compact header - no oversized hero copy */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center mb-5 gap-2">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors justify-self-start"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back
         </button>
-        <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground">Template Gallery</h2>
+        <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground text-center">Template Gallery</h2>
         <div className="w-10" />
       </div>
 
