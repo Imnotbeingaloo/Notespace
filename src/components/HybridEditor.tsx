@@ -303,9 +303,12 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
 
     // When notebook-paper is active, drop the wrapper's horizontal padding so the
     // ruled lines and red margin fill the writing area edge-to-edge.
+    // No `h-full` — let the wrapper grow with content so the parent's
+    // overflow-y-auto only kicks in once the user actually overflows the
+    // visible area (no phantom scrollbar on blank documents).
     const wrapperClass = paperStyle
-      ? "w-full min-h-full h-full relative flex flex-col"
-      : "w-full px-3 sm:px-8 py-4 sm:py-6 min-h-full h-full relative flex flex-col";
+      ? "w-full min-h-full relative flex flex-col"
+      : "w-full px-3 sm:px-8 py-4 sm:py-6 min-h-full relative flex flex-col";
     return (
       <div className={wrapperClass}>
         <FloatingToolbar
