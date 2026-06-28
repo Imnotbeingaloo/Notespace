@@ -106,8 +106,8 @@ export function CreateNotebookDialog({
       : title || (activeKind === "note" ? "Create Note" : "Create Notebook");
   const cta = submitLabel || (activeKind === "note" ? "Create Note" : "Create Notebook");
 
-  // Smooth slide+fade transition between steps.
-  const stepTransition = { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
+  // Smooth slide+fade transition between steps (GPU-friendly: opacity + transform only).
+  const stepTransition = { duration: 0.22, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
     <AnimatePresence>
@@ -117,10 +117,10 @@ export function CreateNotebookDialog({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.15 }}
         >
           <motion.div
-            className="absolute inset-0 bg-background/60 backdrop-blur-md"
+            className="absolute inset-0 bg-background/70"
             onClick={() => !submitting && onOpenChange(false)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -130,11 +130,11 @@ export function CreateNotebookDialog({
             role="dialog"
             aria-modal="true"
             aria-label={title || "Create"}
-            initial={{ opacity: 0, scale: 0.94, y: 12 }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 8 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            layout
+            exit={{ opacity: 0, scale: 0.97, y: 6 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            style={{ willChange: "transform, opacity" }}
             className="relative w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl shadow-primary/10 overflow-hidden"
           >
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
@@ -164,9 +164,9 @@ export function CreateNotebookDialog({
               {step === "choose" ? (
                 <motion.div
                   key="choose"
-                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
                   transition={stepTransition}
                   className="px-6 py-5"
                 >
@@ -201,9 +201,9 @@ export function CreateNotebookDialog({
               ) : (
                 <motion.div
                   key="form"
-                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
                   transition={stepTransition}
                 >
                   <div className="px-6 py-4 space-y-4">
