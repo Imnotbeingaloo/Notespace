@@ -123,14 +123,14 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
             exit={{ opacity: 0, y: -10 }}
             className="flex flex-col w-full max-w-xl mx-auto px-4 sm:px-6"
           >
-            <div className="flex items-center justify-between mb-5">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center mb-5 gap-2">
               <button
                 onClick={() => setView("main")}
-                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors justify-self-start"
               >
                 <ArrowLeft className="h-3.5 w-3.5" /> Back
               </button>
-              <h2 className="font-serif text-xl font-bold text-foreground">Choose a template</h2>
+              <h2 className="font-serif text-xl font-bold text-foreground text-center">Choose a template</h2>
               <div className="w-10" />
             </div>
 
