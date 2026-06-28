@@ -170,6 +170,6 @@ export function AppDetailCard(p: AppDetailCardProps) {
           </p>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
