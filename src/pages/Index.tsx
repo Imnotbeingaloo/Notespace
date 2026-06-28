@@ -40,9 +40,9 @@ function AppContent() {
   const location = useLocation();
   const urlNotebook = searchParams.get("notebook");
   const urlNote = searchParams.get("note");
-  // /home → Home view; /app → editor (unless no deep link, then Home)
+  // /home → Home view; /app → editor (requires a notebook). /app without a notebook redirects to /home.
   const isHomeRoute = location.pathname === "/home";
-  const [showHome, setShowHome] = useState(isHomeRoute || !urlNotebook);
+  const [showHome, setShowHome] = useState(isHomeRoute);
   const [opening, setOpening] = useState(false);
   const navigate = useNavigate();
 
@@ -157,11 +157,14 @@ function AppContent() {
     navigate("/home", { replace: false });
   }, [isMobile, navigate]);
 
-  // React to route changes: switching to /home forces Home view, /app shows editor when a notebook is selected.
+  // React to route changes. /home → Home; /app without a notebook → redirect to /home.
   useEffect(() => {
     if (location.pathname === "/home") setShowHome(true);
-    else if (location.pathname === "/app" && urlNotebook) setShowHome(false);
-  }, [location.pathname, urlNotebook]);
+    else if (location.pathname === "/app") {
+      if (urlNotebook) setShowHome(false);
+      else navigate("/home", { replace: true });
+    }
+  }, [location.pathname, urlNotebook, navigate]);
 
   const openNotebookFromHome = useCallback(
     (notebookId: string) => {
