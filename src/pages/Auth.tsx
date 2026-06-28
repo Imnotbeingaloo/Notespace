@@ -463,11 +463,27 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8 relative">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8 relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
+      {/* Decorative background - subtle grid + ambient gradient orbs (Mobbin/Aceternity inspired) */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0">
+        <div
+          className="absolute inset-0 opacity-[0.35] dark:opacity-[0.18]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+            maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+            WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+          }}
+        />
+        <div className="absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-amber-400/15 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[260px] w-[260px] rounded-full bg-emerald-400/10 blur-3xl" />
+      </div>
       <button
         onClick={() => navigate("/")}
-        className={`absolute left-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
+        className={`absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-lg border border-border bg-card/80 backdrop-blur px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
       >
         <ArrowLeft className="h-4 w-4" />
         Back to website
@@ -476,7 +492,7 @@ const AuthPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md sm:max-w-[540px]"
+        className="relative z-10 w-full max-w-md sm:max-w-[460px]"
       >
         <div className="flex items-center justify-center gap-2 mb-8">
           <img src="/logo.png" alt="" aria-hidden="true" className="h-[1.2rem] w-[1.2rem] object-contain" />
@@ -484,7 +500,7 @@ const AuthPage = () => {
         </div>
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
+        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-8 shadow-xl">
           <div role="tablist" aria-label="Authentication mode" className="flex gap-1 bg-muted rounded-lg p-1 mb-6">
             {(["signup", "login"] as const).map((m) => {
               const active = (mode === m) || (mode === "forgot" && m === "login");

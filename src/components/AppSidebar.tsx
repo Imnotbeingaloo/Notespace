@@ -323,7 +323,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 <img
                   src="/logo.png"
                   alt="Notebook Archive"
-                  className="absolute h-6 w-6 sm:h-7 sm:w-7 object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
+                  className="absolute h-[1.425rem] w-[1.425rem] sm:h-[1.6625rem] sm:w-[1.6625rem] object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
                 />
                 <Menu className="absolute h-5 w-5 text-foreground opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />
               </button>
