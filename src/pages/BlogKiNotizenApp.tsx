@@ -43,7 +43,7 @@ const picks = [
     why: "Auto-Tagging und ähnliche-Notizen-Vorschläge. Gut, wenn du Ordner hasst - schlecht, wenn du Struktur brauchst.",
     pricing: "Kostenlos; Mem X 14,99 $/Monat",
     bestFor: "Menschen, die einfach drauflosschreiben wollen.",
-    icon: Sparkles,
+    icon: Brain,
   },
 ];
 
