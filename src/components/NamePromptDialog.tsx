@@ -225,7 +225,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                         animate={{ scaleX: name ? 1 : 0 }}
                         transition={{ duration: 0.35, ease }}
                       />
-                      <span className="absolute right-0 bottom-3 text-[10px] text-muted-foreground/50 tabular-nums font-mono">
+                      <span className="absolute right-0 bottom-3 text-[10px] text-muted-foreground tabular-nums font-mono">
                         {name.length}/60
                       </span>
                     </div>

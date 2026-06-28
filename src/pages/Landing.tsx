@@ -207,8 +207,8 @@ export default function LandingPage() {
   return (
     <>
       <SeoHead
-        title="Notebook Archive - AI Study Planner & Note Taking App for Students"
-        description="Build a study plan, organize a study schedule, and take smarter notes in one place. A free AI study planner and note taking app for students, writers, and researchers."
+        title="Notebook Archive - AI Study Planner & Notes App"
+        description="AI study planner and note taking app for students, writers, and researchers. Plan sessions, organize notebooks, and get AI help where it matters."
         path="/"
         jsonLd={[
           {
