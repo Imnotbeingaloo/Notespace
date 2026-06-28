@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { Check, X, Sparkles } from "lucide-react";
 
 export interface AppDetailCardProps {
@@ -37,13 +37,29 @@ export function AppDetailCard(p: AppDetailCardProps) {
     }
   }
   const linkRel = isOurSite ? "noopener noreferrer" : "noopener noreferrer nofollow";
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(p.index === 1);
+  useEffect(() => {
+    if (visible || !ref.current) return;
+    const el = ref.current;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "-80px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [visible]);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5 }}
-      className="border border-border rounded-xl overflow-hidden bg-card shadow-sm cv-auto-card"
+    <div
+      ref={ref}
+      className={`border border-border rounded-xl overflow-hidden bg-card shadow-sm cv-auto-card transition-all duration-500 ease-out will-change-transform ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+      }`}
       style={{ contentVisibility: p.index === 1 ? "visible" : "auto", containIntrinsicSize: "900px 720px" }}
     >
       <a
@@ -60,6 +76,11 @@ export function AppDetailCard(p: AppDetailCardProps) {
           if (slug) {
             return (
               <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`/blog-img/${slug}-800.avif 800w, /blog-img/${slug}-1600.avif 1600w`}
+                  sizes="(max-width: 768px) 100vw, 900px"
+                />
                 <source
                   type="image/webp"
                   srcSet={`/blog-img/${slug}-800.webp 800w, /blog-img/${slug}-1600.webp 1600w`}
@@ -149,6 +170,6 @@ export function AppDetailCard(p: AppDetailCardProps) {
           </p>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
