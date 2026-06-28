@@ -507,7 +507,7 @@ const AuthPage = () => {
 
 
 
-          {mode === "forgot" ? (
+          {(mode === "forgot" || authMethod === "email") && (mode === "forgot" ? (
             <form onSubmit={handleForgotPassword} className="space-y-4">
               {forgotSent ? (
                 <div className="text-center py-2">
