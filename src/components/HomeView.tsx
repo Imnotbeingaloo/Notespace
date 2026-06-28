@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
 import { OnboardingHelp } from "@/components/OnboardingHelp";
@@ -74,8 +75,12 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
     } catch {}
   }, []);
 
-  // Name prompt only fires for brand-new signups (flag set in Auth.tsx).
+  const location = useLocation();
+  const onHomeRoute = location.pathname === "/home";
+
+  // Name prompt only fires for brand-new signups (flag set in Auth.tsx), and only on /home.
   useEffect(() => {
+    if (!onHomeRoute) return;
     if (profileLoading) return;
     if (profile?.display_name) {
       setNamePromptOpen(false);
@@ -85,7 +90,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
     let pending = false;
     try { pending = localStorage.getItem("pendingNamePrompt") === "1"; } catch {}
     if (pending) setNamePromptOpen(true);
-  }, [profile?.display_name, profileLoading]);
+  }, [profile?.display_name, profileLoading, onHomeRoute]);
 
   const handleNamePromptChange = (open: boolean) => {
     if (!open) {
