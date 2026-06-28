@@ -46,6 +46,7 @@ const LearnIndex = lazy(() => import("./pages/LearnIndex"));
 const LearnEntry = lazy(() => import("./pages/LearnEntry"));
 const BlogHowToMakeStudyPlan = lazy(() => import("./pages/BlogHowToMakeStudyPlan"));
 const BlogHowToMakeStudyPlanForExams = lazy(() => import("./pages/BlogHowToMakeStudyPlanForExams"));
+const BlogHowToMakeRevisionTimetable = lazy(() => import("./pages/BlogHowToMakeRevisionTimetable"));
 const TemplateStudyPlanner = lazy(() => import("./pages/TemplateStudyPlanner"));
 
 
