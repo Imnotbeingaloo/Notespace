@@ -12,6 +12,8 @@ function isPrivate(path: string): boolean {
   return PRIVATE_ROUTE_PATTERNS.some((p) => path === p || path.startsWith(p));
 }
 
+const LASTMOD = new Date().toISOString().slice(0, 10);
+
 function generateSitemap() {
   const entries = PUBLIC_ROUTES.filter((e) => !isPrivate(e.path));
 
@@ -19,6 +21,7 @@ function generateSitemap() {
     [
       `  <url>`,
       `    <loc>${BASE_URL}${e.path}</loc>`,
+      `    <lastmod>${LASTMOD}</lastmod>`,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
       `  </url>`,
