@@ -454,12 +454,18 @@ function AppContent() {
 
 const AppPage = () => {
   const { user, loading: authLoading } = useAuth();
+  const location = useLocation();
+  // Splash only plays when explicitly armed by Landing (website -> /home or /app).
+  // Direct deep links to /home, internal SPA nav, and reloads do NOT trigger it.
   const [splashDone, setSplashDone] = useState(() => {
-    try { return sessionStorage.getItem("splashShown") === "1"; } catch { return false; }
+    try {
+      const armed = sessionStorage.getItem("playSplash") === "1";
+      if (armed) sessionStorage.removeItem("playSplash");
+      return !armed;
+    } catch { return true; }
   });
   const handleSplashComplete = useCallback(() => {
     setSplashDone(true);
-    try { sessionStorage.setItem("splashShown", "1"); } catch {}
   }, []);
 
   if (authLoading) {
@@ -470,7 +476,10 @@ const AppPage = () => {
     );
   }
 
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user) {
+    const from = `${location.pathname}${location.search}${location.hash}`;
+    return <Navigate to="/auth" replace state={{ from }} />;
+  }
 
   return (
     <NotebookProvider>
