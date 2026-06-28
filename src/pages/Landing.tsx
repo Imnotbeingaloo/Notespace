@@ -345,9 +345,9 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="mt-6 text-sm md:text-base text-muted-foreground max-w-xl leading-relaxed"
+                className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed"
               >
-                A quiet place to write, link, and revisit your ideas - with a built-in study planner and study schedule that keeps your sessions on track, and intelligence woven in only where it actually helps.
+                A quiet place to write, link, and revisit your thinking - with intelligence woven in only where it actually helps.
               </motion.p>
 
               <motion.div
