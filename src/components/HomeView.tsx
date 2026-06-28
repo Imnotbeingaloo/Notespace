@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useNotebooks } from "@/context/NotebookContext";
 import { HomeHeaderMenu } from "@/components/HomeHeaderMenu";
-import { OnboardingHelp } from "@/components/OnboardingHelp";
+
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
@@ -267,7 +267,6 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
 
             <div className="flex items-center gap-1">
-              <OnboardingHelp />
               <HomeHeaderMenu trashCount={trashCount} />
             </div>
           </div>
