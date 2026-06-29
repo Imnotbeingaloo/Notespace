@@ -1144,6 +1144,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             setActiveNotebookId(null);
             setActiveNoteId(created.noteId);
             onSelectNote?.();
+            // Keep the user on /app when creating from the app shell; without
+            // this the URL stays "/app" (no notebook, no note) and Index.tsx's
+            // route guard redirects to /home.
+            navigate(`/app?note=${created.noteId}`, { replace: true });
           }
         }}
       />
