@@ -158,6 +158,36 @@ function AppContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNotebookId, activeNoteId, showHome]);
 
+  // ?template=<id> → create a fresh standalone note prefilled with the
+  // template content, then strip the param. Runs once notebooks are loaded
+  // so we don't race against the initial hydration effect above.
+  const templateConsumedRef = useRef(false);
+  useEffect(() => {
+    const tmplId = searchParams.get("template");
+    if (!tmplId || templateConsumedRef.current || notebooksLoading) return;
+    const tmpl = templates.find((t) => t.id === tmplId);
+    if (!tmpl) {
+      // Unknown id → just drop the param.
+      templateConsumedRef.current = true;
+      const next = new URLSearchParams(searchParams);
+      next.delete("template");
+      setSearchParams(next, { replace: true });
+      return;
+    }
+    templateConsumedRef.current = true;
+    (async () => {
+      const created = await createStandaloneNote(tmpl.title || tmpl.name);
+      if (created) {
+        await updateNote(null, created.noteId, { content: tmpl.content });
+        const next = new URLSearchParams();
+        next.set("note", created.noteId);
+        setSearchParams(next, { replace: true });
+        setShowHome(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, notebooksLoading]);
+
   const openHome = useCallback(() => {
     setShowHome(true);
     if (isMobile) setSidebarOpen(false);
