@@ -259,26 +259,17 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                     className="relative mb-4 select-none"
                     aria-hidden
                   >
-                    {/* Quiet editorial vignette: a single serif word swaps
-                        through three thoughts, with a soft ink underline. */}
-                    <div className="relative mx-auto flex items-end justify-center" style={{ width: 220, height: 56 }}>
-                      <div className="relative">
-                        <AnimatePresence mode="wait">
-                          {["idea", "spark", "note"].map((word, i) => (
-                            <IdleWord key={word} word={word} index={i} />
-                          ))}
-                        </AnimatePresence>
-                      </div>
-                    </div>
+                    <IdleVignette />
                   </motion.div>
                 ) : (
                   <div key="spacer" className="h-6 w-6 mb-2" />
                 )}
               </AnimatePresence>
+
 
               <p className="text-sm text-muted-foreground">
                 {idleEgg
