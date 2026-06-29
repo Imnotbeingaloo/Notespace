@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft } from "lucide-react";
+import { X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft, List, ListChecks, Minimize2, Maximize2, PenLine, Languages, Lightbulb, MessageSquareText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -188,8 +188,8 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         {/* Header */}
         <div className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.04] to-transparent">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              <Sparkles className="h-4 w-4 text-primary" />
+            <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 font-mono text-[11px] font-bold tracking-tight">
+              AI
             </div>
             <div className="min-w-0">
               <p className="font-sans font-bold text-foreground text-sm leading-none">Ask AI</p>
@@ -235,7 +235,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 scrollbar-thin">
           {messages.length === 0 && (
             <div className="text-center py-12">
-              <Sparkles className="h-8 w-8 text-primary/40 mx-auto mb-3" />
+              <MessageSquareText className="h-8 w-8 text-primary/40 mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">
                 Ask anything about your note, or use the quick actions above.
               </p>
@@ -297,39 +297,41 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
 
         {/* Input */}
         <div className="border-t border-border p-3 bg-muted/20">
-          {/* Quick action chips - sit right above the ask bar, like a model's tool row */}
-          <div className="flex flex-wrap items-center gap-1.5 mb-2 px-0.5">
-            <button
-              onClick={() => {
-                if (isNoteEmpty) { setShowEmptyNotice(true); return; }
-                callAI("edit", "Improve this note: fix grammar, clarity, and flow");
-              }}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
-            >
-              <Wand2 className="h-3 w-3" /> Edit this note
-            </button>
-            <button
-              onClick={() => {
-                if (isNoteEmpty) { setShowEmptyNotice(true); return; }
-                callAI("explain");
-              }}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
-            >
-              <Sparkles className="h-3 w-3" /> Explain this note
-            </button>
-            <button
-              onClick={() => {
-                if (isNoteEmpty) { setShowEmptyNotice(true); return; }
-                callAI("format");
-              }}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-muted text-foreground hover:bg-muted/70 disabled:opacity-50 transition-colors"
-              title="Reformat this note into clean markdown without changing the wording"
-            >
-              <AlignLeft className="h-3 w-3" /> Format
-            </button>
+          {/* Quick action chips - horizontal scroller, grouped by mode like Notion/Lex */}
+          <div className="-mx-1 mb-2 overflow-x-auto scrollbar-thin">
+            <div className="flex items-center gap-1.5 px-1 w-max">
+              {(mode === "edit"
+                ? [
+                    { key: "improve", icon: Wand2, label: "Improve writing", instr: "Improve this note: fix grammar, clarity, and flow. Preserve meaning." },
+                    { key: "shorter", icon: Minimize2, label: "Make shorter", instr: "Make this note significantly shorter while preserving every key idea." },
+                    { key: "longer", icon: Maximize2, label: "Make longer", instr: "Expand this note with more depth, examples, and supporting detail. Keep the same voice." },
+                    { key: "continue", icon: PenLine, label: "Continue writing", instr: "Continue writing this note in the same voice and structure. Add the next 2-3 paragraphs." },
+                    { key: "simplify", icon: Lightbulb, label: "Simplify", instr: "Rewrite this note in simple, plain English suitable for a 12-year-old. Keep the meaning intact." },
+                    { key: "format", icon: AlignLeft, label: "Format", action: "format" as const },
+                  ]
+                : [
+                    { key: "explain", icon: BookOpen, label: "Explain this note", instr: undefined },
+                    { key: "summary", icon: List, label: "Summarize", instr: "Summarize this note in 5 short bullets, in the note's own words." },
+                    { key: "keypoints", icon: List, label: "Key points", instr: "Pull out the 5-7 most important points from this note as a clean bulleted list." },
+                    { key: "actions", icon: ListChecks, label: "Action items", instr: "List every actionable task, decision, or follow-up implied by this note as a checklist." },
+                    { key: "translate", icon: Languages, label: "Translate", instr: "Translate this note into clear, natural English. If it is already in English, translate to Spanish instead." },
+                    { key: "missing", icon: Lightbulb, label: "What am I missing?", instr: "Read this note critically. List concrete gaps, weak arguments, missing context, and questions worth answering." },
+                  ]
+              ).map(({ key, icon: Icon, label, instr, action }: any) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    if (isNoteEmpty) { setShowEmptyNotice(true); return; }
+                    if (action === "format") { callAI("format"); return; }
+                    callAI(mode === "edit" ? "edit" : "explain", instr);
+                  }}
+                  disabled={loading}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg border border-border bg-background text-foreground hover:bg-muted hover:border-primary/30 disabled:opacity-50 transition-colors whitespace-nowrap"
+                >
+                  <Icon className="h-3 w-3 text-primary" /> {label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex gap-2 items-end">
             <textarea
@@ -363,7 +365,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70 backdrop-blur-sm p-6">
             <div className="max-w-sm w-full rounded-2xl bg-card border border-border shadow-xl p-5 text-center">
               <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-                <Sparkles className="h-5 w-5" />
+                <PenLine className="h-5 w-5" />
               </div>
               <p className="font-semibold text-foreground text-sm">Your note is empty</p>
               <p className="text-xs text-muted-foreground mt-1.5">
@@ -390,7 +392,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
           title="Ask AI"
         >
-          <Sparkles className="h-3.5 w-3.5" />
+          <Wand2 className="h-3.5 w-3.5" />
           Ask AI
         </button>
       )}
