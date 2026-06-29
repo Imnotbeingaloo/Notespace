@@ -66,15 +66,22 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
-  // Easter egg: after 5s of inactivity on an empty conversation, show a playful animation
+  // Easter egg: plays exactly once per panel open. After 5s of inactivity on
+  // an empty conversation, show a short animated scene for ~4s, then retire it.
+  const eggPlayedRef = useRef(false);
   useEffect(() => {
-    if (!open || messages.length > 0 || input.trim() || loading) {
-      setIdleEgg(false);
-      return;
-    }
-    const t = setTimeout(() => setIdleEgg(true), 5000);
-    return () => clearTimeout(t);
+    if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
+    if (eggPlayedRef.current) return;
+    if (messages.length > 0 || input.trim() || loading) return;
+    const show = setTimeout(() => {
+      eggPlayedRef.current = true;
+      setIdleEgg(true);
+      const hide = setTimeout(() => setIdleEgg(false), 4200);
+      (show as any)._hide = hide;
+    }, 5000);
+    return () => { clearTimeout(show); if ((show as any)._hide) clearTimeout((show as any)._hide); };
   }, [open, messages.length, input, loading]);
+
 
   const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
     if (!activeNote) return;
@@ -246,18 +253,53 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {messages.length === 0 && (
             <div className="text-center py-12 flex flex-col items-center">
-              {idleEgg ? (
-                <div className="relative h-14 w-14 mb-3" aria-hidden>
-                  <div className="absolute inset-0 rounded-2xl bg-primary/10 animate-ping" />
-                  <div className="absolute inset-0 flex items-center justify-center text-2xl animate-bounce">
-                    {["🪄","💡","📚","🧠","✏️"][Math.floor(Date.now()/900) % 5]}
-                  </div>
-                </div>
-              ) : (
-                <div className="h-8 w-8 mb-3" />
-              )}
+              <AnimatePresence mode="wait">
+                {idleEgg ? (
+                  <motion.div
+                    key="egg"
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -6 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative h-20 w-48 mb-4"
+                    aria-hidden
+                  >
+                    {/* Soft gradient halo */}
+                    <motion.div
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-24 w-24 rounded-full blur-2xl"
+                      style={{ background: "radial-gradient(circle, hsl(var(--primary)/0.45), transparent 70%)" }}
+                      animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.9, 0.6] }}
+                      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    {/* Core orb */}
+                    <motion.div
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/60 shadow-lg shadow-primary/30 flex items-center justify-center"
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Sparkles className="h-4 w-4 text-primary-foreground" />
+                    </motion.div>
+                    {/* Orbiting particles */}
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-primary"
+                        style={{ originX: 0.5, originY: 0.5 }}
+                        animate={{
+                          rotate: [i * 120, 360 + i * 120],
+                          x: [28, 28],
+                          y: [-1, -1],
+                        }}
+                        transition={{ duration: 2.6, repeat: Infinity, ease: "linear" }}
+                      />
+                    ))}
+                  </motion.div>
+                ) : (
+                  <div key="spacer" className="h-8 w-8 mb-3" />
+                )}
+              </AnimatePresence>
               <p className="text-sm text-muted-foreground">
-                {idleEgg ? "Still there? Try a quick action below." : "Ask anything about your note, or use the quick actions below."}
+                {idleEgg ? "Warming up - pick a quick action or just ask." : "Ask anything about your note, or use the quick actions below."}
               </p>
               <p className="text-[11px] text-muted-foreground/70 mt-2">
                 Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
