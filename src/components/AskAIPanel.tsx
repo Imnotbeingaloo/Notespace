@@ -38,6 +38,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   const [mode, setMode] = useState<"chat" | "edit">(defaultMode);
   const [loading, setLoading] = useState(false);
   const [showEmptyNotice, setShowEmptyNotice] = useState(false);
+  const [idleEgg, setIdleEgg] = useState(false);
   const isNoteEmpty = !((activeNote?.content ?? "").replace(/[\s\u200B\u2063]|&#8203;/g, "").length);
   const scrollRef = useRef<HTMLDivElement>(null);
 
