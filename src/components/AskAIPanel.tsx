@@ -221,19 +221,30 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
       let target = "";
       let displayed = "";
       let rafId: number | null = null;
-      let lastTick = 0;
+      let streamDone = false;
+      // Hard cap: full reveal must finish within ~2.2s of the stream ending.
+      const MAX_DRAIN_MS = 2200;
+      let drainStart = 0;
 
-      const flush = (ts: number) => {
+      const flush = () => {
         rafId = null;
-        if (displayed.length >= target.length) return;
-        const dt = lastTick ? ts - lastTick : 16;
-        lastTick = ts;
+        if (displayed.length >= target.length) {
+          if (!streamDone) return;
+          return;
+        }
         const remaining = target.length - displayed.length;
-        // Quick reveal: ~half the backlog per frame, scaled by elapsed
-        // time. Keeps the full catch-up well under ~500ms at 60fps.
-        const baseRate = Math.max(14, Math.ceil(remaining / 2));
-        const timeRate = Math.ceil((dt / 16) * baseRate);
-        const step = Math.min(remaining, Math.max(8, timeRate));
+        let step: number;
+        if (streamDone) {
+          // Time-bounded drain: pace so we finish within MAX_DRAIN_MS.
+          const elapsed = performance.now() - drainStart;
+          const timeLeft = Math.max(16, MAX_DRAIN_MS - elapsed);
+          // chars per remaining frame (~16ms)
+          const framesLeft = Math.max(1, timeLeft / 16);
+          step = Math.min(remaining, Math.max(12, Math.ceil(remaining / framesLeft)));
+        } else {
+          // Streaming: keep up at ~half-backlog per frame for smoothness.
+          step = Math.min(remaining, Math.max(10, Math.ceil(remaining / 2)));
+        }
         displayed = target.slice(0, displayed.length + step);
         setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: displayed } : msg)));
         if (displayed.length < target.length) {
@@ -267,14 +278,24 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         }
       }
 
-      // Drain any remaining buffered characters once the stream ends.
-      while (displayed.length < target.length) {
-        await new Promise((r) => requestAnimationFrame(() => r(null)));
-        const remaining = target.length - displayed.length;
-        const step = Math.min(remaining, Math.max(32, Math.ceil(remaining / 2)));
-        displayed = target.slice(0, displayed.length + step);
-        setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: displayed } : msg)));
-      }
+      // Stream finished — start the bounded drain.
+      streamDone = true;
+      drainStart = performance.now();
+      schedule();
+      // Wait until fully drained (or the cap elapses) before resolving.
+      await new Promise<void>((resolve) => {
+        const check = () => {
+          if (displayed.length >= target.length) return resolve();
+          if (performance.now() - drainStart > MAX_DRAIN_MS + 100) {
+            // Force-complete if we somehow overran.
+            displayed = target;
+            setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: displayed } : msg)));
+            return resolve();
+          }
+          requestAnimationFrame(check);
+        };
+        requestAnimationFrame(check);
+      });
       if (rafId != null) cancelAnimationFrame(rafId);
     } catch (e: any) {
       setMessages((m) =>
