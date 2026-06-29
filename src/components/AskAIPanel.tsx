@@ -365,7 +365,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70 backdrop-blur-sm p-6">
             <div className="max-w-sm w-full rounded-2xl bg-card border border-border shadow-xl p-5 text-center">
               <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-                <Sparkles className="h-5 w-5" />
+                <PenLine className="h-5 w-5" />
               </div>
               <p className="font-semibold text-foreground text-sm">Your note is empty</p>
               <p className="text-xs text-muted-foreground mt-1.5">
