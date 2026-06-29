@@ -302,8 +302,19 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       } else if (e.key === "u" || e.key === "U") {
         e.preventDefault();
         document.execCommand("underline");
+      } else if (e.key === "z" || e.key === "Z") {
+        // Explicit undo/redo so the browser's native contentEditable history
+        // is invoked even when React event handlers would otherwise swallow
+        // the keystroke. Shift+Z (or Ctrl+Y) = redo.
+        e.preventDefault();
+        document.execCommand(e.shiftKey ? "redo" : "undo");
+        emitChange();
+      } else if (e.key === "y" || e.key === "Y") {
+        e.preventDefault();
+        document.execCommand("redo");
+        emitChange();
       }
-    }, []);
+    }, [emitChange]);
 
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
       const items = e.clipboardData.items;
