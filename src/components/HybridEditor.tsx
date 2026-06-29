@@ -4,6 +4,9 @@ import DOMPurify from "dompurify";
 import TurndownService from "turndown";
 import { FloatingToolbar } from "@/components/FloatingToolbar";
 import { usePaperStyle } from "@/hooks/use-paper-style";
+import { toast } from "@/components/ui/sonner";
+import { dismissToast } from "@/lib/toast-queue";
+import { formatTextWithAI } from "@/lib/ai-format";
 
 export interface HybridEditorHandle {
   insertAtCursor: (text: string) => void;
