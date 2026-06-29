@@ -7,6 +7,7 @@ import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
+import { Callout } from "@/components/blog/Callout";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import obsidianShot from "@/assets/blog/obsidian.png.asset.json";
@@ -262,14 +263,25 @@ export default function BlogNotionAlternatives() {
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>
-            <p className="text-muted-foreground leading-relaxed mb-12">
+            <p className="text-muted-foreground leading-relaxed mb-4">
               We left out tools that are really project managers wearing notes-app clothing
               (ClickUp, Coda, Anytype, Capacities). The shortlist had to do three things well:
               feel calm to type in, hold notes without making you build a system first, and let
               you take your data with you when you leave. Pricing is current as of June 2026.
             </p>
+            <p className="text-muted-foreground leading-relaxed mb-8">
+              We also discounted apps where "open the app" takes more than two seconds, or
+              where the first thing you see is a database schema instead of a blank page.
+              Notion replacements only work if they remove friction - not relocate it.
+            </p>
 
-            <h2 className="font-serif text-2xl font-bold mb-6">The six picks</h2>
+            <Callout tone="key" title="The unspoken Notion problem">
+              The issue is rarely Notion itself. It's that Notion encourages you to build
+              the system before you write the note - and most people never escape the
+              system-building phase. The best replacements make you write first.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mb-6 mt-10">The six picks</h2>
             <div className="space-y-8">
               {picks.map((p, i) => (
                 <AppDetailCard key={p.name} index={i + 1} {...p} />
@@ -277,6 +289,11 @@ export default function BlogNotionAlternatives() {
             </div>
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              Most ex-Notion users don't replace it one-to-one. They split: one app for
+              writing, one for the project or wiki layer. Pick the writing app first - the
+              other half is easier to swap later.
+            </p>
             <ul className="space-y-3 text-muted-foreground">
               <li>• <strong>You only used Notion for docs:</strong> Notebook Archive.</li>
               <li>• <strong>You want files you'll own in twenty years:</strong> Obsidian.</li>
@@ -286,7 +303,17 @@ export default function BlogNotionAlternatives() {
               <li>• <strong>You hate folders and want AI to organize for you:</strong> Mem.</li>
             </ul>
 
-            <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
+            <Callout tone="warn" title="Notion's export is lossy - plan for it">
+              Notion's markdown export drops most database properties, breaks linked pages,
+              and flattens toggles. Export early and audit a few pages by hand before you
+              commit to a switch. Anything mission-critical, keep a PDF backup too.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mt-16 mb-4">Frequently asked</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              The questions that come up in every Notion-switcher thread - answered
+              without the marketing spin.
+            </p>
             <div className="space-y-6">
               {faq.map((f) => (
                 <div key={f.q} className="border-l-2 border-primary/40 pl-4">
