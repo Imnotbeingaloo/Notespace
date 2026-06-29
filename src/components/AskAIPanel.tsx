@@ -424,7 +424,14 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
             </div>
           )}
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+            <motion.div
+              key={msg.id}
+              layout="position"
+              transition={{ layout: { duration: 0.32, ease: [0.22, 1, 0.36, 1] } }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+            >
               <div
                 className={`h-7 w-7 rounded-full flex items-center justify-center shrink-0 ${
                   msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
@@ -433,7 +440,9 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                 {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
               </div>
               <div className={`flex-1 max-w-[85%] ${msg.role === "user" ? "text-right" : ""}`}>
-                <div
+                <motion.div
+                  layout
+                  transition={{ layout: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } }}
                   className={`inline-block text-left rounded-2xl px-4 py-2.5 ${
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground"
@@ -451,26 +460,35 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                   ) : (
                     <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                   )}
-                </div>
-                {msg.role === "assistant" && msg.intent === "edit" && msg.content && !loading && (
-                  <div className="mt-2">
-                    {msg.applied ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                        <Check className="h-3 w-3" /> Applied to note
-                      </span>
-                    ) : (
-                      <button
-                        onClick={() => handleApply(msg)}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                      >
-                        <Check className="h-3 w-3" />
-                        Apply to note
-                      </button>
-                    )}
-                  </div>
-                )}
+                </motion.div>
+                <AnimatePresence>
+                  {msg.role === "assistant" && msg.intent === "edit" && msg.content && !loading && (
+                    <motion.div
+                      key="apply"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      className="mt-2"
+                    >
+                      {msg.applied ? (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          <Check className="h-3 w-3" /> Applied to note
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleApply(msg)}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                        >
+                          <Check className="h-3 w-3" />
+                          Apply to note
+                        </button>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
