@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import {
   Accordion,
@@ -230,17 +229,16 @@ export default function BlogOtterAlternative() {
         title="Otter.ai Alternatives for Students in 2026 - 6 Honest Picks"
         description="Six Otter.ai alternatives for students compared with screenshots, pros and cons, and pricing - Notebook Archive, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter."
         path="/blog/otter-ai-alternative-for-students"
-        image="/og/og-otter-ai-alternative-for-students.jpg"
-        jsonLd={jsonLd}
+          jsonLd={jsonLd}
       />
       <div className="min-h-screen bg-background text-foreground">
         <PageHeader />
 
         <article className="max-w-3xl mx-auto px-6 pt-32 pb-20">
-          <motion.header
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+          <header
+            
+            
+            
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
@@ -258,7 +256,7 @@ export default function BlogOtterAlternative() {
               students actually move to, what each does well, where it falls short, and
               who it's for.
             </p>
-          </motion.header>
+          </header>
 
           <BlogKeyTakeaways
             points={[

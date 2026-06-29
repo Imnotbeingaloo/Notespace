@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import {
   Accordion,
@@ -88,10 +87,10 @@ export default function BlogAILiteratureReview() {
         <PageHeader />
 
         <article className="max-w-3xl mx-auto px-6 pt-32 pb-20">
-          <motion.header
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+          <header
+            
+            
+            
             className="mb-12"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
@@ -107,7 +106,7 @@ export default function BlogAILiteratureReview() {
               workflow we recommend for PhD students, postdocs, and anyone
               wrangling more than twenty papers at once.
             </p>
-          </motion.header>
+          </header>
 
           <BlogKeyTakeaways
             points={[
