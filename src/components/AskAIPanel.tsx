@@ -161,9 +161,9 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (eggPlayedRef.current) return;
     if (messages.length > 0 || input.trim() || loading) return;
     eggPlayedRef.current = true;
-    const total = reducedMotion ? 1400 : 3200;
-    const show = setTimeout(() => setIdleEgg(true), 220);
-    const hide = setTimeout(() => setIdleEgg(false), 220 + total);
+    const total = reducedMotion ? 900 : 1500;
+    const show = setTimeout(() => setIdleEgg(true), 150);
+    const hide = setTimeout(() => setIdleEgg(false), 150 + total);
     return () => { clearTimeout(show); clearTimeout(hide); };
   }, [open, messages.length, input, loading, reducedMotion]);
 
