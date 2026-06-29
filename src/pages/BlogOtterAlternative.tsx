@@ -284,6 +284,10 @@ export default function BlogOtterAlternative() {
               workplace calls, not a 90-minute lecture you'll revisit three months later.
             </p>
 
+            <Callout tone="key" title="What we weighted most">
+              Long-form lecture capture, course-level organization, and study-from-transcript workflows beat raw transcription accuracy. A perfect transcript you never reopen is worse than a 95% one you actually revise from.
+            </Callout>
+
             <BlogCallout title="The real Otter problem" tone="accent">
               Otter's free tier looks generous until you do the math: a typical
               undergraduate week is 8-12 hours of lectures. The 300-minute monthly cap
