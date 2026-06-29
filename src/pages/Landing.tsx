@@ -413,7 +413,7 @@ export default function LandingPage() {
                     ].map((line, i) => (
                       <div
                         key={i}
-                        className="relative h-[4px] rounded-full bg-border/50 overflow-hidden"
+                        className="relative h-[4px] rounded-full bg-border overflow-hidden"
                         style={{ width: line.width }}
                       >
                         <motion.div
