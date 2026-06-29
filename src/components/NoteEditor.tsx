@@ -650,6 +650,13 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     []
   );
 
+  const handleMergeAt = useCallback(
+    (text: string, position: "top" | "cursor" | "end") => {
+      hybridEditorRef.current?.mergeAt(text, position);
+    },
+    []
+  );
+
   const handleReplaceFromImport = useCallback(
     (text: string) => {
       // Undoable replacement so Ctrl+Z restores the previous note body.
@@ -667,6 +674,26 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     [activeNotebookId, createNote]
   );
 
+  // Pending document drop awaiting the user's Create / Merge / Replace choice.
+  const [pendingDocDrop, setPendingDocDrop] = useState<{ content: string; fileName: string } | null>(null);
+
+  const handleDocDropChoice = useCallback(
+    (choice: import("@/components/ImportActionDialog").ImportChoice | null) => {
+      if (!pendingDocDrop) { setPendingDocDrop(null); return; }
+      const { content, fileName } = pendingDocDrop;
+      setPendingDocDrop(null);
+      if (!choice) return;
+      if (choice.action === "create") {
+        handleCreateNoteFromImport(content, fileName);
+      } else if (choice.action === "merge") {
+        handleMergeAt(content, choice.position ?? "cursor");
+      } else if (choice.action === "replace") {
+        handleReplaceFromImport(content);
+      }
+    },
+    [pendingDocDrop, handleCreateNoteFromImport, handleMergeAt, handleReplaceFromImport]
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
@@ -675,6 +702,54 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
       const files = Array.from(e.dataTransfer.files);
       if (files.length === 0) return;
+
+      // Route document drops (.md/.pdf/.txt/.html/.csv/.json) through the same
+      // Create / Merge / Replace dialog used by the Import button. Drop only
+      // the first doc - mixing docs + media in one drop is rare and confusing.
+      const DOC_EXTS = [".md", ".markdown", ".txt", ".html", ".htm", ".csv", ".json", ".pdf"];
+      const docFile = files.find((f) => {
+        const dot = f.name.lastIndexOf(".");
+        const ext = dot === -1 ? "" : f.name.slice(dot).toLowerCase();
+        return DOC_EXTS.includes(ext);
+      });
+      if (docFile) {
+        try {
+          const { formatImportedDocument } = await import("@/lib/document-import");
+          const { extractPdfText } = await import("@/lib/pdf-extract");
+          const ext = docFile.name.slice(docFile.name.lastIndexOf(".")).toLowerCase();
+          let raw = "";
+          if (ext === ".pdf") {
+            const { text, isScanned } = await extractPdfText(docFile);
+            if (isScanned || !text.trim()) {
+              toast({ title: "Scanned PDF", description: "This PDF does not contain readable text.", variant: "destructive" });
+              return;
+            }
+            raw = text;
+          } else if (ext === ".html" || ext === ".htm") {
+            const html = await docFile.text();
+            raw = new DOMParser().parseFromString(html, "text/html").body.textContent || "";
+          } else {
+            raw = await docFile.text();
+          }
+          if (!raw.trim()) {
+            toast({ title: "Empty file", description: "The document appears to be empty.", variant: "destructive" });
+            return;
+          }
+          const formatted = formatImportedDocument(raw, docFile.name);
+          const hasContent = !!activeNote.content?.trim();
+          if (!hasContent) {
+            // Editor empty → drop content straight in (no dialog, no confirm).
+            hybridEditorRef.current?.replaceAllUndoable(formatted);
+            toast({ title: "Imported", description: `"${docFile.name}" added to this note.` });
+          } else {
+            setPendingDocDrop({ content: formatted, fileName: docFile.name });
+          }
+        } catch (err) {
+          console.error("Doc drop failed", err);
+          toast({ title: "Import failed", description: "Could not read the document.", variant: "destructive" });
+        }
+        return;
+      }
 
       const currentAttachments = activeNote.attachments || [];
       const newAttachments = [...currentAttachments];
@@ -710,7 +785,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         toast({ title: "Image added", description: "Image inserted into note." });
       }
     },
-    [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote]
+    [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote, handleCreateNoteFromImport, handleMergeAt, handleReplaceFromImport]
   );
 
   const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setDragOver(true); };
