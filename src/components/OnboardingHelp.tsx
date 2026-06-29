@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
-
 type Section = { id: string; label: string; tips: Tip[] };
 
 const sections: Section[] = [
   {
     id: "toolbar",
-    label: "Editor toolbar",
+    label: "Editor",
     tips: [
       { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind selected text - great for marking key passages." },
       { Icon: Code, title: "Inline code", body: "Wraps the selection in a monospaced code style. Use for variable names, file paths, or short snippets." },
@@ -26,81 +26,71 @@ const sections: Section[] = [
   },
   {
     id: "sidebar",
-    label: "Sidebar & organisation",
+    label: "Sidebar",
     tips: [
-      { Icon: BookOpen, title: "Notebooks", body: "Notebooks group related notes. The orange accent and book icon mark them. Click the chevron to expand or collapse - chevron is independent of selection." },
-      { Icon: FileText, title: "Standalone notes", body: "Top-level notes that don't belong to a notebook. Marked with a sky-blue accent and file icon." },
-      { Icon: Plus, title: "Create", body: "One button for everything. Choose Notebook, Note, or paste in from a file - the same flow as the home page." },
-      { Icon: Upload, title: "Upload", body: "Drop in PDF, EPUB, DOCX, TXT, MD, CSV, JSON or images up to 1GB. Text gets extracted automatically where possible." },
+      { Icon: BookOpen, title: "Notebooks", body: "Notebooks group related notes. Orange accent + book icon. Click the chevron to expand or collapse - independent of selection." },
+      { Icon: FileText, title: "Standalone notes", body: "Top-level notes that don't belong to a notebook. Sky-blue accent + file icon." },
+      { Icon: Plus, title: "Create", body: "One button for everything. Choose Notebook, Note, or paste in from a file." },
+      { Icon: Upload, title: "Upload", body: "Drop in PDF, EPUB, DOCX, TXT, MD, CSV, JSON or images up to 1GB. Text extracted automatically." },
       { Icon: Tag, title: "Smart Tags", body: "Tags aggregate across every notebook. Click a tag to filter notes that carry it." },
-      { Icon: CalendarDays, title: "Study schedule", body: "Upcoming study plans for the next 3 days surface here so you don't have to leave the editor." },
-      { Icon: Trash2, title: "Trash", body: "Deleted notes and notebooks live here for 30 days. Restore or permanently delete from the Trash drawer." },
-      { Icon: Menu, title: "Collapse sidebar", body: "The hamburger button collapses the sidebar to an icon strip. Hover the logo to expand again." },
+      { Icon: CalendarDays, title: "Study schedule", body: "Upcoming study plans for the next 3 days surface here." },
+      { Icon: Trash2, title: "Trash", body: "Deleted notes/notebooks live here for 30 days. Restore or permanently delete." },
+      { Icon: Menu, title: "Collapse", body: "Hamburger collapses the sidebar to an icon strip. Hover the logo to expand again." },
     ],
   },
   {
     id: "ai",
-    label: "AI & writing tools",
+    label: "AI",
     tips: [
-      { Icon: Sparkles, title: "Ask AI", body: "Opens the side panel. Edit mode rewrites your selection; Explain mode answers questions about your note. Three quick-action chips above the bar cover the common asks." },
+      { Icon: Sparkles, title: "Ask AI", body: "Side panel. Edit mode rewrites your selection; Explain mode answers questions about your note. Three quick-action chips above the bar cover the common asks." },
       { Icon: FileText, title: "Auto-format on paste", body: "Paste plain text over 200 characters and the editor offers to format it - headings, lists, and structure - with a live progress toast." },
-      { glyph: "#", title: "Markdown shortcuts", body: "Type `# `, `## `, `### `, `- `, `1. `, `> ` and they convert to headings, lists, and quotes as you finish typing." },
+      { glyph: "#", title: "Markdown shortcuts", body: "Type `# `, `## `, `### `, `- `, `1. `, `> ` and they convert as you finish typing." },
     ],
   },
   {
     id: "focus",
-    label: "Focus & timing",
+    label: "Focus",
     tips: [
       { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search and replace. Supports regex via the toggle." },
-      { Icon: Maximize2, title: "Focus Mode", body: "Top bar button - hides the sidebar and chrome so only your note remains. Click again to exit." },
-      { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
-      { Icon: Keyboard, title: "Keyboard shortcuts", body: "Press ⌘? (or Ctrl+?) anywhere for the full shortcut sheet." },
-      { Icon: SettingsIcon, title: "Settings", body: "Theme, paper style, word-count goal, temporary notes, and account controls live in the gear icon at the bottom of the sidebar." },
+      { Icon: Maximize2, title: "Focus Mode", body: "Top bar button - hides the sidebar and chrome so only your note remains." },
+      { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget." },
+      { Icon: Keyboard, title: "Shortcuts", body: "Press ⌘? (or Ctrl+?) anywhere for the full shortcut sheet." },
+      { Icon: SettingsIcon, title: "Settings", body: "Theme, paper style, word-count goal, temporary notes, and account controls in the gear icon." },
     ],
   },
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
-const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
+const SESSION_SHOWN_KEY = "onboarding-hint-session-shown";
 const IDLE_MS = 5000;
 const SHOW_MS = 3500;
 
-const todayStr = () => new Date().toISOString().slice(0, 10);
-
 export function OnboardingHelp() {
   const [open, setOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(sections[0].id);
   const [hintOpen, setHintOpen] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const idleTimerRef = useRef<number | null>(null);
   const hideTimerRef = useRef<number | null>(null);
   const dismissedRef = useRef(false);
+  const sessionShownRef = useRef(false);
   const openRef = useRef(false);
-  const hintOpenRef = useRef(false);
-  const shownAtRef = useRef(0);
-  const MIN_VISIBLE_MS = 2500;
 
-  const clearIdle = () => {
-    if (idleTimerRef.current) { window.clearTimeout(idleTimerRef.current); idleTimerRef.current = null; }
-  };
-  const clearHide = () => {
-    if (hideTimerRef.current) { window.clearTimeout(hideTimerRef.current); hideTimerRef.current = null; }
-  };
+  const clearIdle = () => { if (idleTimerRef.current) { window.clearTimeout(idleTimerRef.current); idleTimerRef.current = null; } };
+  const clearHide = () => { if (hideTimerRef.current) { window.clearTimeout(hideTimerRef.current); hideTimerRef.current = null; } };
 
   const armIdle = () => {
     clearIdle();
-    if (dismissedRef.current || openRef.current) return;
+    if (dismissedRef.current || sessionShownRef.current || openRef.current) return;
     idleTimerRef.current = window.setTimeout(() => {
       idleTimerRef.current = null;
-      if (dismissedRef.current || openRef.current) return;
+      if (dismissedRef.current || sessionShownRef.current || openRef.current) return;
       setHintOpen(true);
-      hintOpenRef.current = true;
-      shownAtRef.current = Date.now();
+      sessionShownRef.current = true;
+      try { sessionStorage.setItem(SESSION_SHOWN_KEY, "1"); } catch {}
       clearHide();
       hideTimerRef.current = window.setTimeout(() => {
         setHintOpen(false);
-        hintOpenRef.current = false;
         hideTimerRef.current = null;
       }, SHOW_MS);
     }, IDLE_MS);
@@ -108,33 +98,17 @@ export function OnboardingHelp() {
 
   useEffect(() => {
     try {
-      const permanent = localStorage.getItem(DISMISS_KEY) === "1";
-      const dayDismissed = localStorage.getItem(DISMISS_DATE_KEY) === todayStr();
-      if (permanent) setDontShowAgain(true);
-      if (permanent || dayDismissed) {
-        dismissedRef.current = true;
-        setHintOpen(false);
-        hintOpenRef.current = false;
-        clearIdle(); clearHide();
-      }
+      if (localStorage.getItem(DISMISS_KEY) === "1") { dismissedRef.current = true; setDontShowAgain(true); }
+      if (sessionStorage.getItem(SESSION_SHOWN_KEY) === "1") { sessionShownRef.current = true; }
     } catch {}
   }, []);
 
   useEffect(() => { openRef.current = open; }, [open]);
 
   useEffect(() => {
-    if (dismissedRef.current) return;
-    const onActivity = () => {
-      if (dismissedRef.current) return;
-      if (hintOpenRef.current) {
-        if (Date.now() - shownAtRef.current < MIN_VISIBLE_MS) return;
-        setHintOpen(false);
-        hintOpenRef.current = false;
-        clearHide();
-      }
-      armIdle();
-    };
-    const events = ["keydown", "click", "touchstart", "pointerdown"];
+    if (dismissedRef.current || sessionShownRef.current) return;
+    const onActivity = () => { if (!sessionShownRef.current && !dismissedRef.current) armIdle(); };
+    const events = ["keydown", "click", "touchstart", "pointerdown", "mousemove"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     armIdle();
     return () => {
@@ -143,49 +117,33 @@ export function OnboardingHelp() {
     };
   }, []);
 
-  useEffect(() => {
-    if (open) {
-      setHintOpen(false);
-      hintOpenRef.current = false;
-      clearIdle(); clearHide();
-    } else if (!dismissedRef.current) {
-      armIdle();
-    }
-  }, [open]);
-
   const dismissForever = () => {
     dismissedRef.current = true;
+    sessionShownRef.current = true;
     try { localStorage.setItem(DISMISS_KEY, "1"); } catch {}
     setHintOpen(false);
-    hintOpenRef.current = false;
     clearIdle(); clearHide();
-  };
-
-  const undismiss = () => {
-    dismissedRef.current = false;
-    try {
-      localStorage.removeItem(DISMISS_KEY);
-      localStorage.removeItem(DISMISS_DATE_KEY);
-    } catch {}
-    armIdle();
-  };
-
-  const handleHelpClick = () => {
-    try { setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1"); } catch {}
-    setOpen(true);
   };
 
   const handleDontShowToggle = (checked: boolean) => {
     setDontShowAgain(checked);
-    if (checked) dismissForever();
-    else undismiss();
+    if (checked) {
+      dismissedRef.current = true;
+      try { localStorage.setItem(DISMISS_KEY, "1"); } catch {}
+    } else {
+      dismissedRef.current = false;
+      try { localStorage.removeItem(DISMISS_KEY); } catch {}
+    }
   };
 
-  const current = sections.find((s) => s.id === activeSection) ?? sections[0];
+  const handleHelpClick = () => {
+    try { setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1"); } catch {}
+    setHintOpen(false);
+    setOpen(true);
+  };
 
   return (
     <>
-      {/* Desktop / tablet */}
       <div className="relative hidden md:flex items-center">
         <AnimatePresence>
           {hintOpen && (
@@ -201,106 +159,74 @@ export function OnboardingHelp() {
               aria-label="Hide hint"
             >
               <span>Confused? Click here</span>
-              <motion.span
-                animate={{ x: [0, 4, 0] }}
-                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                className="inline-flex text-primary"
-              >
+              <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }} className="inline-flex text-primary">
                 <ArrowRight className="h-3.5 w-3.5" />
               </motion.span>
             </motion.button>
           )}
         </AnimatePresence>
-
-        <Button
-          onClick={handleHelpClick}
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
-          aria-label="Help"
-        >
+        <Button onClick={handleHelpClick} variant="ghost" size="icon" className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground" aria-label="Help">
           <HelpCircle className="h-5 w-5" />
         </Button>
       </div>
 
-      {/* Mobile floating action */}
       <div className="md:hidden">
         <div className="fixed z-40 right-4" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}>
           <AnimatePresence>
             {hintOpen && (
-              <motion.button
-                type="button"
-                key="hint-mobile"
-                onClick={dismissForever}
-                initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                animate={{ opacity: 1, y: -8, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.95 }}
+              <motion.button type="button" key="hint-mobile" onClick={dismissForever}
+                initial={{ opacity: 0, y: 8, scale: 0.95 }} animate={{ opacity: 1, y: -8, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.95 }}
                 transition={{ duration: 0.25 }}
-                className="absolute bottom-full right-0 mb-1 whitespace-nowrap rounded-full bg-foreground text-background text-xs font-medium px-3 py-1.5 shadow-lg"
-                aria-label="Hide hint"
-              >
+                className="absolute bottom-full right-0 mb-1 whitespace-nowrap rounded-full bg-foreground text-background text-xs font-medium px-3 py-1.5 shadow-lg">
                 Need help? Tap →
               </motion.button>
             )}
           </AnimatePresence>
-          <Button
-            onClick={handleHelpClick}
-            variant="default"
-            size="icon"
-            className="h-12 w-12 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
-            aria-label="Help"
-          >
+          <Button onClick={handleHelpClick} variant="default" size="icon" className="h-12 w-12 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90" aria-label="Help">
             <HelpCircle className="h-6 w-6" />
           </Button>
         </div>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[82vh] overflow-hidden flex flex-col">
-          <DialogHeader>
-            <DialogTitle className="font-serif text-xl">Quick guide</DialogTitle>
-            <DialogDescription>
-              A walkthrough of the parts of the app that aren't obvious - organised by area.
-            </DialogDescription>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col gap-4">
+          <DialogHeader className="text-left">
+            <DialogTitle className="font-serif text-2xl">Quick guide</DialogTitle>
+            <DialogDescription>A walkthrough of the parts of the app that aren't obvious.</DialogDescription>
           </DialogHeader>
 
-          {/* Section tabs */}
-          <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {sections.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setActiveSection(s.id)}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  activeSection === s.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground"
-                }`}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
+          <Tabs defaultValue={sections[0].id} className="flex-1 flex flex-col min-h-0">
+            <TabsList className="w-full grid grid-cols-4">
+              {sections.map((s) => (
+                <TabsTrigger key={s.id} value={s.id} className="text-xs sm:text-sm">{s.label}</TabsTrigger>
+              ))}
+            </TabsList>
 
-          <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
+            {sections.map((s) => (
+              <TabsContent key={s.id} value={s.id} className="flex-1 min-h-0 overflow-y-auto pr-1 mt-3 scrollbar-thin">
+                <ul className="space-y-2">
+                  {s.tips.map(({ Icon, glyph, title, body }) => (
+                    <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
+                      <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                        {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-foreground">{title}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </TabsContent>
+            ))}
+          </Tabs>
+
+          <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
             <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
             <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
               Don't show the "Confused? Click here" hint again
             </label>
           </div>
-
-          <ul className="mt-3 space-y-2 overflow-y-auto pr-1 scrollbar-thin">
-            {current.tips.map(({ Icon, glyph, title, body }) => (
-              <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
-                <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-foreground">{title}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{body}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
         </DialogContent>
       </Dialog>
     </>
