@@ -27,7 +27,7 @@ const files = fs
   .filter((f) => /^Blog.*\.tsx$/.test(f) && f !== "BlogIndex.tsx" && f !== "BlogVisuals.tsx")
   .map((f) => path.join(pagesDir, f));
 
-const SECTION_HEADERS = [/how we picked/i, /frequently asked/i];
+const SECTION_HEADERS = [/how we picked/i, /frequently asked/i, /häufige fragen/i, /how we picked/i];
 
 const findings = [];
 
