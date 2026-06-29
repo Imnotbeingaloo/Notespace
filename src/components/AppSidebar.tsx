@@ -562,6 +562,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     </button>
                     <span>{nb.emoji}</span>
                     <span className="flex-1 truncate">{nb.name}</span>
+                    <span className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-medium shrink-0 hidden sm:inline">
+                      {(nb.notes?.length ?? 0) > 0 ? `${nb.notes.length}` : "NB"}
+                    </span>
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
                       if (!open) setEditingNotebook(null);
                     }}>
