@@ -586,7 +586,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
               </div>
             )}
 
-            <p className="text-center text-[11px] text-muted-foreground/60 mt-6 font-mono">
+            <p className="text-center text-xs text-muted-foreground mt-6 font-mono">
               Showing {paged.length} of {allFiltered.length}
             </p>
           </>
