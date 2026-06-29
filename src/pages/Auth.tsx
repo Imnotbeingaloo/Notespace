@@ -218,7 +218,7 @@ const AuthPage = () => {
       }
       if (result.redirected) return;
       try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
-      navigate(postAuthTarget);
+      navigate(resolvePostAuthTarget());
     } catch (e) {
       cancelled = true;
       window.removeEventListener("focus", onFocus);
@@ -310,7 +310,7 @@ const AuthPage = () => {
 
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
-        navigate(postAuthTarget);
+        navigate(resolvePostAuthTarget());
       }
     } else {
       const { error } = await signUp(email, password);
@@ -324,7 +324,7 @@ const AuthPage = () => {
         // If a session was created immediately (email confirmation disabled), go straight to the target
         const { data: { session: newSession } } = await supabase.auth.getSession();
         if (newSession) {
-          navigate(postAuthTarget);
+          navigate(resolvePostAuthTarget());
         } else {
           setCheckEmail(true);
           setResendCountdown(45);
