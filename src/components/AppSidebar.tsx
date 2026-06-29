@@ -533,10 +533,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDraggedNotebookId(null);
                       }
                     }}
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNotebookId === nb.id
-                        ? "bg-primary/10 text-foreground font-medium"
-                        : "text-sidebar-foreground notebook-hover"
+                        ? "bg-primary/10 border-primary/70 text-foreground font-medium"
+                        : "border-transparent text-sidebar-foreground hover:bg-primary/5 hover:border-primary/40"
                     } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(nb.id);
@@ -545,23 +545,38 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       onSelectNote?.();
                     }}
                   >
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setExpandedNotebook((prev) => (prev === nb.id ? null : nb.id));
-                      }}
-                      aria-label={expandedNotebook === nb.id || activeNotebookId === nb.id ? "Collapse notebook" : "Expand notebook"}
-                      className="p-0.5 -ml-1 rounded hover:bg-accent/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                    >
-                      <ChevronRight
-                        className={`h-3 w-3 transition-transform duration-200 ${
-                          (activeNotebookId === nb.id || expandedNotebook === nb.id) ? "rotate-90" : ""
-                        }`}
-                      />
-                    </button>
-                    <span>{nb.emoji}</span>
-                    <span className="flex-1 truncate">{nb.name}</span>
+                    <Tooltip delayDuration={400}>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedNotebook((prev) => (prev === nb.id ? null : nb.id));
+                          }}
+                          aria-label={expandedNotebook === nb.id ? "Collapse notebook" : "Expand notebook"}
+                          className="p-0.5 -ml-1 rounded hover:bg-accent/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                        >
+                          <ChevronRight
+                            className={`h-3 w-3 transition-transform duration-200 ${
+                              expandedNotebook === nb.id ? "rotate-90" : ""
+                            }`}
+                          />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">{expandedNotebook === nb.id ? "Collapse" : "Expand"} notebook</TooltipContent>
+                    </Tooltip>
+                    <Tooltip delayDuration={400}>
+                      <TooltipTrigger asChild>
+                        <span className="flex items-center gap-1.5 flex-1 min-w-0">
+                          <BookOpen className="h-3.5 w-3.5 shrink-0 text-primary/80" />
+                          <span>{nb.emoji}</span>
+                          <span className="flex-1 truncate">{nb.name}</span>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        Notebook · {nb.notes?.length ?? 0} {(nb.notes?.length ?? 0) === 1 ? "note" : "notes"}
+                      </TooltipContent>
+                    </Tooltip>
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
                       if (!open) setEditingNotebook(null);
                     }}>
@@ -635,9 +650,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     </button>
                   </div>
 
-                  {/* Nested notes - shown when this notebook is active or expanded. */}
+                  {/* Nested notes - shown only when the user has expanded this notebook via the chevron. */}
                   <AnimatePresence initial={false}>
-                    {(activeNotebookId === nb.id || expandedNotebook === nb.id) && (
+                    {expandedNotebook === nb.id && (
                       <motion.div
                         key={`notes-${nb.id}`}
                         initial={{ opacity: 0, height: 0 }}
