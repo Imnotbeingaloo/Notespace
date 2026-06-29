@@ -598,3 +598,75 @@
 .animate-verified-bar { animation: verified-bar 1.4s ease-in-out infinite; }
 .animate-verified-float-a { animation: verified-float-a 9s ease-in-out infinite; }
 .animate-verified-float-b { animation: verified-float-b 11s ease-in-out infinite; }
+
+/* ===== Blog article typography: room to breathe (Zapier-style) ===== */
+.blog-article {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: hsl(var(--foreground) / 0.92);
+}
+.blog-article p {
+  margin-top: 0;
+  margin-bottom: 1.5em;
+  line-height: 1.8;
+}
+.blog-article h1 {
+  margin-bottom: 0.6em;
+  line-height: 1.15;
+}
+.blog-article h2 {
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  line-height: 1.25;
+  scroll-margin-top: 6rem;
+}
+.blog-article h3 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+.blog-article h4 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.35;
+}
+.blog-article ul,
+.blog-article ol {
+  margin-top: 0;
+  margin-bottom: 1.5em;
+}
+.blog-article ul > li,
+.blog-article ol > li {
+  margin-bottom: 0.6em;
+  line-height: 1.75;
+}
+.blog-article ul > li:last-child,
+.blog-article ol > li:last-child {
+  margin-bottom: 0;
+}
+.blog-article blockquote,
+.blog-article figure {
+  margin-top: 2.25rem;
+  margin-bottom: 2.25rem;
+}
+.blog-article hr {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+.blog-article > header {
+  margin-bottom: 3.5rem;
+}
+.blog-article section + section,
+.blog-article section {
+  margin-bottom: 1.5rem;
+}
+.blog-article a {
+  text-underline-offset: 3px;
+}
+@media (min-width: 768px) {
+  .blog-article {
+    font-size: 1.125rem;
+    line-height: 1.85;
+  }
+  .blog-article h2 { margin-top: 3.5rem; }
+}
