@@ -8,6 +8,7 @@ import {
   getCurrentToasts,
   getToastHistory,
   getToastSnapshot,
+  pauseToast,
   queuedToast,
   removeToast,
   setToastExpanded,
