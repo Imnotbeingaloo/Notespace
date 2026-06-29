@@ -114,7 +114,7 @@ const AuthPage = () => {
     } catch {}
     return fromPath ?? "/home";
   };
-  const postAuthTarget = fromPath ?? (searchParams.get("template") ? `/app?template=${encodeURIComponent(searchParams.get("template")!)}` : "/home");
+  
 
   useEffect(() => {
     try { localStorage.setItem("hasVisitedAuth", "1"); } catch {}
