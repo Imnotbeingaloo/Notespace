@@ -66,6 +66,16 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
+  // Easter egg: after 5s of inactivity on an empty conversation, show a playful animation
+  useEffect(() => {
+    if (!open || messages.length > 0 || input.trim() || loading) {
+      setIdleEgg(false);
+      return;
+    }
+    const t = setTimeout(() => setIdleEgg(true), 5000);
+    return () => clearTimeout(t);
+  }, [open, messages.length, input, loading]);
+
   const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
     if (!activeNote) return;
     const userMsg: Msg = {
