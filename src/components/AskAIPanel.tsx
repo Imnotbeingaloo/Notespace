@@ -224,7 +224,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
       let rafId: number | null = null;
       let streamDone = false;
       // Hard cap: full reveal must finish within ~2.2s of the stream ending.
-      const MAX_DRAIN_MS = 1500;
+      const MAX_DRAIN_MS = 2000;
       let drainStart = 0;
 
       const flush = () => {
