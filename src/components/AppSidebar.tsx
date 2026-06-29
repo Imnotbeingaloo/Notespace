@@ -436,19 +436,23 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     setDragNoteFromNb(null);
                     setDragOverNoteId(null);
                   }}
-                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
+                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                     activeNoteId === note.id
-                      ? "bg-primary/10 text-foreground font-medium"
-                      : "text-sidebar-foreground notebook-hover"
+                      ? "bg-primary/10 text-foreground font-medium border-primary/60"
+                      : "text-sidebar-foreground notebook-hover border-transparent hover:border-primary/30"
                   } ${dragNoteId === note.id ? "opacity-40" : ""}`}
                   onClick={() => {
                     setActiveNotebookId(null);
                     setActiveNoteId(note.id);
                     onSelectNote?.();
                   }}
+                  title="Standalone note"
                 >
                   <span className="text-base leading-none">{note.emoji || "📝"}</span>
                   <span className="truncate flex-1 text-sm">{note.title}</span>
+                  <span className="hidden group-hover/note:inline text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium shrink-0">
+                    Note
+                  </span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
