@@ -420,55 +420,51 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
           <div className="space-y-0.5">
             <AnimatePresence>
               {standaloneNotes.map((note) => (
-                <Tooltip key={note.id} delayDuration={400}>
-                  <TooltipTrigger asChild>
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -10 }}
-                      transition={{ duration: 0.2 }}
-                      onDragStartCapture={(e) => {
-                        setDragNoteId(note.id);
-                        setDragNoteFromNb(null);
-                        (e as React.DragEvent<HTMLDivElement>).dataTransfer.effectAllowed = "move";
-                      }}
-                      onDragEnd={() => {
-                        setDragNoteId(null);
-                        setDragNoteFromNb(null);
-                        setDragOverNoteId(null);
-                      }}
-                      className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
-                        activeNoteId === note.id
-                          ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
-                          : "border-transparent text-sidebar-foreground hover:bg-sky-500/5 hover:border-sky-500/40"
-                      } ${dragNoteId === note.id ? "opacity-40" : ""}`}
-                      onClick={() => {
-                        setActiveNotebookId(null);
-                        setActiveNoteId(note.id);
-                        onSelectNote?.();
-                      }}
-                    >
-                      <FileText className="h-3.5 w-3.5 shrink-0 text-sky-500/80" />
-                      <span className="text-base leading-none">{note.emoji || "📝"}</span>
-                      <span className="truncate flex-1 text-sm">{note.title}</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          showConfirm(
-                            "Move to Trash?",
-                            `"${note.title}" will be moved to Trash. You can restore it later.`,
-                            () => deleteNote(null, note.id),
-                            "Move to Trash"
-                          );
-                        }}
-                        className="opacity-0 group-hover/note:opacity-100 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
-                    </motion.div>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Standalone note - not inside any notebook</TooltipContent>
-                </Tooltip>
+                <motion.div
+                  key={note.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.2 }}
+                  onDragStartCapture={(e) => {
+                    setDragNoteId(note.id);
+                    setDragNoteFromNb(null);
+                    (e as React.DragEvent<HTMLDivElement>).dataTransfer.effectAllowed = "move";
+                  }}
+                  onDragEnd={() => {
+                    setDragNoteId(null);
+                    setDragNoteFromNb(null);
+                    setDragOverNoteId(null);
+                  }}
+                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                    activeNoteId === note.id
+                      ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
+                      : "border-transparent text-sidebar-foreground hover:bg-sky-500/5 hover:border-sky-500/40"
+                  } ${dragNoteId === note.id ? "opacity-40" : ""}`}
+                  onClick={() => {
+                    setActiveNotebookId(null);
+                    setActiveNoteId(note.id);
+                    onSelectNote?.();
+                  }}
+                >
+                  <FileText className="h-3.5 w-3.5 shrink-0 text-sky-500/80" />
+                  <span className="text-base leading-none">{note.emoji || "📝"}</span>
+                  <span className="truncate flex-1 text-sm">{note.title}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showConfirm(
+                        "Move to Trash?",
+                        `"${note.title}" will be moved to Trash. You can restore it later.`,
+                        () => deleteNote(null, note.id),
+                        "Move to Trash"
+                      );
+                    }}
+                    className="opacity-0 group-hover/note:opacity-100 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </motion.div>
               ))}
             </AnimatePresence>
             <AnimatePresence>
@@ -546,38 +542,26 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       onSelectNote?.();
                     }}
                   >
-                    <Tooltip delayDuration={400}>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedNotebook((prev) => (prev === nb.id ? null : nb.id));
-                          }}
-                          aria-label={expandedNotebook === nb.id ? "Collapse notebook" : "Expand notebook"}
-                          className="p-0.5 -ml-1 rounded hover:bg-accent/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                        >
-                          <ChevronRight
-                            className={`h-3 w-3 transition-transform duration-200 ${
-                              expandedNotebook === nb.id ? "rotate-90" : ""
-                            }`}
-                          />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">{expandedNotebook === nb.id ? "Collapse" : "Expand"} notebook</TooltipContent>
-                    </Tooltip>
-                    <Tooltip delayDuration={400}>
-                      <TooltipTrigger asChild>
-                        <span className="flex items-center gap-1.5 flex-1 min-w-0">
-                          <BookOpen className="h-3.5 w-3.5 shrink-0 text-primary/80" />
-                          <span>{nb.emoji}</span>
-                          <span className="flex-1 truncate">{nb.name}</span>
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        Notebook · {nb.notes?.length ?? 0} {(nb.notes?.length ?? 0) === 1 ? "note" : "notes"}
-                      </TooltipContent>
-                    </Tooltip>
+                    <span className="flex items-center gap-1.5 flex-1 min-w-0">
+                      <BookOpen className="h-3.5 w-3.5 shrink-0 text-primary/80" />
+                      <span>{nb.emoji}</span>
+                      <span className="flex-1 truncate">{nb.name}</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedNotebook((prev) => (prev === nb.id ? null : nb.id));
+                      }}
+                      aria-label={expandedNotebook === nb.id ? "Collapse notebook" : "Expand notebook"}
+                      className="p-0.5 rounded hover:bg-accent/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                    >
+                      <ChevronRight
+                        className={`h-3 w-3 transition-transform duration-200 ${
+                          expandedNotebook === nb.id ? "rotate-90" : ""
+                        }`}
+                      />
+                    </button>
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
                       if (!open) setEditingNotebook(null);
                     }}>
@@ -770,7 +754,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   {note.emoji || "📝"}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right">{note.title}</TooltipContent>
+              <TooltipContent side="right">{note.title} · Note</TooltipContent>
             </Tooltip>
           ))}
           {notebooks.map((nb) => (
@@ -790,7 +774,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     {nb.emoji}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="right">{nb.name}</TooltipContent>
+                <TooltipContent side="right">{nb.name} · Notebook</TooltipContent>
               </Tooltip>
               {/* Nested notes intentionally hidden in collapsed view. */}
             </div>
