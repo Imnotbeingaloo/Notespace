@@ -548,6 +548,103 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       <span>{nb.emoji}</span>
                       <span className="flex-1 truncate">{nb.name}</span>
                     </span>
+                    {/* Action cluster: edit + delete reveal on hover (pointer devices) or via the touch toggle. Chevron is pinned to the far right and slides left as actions appear. */}
+                    <div
+                      className={`flex items-center overflow-hidden transition-[max-width,opacity] duration-200 ease-out ${
+                        touchActionsNotebook === nb.id
+                          ? "max-w-[64px] opacity-100"
+                          : "max-w-0 opacity-0"
+                      } [@media(hover:hover)]:group-hover:max-w-[64px] [@media(hover:hover)]:group-hover:opacity-100`}
+                    >
+                      <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
+                        if (!open) setEditingNotebook(null);
+                      }}>
+                        <PopoverTrigger asChild>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingNotebook(nb.id);
+                              setEditName(nb.name);
+                              setEditEmoji(nb.emoji);
+                            }}
+                            className="p-1 rounded hover:bg-accent hover:text-accent-foreground transition-colors shrink-0"
+                            aria-label="Edit notebook"
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64 p-3" side="right" align="start">
+                          <div className="space-y-3">
+                            <div className="text-sm font-medium text-foreground">Edit Notebook</div>
+                            <Input
+                              value={editName}
+                              onChange={(e) => setEditName(e.target.value)}
+                              placeholder="Notebook name"
+                              className="h-8 text-sm"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && editName.trim()) {
+                                  updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
+                                  setEditingNotebook(null);
+                                }
+                              }}
+                            />
+                            <div>
+                              <div className="text-xs text-muted-foreground mb-1">Emoji</div>
+                              <div className="grid grid-cols-6 gap-1">
+                                {EMOJIS.map((em) => (
+                                  <button
+                                    key={em}
+                                    onClick={() => setEditEmoji(em)}
+                                    className={`p-1.5 rounded-md text-base hover:bg-accent transition-colors ${editEmoji === em ? "bg-primary/15 ring-1 ring-primary" : ""}`}
+                                  >
+                                    {em}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex gap-2 justify-end">
+                              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingNotebook(null)}>Cancel</Button>
+                              <Button size="sm" className="h-7 text-xs" onClick={() => {
+                                if (editName.trim()) {
+                                  updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
+                                  setEditingNotebook(null);
+                                }
+                              }}>Save</Button>
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          showConfirm(
+                            "Move to Trash?",
+                            `"${nb.name}" and all its notes will be moved to Trash. You can restore them later.`,
+                            () => deleteNotebook(nb.id),
+                            "Move to Trash"
+                          );
+                        }}
+                        className="p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-colors shrink-0"
+                        aria-label="Delete notebook"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+
+                    {/* Touch-only toggle to reveal actions (hover-capable devices use group-hover instead) */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTouchActionsNotebook((prev) => (prev === nb.id ? null : nb.id));
+                      }}
+                      aria-label={touchActionsNotebook === nb.id ? "Hide actions" : "Show actions"}
+                      className="hidden [@media(hover:none)]:flex p-0.5 rounded hover:bg-accent/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                    >
+                      <MoreHorizontal className="h-3 w-3" />
+                    </button>
+
+                    {/* Chevron - always pinned to the far right */}
                     <button
                       type="button"
                       onClick={(e) => {
@@ -562,77 +659,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                           expandedNotebook === nb.id ? "rotate-90" : ""
                         }`}
                       />
-                    </button>
-                    <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
-                      if (!open) setEditingNotebook(null);
-                    }}>
-                      <PopoverTrigger asChild>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingNotebook(nb.id);
-                            setEditName(nb.name);
-                            setEditEmoji(nb.emoji);
-                          }}
-                          className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-accent hover:text-accent-foreground transition-all"
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-64 p-3" side="right" align="start">
-                        <div className="space-y-3">
-                          <div className="text-sm font-medium text-foreground">Edit Notebook</div>
-                          <Input
-                            value={editName}
-                            onChange={(e) => setEditName(e.target.value)}
-                            placeholder="Notebook name"
-                            className="h-8 text-sm"
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" && editName.trim()) {
-                                updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
-                                setEditingNotebook(null);
-                              }
-                            }}
-                          />
-                          <div>
-                            <div className="text-xs text-muted-foreground mb-1">Emoji</div>
-                            <div className="grid grid-cols-6 gap-1">
-                              {EMOJIS.map((em) => (
-                                <button
-                                  key={em}
-                                  onClick={() => setEditEmoji(em)}
-                                  className={`p-1.5 rounded-md text-base hover:bg-accent transition-colors ${editEmoji === em ? "bg-primary/15 ring-1 ring-primary" : ""}`}
-                                >
-                                  {em}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="flex gap-2 justify-end">
-                            <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingNotebook(null)}>Cancel</Button>
-                            <Button size="sm" className="h-7 text-xs" onClick={() => {
-                              if (editName.trim()) {
-                                updateNotebook(nb.id, { name: editName.trim(), emoji: editEmoji });
-                                setEditingNotebook(null);
-                              }
-                            }}>Save</Button>
-                          </div>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        showConfirm(
-                          "Move to Trash?",
-                          `"${nb.name}" and all its notes will be moved to Trash. You can restore them later.`,
-                          () => deleteNotebook(nb.id),
-                          "Move to Trash"
-                        );
-                      }}
-                      className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
-                    >
-                      <Trash2 className="h-3 w-3" />
                     </button>
                   </div>
 
