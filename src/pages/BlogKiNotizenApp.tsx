@@ -6,6 +6,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogHero, BlogKeyTakeaways, BlogPullQuote } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 import heroAsset from "@/assets/blog/hero-ki-notizen.jpg.asset.json";
 
 const CTA = "/auth?ref=blog-de&utm_source=blog&utm_medium=organic&utm_campaign=ki-notizen-app";
@@ -211,6 +212,9 @@ export default function BlogKiNotizenApp() {
             </ul>
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Häufige Fragen</h2>
+            <Callout tone="tip" title="Bevor du scrollst">
+              Die häufigsten Fragen zu KI-Notizen-Apps drehen sich um Datenschutz, Offline-Nutzung und Export. Wir beantworten sie kurz und ehrlich, ohne Marketing-Floskeln.
+            </Callout>
             <div className="not-prose space-y-6">
               {faq.map((f) => (
                 <div key={f.q} className="border-l-2 border-primary/40 pl-4">
