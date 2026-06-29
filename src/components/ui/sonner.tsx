@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { ExternalToast } from "sonner";
 import type { ReactElement, ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { CheckCircle2, AlertTriangle, AlertCircle, Info, Bell, X, ChevronDown } from "lucide-react";
+import { CheckCircle2, AlertTriangle, AlertCircle, Info, Bell, X, ChevronDown, Loader2 } from "lucide-react";
 import {
   dismissToast,
   getCurrentToasts,
