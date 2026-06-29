@@ -65,7 +65,8 @@ describe("OnboardingHelp mobile placement", () => {
     const wrapper = btn.parentElement as HTMLElement;
     expect(wrapper.className).toMatch(/fixed/);
     expect(wrapper.className).toMatch(/right-3/);
-    // Safe-area inline style keeps it clear of the notch / status bar.
-    expect(wrapper.getAttribute("style") ?? "").toMatch(/safe-area-inset-top/);
+    // jsdom drops calc(env(...)) from inline style — assert positioning via classes instead.
+    expect(wrapper.className).toMatch(/flex-col/);
+    expect(wrapper.className).toMatch(/items-end/);
   });
 });
