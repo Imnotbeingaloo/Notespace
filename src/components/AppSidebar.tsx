@@ -453,7 +453,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   className={`group/note magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                     activeNoteId === note.id
                       ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
-                      : "border-transparent text-sidebar-foreground hover:bg-sky-500/5 hover:border-sky-500/40"
+                      : "border-transparent text-sidebar-foreground hover:bg-sky-500/10 hover:border-sky-500/50 hover:text-foreground"
                   } ${dragNoteId === note.id ? "opacity-40" : ""}`}
                   onClick={() => {
                     setActiveNotebookId(null);
@@ -464,28 +464,33 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   <FileText className="h-3.5 w-3.5 shrink-0 text-sky-500/80" />
                   <span className="text-base leading-none">{note.emoji || "📝"}</span>
                   <span className="truncate flex-1 text-sm">{note.title}</span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      showConfirm(
-                        "Move to Trash?",
-                        `"${note.title}" will be moved to Trash. You can restore it later.`,
-                        () => deleteNote(null, note.id),
-                        "Move to Trash"
-                      );
-                    }}
-                    className="opacity-0 group-hover/note:opacity-100 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </button>
-                  {/* Hover affordance: subtle arrow that slides in, mirroring the notebook row's right-side indicator. */}
+                  {/* Action cluster mirrors notebook row: reveals on hover, chevron stays pinned right. */}
+                  <div className="flex items-center overflow-hidden transition-[max-width,opacity] duration-200 ease-out max-w-0 opacity-0 [@media(hover:hover)]:group-hover/note:max-w-[32px] [@media(hover:hover)]:group-hover/note:opacity-100">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showConfirm(
+                          "Move to Trash?",
+                          `"${note.title}" will be moved to Trash. You can restore it later.`,
+                          () => deleteNote(null, note.id),
+                          "Move to Trash"
+                        );
+                      }}
+                      className="p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-colors shrink-0"
+                      aria-label="Delete note"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                  {/* Chevron - always pinned to the far right, mirrors notebook indicator. */}
                   <ChevronRight
                     className={`h-3 w-3 shrink-0 transition-all duration-200 ${
                       activeNoteId === note.id
                         ? "text-sky-500 opacity-100 translate-x-0"
-                        : "text-muted-foreground/60 opacity-0 -translate-x-1 group-hover/note:opacity-100 group-hover/note:translate-x-0"
+                        : "text-muted-foreground opacity-0 -translate-x-1 group-hover/note:opacity-100 group-hover/note:translate-x-0 group-hover/note:text-foreground"
                     }`}
                   />
+
                 </motion.div>
               ))}
             </AnimatePresence>
