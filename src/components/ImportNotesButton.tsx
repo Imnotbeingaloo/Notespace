@@ -31,7 +31,7 @@ function humanSize(bytes: number) {
   return `${Math.round(bytes / 1024 / 1024)} MB`;
 }
 
-export function ImportNotesButton({ onInsert, onReplace, onCreateNew, hasExistingContent = false }: ImportNotesButtonProps) {
+export function ImportNotesButton({ onInsert, onMergeAt, onReplace, onCreateNew, hasExistingContent = false }: ImportNotesButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState<{ content: string; fileName: string } | null>(null);
