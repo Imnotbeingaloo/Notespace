@@ -19,11 +19,11 @@ export interface QueuedToast {
 }
 
 const DEFAULT_DURATION: Record<ToastKind, number> = {
-  message: 4200,
-  success: 4200,
-  info: 4200,
-  warning: 5200,
-  error: 6000,
+  message: 3200,
+  success: 3200,
+  info: 3200,
+  warning: 4200,
+  error: 5000,
   loading: Infinity,
 };
 

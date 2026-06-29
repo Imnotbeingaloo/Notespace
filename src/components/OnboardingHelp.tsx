@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu, Bell } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "@/components/ui/sonner";
 import { AnimatePresence, motion } from "framer-motion";
 
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
@@ -62,6 +63,9 @@ const sections: Section[] = [
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
 const SESSION_COUNT_KEY = "onboarding-hint-session-count";
+const FIRST_SEEN_KEY = "onboarding-hint-first-seen-at";
+// Only treat the user as "new" within this window. After it expires the hint stops appearing.
+const NEW_USER_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 // Escalating idle thresholds: 1st = 5s, 2nd = 15s, 3rd = 30s, then stop.
 const IDLE_STEPS = [5000, 15000, 30000];
 const SHOW_MS = 3500;
@@ -102,6 +106,15 @@ export function OnboardingHelp() {
 
   useEffect(() => {
     try {
+      // Mark first-seen-at on initial load so we can gate the hint to new users only.
+      const firstSeen = localStorage.getItem(FIRST_SEEN_KEY);
+      if (!firstSeen) {
+        localStorage.setItem(FIRST_SEEN_KEY, String(Date.now()));
+      } else if (Date.now() - parseInt(firstSeen, 10) > NEW_USER_WINDOW_MS) {
+        // Not a new user anymore - permanently silence the idle hint.
+        dismissedRef.current = true;
+        localStorage.setItem(DISMISS_KEY, "1");
+      }
       if (localStorage.getItem(DISMISS_KEY) === "1") { dismissedRef.current = true; setDontShowAgain(true); }
       const c = parseInt(sessionStorage.getItem(SESSION_COUNT_KEY) ?? "0", 10);
       if (!Number.isNaN(c)) sessionCountRef.current = c;
@@ -225,11 +238,34 @@ export function OnboardingHelp() {
             ))}
           </Tabs>
 
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
-            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
-            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
-              Don't show the "Confused? Click here" hint again
-            </label>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 flex-1">
+              <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
+              <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
+                Don't show the "Confused? Click here" hint again
+              </label>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1.5 shrink-0"
+              onClick={() => {
+                const variants = [
+                  () => toast.success("Changes saved", { description: "Your note was saved successfully." }),
+                  () => toast.error("Link has expired", {
+                    description: "The share link you tried to open is no longer active.",
+                    action: { label: "Get new link", onClick: () => {} },
+                  }),
+                  () => toast.warning("Broken link", { description: "One of the links in this note didn't resolve." }),
+                  () => toast.info("Links imported", { description: "Your import finished without errors." }),
+                ];
+                variants.forEach((fire, i) => setTimeout(fire, i * 350));
+              }}
+            >
+              <Bell className="h-3.5 w-3.5" />
+              Test notifications
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

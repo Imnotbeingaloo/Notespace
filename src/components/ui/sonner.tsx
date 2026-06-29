@@ -84,7 +84,7 @@ function renderAction(action: QueuedToast["action"] | QueuedToast["cancel"], toa
           action.onClick?.();
           removeToast(toastId);
         }}
-        className="rounded-md bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-foreground hover:bg-primary/20 transition-colors"
+        className="inline-flex items-center justify-center rounded-md border border-border bg-background px-3 py-1 text-xs font-medium text-foreground shadow-sm hover:bg-muted transition-colors"
       >
         {action.label}
       </button>
