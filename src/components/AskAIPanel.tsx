@@ -432,7 +432,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                         animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
                         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
                       />
-                      <Sparkles className="relative h-4 w-4 text-primary" />
+                      <Feather className="relative h-4 w-4 text-primary" />
                     </div>
                     <svg width="64" height="6" viewBox="0 0 64 6" className="mt-2 overflow-visible" aria-hidden>
                       <defs>
