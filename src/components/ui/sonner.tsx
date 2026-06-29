@@ -99,9 +99,18 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
   const Icon = visual.Icon;
   const hasDescription = Boolean(item.description);
   const hasActions = Boolean(item.action) || Boolean(item.cancel);
-  // The chevron reveals BOTH the description and any action buttons (Undo, etc.).
   const showChevron = hasDescription || hasActions;
   const expandedOpen = item.expanded && showChevron;
+  const [hovered, setHovered] = useState(false);
+  // Re-key the progress bar whenever the underlying timer restarts (on expand
+  // or hover-resume). framer-motion treats a new key as a fresh animation.
+  const [barKey, setBarKey] = useState(0);
+  useEffect(() => {
+    setBarKey((k) => k + 1);
+  }, [item.expanded]);
+  useEffect(() => {
+    if (!hovered) setBarKey((k) => k + 1);
+  }, [hovered]);
 
   return (
     <motion.li
@@ -110,10 +119,10 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: 26, scale: 0.96 }}
       transition={{ type: "spring", stiffness: 430, damping: 34, mass: 0.8 }}
-      onMouseEnter={() => pauseToast(item.id)}
-      onMouseLeave={() => resumeToast(item.id)}
-      onFocus={() => pauseToast(item.id)}
-      onBlur={() => resumeToast(item.id)}
+      onMouseEnter={() => { pauseToast(item.id); setHovered(true); }}
+      onMouseLeave={() => { resumeToast(item.id); setHovered(false); }}
+      onFocus={() => { pauseToast(item.id); setHovered(true); }}
+      onBlur={() => { resumeToast(item.id); setHovered(false); }}
       className="pointer-events-auto relative w-full overflow-hidden rounded-lg border-0 bg-card text-card-foreground shadow-lg"
       style={{
         boxShadow: newest
@@ -181,10 +190,11 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
 
       {kind !== "loading" && (
         <motion.div
+          key={barKey}
           aria-hidden="true"
           className="absolute bottom-0 left-0 h-1 rounded-br-full"
           initial={{ width: "100%" }}
-          animate={{ width: "0%" }}
+          animate={hovered ? undefined : { width: "0%" }}
           transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
           style={{ backgroundColor: visual.accent }}
         />

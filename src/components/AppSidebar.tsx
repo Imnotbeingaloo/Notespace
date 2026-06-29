@@ -4,7 +4,7 @@ import { Plus, BookOpen, Trash2, ChevronRight, ChevronDown, Menu, FileText, Note
 import { useProfile } from "@/hooks/use-profile";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { ScratchIcon } from "@/components/ScratchIcon";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { format, isToday, isTomorrow, addDays, isSameDay } from "date-fns";
 import ReactMarkdown from "react-markdown";
@@ -38,6 +38,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const { profile } = useProfile();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tempNotesEnabled] = useTempNotesEnabled();
+  const navigate = useNavigate();
   const {
     notebooks,
     standaloneNotes,
@@ -86,6 +87,18 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [draggedNotebookId, setDraggedNotebookId] = useState<string | null>(null);
   const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(null);
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
+
+  // Auto-collapse any previously open notebook when the active selection
+  // moves to a different notebook (or to a standalone note with no notebook).
+  // Only one notebook stays expanded at a time = the one containing the
+  // current selection.
+  useEffect(() => {
+    setExpandedNotebook((prev) => {
+      if (activeNotebookId) return activeNotebookId;
+      // No active notebook (standalone note / nothing selected) → collapse all.
+      return prev === null ? prev : null;
+    });
+  }, [activeNotebookId]);
   const sidebarUploadRef = useRef<HTMLInputElement>(null);
   const [pendingUploadFile, setPendingUploadFile] = useState<File | null>(null);
   const [sidebarUploadProcessing, setSidebarUploadProcessing] = useState(false);
@@ -1132,6 +1145,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             setActiveNotebookId(null);
             setActiveNoteId(created.noteId);
             onSelectNote?.();
+            // Keep the user on /app when creating from the app shell; without
+            // this the URL stays "/app" (no notebook, no note) and Index.tsx's
+            // route guard redirects to /home.
+            navigate(`/app?note=${created.noteId}`, { replace: true });
           }
         }}
       />
