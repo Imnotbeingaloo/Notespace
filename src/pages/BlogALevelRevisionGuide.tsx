@@ -22,6 +22,7 @@ import {
   BlogSteps,
   BlogDivider,
 } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 
 const REF = "blog-a-level-revision-guide";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=a-level-revision-guide`;
@@ -225,7 +226,14 @@ export default function BlogALevelRevisionGuide() {
           </section>
 
           <section className="mb-12">
+            <Callout tone="tip" title="Before you scroll the FAQ">
+              If a question below doesn't quite match yours, the answer is usually a combination of two of the points already covered above. Skim the headings first, then come back.
+            </Callout>
+
             <h2 className="font-serif text-3xl font-bold mt-8 mb-6">Frequently asked</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              The questions readers ask most often about this topic - answered directly, without the marketing spin.
+            </p>
             <Accordion type="single" collapsible className="w-full">
               {faq.map((f, i) => (
                 <AccordionItem key={f.q} value={`item-${i}`}>

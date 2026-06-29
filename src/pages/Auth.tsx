@@ -486,7 +486,18 @@ const AuthPage = () => {
 
   // Avoid the brief flash of the auth form when a returning user is about to
   // be redirected (e.g. clicking "Sign up" from a blog while already signed in).
-  if (authLoading || user || (hasLikelySession() && !user && authLoading)) {
+  // We hold the spinner while: auth context is still loading, OR a user object
+  // exists (redirect is imminent), OR we have a session hint but no user yet
+  // (the getSession() / onAuthStateChange race is still resolving).
+  const [hintGrace, setHintGrace] = useState(() => hasLikelySession());
+  useEffect(() => {
+    if (!hintGrace) return;
+    if (user) { setHintGrace(false); return; }
+    const t = setTimeout(() => setHintGrace(false), 900);
+    return () => clearTimeout(t);
+  }, [hintGrace, user]);
+
+  if (authLoading || user || (hintGrace && !user)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <NoindexHead title="Sign in - Notebook Archive" />
