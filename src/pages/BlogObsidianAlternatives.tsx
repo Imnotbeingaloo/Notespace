@@ -13,6 +13,7 @@ import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
+import { Callout } from "@/components/blog/Callout";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import notionShot from "@/assets/blog/notion.png.asset.json";
@@ -261,14 +262,26 @@ export default function BlogObsidianAlternatives() {
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>
-            <p className="text-muted-foreground leading-relaxed mb-12">
+            <p className="text-muted-foreground leading-relaxed mb-4">
               We left out tools that don't actually replace Obsidian (Trello, Roam clones with no
               activity, AI chat apps pretending to be notebooks). The shortlist had to do three
               things: hold a serious volume of notes, edit calmly without setup, and let you take
               your data with you. Pricing is current as of June 2026.
             </p>
+            <p className="text-muted-foreground leading-relaxed mb-8">
+              We also gave weight to tools that respect markdown as a first-class format -
+              not as a lossy export. If your Obsidian vault has years of [[backlinks]] and
+              custom callouts, the goal is to lose as little of that structure as possible
+              when you open the same files somewhere else.
+            </p>
 
-            <h2 className="font-serif text-2xl font-bold mb-6">The six picks</h2>
+            <Callout tone="key" title="What you're actually trading away">
+              Obsidian's plugin ecosystem is its real moat. Every alternative on this list
+              gives up some of that flexibility in exchange for sync that works, mobile that
+              works, or AI that works - without configuring three plugins to get there.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mb-6 mt-10">The six picks</h2>
             <div className="space-y-8">
               {picks.map((p, i) => (
                 <AppDetailCard key={p.name} index={i + 1} {...p} />
@@ -276,6 +289,11 @@ export default function BlogObsidianAlternatives() {
             </div>
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              Most Obsidian leavers aren't unhappy with the format - they're tired of being
+              the sysadmin of their own notebook. Pick the option that gets out of your way
+              fastest while still letting you keep your markdown intact.
+            </p>
             <ul className="space-y-3 text-muted-foreground">
               <li>• <strong>You want Obsidian's calm without the setup:</strong> Notebook Archive.</li>
               <li>• <strong>You need real collaboration:</strong> Notion.</li>
@@ -285,7 +303,17 @@ export default function BlogObsidianAlternatives() {
               <li>• <strong>You mostly clip and capture:</strong> Evernote.</li>
             </ul>
 
-            <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
+            <Callout tone="tip" title="Keep the vault around">
+              Even after switching, keep your old Obsidian vault on disk as a read-only
+              archive. It's just markdown files - costs nothing to keep, and saves you if
+              the new tool ever lets you down.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mt-16 mb-4">Frequently asked</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              The questions that come up most in r/ObsidianMD switcher threads, with
+              straight answers - no vendor pitch.
+            </p>
             <Accordion type="single" collapsible className="w-full">
               {faq.map((f, i) => (
                 <AccordionItem key={f.q} value={`item-${i}`}>

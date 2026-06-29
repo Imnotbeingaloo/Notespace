@@ -13,6 +13,7 @@ import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
+import { Callout } from "@/components/blog/Callout";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import notionShot from "@/assets/blog/notion.png.asset.json";
@@ -258,14 +259,26 @@ export default function BlogOneNoteAlternatives() {
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>
-            <p className="text-muted-foreground leading-relaxed mb-12">
+            <p className="text-muted-foreground leading-relaxed mb-4">
               We left out tools that don't actually replace OneNote (Trello, chat apps,
               read-it-later services). The shortlist had to do three things: hold a serious
               volume of notes, import what you already have, and let you take your data with
               you if you ever leave. Pricing is current as of June 2026.
             </p>
+            <p className="text-muted-foreground leading-relaxed mb-8">
+              OneNote replacements are tricky because OneNote isn't really a markdown app -
+              it's a freeform canvas. We didn't try to find a 1:1 clone of the infinite
+              canvas. We looked for tools that fix the things people actually complain about:
+              sync that breaks, search that misses, and structure that drifts into chaos.
+            </p>
 
-            <h2 className="font-serif text-2xl font-bold mb-6">The six picks</h2>
+            <Callout tone="key" title="The honest tradeoff">
+              Nothing on this list does freeform handwriting as well as OneNote does. If
+              stylus is your primary input, stay on OneNote. If you mostly type and search,
+              every alternative below will feel calmer within a week.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mb-6 mt-10">The six picks</h2>
             <div className="space-y-8">
               {picks.map((p, i) => (
                 <AppDetailCard key={p.name} index={i + 1} {...p} />
@@ -273,6 +286,11 @@ export default function BlogOneNoteAlternatives() {
             </div>
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              Match the pick to the OneNote behavior you'll miss. Section tabs and notebooks
+              translate cleanly to most modern apps. The infinite canvas does not - so if
+              that's the part you loved, weight stylus support heavily.
+            </p>
             <ul className="space-y-3 text-muted-foreground">
               <li>• <strong>You want OneNote's structure without the freeform mess:</strong> Notebook Archive.</li>
               <li>• <strong>You need wikis and team docs alongside notes:</strong> Notion.</li>
@@ -282,7 +300,18 @@ export default function BlogOneNoteAlternatives() {
               <li>• <strong>You captured more than you organized:</strong> Mem.</li>
             </ul>
 
-            <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
+            <Callout tone="warn" title="Export early, export often">
+              OneNote's export options are limited - PDF per section or a proprietary
+              .onepkg. Neither imports cleanly into modern apps. If you're planning a
+              switch, copy critical pages into a markdown app manually rather than relying
+              on bulk export.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mt-16 mb-4">Frequently asked</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              The questions OneNote switchers ask most often - answered with the
+              compromises spelled out, not glossed over.
+            </p>
             <Accordion type="single" collapsible className="w-full">
               {faq.map((f, i) => (
                 <AccordionItem key={f.q} value={`item-${i}`}>

@@ -13,6 +13,7 @@ import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
+import { Callout } from "@/components/blog/Callout";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import notionShot from "@/assets/blog/notion.png.asset.json";
@@ -257,14 +258,26 @@ export default function BlogEvernoteAlternatives() {
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>
-            <p className="text-muted-foreground leading-relaxed mb-12">
+            <p className="text-muted-foreground leading-relaxed mb-4">
               We left out tools that don't actually replace Evernote (Trello, chat apps,
               read-it-later services). The shortlist had to do three things: hold a serious
               volume of notes, import what you already have, and let you take your data with
               you if you ever leave. Pricing is current as of June 2026.
             </p>
+            <p className="text-muted-foreground leading-relaxed mb-8">
+              We also weighted long-term trust heavily. Every app on the list either ships
+              real markdown export, has a documented data-portability story, or has been
+              around long enough that "the company shutting down" isn't an immediate risk.
+              Evernote refugees have been burned once already - the second move has to last.
+            </p>
 
-            <h2 className="font-serif text-2xl font-bold mb-6">The six picks</h2>
+            <Callout tone="key" title="The single test that matters">
+              Open the app, write a paragraph, then ask: can I get that paragraph out as a
+              plain text file in under 10 seconds? If yes, your notes will outlive the app.
+              If no, you're back in the same boat that pushed you off Evernote.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mb-6 mt-10">The six picks</h2>
             <div className="space-y-8">
               {picks.map((p, i) => (
                 <AppDetailCard key={p.name} index={i + 1} {...p} />
@@ -272,6 +285,11 @@ export default function BlogEvernoteAlternatives() {
             </div>
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              Don't pick by feature checklist - pick by the part of Evernote you'll miss.
+              If it was the search, organization matters most. If it was the web clipper,
+              capture matters most. If it was the offline-first calm, ownership matters most.
+            </p>
             <ul className="space-y-3 text-muted-foreground">
               <li>• <strong>You want Evernote's organization without the bloat:</strong> Notebook Archive.</li>
               <li>• <strong>You need wikis and docs alongside notes:</strong> Notion.</li>
@@ -281,7 +299,17 @@ export default function BlogEvernoteAlternatives() {
               <li>• <strong>You captured more than you wrote:</strong> Mem.</li>
             </ul>
 
-            <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
+            <Callout tone="tip" title="Migrate twice, not once">
+              Export your full Evernote library to .enex now, even if you're not ready to
+              switch. Then test-import a single notebook into your top pick and write in it
+              for a week before committing. The friction shows up in week one, not day one.
+            </Callout>
+
+            <h2 className="font-serif text-2xl font-bold mt-16 mb-4">Frequently asked</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              The questions Evernote users actually ask before switching - pulled from years
+              of migration threads, Reddit posts, and support inboxes.
+            </p>
             <Accordion type="single" collapsible className="w-full">
               {faq.map((f, i) => (
                 <AccordionItem key={f.q} value={`item-${i}`}>
