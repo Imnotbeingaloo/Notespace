@@ -249,6 +249,7 @@ const toast = Object.assign(
       return queuedToast("message", jsx(id), { ...options, id });
     },
     message: (message: ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
+    update: updateToast,
     getHistory: getToastHistory,
     getToasts: getCurrentToasts,
   }
