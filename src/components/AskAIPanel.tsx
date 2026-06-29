@@ -91,7 +91,7 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 0.95, delay: 0.2, ease: [0.65, 0, 0.35, 1] }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.65, 0, 0.35, 1] }}
         />
       </svg>
     </div>
