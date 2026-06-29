@@ -271,7 +271,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
       while (displayed.length < target.length) {
         await new Promise((r) => requestAnimationFrame(() => r(null)));
         const remaining = target.length - displayed.length;
-        const step = Math.min(remaining, Math.max(3, Math.ceil(remaining / 8)));
+        const step = Math.min(remaining, Math.max(12, Math.ceil(remaining / 3)));
         displayed = target.slice(0, displayed.length + step);
         setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: displayed } : msg)));
       }
