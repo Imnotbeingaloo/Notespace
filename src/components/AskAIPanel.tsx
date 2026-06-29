@@ -395,7 +395,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           {messages.length === 0 && (
             <motion.div
               layout
-              transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
+              transition={{ layout: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
               className="text-center py-12 flex flex-col items-center"
             >
               <AnimatePresence mode="popLayout" initial={false}>
@@ -406,7 +406,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                     initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                     className="relative mb-4 select-none"
                     aria-hidden
                   >
@@ -419,7 +419,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.25 }}
                     className="h-6 w-6 mb-2"
                   />
                 )}
@@ -432,7 +432,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+                  transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                   className="text-sm text-muted-foreground"
                 >
                   {idleEgg
@@ -444,7 +444,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                 layout
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 1.0 }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
                 className="text-[11px] text-muted-foreground/70 mt-2"
               >
                 Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
