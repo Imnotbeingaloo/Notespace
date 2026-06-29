@@ -46,12 +46,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      applySession(nextSession);
+    let initialised = false;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      // Only an explicit SIGNED_OUT (or the very first INITIAL_SESSION when
+      // truly anonymous) should clear the user. Transient null sessions from
+      // background token refresh failures must NOT log existing users out -
+      // that's what was kicking returning users back to the auth screen.
+      if (event === "SIGNED_OUT") {
+        applySession(null);
+        return;
+      }
+      if (nextSession) {
+        applySession(nextSession);
+        initialised = true;
+        return;
+      }
+      if (!initialised) {
+        applySession(null);
+        initialised = true;
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session: initial } }) => {
-      applySession(initial);
+      if (initial) {
+        applySession(initial);
+        initialised = true;
+      } else if (!initialised) {
+        applySession(null);
+        initialised = true;
+      }
     });
 
     return () => subscription.unsubscribe();
