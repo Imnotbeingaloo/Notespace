@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bold, Italic, Strikethrough, Code, Link2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sanitizeUrl } from "@/lib/url-sanitize";
 
 interface FloatingToolbarProps {
   selectionRect: DOMRect | null;

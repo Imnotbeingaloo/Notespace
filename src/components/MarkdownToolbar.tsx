@@ -17,6 +17,7 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { LinkInsertDialog } from "@/components/LinkInsertDialog";
+import { sanitizeUrl, escapeHtmlAttr } from "@/lib/url-sanitize";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -130,7 +131,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
       const rawUrl = prompt("Enter image URL:");
       const safeUrl = sanitizeUrl(rawUrl);
       if (!safeUrl) {
-        if (rawUrl) toast.error("That URL isn't allowed");
+        if (rawUrl) toast({ title: "That URL isn't allowed", variant: "destructive" });
         return;
       }
       focusEditor(editorRef.current);
