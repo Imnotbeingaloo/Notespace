@@ -66,15 +66,22 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
-  // Easter egg: after 5s of inactivity on an empty conversation, show a playful animation
+  // Easter egg: plays exactly once per panel open. After 5s of inactivity on
+  // an empty conversation, show a short animated scene for ~4s, then retire it.
+  const eggPlayedRef = useRef(false);
   useEffect(() => {
-    if (!open || messages.length > 0 || input.trim() || loading) {
-      setIdleEgg(false);
-      return;
-    }
-    const t = setTimeout(() => setIdleEgg(true), 5000);
-    return () => clearTimeout(t);
+    if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
+    if (eggPlayedRef.current) return;
+    if (messages.length > 0 || input.trim() || loading) return;
+    const show = setTimeout(() => {
+      eggPlayedRef.current = true;
+      setIdleEgg(true);
+      const hide = setTimeout(() => setIdleEgg(false), 4200);
+      (show as any)._hide = hide;
+    }, 5000);
+    return () => { clearTimeout(show); if ((show as any)._hide) clearTimeout((show as any)._hide); };
   }, [open, messages.length, input, loading]);
+
 
   const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
     if (!activeNote) return;
