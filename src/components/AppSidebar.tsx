@@ -568,7 +568,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     <Tooltip delayDuration={400}>
                       <TooltipTrigger asChild>
                         <span className="flex items-center gap-1.5 flex-1 min-w-0">
-                          <BookOpen className="h-3.5 w-3.5 shrink-0 text-primary/80" />
+                          <BookOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                           <span>{nb.emoji}</span>
                           <span className="flex-1 truncate">{nb.name}</span>
                         </span>
