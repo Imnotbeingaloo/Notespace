@@ -14,16 +14,17 @@ export interface QueuedToast {
   cancel?: React.ReactNode | { label: React.ReactNode; onClick?: () => void };
   duration: number;
   expanded: boolean;
+  paused: boolean;
   createdAt: number;
   options?: ExternalToast;
 }
 
 const DEFAULT_DURATION: Record<ToastKind, number> = {
-  message: 4200,
-  success: 4200,
-  info: 4200,
-  warning: 5200,
-  error: 6000,
+  message: 3200,
+  success: 3200,
+  info: 3200,
+  warning: 4200,
+  error: 5000,
   loading: Infinity,
 };
 
@@ -104,6 +105,7 @@ export function queuedToast(kind: ToastKind, title: React.ReactNode, options?: E
     cancel: options?.cancel as QueuedToast["cancel"],
     duration: options?.duration ?? DEFAULT_DURATION[kind],
     expanded: false,
+    paused: false,
     createdAt: Date.now(),
     options,
   };
@@ -130,6 +132,14 @@ export function setToastExpanded(id: string | number, expanded: boolean) {
   const toast = activeToasts.find((item) => item.id === id);
   if (!toast) return;
   toast.expanded = expanded;
+  emit();
+}
+
+export function pauseToast(id: string | number) {
+  const toast = activeToasts.find((item) => item.id === id);
+  if (!toast || toast.paused) return;
+  clearTimer(id);
+  toast.paused = true;
   emit();
 }
 
