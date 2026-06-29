@@ -12,6 +12,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 
 const REF = "blog-how-to-make-a-study-plan";
