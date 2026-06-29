@@ -27,15 +27,30 @@ interface AskAIPanelProps {
 }
 
 /** Quiet editorial vignette: a serif word swaps through three thoughts
- *  with a soft ink underline. One-shot, ~5s total. */
-function IdleVignette() {
+ *  with a soft ink underline. One-shot. Honors prefers-reduced-motion. */
+function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   const words = ["idea", "spark", "note"];
   const [i, setI] = useState(0);
   useEffect(() => {
-    const t1 = setTimeout(() => setI(1), 650);
-    const t2 = setTimeout(() => setI(2), 1300);
+    if (reducedMotion) return;
+    const t1 = setTimeout(() => setI(1), 1100);
+    const t2 = setTimeout(() => setI(2), 2200);
     return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
+  }, [reducedMotion]);
+
+  if (reducedMotion) {
+    return (
+      <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
+        <span
+          className="text-foreground/85 italic leading-none"
+          style={{ fontFamily: 'Merriweather, Georgia, "Times New Roman", serif', fontSize: 32, letterSpacing: "-0.005em" }}
+        >
+          idea
+        </span>
+        <div className="mt-1.5 h-[1.75px] w-[110px] rounded-full bg-primary/60" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
@@ -43,42 +58,56 @@ function IdleVignette() {
         <AnimatePresence mode="wait">
           <motion.span
             key={words[i]}
-            initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+            initial={{ opacity: 0, y: 6, filter: "blur(3px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="text-foreground/80 italic leading-none"
+            exit={{ opacity: 0, y: -6, filter: "blur(3px)" }}
+            transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+            className="text-foreground/85 italic leading-none"
             style={{
               fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
               fontSize: 32,
-              letterSpacing: "-0.01em",
+              letterSpacing: "-0.005em",
+              fontWeight: 400,
             }}
           >
             {words[i]}
           </motion.span>
         </AnimatePresence>
       </div>
-      <svg width="120" height="8" viewBox="0 0 120 8" className="mt-1 overflow-visible">
+      <svg width="120" height="10" viewBox="0 0 120 10" className="mt-1.5 overflow-visible" aria-hidden>
         <defs>
           <linearGradient id="aiIdleInk" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
-            <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+            <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
           </linearGradient>
         </defs>
         <motion.path
-          d="M 4 4 Q 60 1, 116 4"
+          d="M 4 5 Q 60 2, 116 5"
           stroke="url(#aiIdleInk)"
-          strokeWidth={1.25}
+          strokeWidth={1.75}
           strokeLinecap="round"
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 0.9, delay: 0.25, ease: [0.65, 0, 0.35, 1] }}
+          transition={{ duration: 0.95, delay: 0.2, ease: [0.65, 0, 0.35, 1] }}
         />
       </svg>
     </div>
   );
+}
+
+/** Detect prefers-reduced-motion with live updates. */
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+  return reduced;
 }
 
 
