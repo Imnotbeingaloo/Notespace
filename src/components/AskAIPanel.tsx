@@ -26,6 +26,61 @@ interface AskAIPanelProps {
   hideTrigger?: boolean;
 }
 
+/** Quiet editorial vignette: a serif word swaps through three thoughts
+ *  with a soft ink underline. One-shot, ~5s total. */
+function IdleVignette() {
+  const words = ["idea", "spark", "note"];
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t1 = setTimeout(() => setI(1), 1700);
+    const t2 = setTimeout(() => setI(2), 3400);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+  return (
+    <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
+      <div className="relative h-[44px] flex items-end justify-center overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={words[i]}
+            initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="text-foreground/80 italic leading-none"
+            style={{
+              fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
+              fontSize: 32,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {words[i]}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+      <svg width="120" height="8" viewBox="0 0 120 8" className="mt-1 overflow-visible">
+        <defs>
+          <linearGradient id="aiIdleInk" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
+            <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          d="M 4 4 Q 60 1, 116 4"
+          stroke="url(#aiIdleInk)"
+          strokeWidth={1.25}
+          strokeLinecap="round"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.9, delay: 0.25, ease: [0.65, 0, 0.35, 1] }}
+        />
+      </svg>
+    </div>
+  );
+}
+
+
 export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, defaultMode = "chat", hideTrigger = false }: AskAIPanelProps) {
   const { activeNote } = useNotebooks();
   const [internalOpen, setInternalOpen] = useState(false);
@@ -66,21 +121,19 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
-  // Easter egg: plays exactly once per panel open. After 5s of inactivity on
-  // an empty conversation, show a short animated scene for ~4s, then retire it.
+  // Easter egg: plays once when the panel opens on an empty conversation.
+  // Quiet editorial vignette - cycles through three words, then retires.
   const eggPlayedRef = useRef(false);
   useEffect(() => {
     if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
     if (eggPlayedRef.current) return;
     if (messages.length > 0 || input.trim() || loading) return;
-    let hide: ReturnType<typeof setTimeout> | undefined;
-    const show = setTimeout(() => {
-      eggPlayedRef.current = true;
-      setIdleEgg(true);
-      hide = setTimeout(() => setIdleEgg(false), 4200);
-    }, 5000);
-    return () => { clearTimeout(show); if (hide) clearTimeout(hide); };
+    eggPlayedRef.current = true;
+    const show = setTimeout(() => setIdleEgg(true), 220);
+    const hide = setTimeout(() => setIdleEgg(false), 220 + 5400);
+    return () => { clearTimeout(show); clearTimeout(hide); };
   }, [open, messages.length, input, loading]);
+
 
 
 
@@ -258,100 +311,21 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                 {idleEgg ? (
                   <motion.div
                     key="egg"
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative mb-5 select-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative mb-4 select-none"
                     aria-hidden
                   >
-                    {/* Editorial notebook vignette: ruled lines settle in,
-                        a serif glyph rests on the page, an ink underline draws
-                        beneath it, and a quiet caret blinks at the end. */}
-                    <div className="relative mx-auto" style={{ width: 220, height: 92 }}>
-                      <svg
-                        width="220"
-                        height="92"
-                        viewBox="0 0 220 92"
-                        className="absolute inset-0 overflow-visible"
-                      >
-                        <defs>
-                          <linearGradient id="aiRuleFade" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="hsl(var(--border))" stopOpacity="0" />
-                            <stop offset="20%" stopColor="hsl(var(--border))" stopOpacity="0.9" />
-                            <stop offset="80%" stopColor="hsl(var(--border))" stopOpacity="0.9" />
-                            <stop offset="100%" stopColor="hsl(var(--border))" stopOpacity="0" />
-                          </linearGradient>
-                          <linearGradient id="aiInkStroke" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
-                            <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="1" />
-                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
-                          </linearGradient>
-                        </defs>
-
-                        {[26, 50, 74].map((y, i) => (
-                          <motion.line
-                            key={y}
-                            x1={6}
-                            x2={214}
-                            y1={y}
-                            y2={y}
-                            stroke="url(#aiRuleFade)"
-                            strokeWidth={1}
-                            initial={{ pathLength: 0, opacity: 0 }}
-                            animate={{ pathLength: 1, opacity: 1 }}
-                            transition={{ duration: 0.9, delay: 0.05 + i * 0.12, ease: [0.65, 0, 0.35, 1] }}
-                          />
-                        ))}
-
-                        <motion.path
-                          d="M 70 64 Q 110 58, 150 64"
-                          stroke="url(#aiInkStroke)"
-                          strokeWidth={1.75}
-                          strokeLinecap="round"
-                          fill="none"
-                          initial={{ pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
-                          transition={{ duration: 1.1, delay: 1.05, ease: [0.65, 0, 0.35, 1] }}
-                        />
-                      </svg>
-
-                      <motion.div
-                        className="absolute left-0 right-0 flex items-end justify-center"
-                        style={{ top: 14, height: 50 }}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                      >
-                        <span
-                          className="text-foreground/80 italic leading-none"
-                          style={{
-                            fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
-                            fontSize: 40,
-                            letterSpacing: "-0.01em",
-                          }}
-                        >
-                          idea
-                        </span>
-                        <motion.span
-                          className="ml-[3px] mb-[6px] inline-block bg-foreground/70"
-                          style={{ width: 1.5, height: 26 }}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: [0, 1, 1, 0, 1, 0, 1] }}
-                          transition={{
-                            duration: 2.2,
-                            delay: 1.4,
-                            times: [0, 0.05, 0.25, 0.4, 0.55, 0.75, 1],
-                            ease: "linear",
-                          }}
-                        />
-                      </motion.div>
-                    </div>
+                    <IdleVignette />
                   </motion.div>
                 ) : (
-                  <div key="spacer" className="h-8 w-8 mb-3" />
+                  <div key="spacer" className="h-6 w-6 mb-2" />
                 )}
               </AnimatePresence>
+
+
               <p className="text-sm text-muted-foreground">
                 {idleEgg
                   ? "A blank page is just the start. Ask anything."
