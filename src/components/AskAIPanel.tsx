@@ -235,6 +235,15 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
             <Sparkles className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">{mode === "edit" ? "Edit this note" : "Explain this note"}</span>
           </button>
+          <button
+            onClick={() => callAI("format")}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-muted text-foreground hover:bg-muted/70 disabled:opacity-50 transition-colors min-w-0"
+            title="Reformat this note into clean markdown without changing the wording"
+          >
+            <AlignLeft className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">Format</span>
+          </button>
         </div>
 
         {/* Messages */}
