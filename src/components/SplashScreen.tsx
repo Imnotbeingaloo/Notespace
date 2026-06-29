@@ -10,21 +10,24 @@ interface SplashScreenProps {
 export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
   const [isDark] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("app-theme") === "dark" || document.documentElement.classList.contains("dark");
+    const stored = localStorage.getItem("app-theme");
+    if (stored === "dark") return true;
+    if (stored === "light") return false;
+    if (document.documentElement.classList.contains("dark")) return true;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
   });
   const [phase, setPhase] = useState<"logo" | "text" | "done">("logo");
 
   useEffect(() => {
     if (fast) {
-      // Quick crossfade - under 600ms total
-      const t1 = setTimeout(() => setPhase("text"), 80);
-      const t2 = setTimeout(() => setPhase("done"), 350);
-      const t3 = setTimeout(onComplete, 550);
+      const t1 = setTimeout(() => setPhase("text"), 60);
+      const t2 = setTimeout(() => setPhase("done"), 280);
+      const t3 = setTimeout(onComplete, 440);
       return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
     }
-    const t1 = setTimeout(() => setPhase("text"), 350);
-    const t2 = setTimeout(() => setPhase("done"), 1800);
-    const t3 = setTimeout(onComplete, 2400);
+    const t1 = setTimeout(() => setPhase("text"), 220);
+    const t2 = setTimeout(() => setPhase("done"), 1100);
+    const t3 = setTimeout(onComplete, 1500);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete, fast]);
 
