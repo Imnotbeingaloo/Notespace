@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu, Bell } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "@/components/ui/sonner";
 import { AnimatePresence, motion } from "framer-motion";
 
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
@@ -237,11 +238,34 @@ export function OnboardingHelp() {
             ))}
           </Tabs>
 
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
-            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
-            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
-              Don't show the "Confused? Click here" hint again
-            </label>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 flex-1">
+              <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
+              <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
+                Don't show the "Confused? Click here" hint again
+              </label>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1.5 shrink-0"
+              onClick={() => {
+                const variants = [
+                  () => toast.success("Changes saved", { description: "Your note was saved successfully." }),
+                  () => toast.error("Link has expired", {
+                    description: "The share link you tried to open is no longer active.",
+                    action: { label: "Get new link", onClick: () => {} },
+                  }),
+                  () => toast.warning("Broken link", { description: "One of the links in this note didn't resolve." }),
+                  () => toast.info("Links imported", { description: "Your import finished without errors." }),
+                ];
+                variants.forEach((fire, i) => setTimeout(fire, i * 350));
+              }}
+            >
+              <Bell className="h-3.5 w-3.5" />
+              Test notifications
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
