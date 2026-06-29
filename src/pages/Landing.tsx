@@ -328,11 +328,18 @@ export default function LandingPage() {
                 </span>
               </motion.div>
 
+              {/*
+                HERO COPY LOCK - do not change without explicit user request.
+                Headline copy, italic words, paragraph text and the text-size
+                classes below are intentionally pinned. The fixed max-width +
+                min-height keep the hero from reflowing the layout if copy
+                ever changes accidentally.
+              */}
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2"
+                className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-[18ch] min-h-[3.6em]"
               >
                 Your thoughts,{" "}
                 <span className="italic text-primary inline-block pr-1.5">organized</span>
@@ -345,10 +352,11 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed"
+                className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed line-clamp-3 min-h-[4.5em]"
               >
                 A quiet place to write, link, and revisit your thinking - with intelligence woven in only where it actually helps.
               </motion.p>
+
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
