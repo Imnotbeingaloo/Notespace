@@ -337,6 +337,12 @@ export default function BlogAILiteratureReview() {
               <h2 className="font-serif text-2xl font-bold mt-12 mb-6">
                 Frequently asked
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Quick answers to the questions PhD students send us most often
+                when they're setting up an AI-assisted review for the first
+                time. If your question isn't here, the rest of the workflow
+                above is the long answer to most of them.
+              </p>
               <Accordion type="single" collapsible className="w-full">
                 {faq.map((f, i) => (
                   <AccordionItem key={f.q} value={`item-${i}`}>
