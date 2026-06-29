@@ -37,8 +37,8 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
         <motion.div
           key="splash"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: fast ? 1.0 : 1.05, filter: fast ? undefined : "blur(8px)" }}
-          transition={{ duration: fast ? 0.25 : 0.6, ease: [0.65, 0, 0.35, 1] }}
+          exit={{ opacity: 0, scale: fast ? 1.0 : 1.03 }}
+          transition={{ duration: fast ? 0.22 : 0.45, ease: [0.65, 0, 0.35, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
           style={{ backgroundColor: isDark ? "#000000" : "#ffffff" }}
         >
