@@ -120,7 +120,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
           style={{ color: visual.accent, backgroundColor: visual.tint }}
           aria-hidden="true"
         >
-          <Icon className={`h-3.5 w-3.5 ${kind === "loading" ? "animate-pulse" : ""}`} />
+          <Icon className={`h-3.5 w-3.5 ${kind === "loading" ? "animate-spin" : ""}`} />
         </span>
 
         <div className="min-w-0 flex-1">
