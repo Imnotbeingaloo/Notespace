@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft, List, Lightbulb, PenLine, Sparkles } from "lucide-react";
+import { X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft, List, Lightbulb, PenLine, Sparkles, Feather } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -224,7 +224,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
       let rafId: number | null = null;
       let streamDone = false;
       // Hard cap: full reveal must finish within ~2.2s of the stream ending.
-      const MAX_DRAIN_MS = 1500;
+      const MAX_DRAIN_MS = 2000;
       let drainStart = 0;
 
       const flush = () => {
@@ -432,7 +432,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                         animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
                         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
                       />
-                      <Sparkles className="relative h-4 w-4 text-primary" />
+                      <Feather className="relative h-4 w-4 text-primary" />
                     </div>
                     <svg width="64" height="6" viewBox="0 0 64 6" className="mt-2 overflow-visible" aria-hidden>
                       <defs>
