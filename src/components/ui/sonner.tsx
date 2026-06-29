@@ -39,7 +39,7 @@ const variants = {
     tint: "hsl(var(--primary) / 0.11)",
   },
   loading: {
-    Icon: Bell,
+    Icon: Loader2,
     accent: "hsl(var(--primary))",
     tint: "hsl(var(--primary) / 0.11)",
   },
