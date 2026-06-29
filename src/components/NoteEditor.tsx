@@ -918,10 +918,32 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
         {/* Word count, goal & reading time - only when the word-count goal feature is enabled */}
         {wordCountGoalEnabled && (
-          <div className="shrink-0 border-t border-border flex items-center justify-between">
-            <WordCount content={activeNote?.content || ""} />
-            <WordCountGoal content={activeNote?.content || ""} />
-          </div>
+          <motion.div
+            layout
+            transition={{ type: "spring", stiffness: 320, damping: 32 }}
+            className="shrink-0 border-t border-border flex items-center justify-between"
+          >
+            <AnimatePresence initial={false} mode="popLayout">
+              {activeNote?.content && activeNote.content.trim() !== "" && (
+                <motion.div
+                  key="wc"
+                  layout
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -16 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                >
+                  <WordCount content={activeNote?.content || ""} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.div
+              layout
+              transition={{ type: "spring", stiffness: 320, damping: 32 }}
+            >
+              <WordCountGoal content={activeNote?.content || ""} />
+            </motion.div>
+          </motion.div>
         )}
 
         {/* File upload */}
