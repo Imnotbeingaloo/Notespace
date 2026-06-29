@@ -220,6 +220,14 @@ const posts = [
     tag: "Comparison",
   },
   {
+    slug: "otter-ai-alternative-for-students",
+    title: "The Honest Otter.ai Alternative Guide for Students",
+    excerpt:
+      "Otter is a transcript machine, not a study tool. Six honest alternatives compared for students - Notebook Archive, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter itself.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "best-ai-note-taking-apps-2026",
     title: "Best AI Note Taking Apps for Writers and Researchers in 2026",
     excerpt:
