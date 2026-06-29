@@ -533,11 +533,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDraggedNotebookId(null);
                       }
                     }}
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
                       activeNotebookId === nb.id
-                        ? "bg-primary/10 border-primary/70 text-foreground font-medium"
-                        : "border-transparent text-sidebar-foreground hover:bg-primary/5 hover:border-primary/40"
-                    } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
+                        ? "bg-accent text-foreground font-medium"
+                        : "text-sidebar-foreground hover:bg-accent/50"
+                    } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-accent/40" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(nb.id);
                       const first = nb.notes?.[0]?.id ?? null;
