@@ -15,6 +15,8 @@ export interface HybridEditorHandle {
   setContent: (md: string) => void;
   /** Replace the entire editor body but keep it in the browser's undo stack. */
   replaceAllUndoable: (md: string) => void;
+  /** Insert at top / cursor / end of the document, preserving undo history. */
+  mergeAt: (md: string, position: "top" | "cursor" | "end") => void;
   saveSelection: () => void;
 }
 
@@ -248,6 +250,38 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         document.execCommand("insertHTML", false, html);
         emitChange();
       },
+      mergeAt: (md: string, position: "top" | "cursor" | "end") => {
+        const el = editorRef.current;
+        if (!el) return;
+        el.focus();
+        if (position === "cursor") {
+          // Reuse the existing cursor-insert path so saved selection is honored.
+          restoreSelection();
+          const html = markdownToHtml(md) + "<p><br></p>";
+          document.execCommand("insertHTML", false, html);
+        } else {
+          const sel = window.getSelection();
+          const range = document.createRange();
+          if (position === "top") {
+            range.setStart(el, 0);
+            range.setEnd(el, 0);
+          } else {
+            range.selectNodeContents(el);
+            range.collapse(false);
+          }
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+          const html = position === "top"
+            ? markdownToHtml(md) + "<p><br></p>"
+            : "<p><br></p>" + markdownToHtml(md);
+          document.execCommand("insertHTML", false, html);
+        }
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+        }
+        emitChange();
+      },
       saveSelection: () => {
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0 && editorRef.current?.contains(sel.anchorNode)) {
@@ -268,8 +302,19 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       } else if (e.key === "u" || e.key === "U") {
         e.preventDefault();
         document.execCommand("underline");
+      } else if (e.key === "z" || e.key === "Z") {
+        // Explicit undo/redo so the browser's native contentEditable history
+        // is invoked even when React event handlers would otherwise swallow
+        // the keystroke. Shift+Z (or Ctrl+Y) = redo.
+        e.preventDefault();
+        document.execCommand(e.shiftKey ? "redo" : "undo");
+        emitChange();
+      } else if (e.key === "y" || e.key === "Y") {
+        e.preventDefault();
+        document.execCommand("redo");
+        emitChange();
       }
-    }, []);
+    }, [emitChange]);
 
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
       const items = e.clipboardData.items;
@@ -389,7 +434,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           onPaste={handlePaste}
           data-placeholder={placeholder}
           data-testid="hybrid-editor-content"
-          className={`wysiwyg-editor w-full flex-1 h-auto bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}
+          className={`wysiwyg-editor w-full flex-1 h-auto bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-h1:text-center prose-p:text-foreground prose-p:my-3 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}
         />
       </div>
     );

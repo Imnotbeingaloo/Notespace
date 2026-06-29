@@ -4,11 +4,13 @@ import { toast } from "@/hooks/use-toast";
 import { extractPdfText } from "@/lib/pdf-extract";
 import { formatImportedDocument } from "@/lib/document-import";
 import { MAX_PROCESSABLE_SIZE } from "@/lib/file-validation";
-import { ImportActionDialog, type ImportAction } from "@/components/ImportActionDialog";
+import { ImportActionDialog, type ImportChoice, type MergePosition } from "@/components/ImportActionDialog";
 
 interface ImportNotesButtonProps {
-  /** Insert at cursor / merge into the current note. */
+  /** Insert at cursor / merge into the current note (fallback if onMergeAt missing). */
   onInsert: (text: string) => void;
+  /** Optional: merge at a specific position (top / cursor / end). */
+  onMergeAt?: (text: string, position: MergePosition) => void;
   /** Optional: replace the entire current note's body. Enables the dialog flow. */
   onReplace?: (text: string) => void;
   /** Optional: spin up a brand-new note with the imported content. */
@@ -29,7 +31,7 @@ function humanSize(bytes: number) {
   return `${Math.round(bytes / 1024 / 1024)} MB`;
 }
 
-export function ImportNotesButton({ onInsert, onReplace, onCreateNew, hasExistingContent = false }: ImportNotesButtonProps) {
+export function ImportNotesButton({ onInsert, onMergeAt, onReplace, onCreateNew, hasExistingContent = false }: ImportNotesButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState<{ content: string; fileName: string } | null>(null);
@@ -99,22 +101,28 @@ export function ImportNotesButton({ onInsert, onReplace, onCreateNew, hasExistin
     }
   }, [onInsert, dialogEnabled, hasExistingContent]);
 
-  const handleChoice = useCallback((action: ImportAction | null) => {
+  const handleChoice = useCallback((choice: ImportChoice | null) => {
     if (!pending) { setPending(null); return; }
     const { content, fileName } = pending;
     setPending(null);
-    if (!action) return;
-    if (action === "create") {
+    if (!choice) return;
+    if (choice.action === "create") {
       onCreateNew?.(content, fileName);
       toast({ title: "New note created", description: `"${fileName}" imported into a new note.` });
-    } else if (action === "merge") {
-      onInsert(`\n${content}`);
-      toast({ title: "Merged", description: `"${fileName}" inserted at your cursor.` });
-    } else if (action === "replace") {
+    } else if (choice.action === "merge") {
+      const pos = choice.position ?? "cursor";
+      if (onMergeAt) {
+        onMergeAt(content, pos);
+      } else {
+        onInsert(`\n${content}`);
+      }
+      const where = pos === "top" ? "at the top" : pos === "end" ? "at the end" : "at your cursor";
+      toast({ title: "Merged", description: `"${fileName}" inserted ${where}.` });
+    } else if (choice.action === "replace") {
       onReplace?.(content);
       toast({ title: "Note replaced", description: `Content replaced with "${fileName}".` });
     }
-  }, [pending, onCreateNew, onInsert, onReplace]);
+  }, [pending, onCreateNew, onInsert, onMergeAt, onReplace]);
 
   return (
     <>
