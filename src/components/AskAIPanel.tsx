@@ -63,7 +63,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
-  const callAI = async (action: "explain" | "edit" | "analyze", instruction?: string) => {
+  const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
     if (!activeNote) return;
     const userMsg: Msg = {
       id: crypto.randomUUID(),
