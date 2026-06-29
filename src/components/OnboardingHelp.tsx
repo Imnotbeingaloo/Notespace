@@ -188,22 +188,35 @@ export function OnboardingHelp() {
       </div>
 
       <div className="md:hidden">
-        <div className="fixed z-40 right-4 flex flex-col items-end" style={{ top: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}>
-          <Button onClick={handleHelpClick} variant="default" size="icon" className="h-11 w-11 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90" aria-label="Help">
-            <HelpCircle className="h-5 w-5" />
+        {/* Top-right floating help. Sits above the editor chrome but offset so
+            it never overlaps the back button, AI buttons, or attach controls. */}
+        <div
+          className="fixed z-40 right-3 flex flex-col items-end pointer-events-none"
+          style={{ top: "calc(env(safe-area-inset-top, 0px) + 0.625rem)" }}
+        >
+          <Button
+            onClick={handleHelpClick}
+            variant="default"
+            size="icon"
+            className="h-10 w-10 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 pointer-events-auto"
+            aria-label="Help"
+            data-testid="onboarding-help-mobile"
+          >
+            <HelpCircle className="h-[18px] w-[18px]" />
           </Button>
           <AnimatePresence>
             {hintOpen && (
               <motion.button type="button" key="hint-mobile" onClick={dismissForever}
                 initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.25 }}
-                className="mt-1.5 text-[11px] font-medium text-foreground/80 whitespace-nowrap">
+                className="mt-1.5 text-[11px] font-medium text-foreground/80 whitespace-nowrap pointer-events-auto bg-background/80 backdrop-blur px-2 py-0.5 rounded-md">
                 Confused? Tap here
               </motion.button>
             )}
           </AnimatePresence>
         </div>
       </div>
+
 
 
       <Dialog open={open} onOpenChange={setOpen}>
