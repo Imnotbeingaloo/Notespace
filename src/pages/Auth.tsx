@@ -484,6 +484,17 @@ const AuthPage = () => {
     );
   }
 
+  // Avoid the brief flash of the auth form when a returning user is about to
+  // be redirected (e.g. clicking "Sign up" from a blog while already signed in).
+  if (authLoading || user || (hasLikelySession() && !user && authLoading)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <NoindexHead title="Sign in - Notebook Archive" />
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8 relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
