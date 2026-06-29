@@ -12,6 +12,7 @@ import {
   removeToast,
   setToastExpanded,
   subscribeToasts,
+  updateToast,
   type QueuedToast,
 } from "@/lib/toast-queue";
 
