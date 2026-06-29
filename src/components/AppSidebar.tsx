@@ -309,7 +309,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <img
                 src="/logo.png"
                 alt="Notebook Archive"
-                className="h-[1.05rem] w-[1.05rem] sm:h-[1.224rem] sm:w-[1.224rem] object-contain flex-shrink-0"
+                className="h-[1.05rem] w-[1.05rem] sm:h-[1.2rem] sm:w-[1.2rem] object-contain flex-shrink-0"
               />
               <span className="font-serif font-bold text-foreground text-base whitespace-nowrap">Notebook Archive</span>
               <button
