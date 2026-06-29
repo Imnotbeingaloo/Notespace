@@ -532,10 +532,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDraggedNotebookId(null);
                       }
                     }}
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-l-lg rounded-r-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNotebookId === nb.id
-                        ? "bg-primary/10 text-foreground font-medium"
-                        : "text-sidebar-foreground notebook-hover"
+                        ? "bg-primary/10 text-foreground font-medium border-primary"
+                        : "text-sidebar-foreground notebook-hover border-transparent hover:border-primary/50"
                     } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(nb.id);
@@ -543,6 +543,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       if (first) setActiveNoteId(first);
                       onSelectNote?.();
                     }}
+                    title={`Notebook · ${nb.notes?.length ?? 0} ${(nb.notes?.length ?? 0) === 1 ? "note" : "notes"}`}
                   >
                     <button
                       type="button"
