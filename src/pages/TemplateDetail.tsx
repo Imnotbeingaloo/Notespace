@@ -17,6 +17,11 @@ export default function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const template = templates.find((t) => t.id === id);
   const [copied, setCopied] = useState(false);
+  const { user } = useAuth();
+  const isAuthed = !!user || hasLikelySession();
+  const useTemplateHref = template
+    ? (isAuthed ? `/app?template=${template.id}` : `/auth?template=${template.id}`)
+    : "/auth";
 
   useEffect(() => {
     document.documentElement.classList.add("light");
