@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw, Check, X, Eye, EyeOff, ExternalLink } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth, hasLikelySession } from "@/context/AuthContext";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { NoindexHead } from "@/components/NoindexHead";
