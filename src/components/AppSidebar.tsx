@@ -754,7 +754,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                   {note.emoji || "📝"}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right">{note.title}</TooltipContent>
+              <TooltipContent side="right">{note.title} · Note</TooltipContent>
             </Tooltip>
           ))}
           {notebooks.map((nb) => (
@@ -774,7 +774,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     {nb.emoji}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="right">{nb.name}</TooltipContent>
+                <TooltipContent side="right">{nb.name} · Notebook</TooltipContent>
               </Tooltip>
               {/* Nested notes intentionally hidden in collapsed view. */}
             </div>
