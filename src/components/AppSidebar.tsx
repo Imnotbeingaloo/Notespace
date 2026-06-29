@@ -4,7 +4,7 @@ import { Plus, BookOpen, Trash2, ChevronRight, ChevronDown, Menu, FileText, Note
 import { useProfile } from "@/hooks/use-profile";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { ScratchIcon } from "@/components/ScratchIcon";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { format, isToday, isTomorrow, addDays, isSameDay } from "date-fns";
 import ReactMarkdown from "react-markdown";
