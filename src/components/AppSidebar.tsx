@@ -688,7 +688,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               setActiveNoteId(note.id);
                               onSelectNote?.();
                             }}
-                            className={`group/nn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
+                            className={`group/nn magnetic-btn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
                               activeNoteId === note.id
                                 ? "bg-primary/10 text-foreground font-medium"
                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
