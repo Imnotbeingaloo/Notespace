@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { prefetchOnHover } from "@/lib/prefetch-route";
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -286,10 +285,10 @@ export default function BlogIndex() {
         <PageHeader />
 
         <main className="max-w-6xl mx-auto px-6 pt-32 pb-20">
-          <motion.header
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+          <header
+            
+            
+            
             className="mb-16 text-center max-w-3xl mx-auto"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
@@ -302,16 +301,16 @@ export default function BlogIndex() {
               Honest comparisons, opinionated picks, and the occasional behind-the-scenes from
               the team building Notebook Archive.
             </p>
-          </motion.header>
+          </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((p, i) => (
-              <motion.article
+              <article
                 key={p.slug}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: (i % 3) * 0.06 }}
+                
+                
+                
+                
               >
                 <Link
                   to={`/blog/${p.slug}`}
@@ -334,7 +333,7 @@ export default function BlogIndex() {
                     </span>
                   </div>
                 </Link>
-              </motion.article>
+              </article>
             ))}
           </div>
         </main>

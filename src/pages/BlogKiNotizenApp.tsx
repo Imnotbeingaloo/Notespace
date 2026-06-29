@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ArrowRight, NotebookPen, Layers, Brain } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
@@ -118,10 +117,10 @@ export default function BlogKiNotizenApp() {
         <PageHeader />
 
         <article className="max-w-3xl mx-auto px-6 pt-32 pb-20">
-          <motion.header
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+          <header
+            
+            
+            
             className="mb-10"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
@@ -136,7 +135,7 @@ export default function BlogKiNotizenApp() {
               ausprobiert, die den Namen verdienen - und aufgeschrieben, welche wir einem Freund
               empfehlen würden, je nachdem wie er arbeitet.
             </p>
-          </motion.header>
+          </header>
 
           <BlogHero
             src={heroAsset.url}
@@ -175,12 +174,12 @@ export default function BlogKiNotizenApp() {
               {picks.map((p, i) => {
                 const Icon = p.icon;
                 return (
-                  <motion.div
+                  <div
                     key={p.name}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.05 }}
+                    
+                    
+                    
+                    
                     className="border border-border rounded-lg p-6 bg-card"
                   >
                     <div className="flex items-baseline justify-between gap-4 mb-2">
@@ -198,7 +197,7 @@ export default function BlogKiNotizenApp() {
                         {p.disclosure}
                       </p>
                     )}
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
