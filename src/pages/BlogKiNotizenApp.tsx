@@ -6,6 +6,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogHero, BlogKeyTakeaways, BlogPullQuote } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 import heroAsset from "@/assets/blog/hero-ki-notizen.jpg.asset.json";
 
 const CTA = "/auth?ref=blog-de&utm_source=blog&utm_medium=organic&utm_campaign=ki-notizen-app";
