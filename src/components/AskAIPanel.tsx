@@ -232,12 +232,21 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 scrollbar-thin">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {messages.length === 0 && (
-            <div className="text-center py-12">
-              <MessageSquareText className="h-8 w-8 text-primary/40 mx-auto mb-3" />
+            <div className="text-center py-12 flex flex-col items-center">
+              {idleEgg ? (
+                <div className="relative h-14 w-14 mb-3" aria-hidden>
+                  <div className="absolute inset-0 rounded-2xl bg-primary/10 animate-ping" />
+                  <div className="absolute inset-0 flex items-center justify-center text-2xl animate-bounce">
+                    {["🪄","💡","📚","🧠","✏️"][Math.floor(Date.now()/900) % 5]}
+                  </div>
+                </div>
+              ) : (
+                <div className="h-8 w-8 mb-3" />
+              )}
               <p className="text-sm text-muted-foreground">
-                Ask anything about your note, or use the quick actions above.
+                {idleEgg ? "Still there? Try a quick action below." : "Ask anything about your note, or use the quick actions below."}
               </p>
               <p className="text-[11px] text-muted-foreground/70 mt-2">
                 Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
