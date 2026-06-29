@@ -20,6 +20,7 @@ import { CreateNotebookDialog } from "@/components/CreateNotebookDialog";
 import { RenameDuplicateDialog } from "@/components/RenameDuplicateDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 import { NoindexHead } from "@/components/NoindexHead";
+import { templates } from "@/components/NoteTemplatePicker";
 
 import { useNotebooks } from "@/context/NotebookContext";
 
