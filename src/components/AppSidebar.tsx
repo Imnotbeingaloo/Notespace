@@ -652,8 +652,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden ml-4 mt-0.5 border-l-2 border-sidebar-border pl-2 space-y-0.5"
+                        className="overflow-hidden ml-4 mt-1 border-l-2 border-sidebar-border pl-2 space-y-0.5"
                       >
+                        <div className="flex items-center gap-1.5 px-2 pt-0.5 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold">
+                          <span>Notes in</span>
+                          <span className="truncate text-muted-foreground/80 normal-case tracking-normal">{nb.name}</span>
+                        </div>
                         {nb.notes?.map((note) => (
                           <div
                             key={note.id}
@@ -669,6 +673,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               setActiveNoteId(note.id);
                               onSelectNote?.();
                             }}
+                            title={`Note in ${nb.name}`}
                             className={`group/nn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
                               activeNoteId === note.id
                                 ? "bg-primary/10 text-foreground font-medium"
@@ -677,6 +682,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                           >
                             <FileText className="h-3 w-3 shrink-0 opacity-70" />
                             <span className="truncate flex-1">{note.title || "Untitled"}</span>
+                            <span className="hidden group-hover/nn:inline text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium shrink-0">
+                              Note
+                            </span>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
