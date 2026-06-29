@@ -418,6 +418,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
+            {standaloneNotes.length > 0 && (
+              <div className="px-2 pt-1 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold">
+                Notes
+              </div>
+            )}
             <AnimatePresence>
               {standaloneNotes.map((note) => (
                 <motion.div
