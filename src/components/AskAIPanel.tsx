@@ -232,18 +232,8 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 scrollbar-thin">
-          {messages.length === 0 && (
-            <div className="text-center py-12">
-              <MessageSquareText className="h-8 w-8 text-primary/40 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">
-                Ask anything about your note, or use the quick actions above.
-              </p>
-              <p className="text-[11px] text-muted-foreground/70 mt-2">
-                Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
-              </p>
-            </div>
-          )}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 ask-ai-scroll">
+          {messages.length === 0 && <IdleEasterEgg />}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
               <div
@@ -297,25 +287,19 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
 
         {/* Input */}
         <div className="border-t border-border p-3 bg-muted/20">
-          {/* Quick action chips - horizontal scroller, grouped by mode like Notion/Lex */}
-          <div className="-mx-1 mb-2 overflow-x-auto scrollbar-thin">
+          {/* Quick action chips */}
+          <div className="-mx-1 mb-2 overflow-x-auto ask-ai-scroll">
             <div className="flex items-center gap-1.5 px-1 w-max">
               {(mode === "edit"
                 ? [
                     { key: "improve", icon: Wand2, label: "Improve writing", instr: "Improve this note: fix grammar, clarity, and flow. Preserve meaning." },
-                    { key: "shorter", icon: Minimize2, label: "Make shorter", instr: "Make this note significantly shorter while preserving every key idea." },
-                    { key: "longer", icon: Maximize2, label: "Make longer", instr: "Expand this note with more depth, examples, and supporting detail. Keep the same voice." },
                     { key: "continue", icon: PenLine, label: "Continue writing", instr: "Continue writing this note in the same voice and structure. Add the next 2-3 paragraphs." },
-                    { key: "simplify", icon: Lightbulb, label: "Simplify", instr: "Rewrite this note in simple, plain English suitable for a 12-year-old. Keep the meaning intact." },
                     { key: "format", icon: AlignLeft, label: "Format", action: "format" as const },
                   ]
                 : [
-                    { key: "explain", icon: BookOpen, label: "Explain this note", instr: undefined },
                     { key: "summary", icon: List, label: "Summarize", instr: "Summarize this note in 5 short bullets, in the note's own words." },
-                    { key: "keypoints", icon: List, label: "Key points", instr: "Pull out the 5-7 most important points from this note as a clean bulleted list." },
+                    { key: "keypoints", icon: BookOpen, label: "Key points", instr: "Pull out the 5-7 most important points from this note as a clean bulleted list." },
                     { key: "actions", icon: ListChecks, label: "Action items", instr: "List every actionable task, decision, or follow-up implied by this note as a checklist." },
-                    { key: "translate", icon: Languages, label: "Translate", instr: "Translate this note into clear, natural English. If it is already in English, translate to Spanish instead." },
-                    { key: "missing", icon: Lightbulb, label: "What am I missing?", instr: "Read this note critically. List concrete gaps, weak arguments, missing context, and questions worth answering." },
                   ]
               ).map(({ key, icon: Icon, label, instr, action }: any) => (
                 <button
