@@ -377,7 +377,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.65 }}
-                className="mt-6 font-mono text-[11px] tracking-[0.22em] uppercase text-muted-foreground/70"
+                className="mt-6 font-mono text-[11px] tracking-[0.22em] uppercase text-muted-foreground"
               >
                 No credit card required
               </motion.p>
@@ -397,7 +397,7 @@ export default function LandingPage() {
                   transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   className="relative rounded-2xl border border-border bg-card p-7 shadow-xl shadow-primary/[0.08] -rotate-1 cursor-default hover:shadow-2xl hover:shadow-primary/15 transition-shadow duration-500"
                 >
-                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">
                     CHAPTER ONE
                   </div>
                   <div className="font-serif text-lg md:text-xl font-bold text-foreground mb-5 leading-tight">
@@ -437,7 +437,7 @@ export default function LandingPage() {
                     <span className="inline-flex items-center rounded-full border border-border/80 bg-muted/40 px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                       # physics
                     </span>
-                    <span className="font-mono text-[10px] text-muted-foreground/60">p.14</span>
+                    <span className="font-mono text-[10px] text-muted-foreground">p.14</span>
                   </div>
                 </motion.div>
 
