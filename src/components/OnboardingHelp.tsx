@@ -62,6 +62,9 @@ const sections: Section[] = [
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
 const SESSION_COUNT_KEY = "onboarding-hint-session-count";
+const FIRST_SEEN_KEY = "onboarding-hint-first-seen-at";
+// Only treat the user as "new" within this window. After it expires the hint stops appearing.
+const NEW_USER_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 // Escalating idle thresholds: 1st = 5s, 2nd = 15s, 3rd = 30s, then stop.
 const IDLE_STEPS = [5000, 15000, 30000];
 const SHOW_MS = 3500;
@@ -102,6 +105,15 @@ export function OnboardingHelp() {
 
   useEffect(() => {
     try {
+      // Mark first-seen-at on initial load so we can gate the hint to new users only.
+      const firstSeen = localStorage.getItem(FIRST_SEEN_KEY);
+      if (!firstSeen) {
+        localStorage.setItem(FIRST_SEEN_KEY, String(Date.now()));
+      } else if (Date.now() - parseInt(firstSeen, 10) > NEW_USER_WINDOW_MS) {
+        // Not a new user anymore - permanently silence the idle hint.
+        dismissedRef.current = true;
+        localStorage.setItem(DISMISS_KEY, "1");
+      }
       if (localStorage.getItem(DISMISS_KEY) === "1") { dismissedRef.current = true; setDontShowAgain(true); }
       const c = parseInt(sessionStorage.getItem(SESSION_COUNT_KEY) ?? "0", 10);
       if (!Number.isNaN(c)) sessionCountRef.current = c;
