@@ -32,11 +32,11 @@ export default function Footer() {
               <img
                 src="/logo.png"
                 alt="Notebook Archive"
-                width={27}
-                height={27}
+                width={32}
+                height={32}
                 loading="lazy"
                 decoding="async"
-                className="h-[1.372rem] w-[1.372rem] object-contain shrink-0"
+                className="h-[1.2rem] w-[1.2rem] object-contain shrink-0"
               />
               <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap leading-none">Notebook Archive</span>
             </motion.div>
