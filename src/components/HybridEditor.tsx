@@ -13,6 +13,8 @@ export interface HybridEditorHandle {
   getValue: () => string;
   getEditorElement: () => HTMLDivElement | null;
   setContent: (md: string) => void;
+  /** Replace the entire editor body but keep it in the browser's undo stack. */
+  replaceAllUndoable: (md: string) => void;
   saveSelection: () => void;
 }
 
