@@ -283,7 +283,24 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         }
       }
 
-      // Stream finished — start the bounded drain.
+      // Flush any trailing buffered SSE line that lacked a newline so the
+      // final character/word is never lost.
+      if (buffer.length) {
+        const tail = buffer.trim();
+        if (tail.startsWith("data: ")) {
+          const json = tail.slice(6).trim();
+          if (json && json !== "[DONE]") {
+            try {
+              const parsed = JSON.parse(json);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content) target += content;
+            } catch {}
+          }
+        }
+        buffer = "";
+      }
+
+      // Stream finished - start the bounded drain.
       streamDone = true;
       drainStart = performance.now();
       schedule();
