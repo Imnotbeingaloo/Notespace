@@ -166,6 +166,38 @@ export function AIToolsPanel() {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
+              {setupMode === "flashcards" && !loading && !result && (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm font-medium text-foreground mb-1">How many flashcards?</p>
+                    <p className="text-xs text-muted-foreground">
+                      Pick a deck size. We'll generate concept-focused Q&amp;A from your note.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[5, 10, 15, 20].map((n) => (
+                      <button
+                        key={n}
+                        onClick={() => setCardCount(n)}
+                        className={`px-2 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                          cardCount === n
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => runTool("flashcards", cardCount)}
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+                  >
+                    <Layers className="h-4 w-4" />
+                    Generate {cardCount} cards
+                  </button>
+                </div>
+              )}
               {loading && !result && (
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <Loader2 className="h-4 w-4 animate-spin" />
