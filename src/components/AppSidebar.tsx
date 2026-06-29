@@ -437,10 +437,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDragNoteFromNb(null);
                         setDragOverNoteId(null);
                       }}
-                      className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                      className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
                         activeNoteId === note.id
-                          ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
-                          : "border-transparent text-sidebar-foreground hover:bg-sky-500/5 hover:border-sky-500/40"
+                          ? "bg-accent text-foreground font-medium"
+                          : "text-sidebar-foreground hover:bg-accent/50"
                       } ${dragNoteId === note.id ? "opacity-40" : ""}`}
                       onClick={() => {
                         setActiveNotebookId(null);
@@ -448,7 +448,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         onSelectNote?.();
                       }}
                     >
-                      <FileText className="h-3.5 w-3.5 shrink-0 text-sky-500/80" />
+                      <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                       <span className="text-base leading-none">{note.emoji || "📝"}</span>
                       <span className="truncate flex-1 text-sm">{note.title}</span>
                       <button
