@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
+import { FlashcardDeck } from "@/components/FlashcardDeck";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -145,7 +146,10 @@ export function AIToolsPanel() {
                 </div>
               )}
               {error && <p className="text-sm text-destructive">{error}</p>}
-              {result && (
+              {result && mode === "flashcards" && (
+                <FlashcardDeck markdown={result} streaming={loading} />
+              )}
+              {result && mode === "summarize" && (
                 <div className="prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
                 </div>
