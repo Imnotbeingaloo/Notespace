@@ -32,10 +32,11 @@ function IdleVignette() {
   const words = ["idea", "spark", "note"];
   const [i, setI] = useState(0);
   useEffect(() => {
-    const t1 = setTimeout(() => setI(1), 1700);
-    const t2 = setTimeout(() => setI(2), 3400);
+    const t1 = setTimeout(() => setI(1), 650);
+    const t2 = setTimeout(() => setI(2), 1300);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
+
   return (
     <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
       <div className="relative h-[44px] flex items-end justify-center overflow-hidden">
@@ -130,7 +131,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (messages.length > 0 || input.trim() || loading) return;
     eggPlayedRef.current = true;
     const show = setTimeout(() => setIdleEgg(true), 220);
-    const hide = setTimeout(() => setIdleEgg(false), 220 + 5400);
+    const hide = setTimeout(() => setIdleEgg(false), 220 + 2000);
     return () => { clearTimeout(show); clearTimeout(hide); };
   }, [open, messages.length, input, loading]);
 
