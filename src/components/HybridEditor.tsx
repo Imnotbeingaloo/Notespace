@@ -15,6 +15,8 @@ export interface HybridEditorHandle {
   setContent: (md: string) => void;
   /** Replace the entire editor body but keep it in the browser's undo stack. */
   replaceAllUndoable: (md: string) => void;
+  /** Insert at top / cursor / end of the document, preserving undo history. */
+  mergeAt: (md: string, position: "top" | "cursor" | "end") => void;
   saveSelection: () => void;
 }
 
