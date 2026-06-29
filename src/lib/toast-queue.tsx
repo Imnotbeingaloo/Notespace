@@ -133,6 +133,19 @@ export function setToastExpanded(id: string | number, expanded: boolean) {
   emit();
 }
 
+export function updateToast(
+  id: string | number,
+  patch: Partial<Pick<QueuedToast, "title" | "description" | "kind">>,
+) {
+  const toast = activeToasts.find((item) => item.id === id);
+  if (!toast) return;
+  if (patch.title !== undefined) toast.title = patch.title;
+  if (patch.description !== undefined) toast.description = patch.description;
+  if (patch.kind !== undefined) toast.kind = patch.kind;
+  emit();
+}
+
+
 export function removeToast(id: string | number, reason: "dismiss" | "auto" = "dismiss") {
   const activeIndex = activeToasts.findIndex((toast) => toast.id === id);
   if (activeIndex !== -1) {
