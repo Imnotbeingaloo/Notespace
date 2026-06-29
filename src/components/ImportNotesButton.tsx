@@ -4,11 +4,13 @@ import { toast } from "@/hooks/use-toast";
 import { extractPdfText } from "@/lib/pdf-extract";
 import { formatImportedDocument } from "@/lib/document-import";
 import { MAX_PROCESSABLE_SIZE } from "@/lib/file-validation";
-import { ImportActionDialog, type ImportAction } from "@/components/ImportActionDialog";
+import { ImportActionDialog, type ImportChoice, type MergePosition } from "@/components/ImportActionDialog";
 
 interface ImportNotesButtonProps {
-  /** Insert at cursor / merge into the current note. */
+  /** Insert at cursor / merge into the current note (fallback if onMergeAt missing). */
   onInsert: (text: string) => void;
+  /** Optional: merge at a specific position (top / cursor / end). */
+  onMergeAt?: (text: string, position: MergePosition) => void;
   /** Optional: replace the entire current note's body. Enables the dialog flow. */
   onReplace?: (text: string) => void;
   /** Optional: spin up a brand-new note with the imported content. */
