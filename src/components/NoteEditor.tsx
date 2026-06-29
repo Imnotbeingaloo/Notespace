@@ -1072,6 +1072,14 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           defaultMode={askAIMode}
           onApplyEdit={handleAIEdit}
         />
+        {pendingDocDrop && (
+          <ImportActionDialog
+            open
+            fileName={pendingDocDrop.fileName}
+            hasExistingContent={!!activeNote?.content?.trim()}
+            onChoose={handleDocDropChoice}
+          />
+        )}
       </motion.div>
 
   );
