@@ -33,8 +33,9 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   const [i, setI] = useState(0);
   useEffect(() => {
     if (reducedMotion) return;
-    const t1 = setTimeout(() => setI(1), 1100);
-    const t2 = setTimeout(() => setI(2), 2200);
+    // 1.5s total: 500ms per word across three words.
+    const t1 = setTimeout(() => setI(1), 500);
+    const t2 = setTimeout(() => setI(2), 1000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [reducedMotion]);
 
