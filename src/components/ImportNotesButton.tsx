@@ -101,22 +101,28 @@ export function ImportNotesButton({ onInsert, onMergeAt, onReplace, onCreateNew,
     }
   }, [onInsert, dialogEnabled, hasExistingContent]);
 
-  const handleChoice = useCallback((action: ImportAction | null) => {
+  const handleChoice = useCallback((choice: ImportChoice | null) => {
     if (!pending) { setPending(null); return; }
     const { content, fileName } = pending;
     setPending(null);
-    if (!action) return;
-    if (action === "create") {
+    if (!choice) return;
+    if (choice.action === "create") {
       onCreateNew?.(content, fileName);
       toast({ title: "New note created", description: `"${fileName}" imported into a new note.` });
-    } else if (action === "merge") {
-      onInsert(`\n${content}`);
-      toast({ title: "Merged", description: `"${fileName}" inserted at your cursor.` });
-    } else if (action === "replace") {
+    } else if (choice.action === "merge") {
+      const pos = choice.position ?? "cursor";
+      if (onMergeAt) {
+        onMergeAt(content, pos);
+      } else {
+        onInsert(`\n${content}`);
+      }
+      const where = pos === "top" ? "at the top" : pos === "end" ? "at the end" : "at your cursor";
+      toast({ title: "Merged", description: `"${fileName}" inserted ${where}.` });
+    } else if (choice.action === "replace") {
       onReplace?.(content);
       toast({ title: "Note replaced", description: `Content replaced with "${fileName}".` });
     }
-  }, [pending, onCreateNew, onInsert, onReplace]);
+  }, [pending, onCreateNew, onInsert, onMergeAt, onReplace]);
 
   return (
     <>
