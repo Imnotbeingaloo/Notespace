@@ -420,7 +420,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                   }`}
                 >
                   {msg.role === "assistant" ? (
-                    <div className="prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-1.5 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-background/50 prose-code:px-1 prose-code:rounded prose-pre:bg-background/50 [&_*]:transition-[opacity,transform] [&_*]:duration-150">
+                    <div className="ai-stream prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-1.5 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-background/50 prose-code:px-1 prose-code:rounded prose-pre:bg-background/50">
                       {msg.content ? (
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                       ) : (
