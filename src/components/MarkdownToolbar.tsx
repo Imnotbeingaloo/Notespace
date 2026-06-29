@@ -127,11 +127,16 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     if (!file.type.startsWith("image/")) {
       // Fall back to URL prompt for non-images
       if (imageInputRef.current) imageInputRef.current.value = "";
-      const url = prompt("Enter image URL:");
-      if (!url) return;
+      const rawUrl = prompt("Enter image URL:");
+      const safeUrl = sanitizeUrl(rawUrl);
+      if (!safeUrl) {
+        if (rawUrl) toast.error("That URL isn't allowed");
+        return;
+      }
       focusEditor(editorRef.current);
-      document.execCommand("insertHTML", false, `<img src="${url}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`);
+      document.execCommand("insertHTML", false, `<img src="${escapeHtmlAttr(safeUrl)}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`);
       editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
       return;
     }
     if (!validateFile(file)) {
