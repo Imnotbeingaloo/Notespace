@@ -262,122 +262,100 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative mb-4"
+                    className="relative mb-5 select-none"
                     aria-hidden
                   >
-                    {/* Thought-line vignette: a flowing path draws across,
-                        a glowing comet traces it, and a soft sparkle pops at the end. */}
-                    <svg width="220" height="80" viewBox="0 0 220 80" className="overflow-visible">
-                      <defs>
-                        <linearGradient id="aiThoughtStroke" x1="0" y1="0" x2="1" y2="0">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-                          <stop offset="35%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
-                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
-                        </linearGradient>
-                        <radialGradient id="aiThoughtGlow">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.55" />
-                          <stop offset="70%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-                        </radialGradient>
-                        <filter id="aiSoftBlur" x="-50%" y="-50%" width="200%" height="200%">
-                          <feGaussianBlur stdDeviation="2" />
-                        </filter>
-                      </defs>
-
-                      {/* soft ambient glow following the path */}
-                      <motion.path
-                        d="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
-                        stroke="url(#aiThoughtStroke)"
-                        strokeWidth="8"
-                        strokeLinecap="round"
-                        fill="none"
-                        filter="url(#aiSoftBlur)"
-                        opacity={0.35}
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
-                      />
-
-                      {/* crisp drawn line */}
-                      <motion.path
-                        d="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
-                        stroke="url(#aiThoughtStroke)"
-                        strokeWidth="1.75"
-                        strokeLinecap="round"
-                        fill="none"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
-                      />
-
-                      {/* comet traveling along the path */}
-                      <motion.g
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: [0, 1, 1, 0] }}
-                        transition={{ duration: 1.8, times: [0, 0.1, 0.9, 1], ease: "easeOut" }}
+                    {/* Editorial notebook vignette: ruled lines settle in,
+                        a serif glyph rests on the page, an ink underline draws
+                        beneath it, and a quiet caret blinks at the end. */}
+                    <div className="relative mx-auto" style={{ width: 220, height: 92 }}>
+                      <svg
+                        width="220"
+                        height="92"
+                        viewBox="0 0 220 92"
+                        className="absolute inset-0 overflow-visible"
                       >
-                        <circle r="14" fill="url(#aiThoughtGlow)">
-                          <animateMotion
-                            dur="1.6s"
-                            fill="freeze"
-                            keyPoints="0;1"
-                            keyTimes="0;1"
-                            calcMode="spline"
-                            keySplines="0.65 0 0.35 1"
-                            path="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
-                          />
-                        </circle>
-                        <circle r="2.5" fill="hsl(var(--primary))">
-                          <animateMotion
-                            dur="1.6s"
-                            fill="freeze"
-                            keyPoints="0;1"
-                            keyTimes="0;1"
-                            calcMode="spline"
-                            keySplines="0.65 0 0.35 1"
-                            path="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
-                          />
-                        </circle>
-                      </motion.g>
+                        <defs>
+                          <linearGradient id="aiRuleFade" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stopColor="hsl(var(--border))" stopOpacity="0" />
+                            <stop offset="20%" stopColor="hsl(var(--border))" stopOpacity="0.9" />
+                            <stop offset="80%" stopColor="hsl(var(--border))" stopOpacity="0.9" />
+                            <stop offset="100%" stopColor="hsl(var(--border))" stopOpacity="0" />
+                          </linearGradient>
+                          <linearGradient id="aiInkStroke" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
+                            <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="1" />
+                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+                          </linearGradient>
+                        </defs>
 
-                      {/* sparkle payoff at the end of the path */}
-                      <motion.g
-                        transform="translate(210 30)"
-                        initial={{ opacity: 0, scale: 0.4 }}
-                        animate={{ opacity: [0, 1, 1, 0], scale: [0.4, 1.15, 1, 0.95] }}
-                        transition={{ duration: 1.4, delay: 1.55, times: [0, 0.25, 0.7, 1], ease: [0.16, 1, 0.3, 1] }}
+                        {[26, 50, 74].map((y, i) => (
+                          <motion.line
+                            key={y}
+                            x1={6}
+                            x2={214}
+                            y1={y}
+                            y2={y}
+                            stroke="url(#aiRuleFade)"
+                            strokeWidth={1}
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{ pathLength: 1, opacity: 1 }}
+                            transition={{ duration: 0.9, delay: 0.05 + i * 0.12, ease: [0.65, 0, 0.35, 1] }}
+                          />
+                        ))}
+
+                        <motion.path
+                          d="M 70 64 Q 110 58, 150 64"
+                          stroke="url(#aiInkStroke)"
+                          strokeWidth={1.75}
+                          strokeLinecap="round"
+                          fill="none"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 1.1, delay: 1.05, ease: [0.65, 0, 0.35, 1] }}
+                        />
+                      </svg>
+
+                      <motion.div
+                        className="absolute left-0 right-0 flex items-end justify-center"
+                        style={{ top: 14, height: 50 }}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
                       >
-                        <circle r="10" fill="url(#aiThoughtGlow)" />
-                        <path
-                          d="M0 -6 L1.4 -1.4 L6 0 L1.4 1.4 L0 6 L-1.4 1.4 L-6 0 L-1.4 -1.4 Z"
-                          fill="hsl(var(--primary))"
+                        <span
+                          className="text-foreground/80 italic leading-none"
+                          style={{
+                            fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
+                            fontSize: 40,
+                            letterSpacing: "-0.01em",
+                          }}
+                        >
+                          idea
+                        </span>
+                        <motion.span
+                          className="ml-[3px] mb-[6px] inline-block bg-foreground/70"
+                          style={{ width: 1.5, height: 26 }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: [0, 1, 1, 0, 1, 0, 1] }}
+                          transition={{
+                            duration: 2.2,
+                            delay: 1.4,
+                            times: [0, 0.05, 0.25, 0.4, 0.55, 0.75, 1],
+                            ease: "linear",
+                          }}
                         />
-                      </motion.g>
-
-                      {/* three quiet idea-dots that fade in along the way */}
-                      {[
-                        { cx: 60, cy: 32, delay: 0.45 },
-                        { cx: 110, cy: 58, delay: 0.85 },
-                        { cx: 165, cy: 36, delay: 1.2 },
-                      ].map((d, i) => (
-                        <motion.circle
-                          key={i}
-                          cx={d.cx}
-                          cy={d.cy}
-                          r={1.6}
-                          fill="hsl(var(--primary))"
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: [0, 0.9, 0.5], scale: [0, 1, 1] }}
-                          transition={{ duration: 0.9, delay: d.delay, ease: "easeOut" }}
-                        />
-                      ))}
-                    </svg>
+                      </motion.div>
+                    </div>
                   </motion.div>
                 ) : (
                   <div key="spacer" className="h-8 w-8 mb-3" />
                 )}
               </AnimatePresence>
               <p className="text-sm text-muted-foreground">
-                {idleEgg ? "A thought taking shape - ask anything." : "Ask anything about your note, or use the quick actions below."}
+                {idleEgg
+                  ? "A blank page is just the start. Ask anything."
+                  : "Ask anything about your note, or use the quick actions below."}
               </p>
               <p className="text-[11px] text-muted-foreground/70 mt-2">
                 Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
