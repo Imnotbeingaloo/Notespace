@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft, List, ListChecks, Minimize2, Maximize2, PenLine, Languages, Lightbulb, MessageSquareText } from "lucide-react";
+import { X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft, List, ListChecks, PenLine, Lightbulb, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -24,6 +24,50 @@ interface AskAIPanelProps {
   onOpenChange?: (open: boolean) => void;
   defaultMode?: "chat" | "edit";
   hideTrigger?: boolean;
+}
+
+function IdleEasterEgg() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 5000);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className="text-center py-12 select-none">
+      <div className="relative h-16 w-16 mx-auto mb-4">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <Sparkles className="h-10 w-10 text-primary/60" />
+        </motion.div>
+        <AnimatePresence>
+          {show && (
+            <>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    scale: [0, 1, 0],
+                    x: Math.cos((i / 5) * Math.PI * 2) * 38,
+                    y: Math.sin((i / 5) * Math.PI * 2) * 38,
+                  }}
+                  transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.18, ease: "easeInOut" }}
+                  className="absolute top-1/2 left-1/2 h-1.5 w-1.5 -ml-0.5 -mt-0.5 rounded-full bg-primary"
+                />
+              ))}
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+      <p className="text-sm text-muted-foreground">
+        {show ? "Still thinking? Try a quick action below ✨" : "Ask anything about your note."}
+      </p>
+    </div>
+  );
 }
 
 export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, defaultMode = "chat", hideTrigger = false }: AskAIPanelProps) {
@@ -188,11 +232,11 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         {/* Header */}
         <div className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.04] to-transparent">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 font-mono text-[11px] font-bold tracking-tight">
-              AI
+            <div className="h-9 w-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <Sparkles className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <p className="font-sans font-bold text-foreground text-sm leading-none">Ask AI</p>
+              <p className="font-sans font-bold text-foreground text-sm leading-none">Ask AI ✨</p>
               <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
                 About "{activeNote.title}"
               </p>
@@ -232,18 +276,8 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 scrollbar-thin">
-          {messages.length === 0 && (
-            <div className="text-center py-12">
-              <MessageSquareText className="h-8 w-8 text-primary/40 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">
-                Ask anything about your note, or use the quick actions above.
-              </p>
-              <p className="text-[11px] text-muted-foreground/70 mt-2">
-                Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
-              </p>
-            </div>
-          )}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 ask-ai-scroll">
+          {messages.length === 0 && <IdleEasterEgg />}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
               <div
@@ -297,25 +331,19 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
 
         {/* Input */}
         <div className="border-t border-border p-3 bg-muted/20">
-          {/* Quick action chips - horizontal scroller, grouped by mode like Notion/Lex */}
-          <div className="-mx-1 mb-2 overflow-x-auto scrollbar-thin">
+          {/* Quick action chips */}
+          <div className="-mx-1 mb-2 overflow-x-auto ask-ai-scroll">
             <div className="flex items-center gap-1.5 px-1 w-max">
               {(mode === "edit"
                 ? [
                     { key: "improve", icon: Wand2, label: "Improve writing", instr: "Improve this note: fix grammar, clarity, and flow. Preserve meaning." },
-                    { key: "shorter", icon: Minimize2, label: "Make shorter", instr: "Make this note significantly shorter while preserving every key idea." },
-                    { key: "longer", icon: Maximize2, label: "Make longer", instr: "Expand this note with more depth, examples, and supporting detail. Keep the same voice." },
                     { key: "continue", icon: PenLine, label: "Continue writing", instr: "Continue writing this note in the same voice and structure. Add the next 2-3 paragraphs." },
-                    { key: "simplify", icon: Lightbulb, label: "Simplify", instr: "Rewrite this note in simple, plain English suitable for a 12-year-old. Keep the meaning intact." },
                     { key: "format", icon: AlignLeft, label: "Format", action: "format" as const },
                   ]
                 : [
-                    { key: "explain", icon: BookOpen, label: "Explain this note", instr: undefined },
                     { key: "summary", icon: List, label: "Summarize", instr: "Summarize this note in 5 short bullets, in the note's own words." },
-                    { key: "keypoints", icon: List, label: "Key points", instr: "Pull out the 5-7 most important points from this note as a clean bulleted list." },
+                    { key: "keypoints", icon: BookOpen, label: "Key points", instr: "Pull out the 5-7 most important points from this note as a clean bulleted list." },
                     { key: "actions", icon: ListChecks, label: "Action items", instr: "List every actionable task, decision, or follow-up implied by this note as a checklist." },
-                    { key: "translate", icon: Languages, label: "Translate", instr: "Translate this note into clear, natural English. If it is already in English, translate to Spanish instead." },
-                    { key: "missing", icon: Lightbulb, label: "What am I missing?", instr: "Read this note critically. List concrete gaps, weak arguments, missing context, and questions worth answering." },
                   ]
               ).map(({ key, icon: Icon, label, instr, action }: any) => (
                 <button
