@@ -949,6 +949,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       <div className="lg:hidden flex flex-col gap-1">
                         <ImportNotesButton
                           onInsert={handleImportNotes}
+                          onMergeAt={handleMergeAt}
                           onReplace={handleReplaceFromImport}
                           onCreateNew={handleCreateNoteFromImport}
                           hasExistingContent={!!activeNote?.content?.trim()}
@@ -970,6 +971,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       <div className="hidden lg:flex flex-col gap-1">
                         <ImportNotesButton
                           onInsert={handleImportNotes}
+                          onMergeAt={handleMergeAt}
                           onReplace={handleReplaceFromImport}
                           onCreateNew={handleCreateNoteFromImport}
                           hasExistingContent={!!activeNote?.content?.trim()}
