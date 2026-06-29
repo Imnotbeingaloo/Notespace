@@ -339,7 +339,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-[18ch] min-h-[3.6em]"
+                className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-[18ch]"
               >
                 Your thoughts,{" "}
                 <span className="italic text-primary inline-block pr-1.5">organized</span>
@@ -352,7 +352,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed line-clamp-3 min-h-[4.5em]"
+                className="mt-4 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed"
               >
                 A quiet place to write, link, and revisit your thinking - with intelligence woven in only where it actually helps.
               </motion.p>
