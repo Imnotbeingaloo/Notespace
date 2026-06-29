@@ -330,7 +330,7 @@
   will-change: contents;
 }
 .ai-stream > * {
-  animation: ai-stream-in 140ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ai-stream-in 90ms cubic-bezier(0.22, 1, 0.36, 1) both;
   backface-visibility: hidden;
 }
 
