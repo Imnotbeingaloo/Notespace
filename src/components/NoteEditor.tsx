@@ -714,6 +714,13 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   }
 
   if (!activeNote) {
+    // Defensive guard: if the notebook has notes but the active note hasn't
+    // been resolved yet (e.g. user clicked a collapsed-sidebar notebook icon
+    // and the first-note selection is one render behind), render a quiet
+    // placeholder so the NewNotePrompt doesn't flash for 0.5s.
+    if (activeNotebook.notes.some((n) => !n.deleted_at)) {
+      return <div className="flex-1 bg-background" aria-hidden />;
+    }
     return (
       <NewNotePrompt
         notebookName={activeNotebook.name}
