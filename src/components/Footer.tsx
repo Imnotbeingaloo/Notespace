@@ -36,7 +36,7 @@ export default function Footer() {
                 height={32}
                 loading="lazy"
                 decoding="async"
-                className="h-[1.2rem] w-[1.2rem] object-contain shrink-0"
+                className="h-[1.224rem] w-[1.224rem] object-contain shrink-0"
               />
               <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap leading-none">Notebook Archive</span>
             </motion.div>
