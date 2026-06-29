@@ -73,8 +73,10 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           ? instruction || "Explain this note"
           : action === "edit"
           ? `Edit: ${instruction}`
+          : action === "format"
+          ? "Format this note into clean structured markdown"
           : instruction || "Analyze this note",
-      intent: action === "edit" ? "edit" : action === "explain" ? "explain" : "chat",
+      intent: action === "edit" || action === "format" ? "edit" : action === "explain" ? "explain" : "chat",
     };
     const assistantId = crypto.randomUUID();
     setMessages((m) => [...m, userMsg, { id: assistantId, role: "assistant", content: "", intent: userMsg.intent }]);
