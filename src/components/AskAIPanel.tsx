@@ -415,14 +415,45 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                   </motion.div>
                 ) : (
                   <motion.div
-                    key="spacer"
+                    key="ember"
                     layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="h-6 w-6 mb-2"
-                  />
+                    initial={{ opacity: 0, scale: 0.92, y: 4 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative mb-4 select-none flex flex-col items-center"
+                    aria-hidden
+                  >
+                    {/* Soft halo + sparkle: persistent visual anchor after the
+                        vignette retires so the empty state doesn't feel bare. */}
+                    <div className="relative h-9 w-9 flex items-center justify-center">
+                      <motion.span
+                        className="absolute inset-0 rounded-full bg-primary/15 blur-md"
+                        animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
+                        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                      <Sparkles className="relative h-4 w-4 text-primary" />
+                    </div>
+                    <svg width="64" height="6" viewBox="0 0 64 6" className="mt-2 overflow-visible" aria-hidden>
+                      <defs>
+                        <linearGradient id="aiEmberInk" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                          <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.75" />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <motion.path
+                        d="M 2 3 Q 32 1, 62 3"
+                        stroke="url(#aiEmberInk)"
+                        strokeWidth={1.5}
+                        strokeLinecap="round"
+                        fill="none"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.1, ease: [0.65, 0, 0.35, 1] }}
+                      />
+                    </svg>
+                  </motion.div>
                 )}
               </AnimatePresence>
 
