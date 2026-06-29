@@ -540,6 +540,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(nb.id);
+                      setExpandedNotebook(nb.id);
                       const first = nb.notes?.[0]?.id ?? null;
                       if (first) setActiveNoteId(first);
                       onSelectNote?.();
