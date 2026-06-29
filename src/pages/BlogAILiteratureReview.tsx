@@ -159,6 +159,18 @@ export default function BlogAILiteratureReview() {
               <h2 className="font-serif text-2xl font-bold mb-3">
                 The workflow, step by step
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                The workflow below is the one that survives a real review of 80
+                to 200 papers. It is deliberately boring. Every step earns its
+                place by reducing the number of times you have to re-read a paper
+                to find a single fact.
+              </p>
+
+              <Callout tone="key" title="The whole workflow in one line">
+                One notebook per review, one note per paper, one tag per theme,
+                and one synthesis note per question your supervisor might ask.
+                Everything else is decoration.
+              </Callout>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">
                 1. One notebook per review, one note per paper
@@ -169,6 +181,12 @@ export default function BlogAILiteratureReview() {
                 structure is boring on purpose - it scales to 200 papers without
                 breaking.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Resist the urge to nest sub-notebooks by theme this early. Themes
+                shift as you read; filenames don't. Keep the hierarchy flat and
+                let tags do the thematic work later - that way a paper that turns
+                out to be about three themes doesn't end up filed under only one.
+              </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">
                 2. Drop the PDF in, let extraction do the typing
@@ -178,6 +196,13 @@ export default function BlogAILiteratureReview() {
                 The text is extracted and becomes searchable, taggable, and
                 explainable. No more re-typing quotes or hunting through
                 screenshots.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                For born-digital PDFs the extraction is near-perfect. For older
+                scans, run them through a clean OCR pass first - figure captions
+                and footnotes are where extraction quietly fails, and those are
+                exactly the places your supervisor will ask about. Spot-check
+                page 1 and a random middle page before trusting the note.
               </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">
@@ -190,6 +215,13 @@ export default function BlogAILiteratureReview() {
                 walkthrough, and paste the explanation into your note as your
                 own annotation.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Always paste the explanation back into the note with a clear
+                label like <em>"Plain-English summary (AI-assisted)"</em>. That
+                single line of provenance is what lets you trust your own notes
+                six months later - and what lets your supervisor see exactly
+                where AI helped and where your own reading begins.
+              </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">
                 4. Write your one-sentence takeaway. Always.
@@ -200,6 +232,19 @@ export default function BlogAILiteratureReview() {
                 Future-you will thank present-you when it's time to write the
                 synthesis.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                If you can't write that sentence, you haven't finished the paper -
+                you've just finished reading it. The forced compression is the
+                whole point: it surfaces papers you only half-understood, and it
+                turns the synthesis stage from "re-read 80 PDFs" into "scan 80
+                one-line summaries".
+              </p>
+
+              <Callout tone="tip" title="The one-sentence test">
+                If your takeaway sentence works for two different papers without
+                edits, it isn't specific enough yet. Rewrite until it could only
+                describe this paper.
+              </Callout>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">
                 5. Tag by theme, not by paper
@@ -209,6 +254,12 @@ export default function BlogAILiteratureReview() {
                 <code> #counter-evidence</code> turn 80 paper notes into a
                 queryable database. Global search across tags is how a synthesis
                 note actually gets written.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Cap yourself at roughly fifteen tags for the whole review. Every
+                new tag past that is usually a sub-theme that belongs inside an
+                existing one. A tight tag list keeps search useful - a sprawling
+                one quietly turns into the same problem you had with folders.
               </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">
@@ -220,6 +271,13 @@ export default function BlogAILiteratureReview() {
                 This is where the review actually lives. It's also the document
                 you turn into a draft chapter.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Treat synthesis notes as living documents. Start one the moment
+                you spot a pattern across three papers - don't wait until the
+                writing-up stage. By the time you sit down to draft the chapter,
+                you'll already have the argument scaffold, the citations, and
+                the counter-examples queued up next to each claim.
+              </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">
                 7. Cite from your notes, not from AI
@@ -230,12 +288,26 @@ export default function BlogAILiteratureReview() {
                 opening the source. This is the single biggest reason
                 AI-assisted reviews fail review.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                A useful rule: if the citation didn't pass through your
+                reference manager, it doesn't go in the manuscript. AI models
+                still invent plausible-looking DOIs, author lists, and journal
+                years - and they invent them most convincingly for the topics
+                you know least about, which is exactly where you're most likely
+                to trust them.
+              </p>
             </div>
 
             <div>
               <h2 className="font-serif text-2xl font-bold mb-3">
                 The honest limits
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
+                AI speeds up the boring parts of a literature review; it does
+                not replace the parts that matter. Before you lean on it heavily,
+                walk into the work with these limits in mind - they're the same
+                ones every research integrity office is currently flagging.
+              </p>
               <ul className="space-y-2 text-muted-foreground leading-relaxed">
                 <li>
                   • AI summaries flatten nuance. The "small caveat in section 4"
@@ -249,7 +321,16 @@ export default function BlogAILiteratureReview() {
                   • The Explain panel can't tell you a paper is wrong. It can
                   only tell you what the paper says.
                 </li>
+                <li>
+                  • Cross-paper comparisons across long contexts drift. Trust
+                  synthesis you wrote; double-check synthesis a model wrote.
+                </li>
               </ul>
+              <Callout tone="warn" title="The one mistake that ends a viva">
+                A single fabricated citation is enough to sink the credibility
+                of an otherwise solid review. Verify every reference against the
+                actual PDF before it leaves your notes.
+              </Callout>
             </div>
 
             <div>
