@@ -55,7 +55,7 @@ function RenderMarkdownLine({ text }: { text: string }) {
   const inner = (() => {
     if (text === "") return <p>{"\u00A0"}</p>;
     if (text.startsWith("### ")) {
-      return <h4 className="font-serif text-base font-bold text-foreground mt-2">{renderInline(text.slice(4))}</h4>;
+      return <h3 className="font-serif text-base font-bold text-foreground mt-2">{renderInline(text.slice(4))}</h3>;
     }
     if (text.startsWith("## ")) {
       return <h3 className="font-serif text-lg font-bold text-foreground mt-2">{renderInline(text.slice(3))}</h3>;

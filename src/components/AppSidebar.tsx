@@ -317,6 +317,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 onClick={() => onOpenHome?.()}
                 className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-[10%]"
                 title="Home - All documents"
+                aria-label="Home"
               >
                 <Home className="h-4 w-4" />
               </button>
