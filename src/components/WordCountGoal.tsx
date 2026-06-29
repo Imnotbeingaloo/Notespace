@@ -102,7 +102,14 @@ export function WordCountGoal({ content }: WordCountGoalProps) {
   }, []);
 
   const wordCount = useMemo(() => {
-    const text = content.replace(/[#*_~`>\-\[\]()!|]/g, "").trim();
+    const text = (content ?? "")
+      .replace(/<[^>]*>/g, " ")
+      .replace(/&#8203;|\u200B|\u00A0/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&[a-z0-9#]+;/gi, " ")
+      .replace(/[#*_~`>\-\[\]()!|]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     if (!text) return 0;
     return text.split(/\s+/).filter(Boolean).length;
   }, [content]);
