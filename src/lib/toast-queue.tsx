@@ -147,6 +147,10 @@ export function setToastExpanded(id: string | number, expanded: boolean) {
   const toast = activeToasts.find((item) => item.id === id);
   if (!toast) return;
   toast.expanded = expanded;
+  // Expanding reveals description/action buttons (Undo, etc.). Reset the
+  // dismiss timer to full duration so the user has time to read and act
+  // instead of the toast vanishing 1-2s later.
+  if (expanded) startTimer(toast);
   emit();
 }
 
