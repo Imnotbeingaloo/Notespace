@@ -188,8 +188,8 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         {/* Header */}
         <div className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.04] to-transparent">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 font-mono text-[11px] font-bold tracking-tight">
-              AI
+            <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+              <Sparkles className="h-4 w-4" />
             </div>
             <div className="min-w-0">
               <p className="font-sans font-bold text-foreground text-sm leading-none">Ask AI</p>
