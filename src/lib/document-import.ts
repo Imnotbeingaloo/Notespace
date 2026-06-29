@@ -18,13 +18,16 @@ function titleFromFile(fileName: string) {
 // or boilerplate page numbers like "Page 4 of 12". We strip these so the
 // imported note doesn't carry "Downloaded from oceanofpdf.com" all over it.
 const WATERMARK_PATTERNS: RegExp[] = [
-  /\b(ocean\s*of\s*pdf|oceanofpdf|pdfdrive|z-?library|libgen|annas[-\s]?archive|sci-?hub|free\s*pdf|epubpub|epub\.pub)\b/i,
-  /\bdownload(ed)?\s+(this\s+)?(book|ebook|pdf|file)?\s*(from|at|via)\b/i,
-  /\bvisit\s+(us\s+)?at\s+\S+\.(com|net|org|io)\b/i,
+  /\b(ocean\s*of\s*pdf|oceanofpdf|pdfdrive|z-?library|libgen|annas[-\s]?archive|sci-?hub|free\s*pdf|epubpub|epub\.pub|pdfroom|getfreebooks|allitebooks|bookboon|pdfcoffee|scribd)\b/i,
+  /\bdownload(ed)?\s+(this\s+)?(book|ebook|pdf|file|chapter)?\s*(from|at|via|by)\b/i,
+  /\b(visit|check)\s+(us\s+)?(at|on)\s+\S+\.(com|net|org|io|co|info)\b/i,
   /^\s*(https?:\/\/|www\.)\S+\s*$/i,
   /^\s*page\s+\d+\s+of\s+\d+\s*$/i,
-  /^\s*-?\s*\d+\s*-?\s*$/, // bare page number lines like "12" or "- 12 -"
-  /\bfor\s+more\s+(free\s+)?(books|ebooks|pdfs?)\b/i,
+  /^\s*-?\s*\d{1,4}\s*-?\s*$/, // bare page number lines like "12" or "- 12 -"
+  /\bfor\s+more\s+(free\s+)?(books|ebooks|pdfs?|content)\b/i,
+  /\b(all|©|copyright)\s+rights?\s+reserved\b/i,
+  /\bthis\s+(book|file|pdf|document)\s+(is\s+)?(was\s+)?(provided|shared|distributed)\s+(by|from|for)\b/i,
+  /^\s*\[?\s*free\s+(download|ebook|pdf)\s*\]?\s*$/i,
 ];
 
 function isWatermark(line: string): boolean {
