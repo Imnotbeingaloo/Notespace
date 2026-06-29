@@ -382,6 +382,9 @@ export default function BlogOtterAlternative() {
               </li>
             </ul>
 
+            <Callout tone="tip" title="Before you scroll the FAQ">
+              The four most common questions we get about switching off Otter are about transcript import, hours-per-month limits, offline capture, and whether AI summaries are worth trusting. Quick answers below.
+            </Callout>
             <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
             <Accordion type="single" collapsible className="w-full">
               {faq.map((f, i) => (
