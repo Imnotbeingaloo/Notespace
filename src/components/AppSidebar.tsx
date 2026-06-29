@@ -91,6 +91,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [sidebarUploadProcessing, setSidebarUploadProcessing] = useState(false);
 
   const [editingNotebook, setEditingNotebook] = useState<string | null>(null);
+  const [touchActionsNotebook, setTouchActionsNotebook] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmoji, setEditEmoji] = useState("");
   const [quickNote, setQuickNote] = useState("");
