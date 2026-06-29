@@ -650,6 +650,23 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     []
   );
 
+  const handleReplaceFromImport = useCallback(
+    (text: string) => {
+      // Undoable replacement so Ctrl+Z restores the previous note body.
+      hybridEditorRef.current?.replaceAllUndoable(text);
+    },
+    []
+  );
+
+  const handleCreateNoteFromImport = useCallback(
+    async (text: string, fileName: string) => {
+      if (!activeNotebookId) return;
+      const title = fileName.replace(/\.[^.]+$/, "") || "Imported Note";
+      await createNote(activeNotebookId, title, text);
+    },
+    [activeNotebookId, createNote]
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
