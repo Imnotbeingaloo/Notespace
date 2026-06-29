@@ -790,8 +790,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => {
+                      const first = nb.notes?.[0]?.id ?? null;
                       setActiveNotebookId(nb.id);
+                      if (first) setActiveNoteId(first);
                       setExpandedNotebook(nb.id);
+                      onSelectNote?.();
                     }}
                     className={`p-2 rounded-lg transition-all duration-200 text-base ${
                       activeNotebookId === nb.id ? "bg-primary/10" : "notebook-hover"
