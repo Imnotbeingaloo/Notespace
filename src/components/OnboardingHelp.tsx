@@ -188,22 +188,23 @@ export function OnboardingHelp() {
       </div>
 
       <div className="md:hidden">
-        <div className="fixed z-40 right-4" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}>
+        <div className="fixed z-40 right-4 flex flex-col items-end" style={{ top: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}>
+          <Button onClick={handleHelpClick} variant="default" size="icon" className="h-11 w-11 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90" aria-label="Help">
+            <HelpCircle className="h-5 w-5" />
+          </Button>
           <AnimatePresence>
             {hintOpen && (
               <motion.button type="button" key="hint-mobile" onClick={dismissForever}
-                initial={{ opacity: 0, y: 8, scale: 0.95 }} animate={{ opacity: 1, y: -8, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.25 }}
-                className="absolute bottom-full right-0 mb-1 whitespace-nowrap rounded-full bg-foreground text-background text-xs font-medium px-3 py-1.5 shadow-lg">
-                Need help? Tap →
+                className="mt-1.5 text-[11px] font-medium text-foreground/80 whitespace-nowrap">
+                Confused? Tap here
               </motion.button>
             )}
           </AnimatePresence>
-          <Button onClick={handleHelpClick} variant="default" size="icon" className="h-12 w-12 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90" aria-label="Help">
-            <HelpCircle className="h-6 w-6" />
-          </Button>
         </div>
       </div>
+
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col gap-4">

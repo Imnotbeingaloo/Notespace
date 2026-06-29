@@ -480,6 +480,26 @@
   --paper-rule: hsl(210 90% 70% / 0.32);
   --paper-margin: hsl(0 85% 65% / 0.55);
 }
+
+/* On mobile, the red margin and left padding shrink so the typing area isn't crowded. */
+@media (max-width: 640px) {
+  .notebook-paper {
+    background-image:
+      linear-gradient(to right,
+        transparent 0,
+        transparent 1.75rem,
+        var(--paper-margin) 1.75rem,
+        var(--paper-margin) calc(1.75rem + 1.5px),
+        transparent calc(1.75rem + 1.5px)),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(1.75rem - 1px),
+        var(--paper-rule) calc(1.75rem - 1px),
+        var(--paper-rule) 1.75rem);
+    padding-left: 2.25rem !important;
+  }
+}
 .notebook-paper p,
 .notebook-paper li,
 .notebook-paper h1,

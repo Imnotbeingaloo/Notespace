@@ -35,14 +35,20 @@ export function WordCount({ content }: WordCountProps) {
 
   if (stats.words === 0) return null;
 
+  const compact = stats.chars > 5000 || stats.words > 5000;
+
   return (
-    <div className="flex items-center gap-3 px-4 py-1.5 text-[10px] sm:text-[11px] text-muted-foreground select-none">
+    <div className="flex items-center gap-2 sm:gap-3 px-4 py-1.5 text-[10px] sm:text-[11px] text-muted-foreground select-none whitespace-nowrap tabular-nums">
       <span className="inline-flex items-center gap-1">
         <FileText className="h-3 w-3" />
-        {stats.words.toLocaleString()} {stats.words === 1 ? "word" : "words"}
+        {stats.words.toLocaleString()}{!compact && (
+          <span className="ml-1">{stats.words === 1 ? "word" : "words"}</span>
+        )}
       </span>
       <span className="text-border">·</span>
-      <span>{stats.chars.toLocaleString()} chars</span>
+      <span>
+        {stats.chars.toLocaleString()}{!compact && <span className="ml-1">chars</span>}
+      </span>
       <span className="text-border">·</span>
       <span className="inline-flex items-center gap-1">
         <Clock className="h-3 w-3" />
@@ -51,3 +57,4 @@ export function WordCount({ content }: WordCountProps) {
     </div>
   );
 }
+
