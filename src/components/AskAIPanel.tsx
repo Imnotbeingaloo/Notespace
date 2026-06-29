@@ -26,6 +26,50 @@ interface AskAIPanelProps {
   hideTrigger?: boolean;
 }
 
+function IdleEasterEgg() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 5000);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className="text-center py-12 select-none">
+      <div className="relative h-16 w-16 mx-auto mb-4">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <Sparkles className="h-10 w-10 text-primary/60" />
+        </motion.div>
+        <AnimatePresence>
+          {show && (
+            <>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    scale: [0, 1, 0],
+                    x: Math.cos((i / 5) * Math.PI * 2) * 38,
+                    y: Math.sin((i / 5) * Math.PI * 2) * 38,
+                  }}
+                  transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.18, ease: "easeInOut" }}
+                  className="absolute top-1/2 left-1/2 h-1.5 w-1.5 -ml-0.5 -mt-0.5 rounded-full bg-primary"
+                />
+              ))}
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+      <p className="text-sm text-muted-foreground">
+        {show ? "Still thinking? Try a quick action below ✨" : "Ask anything about your note."}
+      </p>
+    </div>
+  );
+}
+
 export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, defaultMode = "chat", hideTrigger = false }: AskAIPanelProps) {
   const { activeNote } = useNotebooks();
   const [internalOpen, setInternalOpen] = useState(false);
