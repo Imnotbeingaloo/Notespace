@@ -17,6 +17,7 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { LinkInsertDialog } from "@/components/LinkInsertDialog";
+import { sanitizeUrl, escapeHtmlAttr } from "@/lib/url-sanitize";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -127,11 +128,16 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     if (!file.type.startsWith("image/")) {
       // Fall back to URL prompt for non-images
       if (imageInputRef.current) imageInputRef.current.value = "";
-      const url = prompt("Enter image URL:");
-      if (!url) return;
+      const rawUrl = prompt("Enter image URL:");
+      const safeUrl = sanitizeUrl(rawUrl);
+      if (!safeUrl) {
+        if (rawUrl) toast({ title: "That URL isn't allowed", variant: "destructive" });
+        return;
+      }
       focusEditor(editorRef.current);
-      document.execCommand("insertHTML", false, `<img src="${url}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`);
+      document.execCommand("insertHTML", false, `<img src="${escapeHtmlAttr(safeUrl)}" alt="image" class="rounded-2xl border border-border shadow-md max-w-full max-h-[400px] h-auto object-contain my-3" loading="lazy" />`);
       editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
       return;
     }
     if (!validateFile(file)) {

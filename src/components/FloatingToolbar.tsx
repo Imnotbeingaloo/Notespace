@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bold, Italic, Strikethrough, Code, Link2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sanitizeUrl } from "@/lib/url-sanitize";
 
 interface FloatingToolbarProps {
   selectionRect: DOMRect | null;
@@ -64,9 +65,10 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
     }
 
     if (command === "createLink") {
-      const url = prompt("Enter URL:", "https://");
-      if (!url) return;
-      onAction(command, url);
+      const rawUrl = prompt("Enter URL:", "https://");
+      const safeUrl = sanitizeUrl(rawUrl);
+      if (!safeUrl) return;
+      onAction(command, safeUrl);
       return;
     }
 
