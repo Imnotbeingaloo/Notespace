@@ -254,7 +254,7 @@ export default function BlogBestNoteTakingApp() {
       <div className="min-h-screen bg-background text-foreground">
         <PageHeader />
 
-        <article className="max-w-3xl mx-auto px-6 pt-32 pb-20">
+        <article className="blog-article max-w-3xl mx-auto px-6 pt-32 pb-24">
           <header
             
             
