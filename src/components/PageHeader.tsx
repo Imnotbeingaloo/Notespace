@@ -17,7 +17,10 @@ const navLinks = [
 ];
 
 export function PageHeader({ activePage }: PageHeaderProps) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  // Render the authenticated CTA on first paint when a prior session existed,
+  // so the button doesn't flip from "Get Started" → "Open App" after hydrate.
+  const showAuthed = !!user || (loading && hasLikelySession());
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
