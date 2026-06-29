@@ -19,15 +19,41 @@ export function AIToolsPanel() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Flashcards setup step: ask the user how many cards before generating.
+  const [setupMode, setSetupMode] = useState<null | "flashcards">(null);
+  const [cardCount, setCardCount] = useState<number>(10);
 
-  const runTool = async (toolMode: ToolMode) => {
-    if (!activeNote) return;
+  const isNoteEmpty = () => {
+    if (!activeNote) return true;
     const plain = (activeNote.content || "").replace(/<[^>]*>/g, "").trim();
-    if (!plain) {
-      toast.error("Notebook is empty - write something first.");
+    return plain.length === 0;
+  };
+
+  const openFlashcardsSetup = () => {
+    if (!activeNote) return;
+    if (isNoteEmpty()) {
+      toast.error("Type something to generate flashcards.");
+      return;
+    }
+    setMode("flashcards");
+    setSetupMode("flashcards");
+    setResult("");
+    setError("");
+    setOpen(true);
+  };
+
+  const runTool = async (toolMode: ToolMode, count?: number) => {
+    if (!activeNote) return;
+    if (isNoteEmpty()) {
+      toast.error(
+        toolMode === "flashcards"
+          ? "Type something to generate flashcards."
+          : "Notebook is empty - write something first."
+      );
       return;
     }
     setMode(toolMode);
+    setSetupMode(null);
     setOpen(true);
     setResult("");
     setError("");
@@ -49,6 +75,7 @@ export function AIToolsPanel() {
           action: toolMode,
           noteTitle: activeNote.title,
           noteContent: activeNote.content,
+          ...(toolMode === "flashcards" && count ? { count } : {}),
         }),
       });
 
