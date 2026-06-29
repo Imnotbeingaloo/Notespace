@@ -10,21 +10,24 @@ interface SplashScreenProps {
 export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
   const [isDark] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("app-theme") === "dark" || document.documentElement.classList.contains("dark");
+    const stored = localStorage.getItem("app-theme");
+    if (stored === "dark") return true;
+    if (stored === "light") return false;
+    if (document.documentElement.classList.contains("dark")) return true;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
   });
   const [phase, setPhase] = useState<"logo" | "text" | "done">("logo");
 
   useEffect(() => {
     if (fast) {
-      // Quick crossfade - under 600ms total
-      const t1 = setTimeout(() => setPhase("text"), 80);
-      const t2 = setTimeout(() => setPhase("done"), 350);
-      const t3 = setTimeout(onComplete, 550);
+      const t1 = setTimeout(() => setPhase("text"), 60);
+      const t2 = setTimeout(() => setPhase("done"), 280);
+      const t3 = setTimeout(onComplete, 440);
       return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
     }
-    const t1 = setTimeout(() => setPhase("text"), 350);
-    const t2 = setTimeout(() => setPhase("done"), 1800);
-    const t3 = setTimeout(onComplete, 2400);
+    const t1 = setTimeout(() => setPhase("text"), 220);
+    const t2 = setTimeout(() => setPhase("done"), 1100);
+    const t3 = setTimeout(onComplete, 1500);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete, fast]);
 
@@ -34,8 +37,8 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
         <motion.div
           key="splash"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: fast ? 1.0 : 1.05, filter: fast ? undefined : "blur(8px)" }}
-          transition={{ duration: fast ? 0.25 : 0.6, ease: [0.65, 0, 0.35, 1] }}
+          exit={{ opacity: 0, scale: fast ? 1.0 : 1.03 }}
+          transition={{ duration: fast ? 0.22 : 0.45, ease: [0.65, 0, 0.35, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
           style={{ backgroundColor: isDark ? "#000000" : "#ffffff" }}
         >

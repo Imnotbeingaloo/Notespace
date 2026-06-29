@@ -437,7 +437,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     setDragNoteFromNb(null);
                     setDragOverNoteId(null);
                   }}
-                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                  className={`group/note magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                     activeNoteId === note.id
                       ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
                       : "border-transparent text-sidebar-foreground hover:bg-sky-500/5 hover:border-sky-500/40"
@@ -530,7 +530,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDraggedNotebookId(null);
                       }
                     }}
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                    className={`group magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNotebookId === nb.id
                         ? "bg-primary/10 border-primary/70 text-foreground font-medium"
                         : "border-transparent text-sidebar-foreground hover:bg-primary/5 hover:border-primary/40"
@@ -688,7 +688,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               setActiveNoteId(note.id);
                               onSelectNote?.();
                             }}
-                            className={`group/nn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
+                            className={`group/nn magnetic-btn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
                               activeNoteId === note.id
                                 ? "bg-primary/10 text-foreground font-medium"
                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
