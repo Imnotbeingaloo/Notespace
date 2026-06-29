@@ -102,7 +102,6 @@ export default function TemplateDetail() {
               >
                 Use this template <ArrowRight className="h-4 w-4" />
               </Link>
-              </Link>
               <button
                 type="button"
                 onClick={copyMarkdown}
