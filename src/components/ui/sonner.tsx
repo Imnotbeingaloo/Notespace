@@ -8,8 +8,10 @@ import {
   getCurrentToasts,
   getToastHistory,
   getToastSnapshot,
+  pauseToast,
   queuedToast,
   removeToast,
+  resumeToast,
   setToastExpanded,
   subscribeToasts,
   updateToast,
@@ -95,11 +97,11 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
   const kind = displayKind(item);
   const visual = variants[kind];
   const Icon = visual.Icon;
-  // The chevron arrow is reserved for revealing extra detail/description.
-  // Action buttons (e.g. Undo) always render inline so users don't have to dig for them.
   const hasDescription = Boolean(item.description);
   const hasActions = Boolean(item.action) || Boolean(item.cancel);
-  const showChevron = hasDescription;
+  // The chevron reveals BOTH the description and any action buttons (Undo, etc.).
+  const showChevron = hasDescription || hasActions;
+  const expandedOpen = item.expanded && showChevron;
 
   return (
     <motion.li
@@ -108,6 +110,10 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: 26, scale: 0.96 }}
       transition={{ type: "spring", stiffness: 430, damping: 34, mass: 0.8 }}
+      onMouseEnter={() => pauseToast(item.id)}
+      onMouseLeave={() => resumeToast(item.id)}
+      onFocus={() => pauseToast(item.id)}
+      onBlur={() => resumeToast(item.id)}
       className="pointer-events-auto relative w-full overflow-hidden rounded-lg border-0 bg-card text-card-foreground shadow-lg"
       style={{
         boxShadow: newest
@@ -126,14 +132,8 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
 
         <div className="min-w-0 flex-1">
           <div className="text-[13px] font-semibold leading-5 text-foreground break-words">{item.title}</div>
-          {hasActions && (
-            <div className="mt-1.5 flex flex-wrap gap-2">
-              {renderAction(item.action, item.id)}
-              {renderAction(item.cancel, item.id)}
-            </div>
-          )}
           <AnimatePresence initial={false}>
-            {hasDescription && item.expanded && (
+            {expandedOpen && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -141,9 +141,17 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 className="overflow-hidden"
               >
-                <div className="pt-1 text-xs leading-relaxed text-muted-foreground">
-                  {item.description}
-                </div>
+                {hasDescription && (
+                  <div className="pt-1 text-xs leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </div>
+                )}
+                {hasActions && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {renderAction(item.action, item.id)}
+                    {renderAction(item.cancel, item.id)}
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
