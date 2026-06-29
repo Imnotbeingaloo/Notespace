@@ -69,6 +69,10 @@ export function formatImportedDocument(rawText: string, fileName: string) {
       return;
     }
 
+    if (isWatermark(trimmed)) {
+      return; // strip "Downloaded from oceanofpdf.com", bare page numbers, footer URLs.
+    }
+
     if (looksLikeHeading(trimmed, next)) {
       if (output.at(-1) !== "") output.push("");
       output.push(`## ${trimmed}`, "");
