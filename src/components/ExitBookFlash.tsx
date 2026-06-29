@@ -37,8 +37,8 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
           key="exit-splash"
           aria-hidden
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.05, filter: "blur(8px)" }}
-          transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+          exit={{ opacity: 0, scale: 1.03 }}
+          transition={{ duration: 0.45, ease: [0.65, 0, 0.35, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none overflow-hidden"
           style={{ backgroundColor: `hsl(var(${isDarkExit ? "--exit-splash-dark" : "--exit-splash-light"}))` }}
         >
