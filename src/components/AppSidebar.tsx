@@ -475,6 +475,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 </motion.div>
               ))}
             </AnimatePresence>
+            {topLevelNotebooks.length > 0 && (
+              <div className="px-2 pt-2 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold">
+                Notebooks
+              </div>
+            )}
             <AnimatePresence>
               {topLevelNotebooks.map((nb) => (
                 <motion.div
