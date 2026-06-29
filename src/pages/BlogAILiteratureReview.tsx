@@ -12,6 +12,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 
 const REF = "blog-ai-literature-review";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ai-literature-review`;
