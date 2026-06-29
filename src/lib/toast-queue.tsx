@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { ExternalToast, ToastT } from "sonner";
+import { TOAST_DURATIONS } from "./notification-config";
 
 const MAX_VISIBLE_TOASTS = 3;
 
@@ -18,14 +19,7 @@ export interface QueuedToast {
   options?: ExternalToast;
 }
 
-const DEFAULT_DURATION: Record<ToastKind, number> = {
-  message: 3200,
-  success: 3200,
-  info: 3200,
-  warning: 4200,
-  error: 5000,
-  loading: Infinity,
-};
+const DEFAULT_DURATION: Record<ToastKind, number> = { ...TOAST_DURATIONS };
 
 const activeToasts: QueuedToast[] = [];
 const queuedToasts: QueuedToast[] = [];
