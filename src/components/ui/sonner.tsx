@@ -170,14 +170,16 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
         </button>
       </div>
 
-      <motion.div
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 h-1 rounded-br-full"
-        initial={{ width: "100%" }}
-        animate={{ width: "0%" }}
-        transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
-        style={{ backgroundColor: visual.accent }}
-      />
+      {kind !== "loading" && (
+        <motion.div
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 h-1 rounded-br-full"
+          initial={{ width: "100%" }}
+          animate={{ width: "0%" }}
+          transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
+          style={{ backgroundColor: visual.accent }}
+        />
+      )}
     </motion.li>
   );
 }
