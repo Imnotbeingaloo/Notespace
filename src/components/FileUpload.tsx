@@ -98,7 +98,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             toast.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
           } else if (pageCount > 5) {
             setUploadStep("Creating notebook…");
-            toast.info(`"${file.name}" has ${pageCount} pages - creating a new notebook note for it.`, { duration: 6000 });
+            toast.info(`Large PDF detected`, { description: `"${file.name}" has ${pageCount} pages - creating a new notebook note for it.`, duration: 6000 });
             const baseName = uniqueNotebookName(file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported PDF");
             const nbId = await createNotebook(baseName);
             if (nbId) {
