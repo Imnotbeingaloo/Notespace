@@ -13,6 +13,8 @@ export interface HybridEditorHandle {
   getValue: () => string;
   getEditorElement: () => HTMLDivElement | null;
   setContent: (md: string) => void;
+  /** Replace the entire editor body but keep it in the browser's undo stack. */
+  replaceAllUndoable: (md: string) => void;
   saveSelection: () => void;
 }
 
@@ -234,6 +236,17 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         lastMdRef.current = md;
         isTypingRef.current = false;
         setHtmlFromMd(md);
+      },
+      replaceAllUndoable: (md: string) => {
+        const el = editorRef.current;
+        if (!el) return;
+        el.focus();
+        document.execCommand("selectAll");
+        const html = markdownToHtml(md) || "<p><br></p>";
+        // execCommand keeps the change in the browser's native undo history,
+        // so Ctrl+Z restores the previous note body.
+        document.execCommand("insertHTML", false, html);
+        emitChange();
       },
       saveSelection: () => {
         const sel = window.getSelection();

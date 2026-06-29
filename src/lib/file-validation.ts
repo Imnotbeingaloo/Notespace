@@ -2,6 +2,9 @@ import { toast } from "@/components/ui/sonner";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB - in-note attachments (videos, large PDFs).
 const MAX_SIDEBAR_FILE_SIZE = 1024 * 1024 * 1024; // 1 GB - sidebar upload
+// Soft pre-check: anything above this we refuse to *process* (extract text /
+// AI-format) because it will hang the UI. Binary attach-only path is fine.
+export const MAX_PROCESSABLE_SIZE = 100 * 1024 * 1024; // 100 MB
 
 // Strict allow-list. HTML, SVG, and executables are intentionally excluded
 // because they can carry active content (scripts) that could be rendered later.

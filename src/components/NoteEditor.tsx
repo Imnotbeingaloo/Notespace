@@ -650,6 +650,23 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     []
   );
 
+  const handleReplaceFromImport = useCallback(
+    (text: string) => {
+      // Undoable replacement so Ctrl+Z restores the previous note body.
+      hybridEditorRef.current?.replaceAllUndoable(text);
+    },
+    []
+  );
+
+  const handleCreateNoteFromImport = useCallback(
+    async (text: string, fileName: string) => {
+      if (!activeNotebookId) return;
+      const title = fileName.replace(/\.[^.]+$/, "") || "Imported Note";
+      await createNote(activeNotebookId, title, text);
+    },
+    [activeNotebookId, createNote]
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
@@ -855,7 +872,12 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                     >
                       {/* Mobile / tablet ordering: Import → Voice → Ask AI → Flashcards → AI Edit → Download → Preview */}
                       <div className="lg:hidden flex flex-col gap-1">
-                        <ImportNotesButton onInsert={handleImportNotes} />
+                        <ImportNotesButton
+                          onInsert={handleImportNotes}
+                          onReplace={handleReplaceFromImport}
+                          onCreateNew={handleCreateNoteFromImport}
+                          hasExistingContent={!!activeNote?.content?.trim()}
+                        />
                         <VoiceTranscription onTranscript={handleVoiceTranscript} />
                         <button
                           onClick={() => { setMoreOpen(false); openAskAI("chat"); }}
@@ -871,7 +893,12 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
-                        <ImportNotesButton onInsert={handleImportNotes} />
+                        <ImportNotesButton
+                          onInsert={handleImportNotes}
+                          onReplace={handleReplaceFromImport}
+                          onCreateNew={handleCreateNoteFromImport}
+                          hasExistingContent={!!activeNote?.content?.trim()}
+                        />
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
                       </div>

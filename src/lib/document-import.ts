@@ -13,6 +13,26 @@ function titleFromFile(fileName: string) {
     .trim();
 }
 
+// Patterns that almost always indicate a watermark / footer / page-chrome
+// line injected by free PDF sites (OceanofPDF, PDFDrive, Z-Library, etc.),
+// or boilerplate page numbers like "Page 4 of 12". We strip these so the
+// imported note doesn't carry "Downloaded from oceanofpdf.com" all over it.
+const WATERMARK_PATTERNS: RegExp[] = [
+  /\b(ocean\s*of\s*pdf|oceanofpdf|pdfdrive|z-?library|libgen|annas[-\s]?archive|sci-?hub|free\s*pdf|epubpub|epub\.pub)\b/i,
+  /\bdownload(ed)?\s+(this\s+)?(book|ebook|pdf|file)?\s*(from|at|via)\b/i,
+  /\bvisit\s+(us\s+)?at\s+\S+\.(com|net|org|io)\b/i,
+  /^\s*(https?:\/\/|www\.)\S+\s*$/i,
+  /^\s*page\s+\d+\s+of\s+\d+\s*$/i,
+  /^\s*-?\s*\d+\s*-?\s*$/, // bare page number lines like "12" or "- 12 -"
+  /\bfor\s+more\s+(free\s+)?(books|ebooks|pdfs?)\b/i,
+];
+
+function isWatermark(line: string): boolean {
+  const trimmed = line.trim();
+  if (!trimmed) return false;
+  return WATERMARK_PATTERNS.some((re) => re.test(trimmed));
+}
+
 function looksLikeHeading(line: string, nextLine?: string) {
   const text = line.trim();
   if (!text || text.length < 3 || text.length > 90) return false;
@@ -47,6 +67,10 @@ export function formatImportedDocument(rawText: string, fileName: string) {
     if (!trimmed) {
       if (output.at(-1) !== "") output.push("");
       return;
+    }
+
+    if (isWatermark(trimmed)) {
+      return; // strip "Downloaded from oceanofpdf.com", bare page numbers, footer URLs.
     }
 
     if (looksLikeHeading(trimmed, next)) {
