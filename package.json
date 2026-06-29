@@ -16,7 +16,7 @@
     "seo:health": "bunx tsx scripts/sitemap-health.ts",
     "seo:dashboard": "bunx tsx scripts/gsc-dashboard.ts",
     "lint:blogs": "node scripts/lint-blogs.mjs",
-    "test:auth-flicker": "bunx tsx scripts/test-auth-flicker.mjs"
+    "test:auth-flicker": "python3 scripts/test-auth-flicker.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
