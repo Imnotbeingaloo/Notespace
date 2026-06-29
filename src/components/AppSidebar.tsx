@@ -418,6 +418,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
           {/* Notebooks List */}
           <div className="space-y-0.5">
+            {standaloneNotes.length > 0 && (
+              <div className="px-2 pt-1 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold">
+                Notes
+              </div>
+            )}
             <AnimatePresence>
               {standaloneNotes.map((note) => (
                 <motion.div
@@ -436,19 +441,23 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     setDragNoteFromNb(null);
                     setDragOverNoteId(null);
                   }}
-                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
+                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                     activeNoteId === note.id
-                      ? "bg-primary/10 text-foreground font-medium"
-                      : "text-sidebar-foreground notebook-hover"
+                      ? "bg-primary/10 text-foreground font-medium border-primary/60"
+                      : "text-sidebar-foreground notebook-hover border-transparent hover:border-primary/30"
                   } ${dragNoteId === note.id ? "opacity-40" : ""}`}
                   onClick={() => {
                     setActiveNotebookId(null);
                     setActiveNoteId(note.id);
                     onSelectNote?.();
                   }}
+                  title="Standalone note"
                 >
                   <span className="text-base leading-none">{note.emoji || "📝"}</span>
                   <span className="truncate flex-1 text-sm">{note.title}</span>
+                  <span className="hidden group-hover/note:inline text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium shrink-0">
+                    Note
+                  </span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -466,6 +475,11 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 </motion.div>
               ))}
             </AnimatePresence>
+            {topLevelNotebooks.length > 0 && (
+              <div className="px-2 pt-2 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold">
+                Notebooks
+              </div>
+            )}
             <AnimatePresence>
               {topLevelNotebooks.map((nb) => (
                 <motion.div
@@ -528,10 +542,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDraggedNotebookId(null);
                       }
                     }}
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 ${
+                    className={`group flex items-center gap-2 px-3 py-2 rounded-l-lg rounded-r-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNotebookId === nb.id
-                        ? "bg-primary/10 text-foreground font-medium"
-                        : "text-sidebar-foreground notebook-hover"
+                        ? "bg-primary/10 text-foreground font-medium border-primary"
+                        : "text-sidebar-foreground notebook-hover border-transparent hover:border-primary/50"
                     } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(nb.id);
@@ -539,6 +553,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       if (first) setActiveNoteId(first);
                       onSelectNote?.();
                     }}
+                    title={`Notebook · ${nb.notes?.length ?? 0} ${(nb.notes?.length ?? 0) === 1 ? "note" : "notes"}`}
                   >
                     <button
                       type="button"
@@ -557,6 +572,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     </button>
                     <span>{nb.emoji}</span>
                     <span className="flex-1 truncate">{nb.name}</span>
+                    <span className="text-[9px] uppercase tracking-wider text-primary/70 font-semibold shrink-0 px-1.5 py-0.5 rounded bg-primary/10 hidden sm:inline">
+                      Notebook
+                    </span>
+                    {(nb.notes?.length ?? 0) > 0 && (
+                      <span className="text-[10px] tabular-nums text-muted-foreground/70 shrink-0">
+                        {nb.notes.length}
+                      </span>
+                    )}
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
                       if (!open) setEditingNotebook(null);
                     }}>
@@ -639,8 +662,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden ml-4 mt-0.5 border-l-2 border-sidebar-border pl-2 space-y-0.5"
+                        className="overflow-hidden ml-4 mt-1 border-l-2 border-sidebar-border pl-2 space-y-0.5"
                       >
+                        <div className="flex items-center gap-1.5 px-2 pt-0.5 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold">
+                          <span>Notes in</span>
+                          <span className="truncate text-muted-foreground/80 normal-case tracking-normal">{nb.name}</span>
+                        </div>
                         {nb.notes?.map((note) => (
                           <div
                             key={note.id}
@@ -656,6 +683,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                               setActiveNoteId(note.id);
                               onSelectNote?.();
                             }}
+                            title={`Note in ${nb.name}`}
                             className={`group/nn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
                               activeNoteId === note.id
                                 ? "bg-primary/10 text-foreground font-medium"
@@ -664,6 +692,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                           >
                             <FileText className="h-3 w-3 shrink-0 opacity-70" />
                             <span className="truncate flex-1">{note.title || "Untitled"}</span>
+                            <span className="hidden group-hover/nn:inline text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium shrink-0">
+                              Note
+                            </span>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
