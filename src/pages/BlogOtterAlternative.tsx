@@ -20,6 +20,7 @@ import {
   BlogDivider,
 } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
+import { Callout } from "@/components/blog/Callout";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import otterShot from "@/assets/blog/otter.png.asset.json";
