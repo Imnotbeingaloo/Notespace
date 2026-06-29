@@ -228,12 +228,12 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         if (displayed.length >= target.length) return;
         const dt = lastTick ? ts - lastTick : 16;
         lastTick = ts;
-        // Reveal proportional to elapsed time + remaining backlog, so the
-        // text streams in smoothly instead of jumping per network chunk.
         const remaining = target.length - displayed.length;
-        const baseRate = Math.max(2, Math.ceil(remaining / 12));
+        // Faster cadence: reveal ~1/4 of backlog per frame, scaled by elapsed
+        // time. Keeps the whole stream under ~1s of catch-up at 60fps.
+        const baseRate = Math.max(6, Math.ceil(remaining / 4));
         const timeRate = Math.ceil((dt / 16) * baseRate);
-        const step = Math.min(remaining, Math.max(1, timeRate));
+        const step = Math.min(remaining, Math.max(3, timeRate));
         displayed = target.slice(0, displayed.length + step);
         setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: displayed } : msg)));
         if (displayed.length < target.length) {
