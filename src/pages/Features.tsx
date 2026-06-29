@@ -104,7 +104,7 @@ export default function FeaturesPage() {
 
 
       {/* Feature groups - editorial zigzag */}
-      <section className="py-20 overflow-x-clip">
+      <section className="py-20 overflow-x-clip lg:overflow-x-visible">
         <div className="container mx-auto px-6 max-w-6xl space-y-24 md:space-y-32">
           {groups.map((group, gIdx) => {
             const reverse = gIdx % 2 === 1;
