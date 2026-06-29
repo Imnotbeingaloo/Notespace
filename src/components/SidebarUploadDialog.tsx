@@ -96,7 +96,7 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         preparedRef.current = payload;
         setBgReady(true);
         if (payload.kind === "pdf" && (payload.pageCount ?? 0) > 5) {
-          toast.info(`"${file.name}" has ${payload.pageCount} pages - we'll import the full extracted text.`, { duration: 6000 });
+          toast.info(`Large PDF detected`, { description: `"${file.name}" has ${payload.pageCount} pages - we'll import the full extracted text.`, duration: 6000 });
         }
       } catch (e: any) {
         if (cancelled) return;
