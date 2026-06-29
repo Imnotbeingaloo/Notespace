@@ -237,6 +237,17 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         isTypingRef.current = false;
         setHtmlFromMd(md);
       },
+      replaceAllUndoable: (md: string) => {
+        const el = editorRef.current;
+        if (!el) return;
+        el.focus();
+        document.execCommand("selectAll");
+        const html = markdownToHtml(md) || "<p><br></p>";
+        // execCommand keeps the change in the browser's native undo history,
+        // so Ctrl+Z restores the previous note body.
+        document.execCommand("insertHTML", false, html);
+        emitChange();
+      },
       saveSelection: () => {
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0 && editorRef.current?.contains(sel.anchorNode)) {
