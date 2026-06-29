@@ -437,7 +437,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     setDragNoteFromNb(null);
                     setDragOverNoteId(null);
                   }}
-                  className={`group/note flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                  className={`group/note magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                     activeNoteId === note.id
                       ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
                       : "border-transparent text-sidebar-foreground hover:bg-sky-500/5 hover:border-sky-500/40"
