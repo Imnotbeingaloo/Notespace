@@ -108,7 +108,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
                 await updateNote(nbId, noteId, { content: formatImportedDocument(text, file.name) });
                 setActiveNotebookId(nbId);
                 setActiveNoteId(noteId);
-                toast.success(`"${file.name}" had ${pageCount} pages - created a new notebook for it.`);
+                toast.success(`Notebook created`, { description: `"${file.name}" (${pageCount} pages) was imported into a new notebook.` });
                 continue;
               }
             }
