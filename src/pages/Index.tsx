@@ -199,9 +199,10 @@ function AppContent() {
     if (location.pathname === "/home") setShowHome(true);
     else if (location.pathname === "/app") {
       if (urlNotebook || urlNote) setShowHome(false);
+      else if (searchParams.get("template")) setShowHome(false); // template handler will create the note
       else if (!notebooksLoading) navigate("/home", { replace: true });
     }
-  }, [location.pathname, urlNotebook, urlNote, notebooksLoading, navigate]);
+  }, [location.pathname, urlNotebook, urlNote, notebooksLoading, navigate, searchParams]);
 
   const openNotebookFromHome = useCallback(
     (notebookId: string) => {
