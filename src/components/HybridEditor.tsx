@@ -292,11 +292,61 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         return;
       }
       e.preventDefault();
-      if (text) {
-        document.execCommand("insertText", false, text);
+      if (!text) return;
+
+      // Plain unformatted text long enough to be worth structuring → AI format pass.
+      // We insert the raw text first (so nothing is lost if the request fails),
+      // mark it with a sentinel, and stream-replace it once the AI responds.
+      const AUTO_FORMAT_THRESHOLD = 200;
+      if (text.length >= AUTO_FORMAT_THRESHOLD) {
+        const sentinel = `\u2063AIFMT-${Math.random().toString(36).slice(2, 10)}\u2063`;
+        document.execCommand("insertText", false, sentinel);
         emitChange();
+
+        const toastId = toast.loading("Formatting your text", {
+          description: "This will only take a few seconds.",
+          duration: Infinity,
+        });
+
+        const total = text.length;
+        formatTextWithAI(text, (chunkSoFar) => {
+          const pct = Math.min(99, Math.round((chunkSoFar.length / total) * 100));
+          toast.update(toastId, {
+            description: `Structuring paragraphs and headings… ${pct}%`,
+          });
+        })
+          .then((formatted) => {
+            const el = editorRef.current;
+            if (!el) return;
+            const currentMd = htmlToMarkdown(el.innerHTML);
+            if (currentMd.includes(sentinel)) {
+              const replaced = currentMd.replace(sentinel, formatted);
+              lastMdRef.current = replaced;
+              isTypingRef.current = false;
+              setHtmlFromMd(replaced);
+              onChange(replaced);
+            }
+            dismissToast(toastId);
+            toast.success("Text formatted");
+          })
+          .catch((err) => {
+            // Leave the raw text in place, just strip the sentinel.
+            const el = editorRef.current;
+            if (el) {
+              const currentMd = htmlToMarkdown(el.innerHTML).replace(sentinel, "");
+              lastMdRef.current = currentMd;
+              setHtmlFromMd(currentMd);
+              onChange(currentMd);
+            }
+            dismissToast(toastId);
+            toast.error("Couldn't auto-format", { description: err?.message });
+          });
+        return;
       }
-    }, [emitChange]);
+
+      document.execCommand("insertText", false, text);
+      emitChange();
+    }, [emitChange, onChange, setHtmlFromMd]);
 
     const handleToolbarAction = useCallback((command: string, value?: string) => {
       editorRef.current?.focus();
