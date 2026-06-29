@@ -26,6 +26,61 @@ interface AskAIPanelProps {
   hideTrigger?: boolean;
 }
 
+/** Quiet editorial vignette: a serif word swaps through three thoughts
+ *  with a soft ink underline. One-shot, ~5s total. */
+function IdleVignette() {
+  const words = ["idea", "spark", "note"];
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t1 = setTimeout(() => setI(1), 1700);
+    const t2 = setTimeout(() => setI(2), 3400);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+  return (
+    <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
+      <div className="relative h-[44px] flex items-end justify-center overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={words[i]}
+            initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="text-foreground/80 italic leading-none"
+            style={{
+              fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
+              fontSize: 32,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {words[i]}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+      <svg width="120" height="8" viewBox="0 0 120 8" className="mt-1 overflow-visible">
+        <defs>
+          <linearGradient id="aiIdleInk" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
+            <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          d="M 4 4 Q 60 1, 116 4"
+          stroke="url(#aiIdleInk)"
+          strokeWidth={1.25}
+          strokeLinecap="round"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.9, delay: 0.25, ease: [0.65, 0, 0.35, 1] }}
+        />
+      </svg>
+    </div>
+  );
+}
+
+
 export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, defaultMode = "chat", hideTrigger = false }: AskAIPanelProps) {
   const { activeNote } = useNotebooks();
   const [internalOpen, setInternalOpen] = useState(false);
