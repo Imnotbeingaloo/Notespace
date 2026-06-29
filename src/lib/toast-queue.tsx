@@ -57,19 +57,42 @@ function asToastT(toast: QueuedToast): ToastT {
   } as ToastT;
 }
 
+const timerMeta = new Map<string | number, { startedAt: number; remaining: number }>();
+
 function clearTimer(id: string | number) {
   const timer = timers.get(id);
   if (timer) clearTimeout(timer);
   timers.delete(id);
 }
 
-function startTimer(toast: QueuedToast) {
+function startTimer(toast: QueuedToast, durationOverride?: number) {
   clearTimer(toast.id);
-  if (!Number.isFinite(toast.duration) || toast.duration <= 0) return;
+  const duration = durationOverride ?? toast.duration;
+  if (!Number.isFinite(duration) || duration <= 0) {
+    timerMeta.delete(toast.id);
+    return;
+  }
+  timerMeta.set(toast.id, { startedAt: Date.now(), remaining: duration });
   timers.set(
     toast.id,
-    setTimeout(() => removeToast(toast.id, "auto"), toast.duration),
+    setTimeout(() => removeToast(toast.id, "auto"), duration),
   );
+}
+
+export function pauseToast(id: string | number) {
+  const meta = timerMeta.get(id);
+  if (!meta) return;
+  const elapsed = Date.now() - meta.startedAt;
+  const remaining = Math.max(0, meta.remaining - elapsed);
+  clearTimer(id);
+  timerMeta.set(id, { startedAt: Date.now(), remaining });
+}
+
+export function resumeToast(id: string | number) {
+  const meta = timerMeta.get(id);
+  const toast = activeToasts.find((t) => t.id === id);
+  if (!meta || !toast) return;
+  startTimer(toast, meta.remaining);
 }
 
 function drainQueue() {
