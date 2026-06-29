@@ -350,7 +350,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                     className="relative mb-4 select-none"
                     aria-hidden
                   >
-                    <IdleVignette />
+                    <IdleVignette reducedMotion={reducedMotion} />
                   </motion.div>
                 ) : (
                   <div key="spacer" className="h-6 w-6 mb-2" />
