@@ -540,6 +540,21 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                       onSelectNote?.();
                     }}
                   >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedNotebook((prev) => (prev === nb.id ? null : nb.id));
+                      }}
+                      aria-label={expandedNotebook === nb.id || activeNotebookId === nb.id ? "Collapse notebook" : "Expand notebook"}
+                      className="p-0.5 -ml-1 rounded hover:bg-accent/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                    >
+                      <ChevronRight
+                        className={`h-3 w-3 transition-transform duration-200 ${
+                          (activeNotebookId === nb.id || expandedNotebook === nb.id) ? "rotate-90" : ""
+                        }`}
+                      />
+                    </button>
                     <span>{nb.emoji}</span>
                     <span className="flex-1 truncate">{nb.name}</span>
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
