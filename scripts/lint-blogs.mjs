@@ -83,7 +83,7 @@ for (const file of files) {
 
     // Rule 2: required Callout near "How we picked" / "Frequently asked"
     if (SECTION_HEADERS.some((rx) => rx.test(text))) {
-      const window = lines.slice(idx, Math.min(idx + CALLOUT_PROXIMITY_LINES, nextIdx));
+      const window = lines.slice(Math.max(0, idx - 10), Math.min(idx + CALLOUT_PROXIMITY_LINES, nextIdx));
       const hasCallout = window.some((l) => /<Callout[\s>]/.test(l));
       if (!hasCallout) {
         findings.push({
