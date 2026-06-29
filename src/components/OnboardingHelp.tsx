@@ -1,69 +1,92 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, ArrowUp, TableProperties } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useNotebooks } from "@/context/NotebookContext";
 
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
 
-const toolbarTips: Tip[] = [
-  { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind the selected text - great for marking key passages you'll come back to." },
-  { Icon: Code, title: "Inline code", body: "Wraps the selected text in a monospaced code style. Use for variable names, file paths, or short snippets." },
-  { Icon: Link2, title: "Insert link", body: "Highlight any text first and click this - the title pre-fills with what you selected and you just paste the URL." },
-  { Icon: ImageIcon, title: "Insert image", body: "Opens your file picker. Images upload to your private storage and embed inline. PNG, JPG, WEBP up to 10MB." },
-  { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections - useful between topics or before a summary." },
-  { Icon: Table2, title: "Table", body: "Pick a size from the popover. Once inserted, the table edit toolbar appears for adding rows, columns, or deleting cells." },
-  { Icon: TableProperties, title: "Edit table", body: "When the cursor is inside a table, the table toolbar appears next to the main one - add/remove rows & columns, delete the whole table, all inline." },
-  { glyph: "Ω", title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor - no shortcuts to memorise." },
-  { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search & replace. Supports regex via the toggle." },
-  { Icon: Maximize2, title: "Focus Mode", body: "Top bar button - hides the sidebar and chrome so only your note remains. Click again to exit." },
-  { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
+type Section = { id: string; label: string; tips: Tip[] };
+
+const sections: Section[] = [
+  {
+    id: "toolbar",
+    label: "Editor toolbar",
+    tips: [
+      { Icon: Highlighter, title: "Highlight", body: "Paints a yellow highlight behind selected text - great for marking key passages." },
+      { Icon: Code, title: "Inline code", body: "Wraps the selection in a monospaced code style. Use for variable names, file paths, or short snippets." },
+      { Icon: Link2, title: "Insert link", body: "Highlight text first, then click. The title pre-fills with your selection - just paste the URL." },
+      { Icon: ImageIcon, title: "Insert image", body: "Opens your file picker. Images upload to private storage and embed inline. PNG, JPG, WEBP up to 10MB." },
+      { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections - useful between topics or before a summary." },
+      { Icon: Table2, title: "Table", body: "Pick a size from the popover. The table edit toolbar appears once your cursor is inside." },
+      { Icon: TableProperties, title: "Edit table", body: "When inside a table, the table toolbar appears next to the main one - add/remove rows & columns inline." },
+      { glyph: "Ω", title: "Insert symbol", body: "Picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor." },
+    ],
+  },
+  {
+    id: "sidebar",
+    label: "Sidebar & organisation",
+    tips: [
+      { Icon: BookOpen, title: "Notebooks", body: "Notebooks group related notes. The orange accent and book icon mark them. Click the chevron to expand or collapse - chevron is independent of selection." },
+      { Icon: FileText, title: "Standalone notes", body: "Top-level notes that don't belong to a notebook. Marked with a sky-blue accent and file icon." },
+      { Icon: Plus, title: "Create", body: "One button for everything. Choose Notebook, Note, or paste in from a file - the same flow as the home page." },
+      { Icon: Upload, title: "Upload", body: "Drop in PDF, EPUB, DOCX, TXT, MD, CSV, JSON or images up to 1GB. Text gets extracted automatically where possible." },
+      { Icon: Tag, title: "Smart Tags", body: "Tags aggregate across every notebook. Click a tag to filter notes that carry it." },
+      { Icon: CalendarDays, title: "Study schedule", body: "Upcoming study plans for the next 3 days surface here so you don't have to leave the editor." },
+      { Icon: Trash2, title: "Trash", body: "Deleted notes and notebooks live here for 30 days. Restore or permanently delete from the Trash drawer." },
+      { Icon: Menu, title: "Collapse sidebar", body: "The hamburger button collapses the sidebar to an icon strip. Hover the logo to expand again." },
+    ],
+  },
+  {
+    id: "ai",
+    label: "AI & writing tools",
+    tips: [
+      { Icon: Sparkles, title: "Ask AI", body: "Opens the side panel. Edit mode rewrites your selection; Explain mode answers questions about your note. Three quick-action chips above the bar cover the common asks." },
+      { Icon: FileText, title: "Auto-format on paste", body: "Paste plain text over 200 characters and the editor offers to format it - headings, lists, and structure - with a live progress toast." },
+      { glyph: "#", title: "Markdown shortcuts", body: "Type `# `, `## `, `### `, `- `, `1. `, `> ` and they convert to headings, lists, and quotes as you finish typing." },
+    ],
+  },
+  {
+    id: "focus",
+    label: "Focus & timing",
+    tips: [
+      { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search and replace. Supports regex via the toggle." },
+      { Icon: Maximize2, title: "Focus Mode", body: "Top bar button - hides the sidebar and chrome so only your note remains. Click again to exit." },
+      { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
+      { Icon: Keyboard, title: "Keyboard shortcuts", body: "Press ⌘? (or Ctrl+?) anywhere for the full shortcut sheet." },
+      { Icon: SettingsIcon, title: "Settings", body: "Theme, paper style, word-count goal, temporary notes, and account controls live in the gear icon at the bottom of the sidebar." },
+    ],
+  },
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
 const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
-// Idle threshold - hint appears after 5s of no intentional interaction.
-const IDLE_STEPS_MS = [5000];
-const SHOW_MS = 3000;
+const IDLE_MS = 5000;
+const SHOW_MS = 3500;
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
 export function OnboardingHelp() {
-  const isMobile = useIsMobile();
-  const { notebooks, standaloneNotes } = useNotebooks();
-  // Beginner = no notebooks AND no standalone notes yet. Hint only targets beginners.
-  const isBeginner = (notebooks?.length ?? 0) === 0 && (standaloneNotes?.length ?? 0) === 0;
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState(sections[0].id);
   const [hintOpen, setHintOpen] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const idleTimerRef = useRef<number | null>(null);
   const hideTimerRef = useRef<number | null>(null);
-  const showCountRef = useRef(0);
   const dismissedRef = useRef(false);
   const openRef = useRef(false);
   const hintOpenRef = useRef(false);
   const shownAtRef = useRef(0);
-  // Min time the hint must remain visible before any activity can dismiss it.
-  const MIN_VISIBLE_MS = 3000;
+  const MIN_VISIBLE_MS = 2500;
 
   const clearIdle = () => {
-    if (idleTimerRef.current) {
-      window.clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = null;
-    }
+    if (idleTimerRef.current) { window.clearTimeout(idleTimerRef.current); idleTimerRef.current = null; }
   };
   const clearHide = () => {
-    if (hideTimerRef.current) {
-      window.clearTimeout(hideTimerRef.current);
-      hideTimerRef.current = null;
-    }
+    if (hideTimerRef.current) { window.clearTimeout(hideTimerRef.current); hideTimerRef.current = null; }
   };
-
-  const currentDelay = () => IDLE_STEPS_MS[Math.min(showCountRef.current, IDLE_STEPS_MS.length - 1)];
 
   const armIdle = () => {
     clearIdle();
@@ -74,44 +97,36 @@ export function OnboardingHelp() {
       setHintOpen(true);
       hintOpenRef.current = true;
       shownAtRef.current = Date.now();
-      showCountRef.current += 1;
       clearHide();
       hideTimerRef.current = window.setTimeout(() => {
         setHintOpen(false);
         hintOpenRef.current = false;
         hideTimerRef.current = null;
-        // Don't auto-restart - only re-arm when the user becomes idle again.
       }, SHOW_MS);
-    }, currentDelay());
+    }, IDLE_MS);
   };
 
-  // Init from storage + beginner gating. Re-evaluates if the user creates content.
   useEffect(() => {
     try {
       const permanent = localStorage.getItem(DISMISS_KEY) === "1";
       const dayDismissed = localStorage.getItem(DISMISS_DATE_KEY) === todayStr();
       if (permanent) setDontShowAgain(true);
-      if (permanent || dayDismissed || !isBeginner) {
+      if (permanent || dayDismissed) {
         dismissedRef.current = true;
         setHintOpen(false);
         hintOpenRef.current = false;
-        clearIdle();
-        clearHide();
+        clearIdle(); clearHide();
       }
     } catch {}
-  }, [isBeginner]);
+  }, []);
 
   useEffect(() => { openRef.current = open; }, [open]);
 
-  // Activity listener - any interaction immediately hides the hint and
-  // restarts the idle timer (no continuous looping).
   useEffect(() => {
     if (dismissedRef.current) return;
-
     const onActivity = () => {
       if (dismissedRef.current) return;
       if (hintOpenRef.current) {
-        // Keep the hint visible for at least MIN_VISIBLE_MS before activity dismisses it.
         if (Date.now() - shownAtRef.current < MIN_VISIBLE_MS) return;
         setHintOpen(false);
         hintOpenRef.current = false;
@@ -119,26 +134,20 @@ export function OnboardingHelp() {
       }
       armIdle();
     };
-
-    // Only intentional inputs dismiss/reset - exclude mousemove & scroll (too noisy).
     const events = ["keydown", "click", "touchstart", "pointerdown"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     armIdle();
-
     return () => {
       events.forEach((e) => window.removeEventListener(e, onActivity));
-      clearIdle();
-      clearHide();
+      clearIdle(); clearHide();
     };
   }, []);
 
-  // Pause/resume around the dialog
   useEffect(() => {
     if (open) {
       setHintOpen(false);
       hintOpenRef.current = false;
-      clearIdle();
-      clearHide();
+      clearIdle(); clearHide();
     } else if (!dismissedRef.current) {
       armIdle();
     }
@@ -149,8 +158,7 @@ export function OnboardingHelp() {
     try { localStorage.setItem(DISMISS_KEY, "1"); } catch {}
     setHintOpen(false);
     hintOpenRef.current = false;
-    clearIdle();
-    clearHide();
+    clearIdle(); clearHide();
   };
 
   const undismiss = () => {
@@ -159,24 +167,11 @@ export function OnboardingHelp() {
       localStorage.removeItem(DISMISS_KEY);
       localStorage.removeItem(DISMISS_DATE_KEY);
     } catch {}
-    showCountRef.current = 0;
     armIdle();
   };
 
-  // Clicking the hint dismisses it for the rest of the day.
-  const dismissForToday = () => {
-    dismissedRef.current = true;
-    try { localStorage.setItem(DISMISS_DATE_KEY, todayStr()); } catch {}
-    setHintOpen(false);
-    hintOpenRef.current = false;
-    clearHide();
-    clearIdle();
-  };
-
   const handleHelpClick = () => {
-    try {
-      setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1");
-    } catch {}
+    try { setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1"); } catch {}
     setOpen(true);
   };
 
@@ -186,9 +181,11 @@ export function OnboardingHelp() {
     else undismiss();
   };
 
+  const current = sections.find((s) => s.id === activeSection) ?? sections[0];
+
   return (
     <>
-      {/* Desktop / tablet: inline header button with adjacent hint */}
+      {/* Desktop / tablet */}
       <div className="relative hidden md:flex items-center">
         <AnimatePresence>
           {hintOpen && (
@@ -226,13 +223,9 @@ export function OnboardingHelp() {
         </Button>
       </div>
 
-      {/* Mobile: floating action button, bottom-right, safe from header chrome,
-          with a tap-friendly target and an idle hint pill that pops above it. */}
+      {/* Mobile floating action */}
       <div className="md:hidden">
-        <div
-          className="fixed z-40 right-4"
-          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}
-        >
+        <div className="fixed z-40 right-4" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}>
           <AnimatePresence>
             {hintOpen && (
               <motion.button
@@ -263,21 +256,40 @@ export function OnboardingHelp() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-2xl max-h-[82vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle className="font-serif text-xl">Toolbar cheatsheet</DialogTitle>
+            <DialogTitle className="font-serif text-xl">Quick guide</DialogTitle>
             <DialogDescription>
-              The buttons that aren't obvious - what each one actually does.
+              A walkthrough of the parts of the app that aren't obvious - organised by area.
             </DialogDescription>
           </DialogHeader>
+
+          {/* Section tabs */}
+          <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {sections.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setActiveSection(s.id)}
+                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  activeSection === s.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
           <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
             <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
             <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
               Don't show the "Confused? Click here" hint again
             </label>
           </div>
-          <ul className="mt-4 space-y-2">
-            {toolbarTips.map(({ Icon, glyph, title, body }) => (
+
+          <ul className="mt-3 space-y-2 overflow-y-auto pr-1 scrollbar-thin">
+            {current.tips.map(({ Icon, glyph, title, body }) => (
               <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
                 <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                   {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
