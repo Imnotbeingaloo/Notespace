@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface PageHeaderProps {
@@ -17,7 +17,10 @@ const navLinks = [
 ];
 
 export function PageHeader({ activePage }: PageHeaderProps) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  // Render the authenticated CTA on first paint when a prior session existed,
+  // so the button doesn't flip from "Get Started" → "Open App" after hydrate.
+  const showAuthed = !!user || (loading && hasLikelySession());
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -72,10 +75,10 @@ export function PageHeader({ activePage }: PageHeaderProps) {
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <Link
-            to={user ? "/app" : "/auth"}
+            to={showAuthed ? "/app" : "/auth"}
             className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 sm:px-4 py-1.5 sm:py-2 text-[13px] sm:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
           >
-            {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
+            {showAuthed ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
           </Link>
 
           {/* Mobile hamburger */}
