@@ -92,15 +92,30 @@ function renderAction(action: QueuedToast["action"] | QueuedToast["cancel"], toa
   return action;
 }
 
+function useCountdown(item: QueuedToast): number | null {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (item.paused || !Number.isFinite(item.duration)) return;
+    const t = setInterval(() => setNow(Date.now()), 250);
+    return () => clearInterval(t);
+  }, [item.paused, item.duration, item.id]);
+  if (!Number.isFinite(item.duration)) return null;
+  if (item.paused) return null;
+  const elapsed = now - item.createdAt;
+  const remaining = Math.max(0, item.duration - elapsed);
+  return Math.ceil(remaining / 1000);
+}
+
 function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean }) {
   const kind = displayKind(item);
   const visual = variants[kind];
   const Icon = visual.Icon;
-  // The chevron arrow is reserved for revealing extra detail/description.
-  // Action buttons (e.g. Undo) always render inline so users don't have to dig for them.
+  // The chevron arrow reveals BOTH the extra description AND any action buttons
+  // (e.g. Undo / Go to Campaign). Collapsed cards stay minimal - title only.
   const hasDescription = Boolean(item.description);
   const hasActions = Boolean(item.action) || Boolean(item.cancel);
-  const showChevron = hasDescription;
+  const hasMore = hasDescription || hasActions;
+  const secondsLeft = useCountdown(item);
 
   return (
     <motion.li
@@ -116,7 +131,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
           : "0 6px 18px hsl(var(--foreground) / 0.08)",
       }}
     >
-      <div className="flex min-h-[66px] items-start gap-3 px-3.5 py-3.5 pr-16">
+      <div className="flex items-start gap-3 px-3.5 pt-3 pb-2.5 pr-16">
         <span
           className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
           style={{ color: visual.accent, backgroundColor: visual.tint }}
@@ -127,14 +142,8 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
 
         <div className="min-w-0 flex-1">
           <div className="text-[13px] font-semibold leading-5 text-foreground break-words">{item.title}</div>
-          {hasActions && (
-            <div className="mt-1.5 flex flex-wrap gap-2">
-              {renderAction(item.action, item.id)}
-              {renderAction(item.cancel, item.id)}
-            </div>
-          )}
           <AnimatePresence initial={false}>
-            {hasDescription && item.expanded && (
+            {item.expanded && hasMore && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -142,9 +151,17 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 className="overflow-hidden"
               >
-                <div className="pt-1 text-xs leading-relaxed text-muted-foreground">
-                  {item.description}
-                </div>
+                {hasDescription && (
+                  <div className="pt-1 text-xs leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </div>
+                )}
+                {hasActions && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {renderAction(item.action, item.id)}
+                    {renderAction(item.cancel, item.id)}
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -152,7 +169,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       </div>
 
       <div className="absolute right-2.5 top-2.5 flex items-center gap-1">
-        {showChevron && (
+        {hasMore && (
           <button
             type="button"
             onClick={() => setToastExpanded(item.id, !item.expanded)}
@@ -172,14 +189,25 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
         </button>
       </div>
 
-      {kind !== "loading" && (
-        <motion.div
+      {kind !== "loading" && Number.isFinite(item.duration) && (
+        <button
+          type="button"
+          onClick={() => pauseToast(item.id)}
+          disabled={item.paused}
+          aria-label={item.paused ? "Notification paused" : "Click to stop auto-close"}
+          className="block w-full px-3.5 pb-2 pt-0.5 text-left text-[10.5px] leading-tight text-muted-foreground/80 hover:text-foreground transition-colors disabled:cursor-default disabled:opacity-70"
+        >
+          {item.paused
+            ? "Auto-close stopped."
+            : <>This message will close in {secondsLeft ?? 0} second{(secondsLeft ?? 0) === 1 ? "" : "s"}. <span className="font-semibold text-foreground">Click to stop.</span></>}
+        </button>
+      )}
+
+      {kind !== "loading" && Number.isFinite(item.duration) && (
+        <span
           aria-hidden="true"
-          className="absolute bottom-0 left-0 h-1 rounded-br-full"
-          initial={{ width: "100%" }}
-          animate={{ width: "0%" }}
-          transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
-          style={{ backgroundColor: visual.accent }}
+          className="absolute bottom-0 left-0 h-[2.5px] w-1/3 rounded-tr-full"
+          style={{ backgroundColor: visual.accent, opacity: item.paused ? 0.35 : 0.9 }}
         />
       )}
     </motion.li>
