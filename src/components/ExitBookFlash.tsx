@@ -12,7 +12,11 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState<"logo" | "text" | "done">("logo");
   const [isDarkExit] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("app-theme") === "dark" || document.documentElement.classList.contains("dark");
+    const stored = localStorage.getItem("app-theme");
+    if (stored === "dark") return true;
+    if (stored === "light") return false;
+    if (document.documentElement.classList.contains("dark")) return true;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
   });
 
   useEffect(() => {
@@ -20,9 +24,9 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   useEffect(() => {
-    const t1 = window.setTimeout(() => setPhase("text"), 350);
-    const t2 = window.setTimeout(() => setPhase("done"), 1800);
-    const t3 = window.setTimeout(() => onDoneRef.current(), 2400);
+    const t1 = window.setTimeout(() => setPhase("text"), 220);
+    const t2 = window.setTimeout(() => setPhase("done"), 1100);
+    const t3 = window.setTimeout(() => onDoneRef.current(), 1500);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
