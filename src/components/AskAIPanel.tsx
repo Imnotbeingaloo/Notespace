@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft, List, ListChecks, Minimize2, Maximize2, PenLine, Languages, Lightbulb, MessageSquareText } from "lucide-react";
+import { X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft, List, Lightbulb, PenLine, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -38,6 +38,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   const [mode, setMode] = useState<"chat" | "edit">(defaultMode);
   const [loading, setLoading] = useState(false);
   const [showEmptyNotice, setShowEmptyNotice] = useState(false);
+  const [idleEgg, setIdleEgg] = useState(false);
   const isNoteEmpty = !((activeNote?.content ?? "").replace(/[\s\u200B\u2063]|&#8203;/g, "").length);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -64,6 +65,16 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
+
+  // Easter egg: after 5s of inactivity on an empty conversation, show a playful animation
+  useEffect(() => {
+    if (!open || messages.length > 0 || input.trim() || loading) {
+      setIdleEgg(false);
+      return;
+    }
+    const t = setTimeout(() => setIdleEgg(true), 5000);
+    return () => clearTimeout(t);
+  }, [open, messages.length, input, loading]);
 
   const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
     if (!activeNote) return;
@@ -188,8 +199,8 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         {/* Header */}
         <div className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.04] to-transparent">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 font-mono text-[11px] font-bold tracking-tight">
-              AI
+            <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+              <Sparkles className="h-4 w-4" />
             </div>
             <div className="min-w-0">
               <p className="font-sans font-bold text-foreground text-sm leading-none">Ask AI</p>
@@ -232,12 +243,21 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 scrollbar-thin">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {messages.length === 0 && (
-            <div className="text-center py-12">
-              <MessageSquareText className="h-8 w-8 text-primary/40 mx-auto mb-3" />
+            <div className="text-center py-12 flex flex-col items-center">
+              {idleEgg ? (
+                <div className="relative h-14 w-14 mb-3" aria-hidden>
+                  <div className="absolute inset-0 rounded-2xl bg-primary/10 animate-ping" />
+                  <div className="absolute inset-0 flex items-center justify-center text-2xl animate-bounce">
+                    {["🪄","💡","📚","🧠","✏️"][Math.floor(Date.now()/900) % 5]}
+                  </div>
+                </div>
+              ) : (
+                <div className="h-8 w-8 mb-3" />
+              )}
               <p className="text-sm text-muted-foreground">
-                Ask anything about your note, or use the quick actions above.
+                {idleEgg ? "Still there? Try a quick action below." : "Ask anything about your note, or use the quick actions below."}
               </p>
               <p className="text-[11px] text-muted-foreground/70 mt-2">
                 Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
@@ -297,41 +317,33 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
 
         {/* Input */}
         <div className="border-t border-border p-3 bg-muted/20">
-          {/* Quick action chips - horizontal scroller, grouped by mode like Notion/Lex */}
-          <div className="-mx-1 mb-2 overflow-x-auto scrollbar-thin">
-            <div className="flex items-center gap-1.5 px-1 w-max">
-              {(mode === "edit"
-                ? [
-                    { key: "improve", icon: Wand2, label: "Improve writing", instr: "Improve this note: fix grammar, clarity, and flow. Preserve meaning." },
-                    { key: "shorter", icon: Minimize2, label: "Make shorter", instr: "Make this note significantly shorter while preserving every key idea." },
-                    { key: "longer", icon: Maximize2, label: "Make longer", instr: "Expand this note with more depth, examples, and supporting detail. Keep the same voice." },
-                    { key: "continue", icon: PenLine, label: "Continue writing", instr: "Continue writing this note in the same voice and structure. Add the next 2-3 paragraphs." },
-                    { key: "simplify", icon: Lightbulb, label: "Simplify", instr: "Rewrite this note in simple, plain English suitable for a 12-year-old. Keep the meaning intact." },
-                    { key: "format", icon: AlignLeft, label: "Format", action: "format" as const },
-                  ]
-                : [
-                    { key: "explain", icon: BookOpen, label: "Explain this note", instr: undefined },
-                    { key: "summary", icon: List, label: "Summarize", instr: "Summarize this note in 5 short bullets, in the note's own words." },
-                    { key: "keypoints", icon: List, label: "Key points", instr: "Pull out the 5-7 most important points from this note as a clean bulleted list." },
-                    { key: "actions", icon: ListChecks, label: "Action items", instr: "List every actionable task, decision, or follow-up implied by this note as a checklist." },
-                    { key: "translate", icon: Languages, label: "Translate", instr: "Translate this note into clear, natural English. If it is already in English, translate to Spanish instead." },
-                    { key: "missing", icon: Lightbulb, label: "What am I missing?", instr: "Read this note critically. List concrete gaps, weak arguments, missing context, and questions worth answering." },
-                  ]
-              ).map(({ key, icon: Icon, label, instr, action }: any) => (
-                <button
-                  key={key}
-                  onClick={() => {
-                    if (isNoteEmpty) { setShowEmptyNotice(true); return; }
-                    if (action === "format") { callAI("format"); return; }
-                    callAI(mode === "edit" ? "edit" : "explain", instr);
-                  }}
-                  disabled={loading}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg border border-border bg-background text-foreground hover:bg-muted hover:border-primary/30 disabled:opacity-50 transition-colors whitespace-nowrap"
-                >
-                  <Icon className="h-3 w-3 text-primary" /> {label}
-                </button>
-              ))}
-            </div>
+          {/* Quick action chips - small, essential set, single row, no scroller */}
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            {(mode === "edit"
+              ? [
+                  { key: "improve", icon: Wand2, label: "Improve writing", instr: "Improve this note: fix grammar, clarity, and flow. Preserve meaning." },
+                  { key: "continue", icon: PenLine, label: "Continue writing", instr: "Continue writing this note in the same voice and structure. Add the next 2-3 paragraphs." },
+                  { key: "format", icon: AlignLeft, label: "Format", action: "format" as const },
+                ]
+              : [
+                  { key: "explain", icon: BookOpen, label: "Explain", instr: undefined },
+                  { key: "summary", icon: List, label: "Summarize", instr: "Summarize this note in 5 short bullets, in the note's own words." },
+                  { key: "missing", icon: Lightbulb, label: "What am I missing?", instr: "Read this note critically. List concrete gaps, weak arguments, missing context, and questions worth answering." },
+                ]
+            ).map(({ key, icon: Icon, label, instr, action }: any) => (
+              <button
+                key={key}
+                onClick={() => {
+                  if (isNoteEmpty) { setShowEmptyNotice(true); return; }
+                  if (action === "format") { callAI("format"); return; }
+                  callAI(mode === "edit" ? "edit" : "explain", instr);
+                }}
+                disabled={loading}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg border border-border bg-background text-foreground hover:bg-muted hover:border-primary/30 disabled:opacity-50 transition-colors whitespace-nowrap"
+              >
+                <Icon className="h-3 w-3 text-primary" /> {label}
+              </button>
+            ))}
           </div>
           <div className="flex gap-2 items-end">
             <textarea
