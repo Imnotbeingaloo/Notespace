@@ -61,8 +61,9 @@ const sections: Section[] = [
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
-const SESSION_SHOWN_KEY = "onboarding-hint-session-shown";
-const IDLE_MS = 5000;
+const SESSION_COUNT_KEY = "onboarding-hint-session-count";
+// Escalating idle thresholds: 1st = 5s, 2nd = 15s, 3rd = 30s, then stop.
+const IDLE_STEPS = [5000, 15000, 30000];
 const SHOW_MS = 3500;
 
 export function OnboardingHelp() {
