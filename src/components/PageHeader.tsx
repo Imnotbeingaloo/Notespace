@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface PageHeaderProps {
