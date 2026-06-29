@@ -33,11 +33,14 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   const [i, setI] = useState(0);
   useEffect(() => {
     if (reducedMotion) return;
-    // 1.5s total: 500ms per word across three words.
-    const t1 = setTimeout(() => setI(1), 500);
-    const t2 = setTimeout(() => setI(2), 1000);
+    // Each word holds for the same dwell (~520ms net) on top of a 200ms
+    // crossfade transition, so "spark" doesn't feel rushed between
+    // "idea" and "note". Total ≈ 1.65s before settling.
+    const t1 = setTimeout(() => setI(1), 720);
+    const t2 = setTimeout(() => setI(2), 1440);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [reducedMotion]);
+
 
   if (reducedMotion) {
     return (
