@@ -33,8 +33,9 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   const [i, setI] = useState(0);
   useEffect(() => {
     if (reducedMotion) return;
-    const t1 = setTimeout(() => setI(1), 1100);
-    const t2 = setTimeout(() => setI(2), 2200);
+    // 1.5s total: 500ms per word across three words.
+    const t1 = setTimeout(() => setI(1), 500);
+    const t2 = setTimeout(() => setI(2), 1000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [reducedMotion]);
 
@@ -55,13 +56,13 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
       <div className="relative h-[44px] flex items-end justify-center overflow-hidden">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={words[i]}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             className="text-foreground/85 italic leading-none"
             style={{
               fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
@@ -90,7 +91,7 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 0.95, delay: 0.2, ease: [0.65, 0, 0.35, 1] }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.65, 0, 0.35, 1] }}
         />
       </svg>
     </div>
@@ -160,9 +161,9 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (eggPlayedRef.current) return;
     if (messages.length > 0 || input.trim() || loading) return;
     eggPlayedRef.current = true;
-    const total = reducedMotion ? 1400 : 3200;
-    const show = setTimeout(() => setIdleEgg(true), 220);
-    const hide = setTimeout(() => setIdleEgg(false), 220 + total);
+    const total = reducedMotion ? 900 : 1500;
+    const show = setTimeout(() => setIdleEgg(true), 150);
+    const hide = setTimeout(() => setIdleEgg(false), 150 + total);
     return () => { clearTimeout(show); clearTimeout(hide); };
   }, [open, messages.length, input, loading, reducedMotion]);
 
@@ -414,14 +415,45 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                   </motion.div>
                 ) : (
                   <motion.div
-                    key="spacer"
+                    key="ember"
                     layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="h-6 w-6 mb-2"
-                  />
+                    initial={{ opacity: 0, scale: 0.92, y: 4 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative mb-4 select-none flex flex-col items-center"
+                    aria-hidden
+                  >
+                    {/* Soft halo + sparkle: persistent visual anchor after the
+                        vignette retires so the empty state doesn't feel bare. */}
+                    <div className="relative h-9 w-9 flex items-center justify-center">
+                      <motion.span
+                        className="absolute inset-0 rounded-full bg-primary/15 blur-md"
+                        animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
+                        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                      <Sparkles className="relative h-4 w-4 text-primary" />
+                    </div>
+                    <svg width="64" height="6" viewBox="0 0 64 6" className="mt-2 overflow-visible" aria-hidden>
+                      <defs>
+                        <linearGradient id="aiEmberInk" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                          <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.75" />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <motion.path
+                        d="M 2 3 Q 32 1, 62 3"
+                        stroke="url(#aiEmberInk)"
+                        strokeWidth={1.5}
+                        strokeLinecap="round"
+                        fill="none"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.1, ease: [0.65, 0, 0.35, 1] }}
+                      />
+                    </svg>
+                  </motion.div>
                 )}
               </AnimatePresence>
 
