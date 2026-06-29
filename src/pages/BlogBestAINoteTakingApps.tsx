@@ -6,6 +6,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
@@ -292,6 +293,10 @@ export default function BlogBestAINoteTakingApps() {
               research before writing this.
             </p>
 
+            <Callout tone="key" title="What we weighted most">
+              Three things, in order: how calm the tool feels in daily use, how easily your work survives outside the app, and whether the free or starter tier is actually usable for a real workload - not a demo.
+            </Callout>
+
             <h2 className="font-serif text-2xl font-bold mb-6">The seven, ranked by who they're for</h2>
             <div className="space-y-8">
               {apps.map((app, i) => (
@@ -308,7 +313,14 @@ export default function BlogBestAINoteTakingApps() {
               <li>• <strong>You hate organizing and want the app to do it:</strong> Mem.</li>
             </ul>
 
+            <Callout tone="tip" title="Before you scroll the FAQ">
+              If a question below doesn't quite match yours, the answer is usually a combination of two of the points already covered above. Skim the headings first, then come back.
+            </Callout>
+
             <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              The questions readers ask most often about this topic - answered directly, without the marketing spin.
+            </p>
             <div className="space-y-6">
               {faq.map((f) => (
                 <div key={f.q} className="border-l-2 border-primary/40 pl-4">
