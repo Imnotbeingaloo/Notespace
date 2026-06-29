@@ -236,7 +236,7 @@ function AppContent() {
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
               onOpenPlanner={() => setPlannerOpen(true)}
               onOpenHome={() => { if (showHome) { handleExitToWebsite(); } else { openHome(); } }}
-              onRequestNewNote={() => { setShowHome(true); setHomeCreateKind("note"); if (isMobile) setSidebarOpen(false); }}
+              onRequestNewNote={() => { setHomeCreateKind("note"); if (isMobile) setSidebarOpen(false); }}
             />
 
           </motion.div>
