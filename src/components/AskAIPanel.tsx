@@ -73,14 +73,15 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
     if (eggPlayedRef.current) return;
     if (messages.length > 0 || input.trim() || loading) return;
+    let hide: ReturnType<typeof setTimeout> | undefined;
     const show = setTimeout(() => {
       eggPlayedRef.current = true;
       setIdleEgg(true);
-      const hide = setTimeout(() => setIdleEgg(false), 4200);
-      (show as any)._hide = hide;
+      hide = setTimeout(() => setIdleEgg(false), 4200);
     }, 5000);
-    return () => { clearTimeout(show); if ((show as any)._hide) clearTimeout((show as any)._hide); };
+    return () => { clearTimeout(show); if (hide) clearTimeout(hide); };
   }, [open, messages.length, input, loading]);
+
 
 
   const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
