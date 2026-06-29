@@ -32,15 +32,18 @@ const SECTION_HEADERS = [/how we picked/i, /frequently asked/i];
 const findings = [];
 
 function countContentLines(slice) {
-  // Count "prose" lines: paragraphs, list items, and callout body text.
+  // Count substantive lines: prose, list items, FAQ details, mapped cards,
+  // and Callout bodies. Skip pure structural/closing markup.
   let n = 0;
   for (const raw of slice) {
     const line = raw.trim();
     if (!line) continue;
     if (/^<\/?(h1|h2|h3|h4)/i.test(line)) continue;
-    if (/^<\/?(section|div|article|aside|ul|ol|figure)[\s>]/i.test(line)) continue;
-    if (/^<(p|li|Callout)[\s>]/i.test(line)) n++;
-    else if (/^[A-Z0-9“"'\w]/.test(line) && line.length > 25) n++;
+    if (/^<\/(section|div|article|aside|ul|ol|figure|details|summary)>?$/i.test(line)) continue;
+    if (/^[)}\]];?$/.test(line)) continue;
+    if (/^<(p|li|Callout|details|summary|Card)[\s>]/i.test(line)) { n++; continue; }
+    if (/\.map\s*\(/.test(line)) { n += 2; continue; } // mapped lists render multiple items
+    if (line.length > 25) n++;
   }
   return n;
 }
