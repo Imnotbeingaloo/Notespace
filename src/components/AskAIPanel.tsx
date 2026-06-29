@@ -73,14 +73,15 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
     if (eggPlayedRef.current) return;
     if (messages.length > 0 || input.trim() || loading) return;
+    let hide: ReturnType<typeof setTimeout> | undefined;
     const show = setTimeout(() => {
       eggPlayedRef.current = true;
       setIdleEgg(true);
-      const hide = setTimeout(() => setIdleEgg(false), 4200);
-      (show as any)._hide = hide;
+      hide = setTimeout(() => setIdleEgg(false), 4200);
     }, 5000);
-    return () => { clearTimeout(show); if ((show as any)._hide) clearTimeout((show as any)._hide); };
+    return () => { clearTimeout(show); if (hide) clearTimeout(hide); };
   }, [open, messages.length, input, loading]);
+
 
 
   const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
@@ -257,49 +258,126 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
                 {idleEgg ? (
                   <motion.div
                     key="egg"
-                    initial={{ opacity: 0, scale: 0.85 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9, y: -6 }}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative h-20 w-48 mb-4"
+                    className="relative mb-4"
                     aria-hidden
                   >
-                    {/* Soft gradient halo */}
-                    <motion.div
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-24 w-24 rounded-full blur-2xl"
-                      style={{ background: "radial-gradient(circle, hsl(var(--primary)/0.45), transparent 70%)" }}
-                      animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.9, 0.6] }}
-                      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                    />
-                    {/* Core orb */}
-                    <motion.div
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/60 shadow-lg shadow-primary/30 flex items-center justify-center"
-                      animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                    >
-                      <Sparkles className="h-4 w-4 text-primary-foreground" />
-                    </motion.div>
-                    {/* Orbiting particles */}
-                    {[0, 1, 2].map((i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-primary"
-                        style={{ originX: 0.5, originY: 0.5 }}
-                        animate={{
-                          rotate: [i * 120, 360 + i * 120],
-                          x: [28, 28],
-                          y: [-1, -1],
-                        }}
-                        transition={{ duration: 2.6, repeat: Infinity, ease: "linear" }}
+                    {/* Thought-line vignette: a flowing path draws across,
+                        a glowing comet traces it, and a soft sparkle pops at the end. */}
+                    <svg width="220" height="80" viewBox="0 0 220 80" className="overflow-visible">
+                      <defs>
+                        <linearGradient id="aiThoughtStroke" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                          <stop offset="35%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+                        </linearGradient>
+                        <radialGradient id="aiThoughtGlow">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.55" />
+                          <stop offset="70%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                        </radialGradient>
+                        <filter id="aiSoftBlur" x="-50%" y="-50%" width="200%" height="200%">
+                          <feGaussianBlur stdDeviation="2" />
+                        </filter>
+                      </defs>
+
+                      {/* soft ambient glow following the path */}
+                      <motion.path
+                        d="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
+                        stroke="url(#aiThoughtStroke)"
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        fill="none"
+                        filter="url(#aiSoftBlur)"
+                        opacity={0.35}
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
                       />
-                    ))}
+
+                      {/* crisp drawn line */}
+                      <motion.path
+                        d="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
+                        stroke="url(#aiThoughtStroke)"
+                        strokeWidth="1.75"
+                        strokeLinecap="round"
+                        fill="none"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
+                      />
+
+                      {/* comet traveling along the path */}
+                      <motion.g
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 1, 1, 0] }}
+                        transition={{ duration: 1.8, times: [0, 0.1, 0.9, 1], ease: "easeOut" }}
+                      >
+                        <circle r="14" fill="url(#aiThoughtGlow)">
+                          <animateMotion
+                            dur="1.6s"
+                            fill="freeze"
+                            keyPoints="0;1"
+                            keyTimes="0;1"
+                            calcMode="spline"
+                            keySplines="0.65 0 0.35 1"
+                            path="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
+                          />
+                        </circle>
+                        <circle r="2.5" fill="hsl(var(--primary))">
+                          <animateMotion
+                            dur="1.6s"
+                            fill="freeze"
+                            keyPoints="0;1"
+                            keyTimes="0;1"
+                            calcMode="spline"
+                            keySplines="0.65 0 0.35 1"
+                            path="M 10 50 C 50 10, 90 90, 130 40 S 200 50, 210 30"
+                          />
+                        </circle>
+                      </motion.g>
+
+                      {/* sparkle payoff at the end of the path */}
+                      <motion.g
+                        transform="translate(210 30)"
+                        initial={{ opacity: 0, scale: 0.4 }}
+                        animate={{ opacity: [0, 1, 1, 0], scale: [0.4, 1.15, 1, 0.95] }}
+                        transition={{ duration: 1.4, delay: 1.55, times: [0, 0.25, 0.7, 1], ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        <circle r="10" fill="url(#aiThoughtGlow)" />
+                        <path
+                          d="M0 -6 L1.4 -1.4 L6 0 L1.4 1.4 L0 6 L-1.4 1.4 L-6 0 L-1.4 -1.4 Z"
+                          fill="hsl(var(--primary))"
+                        />
+                      </motion.g>
+
+                      {/* three quiet idea-dots that fade in along the way */}
+                      {[
+                        { cx: 60, cy: 32, delay: 0.45 },
+                        { cx: 110, cy: 58, delay: 0.85 },
+                        { cx: 165, cy: 36, delay: 1.2 },
+                      ].map((d, i) => (
+                        <motion.circle
+                          key={i}
+                          cx={d.cx}
+                          cy={d.cy}
+                          r={1.6}
+                          fill="hsl(var(--primary))"
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: [0, 0.9, 0.5], scale: [0, 1, 1] }}
+                          transition={{ duration: 0.9, delay: d.delay, ease: "easeOut" }}
+                        />
+                      ))}
+                    </svg>
                   </motion.div>
                 ) : (
                   <div key="spacer" className="h-8 w-8 mb-3" />
                 )}
               </AnimatePresence>
               <p className="text-sm text-muted-foreground">
-                {idleEgg ? "Warming up - pick a quick action or just ask." : "Ask anything about your note, or use the quick actions below."}
+                {idleEgg ? "A thought taking shape - ask anything." : "Ask anything about your note, or use the quick actions below."}
               </p>
               <p className="text-[11px] text-muted-foreground/70 mt-2">
                 Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
