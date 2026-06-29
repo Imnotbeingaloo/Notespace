@@ -16,6 +16,7 @@ const ROUTE_LOADERS: Record<string, () => Promise<unknown>> = {
   "/blog/notion-alternatives-2026": () => import("@/pages/BlogNotionAlternatives"),
   "/blog/obsidian-alternatives-2026": () => import("@/pages/BlogObsidianAlternatives"),
   "/blog/evernote-alternatives-2026": () => import("@/pages/BlogEvernoteAlternatives"),
+  "/blog/otter-ai-alternative-for-students": () => import("@/pages/BlogOtterAlternative"),
   "/blog/onenote-alternatives-2026": () => import("@/pages/BlogOneNoteAlternatives"),
   "/blog/best-note-taking-app-2026": () => import("@/pages/BlogBestNoteTakingApp"),
   "/blog/ai-voice-notes-meeting-transcription": () => import("@/pages/BlogAIVoiceNotes"),
