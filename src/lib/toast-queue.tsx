@@ -135,6 +135,14 @@ export function setToastExpanded(id: string | number, expanded: boolean) {
   emit();
 }
 
+export function pauseToast(id: string | number) {
+  const toast = activeToasts.find((item) => item.id === id);
+  if (!toast || toast.paused) return;
+  clearTimer(id);
+  toast.paused = true;
+  emit();
+}
+
 export function updateToast(
   id: string | number,
   patch: Partial<Pick<QueuedToast, "title" | "description" | "kind">>,
