@@ -10,12 +10,18 @@ import { SeoHead } from "@/components/SeoHead";
 import Footer from "@/components/Footer";
 import { templates } from "@/components/NoteTemplatePicker";
 import { toast } from "@/components/ui/sonner";
+import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import NotFound from "./NotFound";
 
 export default function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const template = templates.find((t) => t.id === id);
   const [copied, setCopied] = useState(false);
+  const { user } = useAuth();
+  const isAuthed = !!user || hasLikelySession();
+  const useTemplateHref = template
+    ? (isAuthed ? `/app?template=${template.id}` : `/auth?template=${template.id}`)
+    : "/auth";
 
   useEffect(() => {
     document.documentElement.classList.add("light");
@@ -91,7 +97,7 @@ export default function TemplateDetail() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Link
-                to={`/auth?template=${template.id}`}
+                to={useTemplateHref}
                 className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition"
               >
                 Use this template <ArrowRight className="h-4 w-4" />
