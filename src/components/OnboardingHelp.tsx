@@ -245,11 +245,13 @@ export function OnboardingHelp() {
                 Don't show the "Confused? Click here" hint again
               </label>
             </div>
+            {import.meta.env.DEV && (
             <Button
               type="button"
               variant="outline"
               size="sm"
               className="gap-1.5 shrink-0"
+              data-testid="test-notifications-btn"
               onClick={() => {
                 const variants = [
                   () => toast.success("Changes saved", { description: "Your note was saved successfully." }),
@@ -266,6 +268,7 @@ export function OnboardingHelp() {
               <Bell className="h-3.5 w-3.5" />
               Test notifications
             </Button>
+            )}
           </div>
         </DialogContent>
       </Dialog>

@@ -58,10 +58,10 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
         <AnimatePresence mode="wait">
           <motion.span
             key={words[i]}
-            initial={{ opacity: 0, y: 6, filter: "blur(3px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -6, filter: "blur(3px)" }}
-            transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
             className="text-foreground/85 italic leading-none"
             style={{
               fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
