@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { ExternalToast } from "sonner";
 import type { ReactElement, ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { CheckCircle2, AlertTriangle, AlertCircle, Info, Bell, X, ChevronDown } from "lucide-react";
+import { CheckCircle2, AlertTriangle, AlertCircle, Info, Bell, X, ChevronDown, Loader2 } from "lucide-react";
 import {
   dismissToast,
   getCurrentToasts,
@@ -12,6 +12,7 @@ import {
   removeToast,
   setToastExpanded,
   subscribeToasts,
+  updateToast,
   type QueuedToast,
 } from "@/lib/toast-queue";
 
@@ -39,7 +40,7 @@ const variants = {
     tint: "hsl(var(--primary) / 0.11)",
   },
   loading: {
-    Icon: Bell,
+    Icon: Loader2,
     accent: "hsl(var(--primary))",
     tint: "hsl(var(--primary) / 0.11)",
   },
@@ -120,7 +121,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
           style={{ color: visual.accent, backgroundColor: visual.tint }}
           aria-hidden="true"
         >
-          <Icon className={`h-3.5 w-3.5 ${kind === "loading" ? "animate-pulse" : ""}`} />
+          <Icon className={`h-3.5 w-3.5 ${kind === "loading" ? "animate-spin" : ""}`} />
         </span>
 
         <div className="min-w-0 flex-1">
@@ -170,14 +171,16 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
         </button>
       </div>
 
-      <motion.div
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 h-1 rounded-br-full"
-        initial={{ width: "100%" }}
-        animate={{ width: "0%" }}
-        transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
-        style={{ backgroundColor: visual.accent }}
-      />
+      {kind !== "loading" && (
+        <motion.div
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 h-1 rounded-br-full"
+          initial={{ width: "100%" }}
+          animate={{ width: "0%" }}
+          transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
+          style={{ backgroundColor: visual.accent }}
+        />
+      )}
     </motion.li>
   );
 }
@@ -246,6 +249,7 @@ const toast = Object.assign(
       return queuedToast("message", jsx(id), { ...options, id });
     },
     message: (message: ReactNode, options?: ExternalToast) => queuedToast("message", message, options),
+    update: updateToast,
     getHistory: getToastHistory,
     getToasts: getCurrentToasts,
   }

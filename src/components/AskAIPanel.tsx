@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, Loader2, Send, Wand2, BookOpen, Check, User, Bot } from "lucide-react";
+import { Sparkles, X, Loader2, Send, Wand2, BookOpen, Check, User, Bot, AlignLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -63,7 +63,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
-  const callAI = async (action: "explain" | "edit" | "analyze", instruction?: string) => {
+  const callAI = async (action: "explain" | "edit" | "analyze" | "format", instruction?: string) => {
     if (!activeNote) return;
     const userMsg: Msg = {
       id: crypto.randomUUID(),
@@ -73,8 +73,10 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           ? instruction || "Explain this note"
           : action === "edit"
           ? `Edit: ${instruction}`
+          : action === "format"
+          ? "Format this note into clean structured markdown"
           : instruction || "Analyze this note",
-      intent: action === "edit" ? "edit" : action === "explain" ? "explain" : "chat",
+      intent: action === "edit" || action === "format" ? "edit" : action === "explain" ? "explain" : "chat",
     };
     const assistantId = crypto.randomUUID();
     setMessages((m) => [...m, userMsg, { id: assistantId, role: "assistant", content: "", intent: userMsg.intent }]);
@@ -232,6 +234,15 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
           >
             <Sparkles className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">{mode === "edit" ? "Edit this note" : "Explain this note"}</span>
+          </button>
+          <button
+            onClick={() => callAI("format")}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-muted text-foreground hover:bg-muted/70 disabled:opacity-50 transition-colors min-w-0"
+            title="Reformat this note into clean markdown without changing the wording"
+          >
+            <AlignLeft className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">Format</span>
           </button>
         </div>
 
