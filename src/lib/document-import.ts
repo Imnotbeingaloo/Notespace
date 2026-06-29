@@ -53,37 +53,71 @@ export function formatImportedDocument(rawText: string, fileName: string) {
   const ext = extensionOf(fileName);
   const normalized = rawText.replace(/\r\n?/g, "\n").replace(/[\t ]+$/gm, "").trim();
   if (!normalized) return "";
-  if (MARKDOWN_EXTENSIONS.has(ext)) return `${normalized}\n\n`;
+
+  // Markdown files: only strip watermark lines, otherwise trust the source.
+  if (MARKDOWN_EXTENSIONS.has(ext)) {
+    const kept = normalized
+      .split("\n")
+      .filter((line) => !isWatermark(line))
+      .join("\n")
+      .replace(/\n{3,}/g, "\n\n");
+    return `${kept.trim()}\n\n`;
+  }
 
   const sourceLines = normalized.split("\n");
   const output: string[] = [];
   const title = titleFromFile(fileName);
 
+  // Title goes first as a centered H1. The `# ` prefix becomes <h1> in the
+  // editor; the HybridEditor centers h1s via prose-h1:text-center.
   if (title && !sourceLines[0]?.trim().startsWith("#")) {
     output.push(`# ${title}`, "");
   }
+
+  // Reconstruct paragraphs: PDF text extraction returns hard-wrapped lines
+  // that belong to the same paragraph. Join contiguous non-empty body lines
+  // with a single space; an empty source line (or heading) ends the paragraph.
+  let buffer: string[] = [];
+  const flushParagraph = () => {
+    if (buffer.length === 0) return;
+    const joined = buffer.join(" ").replace(/\s{2,}/g, " ").trim();
+    if (joined) {
+      output.push(joined);
+      output.push(""); // blank line between paragraphs for proper editor spacing
+    }
+    buffer = [];
+  };
 
   sourceLines.forEach((line, index) => {
     const trimmed = line.replace(/\s{2,}/g, " ").trim();
     const next = sourceLines[index + 1];
 
     if (!trimmed) {
-      if (output.at(-1) !== "") output.push("");
+      flushParagraph();
       return;
     }
 
-    if (isWatermark(trimmed)) {
-      return; // strip "Downloaded from oceanofpdf.com", bare page numbers, footer URLs.
-    }
+    if (isWatermark(trimmed)) return;
 
     if (looksLikeHeading(trimmed, next)) {
-      if (output.at(-1) !== "") output.push("");
+      flushParagraph();
       output.push(`## ${trimmed}`, "");
       return;
     }
 
-    output.push(trimmed);
+    // Pre-existing markdown markers (headings, lists, blockquotes, hr, code)
+    // should stand on their own and not be glued into the previous paragraph.
+    if (/^(#{1,6}\s|[-*+]\s+|\d+[.)]\s+|>\s|```|---\s*$)/.test(trimmed)) {
+      flushParagraph();
+      output.push(trimmed);
+      // Blank line after block-level markers so the editor renders spacing.
+      if (/^(#{1,6}\s|---\s*$|```)/.test(trimmed)) output.push("");
+      return;
+    }
+
+    buffer.push(trimmed);
   });
+  flushParagraph();
 
   return `${output.join("\n").replace(/\n{3,}/g, "\n\n").trim()}\n\n`;
 }
