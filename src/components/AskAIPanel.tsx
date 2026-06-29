@@ -235,7 +235,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-4 scrollbar-thin">
           {messages.length === 0 && (
             <div className="text-center py-12">
-              <Sparkles className="h-8 w-8 text-primary/40 mx-auto mb-3" />
+              <MessageSquareText className="h-8 w-8 text-primary/40 mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">
                 Ask anything about your note, or use the quick actions above.
               </p>
