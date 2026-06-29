@@ -217,7 +217,7 @@ export function NamePromptDialog({ open, onOpenChange }: NamePromptDialogProps) 
                         maxLength={60}
                         placeholder="Type your name…"
                         aria-label="Display name"
-                        className="w-full bg-transparent border-0 border-b-2 border-border px-0 pt-1 pb-3 font-serif text-[26px] text-foreground placeholder:text-muted-foreground/35 placeholder:font-sans placeholder:text-base focus:outline-none focus:border-primary transition-colors"
+                        className="w-full bg-transparent border-0 border-b-2 border-border px-0 pt-1 pb-3 font-serif text-[26px] text-foreground placeholder:text-muted-foreground placeholder:font-sans placeholder:text-base focus:outline-none focus:border-primary transition-colors"
                       />
                       <motion.div
                         className="absolute left-0 right-0 -bottom-[2px] h-[2px] bg-primary origin-left"
