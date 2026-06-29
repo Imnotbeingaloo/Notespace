@@ -59,13 +59,13 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
       <div className="relative h-[44px] flex items-end justify-center overflow-hidden">
-        <AnimatePresence mode="popLayout" initial={false}>
+        <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={words[i]}
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
 
             className="text-foreground/85 italic leading-none"
             style={{
