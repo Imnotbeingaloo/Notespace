@@ -14,7 +14,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seo:health": "bunx tsx scripts/sitemap-health.ts",
-    "seo:dashboard": "bunx tsx scripts/gsc-dashboard.ts"
+    "seo:dashboard": "bunx tsx scripts/gsc-dashboard.ts",
+    "lint:blogs": "node scripts/lint-blogs.mjs",
+    "test:auth-flicker": "bunx tsx scripts/test-auth-flicker.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
