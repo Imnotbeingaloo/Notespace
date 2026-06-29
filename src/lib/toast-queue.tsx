@@ -105,6 +105,7 @@ export function queuedToast(kind: ToastKind, title: React.ReactNode, options?: E
     cancel: options?.cancel as QueuedToast["cancel"],
     duration: options?.duration ?? DEFAULT_DURATION[kind],
     expanded: false,
+    paused: false,
     createdAt: Date.now(),
     options,
   };
