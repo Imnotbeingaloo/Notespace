@@ -250,6 +250,38 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         document.execCommand("insertHTML", false, html);
         emitChange();
       },
+      mergeAt: (md: string, position: "top" | "cursor" | "end") => {
+        const el = editorRef.current;
+        if (!el) return;
+        el.focus();
+        if (position === "cursor") {
+          // Reuse the existing cursor-insert path so saved selection is honored.
+          restoreSelection();
+          const html = markdownToHtml(md) + "<p><br></p>";
+          document.execCommand("insertHTML", false, html);
+        } else {
+          const sel = window.getSelection();
+          const range = document.createRange();
+          if (position === "top") {
+            range.setStart(el, 0);
+            range.setEnd(el, 0);
+          } else {
+            range.selectNodeContents(el);
+            range.collapse(false);
+          }
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+          const html = position === "top"
+            ? markdownToHtml(md) + "<p><br></p>"
+            : "<p><br></p>" + markdownToHtml(md);
+          document.execCommand("insertHTML", false, html);
+        }
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+        }
+        emitChange();
+      },
       saveSelection: () => {
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0 && editorRef.current?.contains(sel.anchorNode)) {
