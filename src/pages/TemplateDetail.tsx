@@ -10,6 +10,7 @@ import { SeoHead } from "@/components/SeoHead";
 import Footer from "@/components/Footer";
 import { templates } from "@/components/NoteTemplatePicker";
 import { toast } from "@/components/ui/sonner";
+import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import NotFound from "./NotFound";
 
 export default function TemplateDetail() {
