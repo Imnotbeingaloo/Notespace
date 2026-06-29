@@ -27,6 +27,7 @@ const BlogIndex = lazy(() => import("./pages/BlogIndex"));
 const BlogNotionAlternatives = lazy(() => import("./pages/BlogNotionAlternatives"));
 const BlogObsidianAlternatives = lazy(() => import("./pages/BlogObsidianAlternatives"));
 const BlogEvernoteAlternatives = lazy(() => import("./pages/BlogEvernoteAlternatives"));
+const BlogOtterAlternative = lazy(() => import("./pages/BlogOtterAlternative"));
 const BlogOneNoteAlternatives = lazy(() => import("./pages/BlogOneNoteAlternatives"));
 const BlogBestNoteTakingApp = lazy(() => import("./pages/BlogBestNoteTakingApp"));
 const BlogAIVoiceNotes = lazy(() => import("./pages/BlogAIVoiceNotes"));
