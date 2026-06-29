@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, Keyboard, Sparkles, FolderTree, Bot, Upload, Tag, CalendarDays } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, ArrowUp, TableProperties } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useNotebooks } from "@/context/NotebookContext";
 
 type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
 
@@ -15,48 +17,26 @@ const toolbarTips: Tip[] = [
   { Icon: Minus, title: "Divider", body: "Drops a horizontal rule to break sections - useful between topics or before a summary." },
   { Icon: Table2, title: "Table", body: "Pick a size from the popover. Once inserted, the table edit toolbar appears for adding rows, columns, or deleting cells." },
   { Icon: TableProperties, title: "Edit table", body: "When the cursor is inside a table, the table toolbar appears next to the main one - add/remove rows & columns, delete the whole table, all inline." },
-  { glyph: "Ω", title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor." },
-];
-
-const sidebarTips: Tip[] = [
-  { Icon: FolderTree, title: "Notebooks vs Notes", body: "Notebooks are containers (with a 'Notebook' badge and chevron). Notes live inside them or float on their own at the top of the sidebar." },
-  { Icon: ArrowRight, title: "Expand a notebook", body: "Click the chevron to the left of a notebook to expand or collapse its notes - it won't switch your selection." },
-  { Icon: Upload, title: "Drag & drop", body: "Drag a note onto another notebook to move it. Drop a note into the dashed area to make it standalone. Drag a notebook onto another to nest it." },
-  { Icon: Tag, title: "Smart tags", body: "Tags you use across notes get aggregated in the Tags section of the sidebar. Click a tag to filter." },
-  { Icon: CalendarDays, title: "Upcoming plans", body: "Scheduled study sessions appear at the bottom of the sidebar so they stay in view as you work." },
-];
-
-const aiTips: Tip[] = [
-  { Icon: Bot, title: "Ask AI", body: "Open the AI panel from the editor. 'Explain' answers questions about your note; 'Edit' rewrites or transforms it with your approval before applying." },
-  { Icon: Sparkles, title: "Auto-format on paste", body: "Paste 200+ characters of plain text and the AI cleans up structure (headings, lists, paragraphs) automatically. A progress toast shows when it's running." },
-  { Icon: Search, title: "Quick chips", body: "Above the AI input you'll find 3 contextual chips per mode - Improve, Continue, Format (Edit) and Explain, Summarize, Missing (Explain)." },
-];
-
-const shortcutTips: Tip[] = [
-  { glyph: "⌘K", title: "Global search", body: "Open the search palette from anywhere - jump to any note across all notebooks, filter by tag, and preview matches." },
-  { glyph: "⌘F", title: "Find & replace", body: "Inside a note, search and replace text. Toggle regex from the popover for power matches." },
+  { glyph: "Ω", title: "Insert symbol", body: "Opens a picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor - no shortcuts to memorise." },
+  { Icon: Search, title: "Find & Replace", body: "Press ⌘F (or Ctrl+F) inside a note to search & replace. Supports regex via the toggle." },
   { Icon: Maximize2, title: "Focus Mode", body: "Top bar button - hides the sidebar and chrome so only your note remains. Click again to exit." },
-  { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating widget. Toggle from the top bar." },
-  { glyph: "Alt+T", title: "Re-open last toast", body: "Brings back the most recent notification if you missed it." },
-];
-
-const sections: { id: string; label: string; tips: Tip[] }[] = [
-  { id: "toolbar", label: "Toolbar", tips: toolbarTips },
-  { id: "sidebar", label: "Sidebar", tips: sidebarTips },
-  { id: "ai", label: "AI panel", tips: aiTips },
-  { id: "shortcuts", label: "Shortcuts & extras", tips: shortcutTips },
+  { Icon: Timer, title: "Pomodoro Timer", body: "25-minute work + 5-minute break sessions in a floating corner widget. Toggle from the top bar." },
 ];
 
 const DISMISS_KEY = "onboarding-hint-dismissed";
 const DISMISS_DATE_KEY = "onboarding-hint-dismissed-date";
-const IDLE_STEPS_MS = [10000];
+// Idle threshold - hint appears after 5s of no intentional interaction.
+const IDLE_STEPS_MS = [5000];
 const SHOW_MS = 3000;
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
 export function OnboardingHelp() {
+  const isMobile = useIsMobile();
+  const { notebooks, standaloneNotes } = useNotebooks();
+  // Beginner = no notebooks AND no standalone notes yet. Hint only targets beginners.
+  const isBeginner = (notebooks?.length ?? 0) === 0 && (standaloneNotes?.length ?? 0) === 0;
   const [open, setOpen] = useState(false);
-  const [section, setSection] = useState(sections[0].id);
   const [hintOpen, setHintOpen] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
@@ -67,10 +47,21 @@ export function OnboardingHelp() {
   const openRef = useRef(false);
   const hintOpenRef = useRef(false);
   const shownAtRef = useRef(0);
+  // Min time the hint must remain visible before any activity can dismiss it.
   const MIN_VISIBLE_MS = 3000;
 
-  const clearIdle = () => { if (idleTimerRef.current) { window.clearTimeout(idleTimerRef.current); idleTimerRef.current = null; } };
-  const clearHide = () => { if (hideTimerRef.current) { window.clearTimeout(hideTimerRef.current); hideTimerRef.current = null; } };
+  const clearIdle = () => {
+    if (idleTimerRef.current) {
+      window.clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
+  };
+  const clearHide = () => {
+    if (hideTimerRef.current) {
+      window.clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+  };
 
   const currentDelay = () => IDLE_STEPS_MS[Math.min(showCountRef.current, IDLE_STEPS_MS.length - 1)];
 
@@ -89,16 +80,18 @@ export function OnboardingHelp() {
         setHintOpen(false);
         hintOpenRef.current = false;
         hideTimerRef.current = null;
+        // Don't auto-restart - only re-arm when the user becomes idle again.
       }, SHOW_MS);
     }, currentDelay());
   };
 
+  // Init from storage + beginner gating. Re-evaluates if the user creates content.
   useEffect(() => {
     try {
       const permanent = localStorage.getItem(DISMISS_KEY) === "1";
       const dayDismissed = localStorage.getItem(DISMISS_DATE_KEY) === todayStr();
       if (permanent) setDontShowAgain(true);
-      if (permanent || dayDismissed) {
+      if (permanent || dayDismissed || !isBeginner) {
         dismissedRef.current = true;
         setHintOpen(false);
         hintOpenRef.current = false;
@@ -106,15 +99,19 @@ export function OnboardingHelp() {
         clearHide();
       }
     } catch {}
-  }, []);
+  }, [isBeginner]);
 
   useEffect(() => { openRef.current = open; }, [open]);
 
+  // Activity listener - any interaction immediately hides the hint and
+  // restarts the idle timer (no continuous looping).
   useEffect(() => {
     if (dismissedRef.current) return;
+
     const onActivity = () => {
       if (dismissedRef.current) return;
       if (hintOpenRef.current) {
+        // Keep the hint visible for at least MIN_VISIBLE_MS before activity dismisses it.
         if (Date.now() - shownAtRef.current < MIN_VISIBLE_MS) return;
         setHintOpen(false);
         hintOpenRef.current = false;
@@ -122,9 +119,12 @@ export function OnboardingHelp() {
       }
       armIdle();
     };
+
+    // Only intentional inputs dismiss/reset - exclude mousemove & scroll (too noisy).
     const events = ["keydown", "click", "touchstart", "pointerdown"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     armIdle();
+
     return () => {
       events.forEach((e) => window.removeEventListener(e, onActivity));
       clearIdle();
@@ -132,6 +132,7 @@ export function OnboardingHelp() {
     };
   }, []);
 
+  // Pause/resume around the dialog
   useEffect(() => {
     if (open) {
       setHintOpen(false);
@@ -162,8 +163,20 @@ export function OnboardingHelp() {
     armIdle();
   };
 
+  // Clicking the hint dismisses it for the rest of the day.
+  const dismissForToday = () => {
+    dismissedRef.current = true;
+    try { localStorage.setItem(DISMISS_DATE_KEY, todayStr()); } catch {}
+    setHintOpen(false);
+    hintOpenRef.current = false;
+    clearHide();
+    clearIdle();
+  };
+
   const handleHelpClick = () => {
-    try { setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1"); } catch {}
+    try {
+      setDontShowAgain(localStorage.getItem(DISMISS_KEY) === "1");
+    } catch {}
     setOpen(true);
   };
 
@@ -173,10 +186,9 @@ export function OnboardingHelp() {
     else undismiss();
   };
 
-  const activeTips = sections.find((s) => s.id === section)?.tips ?? [];
-
   return (
     <>
+      {/* Desktop / tablet: inline header button with adjacent hint */}
       <div className="relative hidden md:flex items-center">
         <AnimatePresence>
           {hintOpen && (
@@ -214,8 +226,13 @@ export function OnboardingHelp() {
         </Button>
       </div>
 
+      {/* Mobile: floating action button, bottom-right, safe from header chrome,
+          with a tap-friendly target and an idle hint pill that pops above it. */}
       <div className="md:hidden">
-        <div className="fixed z-40 right-4" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}>
+        <div
+          className="fixed z-40 right-4"
+          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}
+        >
           <AnimatePresence>
             {hintOpen && (
               <motion.button
@@ -246,51 +263,32 @@ export function OnboardingHelp() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-hidden p-0 flex flex-col">
-          <DialogHeader className="px-6 pt-6 pb-3">
-            <DialogTitle className="font-serif text-xl">Help &amp; quick reference</DialogTitle>
+        <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-xl">Toolbar cheatsheet</DialogTitle>
             <DialogDescription>
-              Everything that isn't obvious - grouped by where you'll find it.
+              The buttons that aren't obvious - what each one actually does.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="px-6 pb-2 flex items-center gap-1 border-b border-border overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {sections.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setSection(s.id)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-t-md whitespace-nowrap transition-colors ${
-                  section === s.id
-                    ? "text-foreground border-b-2 border-primary -mb-px"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {s.label}
-              </button>
+          <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
+            <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
+            <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
+              Don't show the "Confused? Click here" hint again
+            </label>
+          </div>
+          <ul className="mt-4 space-y-2">
+            {toolbarTips.map(({ Icon, glyph, title, body }) => (
+              <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
+                <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                  {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-foreground">{title}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{body}</p>
+                </div>
+              </li>
             ))}
-          </div>
-
-          <div className="flex-1 overflow-y-auto px-6 py-4">
-            <div className="mb-3 flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
-              <Checkbox id="dont-show-hint" checked={dontShowAgain} onCheckedChange={(c) => handleDontShowToggle(!!c)} />
-              <label htmlFor="dont-show-hint" className="text-xs text-muted-foreground cursor-pointer select-none">
-                Don't show the "Confused? Click here" hint again
-              </label>
-            </div>
-            <ul className="space-y-2">
-              {activeTips.map(({ Icon, glyph, title, body }) => (
-                <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
-                  <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                    {Icon ? <Icon className="h-4 w-4" /> : <span className="text-[13px] font-semibold leading-none">{glyph}</span>}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-foreground">{title}</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{body}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          </ul>
         </DialogContent>
       </Dialog>
     </>
