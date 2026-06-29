@@ -74,7 +74,7 @@ export function OnboardingHelp() {
   const idleTimerRef = useRef<number | null>(null);
   const hideTimerRef = useRef<number | null>(null);
   const dismissedRef = useRef(false);
-  const sessionShownRef = useRef(false);
+  const sessionCountRef = useRef(0);
   const openRef = useRef(false);
 
   const clearIdle = () => { if (idleTimerRef.current) { window.clearTimeout(idleTimerRef.current); idleTimerRef.current = null; } };
@@ -82,33 +82,37 @@ export function OnboardingHelp() {
 
   const armIdle = () => {
     clearIdle();
-    if (dismissedRef.current || sessionShownRef.current || openRef.current) return;
+    if (dismissedRef.current || openRef.current) return;
+    const step = sessionCountRef.current;
+    if (step >= IDLE_STEPS.length) return;
+    const delay = IDLE_STEPS[step];
     idleTimerRef.current = window.setTimeout(() => {
       idleTimerRef.current = null;
-      if (dismissedRef.current || sessionShownRef.current || openRef.current) return;
+      if (dismissedRef.current || openRef.current) return;
       setHintOpen(true);
-      sessionShownRef.current = true;
-      try { sessionStorage.setItem(SESSION_SHOWN_KEY, "1"); } catch {}
+      sessionCountRef.current = step + 1;
+      try { sessionStorage.setItem(SESSION_COUNT_KEY, String(sessionCountRef.current)); } catch {}
       clearHide();
       hideTimerRef.current = window.setTimeout(() => {
         setHintOpen(false);
         hideTimerRef.current = null;
       }, SHOW_MS);
-    }, IDLE_MS);
+    }, delay);
   };
 
   useEffect(() => {
     try {
       if (localStorage.getItem(DISMISS_KEY) === "1") { dismissedRef.current = true; setDontShowAgain(true); }
-      if (sessionStorage.getItem(SESSION_SHOWN_KEY) === "1") { sessionShownRef.current = true; }
+      const c = parseInt(sessionStorage.getItem(SESSION_COUNT_KEY) ?? "0", 10);
+      if (!Number.isNaN(c)) sessionCountRef.current = c;
     } catch {}
   }, []);
 
   useEffect(() => { openRef.current = open; }, [open]);
 
   useEffect(() => {
-    if (dismissedRef.current || sessionShownRef.current) return;
-    const onActivity = () => { if (!sessionShownRef.current && !dismissedRef.current) armIdle(); };
+    if (dismissedRef.current) return;
+    const onActivity = () => { if (!dismissedRef.current) armIdle(); };
     const events = ["keydown", "click", "touchstart", "pointerdown", "mousemove"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     armIdle();
@@ -120,7 +124,6 @@ export function OnboardingHelp() {
 
   const dismissForever = () => {
     dismissedRef.current = true;
-    sessionShownRef.current = true;
     try { localStorage.setItem(DISMISS_KEY, "1"); } catch {}
     setHintOpen(false);
     clearIdle(); clearHide();
