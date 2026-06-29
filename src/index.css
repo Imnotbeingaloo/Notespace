@@ -231,17 +231,6 @@
     background-color: hsl(var(--muted-foreground) / 0.6);
   }
 
-  /* Ask AI: completely hide scrollbar (cross-browser) */
-  .ask-ai-scroll {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .ask-ai-scroll::-webkit-scrollbar {
-    width: 0 !important;
-    height: 0 !important;
-    display: none;
-  }
-
   /* Global minimalist scrollbar - only shows on hover/scroll */
   html, body {
     scrollbar-width: thin;
