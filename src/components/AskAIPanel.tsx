@@ -218,7 +218,31 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
       if (!reader) throw new Error("No stream");
       const decoder = new TextDecoder();
       let buffer = "";
-      let text = "";
+      let target = "";
+      let displayed = "";
+      let rafId: number | null = null;
+      let lastTick = 0;
+
+      const flush = (ts: number) => {
+        rafId = null;
+        if (displayed.length >= target.length) return;
+        const dt = lastTick ? ts - lastTick : 16;
+        lastTick = ts;
+        // Reveal proportional to elapsed time + remaining backlog, so the
+        // text streams in smoothly instead of jumping per network chunk.
+        const remaining = target.length - displayed.length;
+        const baseRate = Math.max(2, Math.ceil(remaining / 12));
+        const timeRate = Math.ceil((dt / 16) * baseRate);
+        const step = Math.min(remaining, Math.max(1, timeRate));
+        displayed = target.slice(0, displayed.length + step);
+        setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: displayed } : msg)));
+        if (displayed.length < target.length) {
+          rafId = requestAnimationFrame(flush);
+        }
+      };
+      const schedule = () => {
+        if (rafId == null) rafId = requestAnimationFrame(flush);
+      };
 
       while (true) {
         const { done, value } = await reader.read();
@@ -236,12 +260,22 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
             const parsed = JSON.parse(json);
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
-              text += content;
-              setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: text } : msg)));
+              target += content;
+              schedule();
             }
           } catch {}
         }
       }
+
+      // Drain any remaining buffered characters once the stream ends.
+      while (displayed.length < target.length) {
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+        const remaining = target.length - displayed.length;
+        const step = Math.min(remaining, Math.max(3, Math.ceil(remaining / 8)));
+        displayed = target.slice(0, displayed.length + step);
+        setMessages((m) => m.map((msg) => (msg.id === assistantId ? { ...msg, content: displayed } : msg)));
+      }
+      if (rafId != null) cancelAnimationFrame(rafId);
     } catch (e: any) {
       setMessages((m) =>
         m.map((msg) =>
