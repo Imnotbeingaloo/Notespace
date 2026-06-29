@@ -297,39 +297,41 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
 
         {/* Input */}
         <div className="border-t border-border p-3 bg-muted/20">
-          {/* Quick action chips - sit right above the ask bar, like a model's tool row */}
-          <div className="flex flex-wrap items-center gap-1.5 mb-2 px-0.5">
-            <button
-              onClick={() => {
-                if (isNoteEmpty) { setShowEmptyNotice(true); return; }
-                callAI("edit", "Improve this note: fix grammar, clarity, and flow");
-              }}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
-            >
-              <Wand2 className="h-3 w-3" /> Edit this note
-            </button>
-            <button
-              onClick={() => {
-                if (isNoteEmpty) { setShowEmptyNotice(true); return; }
-                callAI("explain");
-              }}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
-            >
-              <Sparkles className="h-3 w-3" /> Explain this note
-            </button>
-            <button
-              onClick={() => {
-                if (isNoteEmpty) { setShowEmptyNotice(true); return; }
-                callAI("format");
-              }}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-muted text-foreground hover:bg-muted/70 disabled:opacity-50 transition-colors"
-              title="Reformat this note into clean markdown without changing the wording"
-            >
-              <AlignLeft className="h-3 w-3" /> Format
-            </button>
+          {/* Quick action chips - horizontal scroller, grouped by mode like Notion/Lex */}
+          <div className="-mx-1 mb-2 overflow-x-auto scrollbar-thin">
+            <div className="flex items-center gap-1.5 px-1 w-max">
+              {(mode === "edit"
+                ? [
+                    { key: "improve", icon: Wand2, label: "Improve writing", instr: "Improve this note: fix grammar, clarity, and flow. Preserve meaning." },
+                    { key: "shorter", icon: Minimize2, label: "Make shorter", instr: "Make this note significantly shorter while preserving every key idea." },
+                    { key: "longer", icon: Maximize2, label: "Make longer", instr: "Expand this note with more depth, examples, and supporting detail. Keep the same voice." },
+                    { key: "continue", icon: PenLine, label: "Continue writing", instr: "Continue writing this note in the same voice and structure. Add the next 2-3 paragraphs." },
+                    { key: "simplify", icon: Lightbulb, label: "Simplify", instr: "Rewrite this note in simple, plain English suitable for a 12-year-old. Keep the meaning intact." },
+                    { key: "format", icon: AlignLeft, label: "Format", action: "format" as const },
+                  ]
+                : [
+                    { key: "explain", icon: BookOpen, label: "Explain this note", instr: undefined },
+                    { key: "summary", icon: List, label: "Summarize", instr: "Summarize this note in 5 short bullets, in the note's own words." },
+                    { key: "keypoints", icon: List, label: "Key points", instr: "Pull out the 5-7 most important points from this note as a clean bulleted list." },
+                    { key: "actions", icon: ListChecks, label: "Action items", instr: "List every actionable task, decision, or follow-up implied by this note as a checklist." },
+                    { key: "translate", icon: Languages, label: "Translate", instr: "Translate this note into clear, natural English. If it is already in English, translate to Spanish instead." },
+                    { key: "missing", icon: Lightbulb, label: "What am I missing?", instr: "Read this note critically. List concrete gaps, weak arguments, missing context, and questions worth answering." },
+                  ]
+              ).map(({ key, icon: Icon, label, instr, action }: any) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    if (isNoteEmpty) { setShowEmptyNotice(true); return; }
+                    if (action === "format") { callAI("format"); return; }
+                    callAI(mode === "edit" ? "edit" : "explain", instr);
+                  }}
+                  disabled={loading}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg border border-border bg-background text-foreground hover:bg-muted hover:border-primary/30 disabled:opacity-50 transition-colors whitespace-nowrap"
+                >
+                  <Icon className="h-3 w-3 text-primary" /> {label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex gap-2 items-end">
             <textarea
