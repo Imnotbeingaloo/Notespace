@@ -530,7 +530,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDraggedNotebookId(null);
                       }
                     }}
-                    className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                    className={`group magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNotebookId === nb.id
                         ? "bg-primary/10 border-primary/70 text-foreground font-medium"
                         : "border-transparent text-sidebar-foreground hover:bg-primary/5 hover:border-primary/40"
