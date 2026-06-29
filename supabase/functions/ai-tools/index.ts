@@ -66,17 +66,25 @@ serve(async (req) => {
       );
     }
 
-    const { action, noteTitle, noteContent, editInstruction } = parsed.data;
+    const { action, noteTitle, noteContent, editInstruction, count } = parsed.data;
     const isStream = action !== "auto-tag";
 
     const userContent = action === "edit"
       ? `<note-title>${noteTitle || "Untitled"}</note-title>\n<note-content>${noteContent || "(empty note)"}</note-content>\n<edit-instruction>${editInstruction}</edit-instruction>`
       : `<note-title>${noteTitle || "Untitled"}</note-title>\n<note-content>${noteContent || "(empty note)"}</note-content>`;
 
+    let systemPrompt = systemPrompts[action];
+    if (action === "flashcards" && count) {
+      systemPrompt = systemPrompt.replace(
+        /Choose between 6 and 12 cards based on the note's conceptual density\./,
+        `Generate EXACTLY ${count} cards. The user explicitly requested ${count}.`
+      );
+    }
+
     const response = await callWithFailover({
       max_tokens: 4000,
       messages: [
-        { role: "system", content: systemPrompts[action] },
+        { role: "system", content: systemPrompt },
         { role: "user", content: userContent },
       ],
       stream: isStream,
