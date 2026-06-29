@@ -285,7 +285,7 @@ export default function BlogOtterAlternative() {
               workplace calls, not a 90-minute lecture you'll revisit three months later.
             </p>
 
-            <BlogCallout title="The real Otter problem" tone="info">
+            <BlogCallout title="The real Otter problem" tone="accent">
               Otter's free tier looks generous until you do the math: a typical
               undergraduate week is 8-12 hours of lectures. The 300-minute monthly cap
               runs out in the second week of classes - every semester, on schedule.
