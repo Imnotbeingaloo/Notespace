@@ -12,6 +12,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 
 const REF = "blog-how-to-make-a-revision-timetable";
@@ -138,12 +139,31 @@ export default function BlogHowToMakeRevisionTimetable() {
               <h2 className="font-serif text-2xl font-bold mb-3">
                 The five steps, in order
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                A revision timetable is only worth building if it survives until
+                exams. The five steps below are ordered for that goal -
+                visibility first, recurring slots second, review last. Skip a
+                step and the whole thing tends to collapse around week three.
+              </p>
+
+              <Callout tone="key" title="The single rule that matters most">
+                Build the timetable for the worst week of term, not the best
+                one. If it survives a week with a cold and two missed
+                lessons, it will survive everything else.
+              </Callout>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">1. List every subject and exam date</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Open one page. Write every subject, every paper, and every exam
                 date. Don't sort yet - just get the full picture in one place
                 before you start blocking out time.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Add the exam board, paper number, and length next to each line.
+                This sounds pedantic, but the moment you can see "Biology Paper
+                2 - 1h45 - 7 May" written down, the topic priorities for that
+                paper become obvious. Most revision waste comes from revising
+                content that isn't even on the paper you're sitting.
               </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">2. Count the weeks you actually have</h3>
@@ -153,6 +173,13 @@ export default function BlogHowToMakeRevisionTimetable() {
                 week. What's left is your real revision budget - usually 6-10
                 weeks, not the 12 you imagined.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Then divide the remaining weeks across your subjects in rough
+                proportion to how much content is still shaky. A subject you're
+                already an A in needs maintenance, not equal billing. Honest
+                weighting in week one is how you avoid spending April on the
+                subject you happen to like most.
+              </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">3. Block subjects into fixed slots</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -161,6 +188,20 @@ export default function BlogHowToMakeRevisionTimetable() {
                 vague intentions don't. Aim for 45-60 minute blocks with a real
                 10-minute break between each.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Rotate subjects across the week instead of stacking single-subject
+                days. Spaced practice across three short Biology sessions beats
+                one three-hour Biology marathon - the research on this is
+                unusually one-sided. The marathon feels productive; the spaced
+                sessions actually move marks.
+              </p>
+
+              <Callout tone="tip" title="The 50/10 rule">
+                Fifty minutes of phone-down work, then a real ten-minute break -
+                stand up, drink water, look at something more than two metres
+                away. Repeat. Most students try to do ninety-minute blocks and
+                lose the last forty minutes to drift.
+              </Callout>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">4. Reserve a past-papers slot</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -169,12 +210,25 @@ export default function BlogHowToMakeRevisionTimetable() {
                 into content revision. Mark each one as done in your timetable
                 so the streak is visible.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Treat each past paper as a three-step session: do it under timed
+                conditions, mark it with the official scheme, then spend ten
+                minutes turning every dropped mark into a flashcard. The third
+                step is where the marks actually come from - the paper itself
+                is just the diagnostic.
+              </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">5. Hold a Sunday review</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Thirty minutes every Sunday: what got done, what slipped, what
                 changes next week. This single habit is what separates a
                 timetable that lasts until exams from one that lasts two weeks.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Keep the review to three short answers in a note - resist the
+                urge to redesign the timetable from scratch. Small course
+                corrections compound; weekly redesigns are usually the first
+                sign that the plan is about to be abandoned entirely.
               </p>
             </div>
 
@@ -183,8 +237,11 @@ export default function BlogHowToMakeRevisionTimetable() {
                 Free weekly revision timetable template
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Copy this into any document - or open it as a ready-made note in
-                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link>.
+                The template below is the simplest version that still does the
+                job - subjects, slots, and a Sunday review. Copy it into any
+                document, or open it as a ready-made note in
+                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
+                edit the slots to match your real week.
               </p>
               <pre className="bg-muted rounded-lg p-5 text-sm leading-relaxed overflow-x-auto whitespace-pre">{`# Revision Timetable - Week of [date]
 
@@ -212,15 +269,32 @@ Sun  10:00-10:30  Weekly review
               <h2 className="font-serif text-2xl font-bold mb-3">
                 Honest limits
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
+                A revision timetable is a scaffolding tool. It removes friction
+                and forgetfulness; it doesn't manufacture focus, motivation, or
+                understanding. Go in with realistic expectations and the rest of
+                the system stays useful even on bad weeks.
+              </p>
               <ul className="space-y-2 text-muted-foreground leading-relaxed">
                 <li>• A timetable won't fix motivation. It just removes the daily decision of "what should I revise?"</li>
                 <li>• The first week always feels too easy. Hold the plan for three weeks before scaling up.</li>
                 <li>• If you miss a session, don't "catch up" - move to the next scheduled slot. Catch-up debt is what kills revision timetables.</li>
+                <li>• Active recall and past papers move marks. Re-reading notes mostly moves the time.</li>
               </ul>
+              <Callout tone="warn" title="The trap to avoid">
+                A beautiful colour-coded timetable that took three hours to make
+                is not revision. The hours spent designing it almost always come
+                out of the first week's actual study time.
+              </Callout>
             </div>
 
             <div>
               <h2 className="font-serif text-2xl font-bold mt-12 mb-6">Frequently asked</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                The five questions students send in most often when they're
+                building their first proper revision timetable. If yours isn't
+                here, the five steps above are the long answer to most of them.
+              </p>
               <Accordion type="single" collapsible className="w-full">
                 {faq.map((f, i) => (
                   <AccordionItem key={f.q} value={`item-${i}`}>

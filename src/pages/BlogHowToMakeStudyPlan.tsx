@@ -12,6 +12,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
+import { Callout } from "@/components/blog/Callout";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 
 const REF = "blog-how-to-make-a-study-plan";
@@ -138,12 +139,32 @@ export default function BlogHowToMakeStudyPlan() {
               <h2 className="font-serif text-2xl font-bold mb-3">
                 The five steps, in order
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                A study plan is only useful if you can still see it on a Tuesday
+                in week six. The order below is what survives that test - visibility
+                first, real budget second, recurring slots third. Skip a step
+                and the plan tends to quietly fall apart somewhere between
+                weeks two and four.
+              </p>
+
+              <Callout tone="key" title="The whole plan in one sentence">
+                Recurring slots at the same time each week, sized for your real
+                budget, with one short review to keep them honest. Everything
+                else is decoration.
+              </Callout>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">1. List every subject and deadline</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Open a single page. Write every course you're taking, every exam date,
                 and every assignment due in the next four weeks. Don't sort yet -
                 just get the full picture in one place.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Once it's all visible, mark each item with how much work it
+                actually still needs - new content, light revision, or just
+                final polish. The first list almost always reveals one subject
+                you've been quietly avoiding and one you've been over-investing
+                in. That alone is worth doing the exercise.
               </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">2. Count your real available hours</h3>
@@ -153,6 +174,13 @@ export default function BlogHowToMakeStudyPlan() {
                 actual budget for your study plan. Most plans fail because they
                 pretend the budget is double that.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Then take ten to twenty per cent off the top as slack for life -
+                a missed train, a flat-mate's birthday, a bad night's sleep.
+                A plan with built-in slack survives a bad week; a plan that's
+                already 100% allocated turns one missed session into a domino
+                effect that ends in starting over.
+              </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">3. Block subjects into fixed time slots</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -161,6 +189,20 @@ export default function BlogHowToMakeStudyPlan() {
                 study plan with times on it. Recurring slots build the habit;
                 vague intentions don't.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Rotate subjects across the week rather than stacking single-subject
+                days. Three forty-five minute Chemistry sessions on different
+                days beat one two-hour marathon - the spacing is what moves
+                information into long-term memory, and the variety keeps the
+                week from feeling like the same Tuesday on repeat.
+              </p>
+
+              <Callout tone="tip" title="The 50/10 rule">
+                Fifty minutes of phone-down work, then a real ten-minute break -
+                stand up, drink water, look at something more than two metres
+                away. Repeat. Most students try ninety-minute blocks and lose
+                the last forty minutes to drift.
+              </Callout>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">4. Add a weekly review</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -169,12 +211,26 @@ export default function BlogHowToMakeStudyPlan() {
                 This single habit is what separates a study plan that lasts a
                 semester from one that lasts two weeks.
               </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Keep the review to three short answers in a note - resist the
+                urge to redesign the plan from scratch. Small course corrections
+                compound; weekly redesigns are usually the first sign that the
+                plan is about to be abandoned. The review is for tuning, not
+                for rebuilding.
+              </p>
 
               <h3 className="font-serif text-lg font-bold mt-6 mb-2">5. Track completion, not perfection</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Tick sessions off as you finish them. Don't redesign the plan
                 every week - small tweaks at the review slot only. Visible streaks
                 are the single biggest reason students keep showing up.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                A session counts as done if you showed up and worked for the
+                full block - even if you didn't finish the topic. Tying the tick
+                to attendance rather than output is what keeps the streak alive
+                on the inevitable days when the material is harder than
+                expected and progress is slower than you'd like.
               </p>
             </div>
 
@@ -183,8 +239,11 @@ export default function BlogHowToMakeStudyPlan() {
                 Free weekly study plan template
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Copy this into any document - or open it as a ready-made note in
-                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link>.
+                The template below is the simplest version that still works -
+                subjects, recurring slots, a weekly review. Copy it into any
+                document, or open it as a ready-made note in
+                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
+                edit the slots until they match your real week.
               </p>
               <pre className="bg-muted rounded-lg p-5 text-sm leading-relaxed overflow-x-auto whitespace-pre">{`# Weekly Study Plan - Week of [date]
 
@@ -212,15 +271,32 @@ Sun  10:00-10:30  Weekly review
               <h2 className="font-serif text-2xl font-bold mb-3">
                 The honest limits
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
+                A study plan is a scaffolding tool. It removes friction and
+                forgetfulness; it doesn't create focus, motivation, or
+                understanding on its own. Holding the limits below in mind keeps
+                the plan useful even on the weeks when it doesn't go perfectly.
+              </p>
               <ul className="space-y-2 text-muted-foreground leading-relaxed">
                 <li>• A plan won't fix motivation. It just removes the daily decision of "what should I work on?"</li>
                 <li>• The first week always feels too easy. Resist the urge to double it - hold the plan for three weeks before scaling up.</li>
                 <li>• If you miss a session, do not "catch up" - just move to the next scheduled slot. Catch-up debt is what kills study plans.</li>
+                <li>• Active recall and practice problems move marks. Re-reading notes mostly moves the time.</li>
               </ul>
+              <Callout tone="warn" title="The trap to avoid">
+                A beautiful colour-coded plan that took three hours to make is
+                not studying. The hours spent designing it almost always come
+                out of the first week's actual work.
+              </Callout>
             </div>
 
             <div>
               <h2 className="font-serif text-2xl font-bold mt-12 mb-6">Frequently asked</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                The five questions students send in most often when they're
+                building their first proper study plan. If yours isn't here,
+                the five steps above are the long answer to most of them.
+              </p>
               <Accordion type="single" collapsible className="w-full">
                 {faq.map((f, i) => (
                   <AccordionItem key={f.q} value={`item-${i}`}>
