@@ -561,6 +561,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                           expandedNotebook === nb.id ? "rotate-90" : ""
                         }`}
                       />
+                    </button>
                     <Popover open={editingNotebook === nb.id} onOpenChange={(open) => {
                       if (!open) setEditingNotebook(null);
                     }}>
