@@ -37,6 +37,8 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   const [input, setInput] = useState("");
   const [mode, setMode] = useState<"chat" | "edit">(defaultMode);
   const [loading, setLoading] = useState(false);
+  const [showEmptyNotice, setShowEmptyNotice] = useState(false);
+  const isNoteEmpty = !((activeNote?.content ?? "").replace(/[\s\u200B\u2063]|&#8203;/g, "").length);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Per-note + per-mode message history. Each (noteId, mode) pair keeps
