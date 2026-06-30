@@ -235,6 +235,14 @@ const posts = [
     tag: "Developer Guide",
   },
   {
+    slug: "what-is-notebook-lm-used-for",
+    title: "What Is NotebookLM Used For? Six Real Use Cases",
+    excerpt:
+      "A plain-English explainer of what NotebookLM is, what it's actually good at, and what it can't do. Six honest use cases with an FAQ that doesn't dodge the limits.",
+    date: "Jun 2026",
+    tag: "Explainer",
+  },
+  {
     slug: "otter-ai-alternative-for-students",
     title: "The Honest Otter.ai Alternative Guide for Students",
     excerpt:
