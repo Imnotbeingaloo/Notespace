@@ -42,12 +42,19 @@ export function AppDetailCard(p: AppDetailCardProps) {
         <h3 className="font-serif text-2xl font-bold text-foreground">
           {p.index}. {p.name}
         </h3>
-        <span className="text-sm text-muted-foreground whitespace-nowrap">{p.pricing}</span>
+        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-amber-100 text-amber-900 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:ring-amber-500/30 whitespace-nowrap">
+          {p.pricing}
+        </span>
       </div>
       <p className="italic text-foreground/80 mb-4">{p.tagline}</p>
 
       {slug ? (
-        <a href={resolvedHref} target="_blank" rel={linkRel} className="block mb-5">
+        <a
+          href={resolvedHref}
+          target="_blank"
+          rel={linkRel}
+          className="block mb-5 group overflow-hidden rounded-md border border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5"
+        >
           <picture>
             <source
               type="image/avif"
@@ -60,24 +67,31 @@ export function AppDetailCard(p: AppDetailCardProps) {
               sizes="(max-width: 768px) 100vw, 760px"
             />
             <img
-              src={`/blog-img/${slug}-1600.webp`}
+              src={`/blog-img/${slug}-800.webp`}
               alt={p.imageAlt}
               width={1600}
               height={1000}
               loading={eager ? "eager" : "lazy"}
               decoding="async"
-              className="w-full h-auto rounded-md border border-border"
+              {...(eager ? { fetchPriority: "high" as const } : {})}
+              className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             />
           </picture>
         </a>
       ) : (
-        <a href={resolvedHref} target="_blank" rel={linkRel} className="block mb-5">
+        <a
+          href={resolvedHref}
+          target="_blank"
+          rel={linkRel}
+          className="block mb-5 group overflow-hidden rounded-md border border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5"
+        >
           <img
             src={p.imageUrl}
             alt={p.imageAlt}
             loading={eager ? "eager" : "lazy"}
             decoding="async"
-            className="w-full h-auto rounded-md border border-border"
+            {...(eager ? { fetchPriority: "high" as const } : {})}
+            className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />
         </a>
       )}
