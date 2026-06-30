@@ -27,11 +27,11 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=on
 
 const picks = [
   {
-    name: "Notebook Archive",
+    name: "Notespace",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive - a quiet markdown notebook with an AI explain panel",
-    siteUrl: "https://notebookarchive.lovable.app",
+    imageAlt: "Notespace - a quiet markdown notebook with an AI explain panel",
+    siteUrl: "https://notespace.lovable.app",
     tagline: "OneNote's notebook model - with structure instead of an infinite mess.",
     description:
       "A serif markdown editor with notebooks, nesting, global tags, AI explain, and plain-text export. Keeps the notebook-and-section metaphor OneNote pioneered - without the free-canvas chaos or the Microsoft 365 lock-in.",
@@ -161,19 +161,19 @@ const faq = [
   },
   {
     q: "Which OneNote alternative has the best free tier?",
-    a: "Notebook Archive and Notion. Notebook Archive's free tier covers daily writing including sync and AI explain. Notion's free plan is generous for one person. Evernote, Reflect, and Mem don't have meaningful free tiers anymore.",
+    a: "Notespace and Notion. Notespace's free tier covers daily writing including sync and AI explain. Notion's free plan is generous for one person. Evernote, Reflect, and Mem don't have meaningful free tiers anymore.",
   },
   {
     q: "Can I import my OneNote notebooks into one of these?",
-    a: "Yes, but expect some cleanup. Notion has an official OneNote importer. Obsidian and Notebook Archive accept the exported HTML or markdown that OneNote-to-markdown tools produce. Evernote can import OneNote via the official path. Stylus drawings rarely survive the move.",
+    a: "Yes, but expect some cleanup. Notion has an official OneNote importer. Obsidian and Notespace accept the exported HTML or markdown that OneNote-to-markdown tools produce. Evernote can import OneNote via the official path. Stylus drawings rarely survive the move.",
   },
   {
     q: "Which OneNote alternative is best for students?",
-    a: "Notebook Archive for typed notes and AI explain. Notion if you want wikis and tables alongside notes. Obsidian if you want plain markdown that lives on your laptop. None of these match OneNote's stylus support - keep OneNote if handwriting is core to how you study.",
+    a: "Notespace for typed notes and AI explain. Notion if you want wikis and tables alongside notes. Obsidian if you want plain markdown that lives on your laptop. None of these match OneNote's stylus support - keep OneNote if handwriting is core to how you study.",
   },
   {
     q: "Is there a OneNote alternative that keeps notes in plain text?",
-    a: "Notebook Archive and Obsidian. Both export real markdown so your notes outlive whichever app you use. Notion, Mem, Evernote, and Reflect all store notes in proprietary formats - their exports are lossy.",
+    a: "Notespace and Obsidian. Both export real markdown so your notes outlive whichever app you use. Notion, Mem, Evernote, and Reflect all store notes in proprietary formats - their exports are lossy.",
   },
 ];
 
@@ -183,12 +183,12 @@ const jsonLd = [
     "@type": "Article",
     headline: "OneNote Alternatives in 2026 - Honest Comparison",
     description:
-      "Six OneNote alternatives compared honestly: Notebook Archive, Notion, Obsidian, Evernote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
+      "Six OneNote alternatives compared honestly: Notespace, Notion, Obsidian, Evernote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/onenote-alternatives-2026",
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/onenote-alternatives-2026",
   },
   {
     "@context": "https://schema.org",
@@ -216,7 +216,7 @@ export default function BlogOneNoteAlternatives() {
       <SeoHead
         type="article"
         title="OneNote Alternatives in 2026 - 6 Honest Picks Compared"
-        description="Six OneNote alternatives compared with screenshots, pros and cons, and pricing - Notion, Obsidian, Evernote, Reflect, Mem, and Notebook Archive."
+        description="Six OneNote alternatives compared with screenshots, pros and cons, and pricing - Notion, Obsidian, Evernote, Reflect, Mem, and Notespace."
         path="/blog/onenote-alternatives-2026" image="/og/og-onenote-alternatives-2026.jpg"
         jsonLd={jsonLd}
       />
@@ -292,7 +292,7 @@ export default function BlogOneNoteAlternatives() {
               that's the part you loved, weight stylus support heavily.
             </p>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You want OneNote's structure without the freeform mess:</strong> Notebook Archive.</li>
+              <li>• <strong>You want OneNote's structure without the freeform mess:</strong> Notespace.</li>
               <li>• <strong>You need wikis and team docs alongside notes:</strong> Notion.</li>
               <li>• <strong>You want local-first markdown you own:</strong> Obsidian.</li>
               <li>• <strong>You want the original notebook-tags-search model:</strong> Evernote.</li>
@@ -331,13 +331,13 @@ export default function BlogOneNoteAlternatives() {
               Structure without the mess
             </p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive is free to start. Real markdown export. Sync that works. No Microsoft account required.
+              Notespace is free to start. Real markdown export. Sync that works. No Microsoft account required.
             </p>
             <Link
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notebook Archive
+              Open Notespace
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

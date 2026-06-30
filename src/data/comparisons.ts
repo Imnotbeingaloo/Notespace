@@ -1,7 +1,7 @@
 /**
- * Data for "Notebook Archive vs X" comparison pages.
+ * Data for "Notespace vs X" comparison pages.
  * Each entry powers /compare/:slug. Keep tone honest - acknowledge what
- * the competitor does well, then show where Notebook Archive fits better.
+ * the competitor does well, then show where Notespace fits better.
  */
 
 export interface ComparisonRow {
@@ -73,9 +73,9 @@ export const COMPARISONS: ComparisonData[] = [
   {
     slug: "notion",
     competitor: "Notion",
-    metaTitle: "Notebook Archive vs Notion - which one for note-taking? (2026)",
+    metaTitle: "Notespace vs Notion - which one for note-taking? (2026)",
     metaDescription:
-      "Notion is a database. Notebook Archive is a notebook. An honest head-to-head if you only want to write, organize, and recall - not configure pages.",
+      "Notion is a database. Notespace is a notebook. An honest head-to-head if you only want to write, organize, and recall - not configure pages.",
     tagline: "If you only ever used Notion for notes, this is for you.",
     competitorStrength:
       "Notion is the best all-in-one workspace on the market. Databases, wikis, project boards, calendars - if your team needs one tool to do everything, Notion earns its place.",
@@ -103,24 +103,24 @@ export const COMPARISONS: ComparisonData[] = [
     faqs: [
       {
         q: "Can I import my Notion pages?",
-        a: "Yes - export Notion as Markdown & CSV, then drag the .md files into Notebook Archive. Tables, headings, and bullets come over cleanly. Embedded databases become a list of pages.",
+        a: "Yes - export Notion as Markdown & CSV, then drag the .md files into Notespace. Tables, headings, and bullets come over cleanly. Embedded databases become a list of pages.",
       },
       {
-        q: "Does Notebook Archive have databases?",
+        q: "Does Notespace have databases?",
         a: "No, by design. We have notebooks, notes, and smart tags. If you need a relational database, Notion is the right tool. If you need a place to write and find things later, we are.",
       },
       {
         q: "What about collaboration?",
-        a: "Notebook Archive has shareable notes and team plans. Notion is stronger for live multi-cursor editing in shared docs. If real-time collaboration is your main job, Notion wins that round.",
+        a: "Notespace has shareable notes and team plans. Notion is stronger for live multi-cursor editing in shared docs. If real-time collaboration is your main job, Notion wins that round.",
       },
     ],
   },
   {
     slug: "obsidian",
     competitor: "Obsidian",
-    metaTitle: "Notebook Archive vs Obsidian - the honest comparison (2026)",
+    metaTitle: "Notespace vs Obsidian - the honest comparison (2026)",
     metaDescription:
-      "Obsidian gives you ownership and plugins. Notebook Archive gives you something that just works. An honest comparison for note-takers in 2026.",
+      "Obsidian gives you ownership and plugins. Notespace gives you something that just works. An honest comparison for note-takers in 2026.",
     tagline: "Ownership and graph view vs. open-and-write.",
     competitorStrength:
       "Obsidian is brilliant for people who want to own their notes as plain markdown files. The plugin ecosystem is huge, the graph view is iconic, and your vault is yours forever.",
@@ -163,9 +163,9 @@ export const COMPARISONS: ComparisonData[] = [
   {
     slug: "evernote",
     competitor: "Evernote",
-    metaTitle: "Notebook Archive vs Evernote - a modern alternative (2026)",
+    metaTitle: "Notespace vs Evernote - a modern alternative (2026)",
     metaDescription:
-      "Evernote pioneered the digital shoebox - and stayed there. Notebook Archive is what a note app feels like when it's built in 2026.",
+      "Evernote pioneered the digital shoebox - and stayed there. Notespace is what a note app feels like when it's built in 2026.",
     tagline: "The digital shoebox, modernized.",
     competitorStrength:
       "Evernote invented this whole category. Web clipper, OCR on images, decades of stored notes - if it's already your second brain, the gravity is real.",
@@ -208,9 +208,9 @@ export const COMPARISONS: ComparisonData[] = [
   {
     slug: "onenote",
     competitor: "OneNote",
-    metaTitle: "Notebook Archive vs OneNote - a focused alternative (2026)",
+    metaTitle: "Notespace vs OneNote - a focused alternative (2026)",
     metaDescription:
-      "OneNote gives you an infinite canvas. Notebook Archive gives you a focused writing surface that won't get messy in six months.",
+      "OneNote gives you an infinite canvas. Notespace gives you a focused writing surface that won't get messy in six months.",
     tagline: "Infinite canvas vs. focused writing surface.",
     competitorStrength:
       "OneNote is free, generous on storage, deeply integrated with Microsoft 365, and has a freeform canvas you can't get anywhere else. For tablet + stylus workflows, it's elite.",
@@ -238,10 +238,10 @@ export const COMPARISONS: ComparisonData[] = [
     faqs: [
       {
         q: "Can I import from OneNote?",
-        a: "OneNote's export is notoriously sticky. Export individual sections as .docx or .pdf, then import to Notebook Archive. We're investigating a direct importer.",
+        a: "OneNote's export is notoriously sticky. Export individual sections as .docx or .pdf, then import to Notespace. We're investigating a direct importer.",
       },
       {
-        q: "Does Notebook Archive support stylus and handwriting?",
+        q: "Does Notespace support stylus and handwriting?",
         a: "Not yet. If ink is central to your workflow, OneNote wins this round.",
       },
       {
@@ -253,9 +253,9 @@ export const COMPARISONS: ComparisonData[] = [
   {
     slug: "roam",
     competitor: "Roam Research",
-    metaTitle: "Notebook Archive vs Roam Research - bidirectional vs simple",
+    metaTitle: "Notespace vs Roam Research - bidirectional vs simple",
     metaDescription:
-      "Roam invented bidirectional notes. Notebook Archive gives you the writing flow without the learning curve and the monthly bill.",
+      "Roam invented bidirectional notes. Notespace gives you the writing flow without the learning curve and the monthly bill.",
     tagline: "Bidirectional brilliance vs. open-and-write simplicity.",
     competitorStrength:
       "Roam pioneered networked thought - bidirectional links, block references, daily notes. For researchers who think in graphs, it's a category-defining tool.",
@@ -282,7 +282,7 @@ export const COMPARISONS: ComparisonData[] = [
     ],
     faqs: [
       {
-        q: "Does Notebook Archive have bidirectional links?",
+        q: "Does Notespace have bidirectional links?",
         a: "Smart tags surface related notes globally, which covers most of what people want from backlinks. True bidirectional links are on the roadmap.",
       },
       {
@@ -298,9 +298,9 @@ export const COMPARISONS: ComparisonData[] = [
   {
     slug: "bear",
     competitor: "Bear",
-    metaTitle: "Notebook Archive vs Bear - more than just a beautiful editor",
+    metaTitle: "Notespace vs Bear - more than just a beautiful editor",
     metaDescription:
-      "Bear is the prettiest markdown editor on Mac. Notebook Archive matches the writing feel and adds AI, web access, and study tools.",
+      "Bear is the prettiest markdown editor on Mac. Notespace matches the writing feel and adds AI, web access, and study tools.",
     tagline: "Beautiful Mac-only editor vs. cross-platform with AI.",
     competitorStrength:
       "Bear has arguably the best-feeling markdown editor on macOS and iOS. Typography is gorgeous, the writing flow is meditative, and Pro is reasonably priced.",
@@ -336,16 +336,16 @@ export const COMPARISONS: ComparisonData[] = [
       },
       {
         q: "Do I get a web version?",
-        a: "Yes. Notebook Archive runs in any modern browser. Bear doesn't have one.",
+        a: "Yes. Notespace runs in any modern browser. Bear doesn't have one.",
       },
     ],
   },
   {
     slug: "mem",
     competitor: "Mem",
-    metaTitle: "Notebook Archive vs Mem - AI-first notes, compared (2026)",
+    metaTitle: "Notespace vs Mem - AI-first notes, compared (2026)",
     metaDescription:
-      "Mem put AI at the center of notes. Notebook Archive puts writing at the center, with AI where it actually helps - not everywhere.",
+      "Mem put AI at the center of notes. Notespace puts writing at the center, with AI where it actually helps - not everywhere.",
     tagline: "AI everywhere vs. AI where it helps.",
     competitorStrength:
       "Mem was early on the AI-native note app. The chat-with-your-notes flow is genuinely useful, and auto-tagging removes friction from capture.",
@@ -372,7 +372,7 @@ export const COMPARISONS: ComparisonData[] = [
     ],
     faqs: [
       {
-        q: "Can I chat with my notes in Notebook Archive?",
+        q: "Can I chat with my notes in Notespace?",
         a: "Yes - Ask AI works across your selected notebook or note. The difference is it's one tool among many, not the main interface.",
       },
       {
@@ -388,9 +388,9 @@ export const COMPARISONS: ComparisonData[] = [
   {
     slug: "reflect",
     competitor: "Reflect",
-    metaTitle: "Notebook Archive vs Reflect - daily-notes app comparison",
+    metaTitle: "Notespace vs Reflect - daily-notes app comparison",
     metaDescription:
-      "Reflect is beautiful daily notes with AI. Notebook Archive is a full notebook system with AI and a free tier that's actually usable.",
+      "Reflect is beautiful daily notes with AI. Notespace is a full notebook system with AI and a free tier that's actually usable.",
     tagline: "Daily-notes elegance vs. full notebook system.",
     competitorStrength:
       "Reflect is the most polished daily-notes app available. The editor is elegant, AI is built in via your own key, end-to-end encryption is the default, and the daily-note flow is the cleanest in the category.",
@@ -417,7 +417,7 @@ export const COMPARISONS: ComparisonData[] = [
     ],
     faqs: [
       {
-        q: "Does Notebook Archive have a daily-note workflow?",
+        q: "Does Notespace have a daily-note workflow?",
         a: "You can create a daily-notes notebook and pin it. We don't auto-create today's note like Reflect does - that's something we may add.",
       },
       {
@@ -433,9 +433,9 @@ export const COMPARISONS: ComparisonData[] = [
   {
     slug: "apple-notes",
     competitor: "Apple Notes",
-    metaTitle: "Notebook Archive vs Apple Notes - when to upgrade (2026)",
+    metaTitle: "Notespace vs Apple Notes - when to upgrade (2026)",
     metaDescription:
-      "Apple Notes is free and ubiquitous. Notebook Archive is what to use when you outgrow it - real markdown, AI, search, and cross-device flow.",
+      "Apple Notes is free and ubiquitous. Notespace is what to use when you outgrow it - real markdown, AI, search, and cross-device flow.",
     tagline: "The default vs. the next step.",
     competitorStrength:
       "Apple Notes is free, instant, and on every Apple device you own. For grocery lists, quick captures, and shared family notes, it's hard to beat.",
@@ -467,20 +467,20 @@ export const COMPARISONS: ComparisonData[] = [
       },
       {
         q: "Will I lose the iCloud sync convenience?",
-        a: "Notebook Archive syncs across devices automatically too - you just sign in. The difference is it works on every device, not only Apple ones.",
+        a: "Notespace syncs across devices automatically too - you just sign in. The difference is it works on every device, not only Apple ones.",
       },
       {
         q: "Is there an iOS app?",
-        a: "Notebook Archive runs as a fast web app on iOS Safari with offline support. A native iOS app is on the roadmap.",
+        a: "Notespace runs as a fast web app on iOS Safari with offline support. A native iOS app is on the roadmap.",
       },
     ],
   },
   {
     slug: "google-keep",
     competitor: "Google Keep",
-    metaTitle: "Notebook Archive vs Google Keep - beyond sticky notes (2026)",
+    metaTitle: "Notespace vs Google Keep - beyond sticky notes (2026)",
     metaDescription:
-      "Google Keep is great for sticky notes. Notebook Archive is built for when those notes turn into real writing, projects, and research.",
+      "Google Keep is great for sticky notes. Notespace is built for when those notes turn into real writing, projects, and research.",
     tagline: "Sticky notes vs. real notebook.",
     competitorStrength:
       "Google Keep is free, instant, integrated with everything Google, and the colored-card UI makes capture frictionless. For quick lists and reminders, it's the right tool.",

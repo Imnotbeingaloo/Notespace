@@ -29,7 +29,7 @@ const faq = [
   },
   {
     q: "Is there a free study plan template?",
-    a: "Yes - copy the weekly template lower down on this page into any document, or open it as a ready-made note inside Notebook Archive's study planner template.",
+    a: "Yes - copy the weekly template lower down on this page into any document, or open it as a ready-made note inside Notespace's study planner template.",
   },
   {
     q: "How do I stick to a study plan?",
@@ -64,9 +64,9 @@ const jsonLd = [
       "A practical, no-fluff guide to building a study plan that survives the semester - including a copy-pasteable weekly template and a study schedule example.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/how-to-make-a-study-plan",
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/how-to-make-a-study-plan",
   },
   {
     "@context": "https://schema.org",
@@ -242,7 +242,7 @@ export default function BlogHowToMakeStudyPlan() {
                 The template below is the simplest version that still works -
                 subjects, recurring slots, a weekly review. Copy it into any
                 document, or open it as a ready-made note in
-                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
+                Notespace's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
                 edit the slots until they match your real week.
               </p>
               <pre className="bg-muted rounded-lg p-5 text-sm leading-relaxed overflow-x-auto whitespace-pre">{`# Weekly Study Plan - Week of [date]
@@ -310,7 +310,7 @@ Sun  10:00-10:30  Weekly review
 
           <div className="border-t border-border pt-10 mt-10 text-center">
             <p className="font-serif text-2xl font-bold mb-4">
-              Build your study schedule inside Notebook Archive
+              Build your study schedule inside Notespace
             </p>
             <p className="text-muted-foreground mb-6">
               Open the study planner template, edit the slots to match your week,
@@ -321,7 +321,7 @@ Sun  10:00-10:30  Weekly review
                 Open the study planner template
               </Link>
               <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
-                Start using Notebook Archive <ArrowRight className="h-4 w-4" />
+                Start using Notespace <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>

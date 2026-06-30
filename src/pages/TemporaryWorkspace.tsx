@@ -238,7 +238,7 @@ function TemporaryWorkspaceInner() {
             >
               <img src="/logo.png" alt="" className="h-[0.9rem] w-[0.9rem] object-contain" />
               <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors hidden sm:inline">
-                Notebook Archive
+                Notespace
               </span>
             </button>
             <span className="text-muted-foreground/40 mx-1">/</span>
@@ -390,7 +390,7 @@ function TemporaryWorkspaceInner() {
 export default function TemporaryWorkspace() {
   return (
     <NotebookProvider>
-      <NoindexHead title="Temporary Workspace - Notebook Archive" />
+      <NoindexHead title="Temporary Workspace - Notespace" />
       <TemporaryWorkspaceInner />
     </NotebookProvider>
   );

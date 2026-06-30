@@ -20,11 +20,11 @@ const CTA = "/auth?ref=blog-notion-alt&utm_source=blog&utm_medium=organic&utm_ca
 
 const picks = [
   {
-    name: "Notebook Archive",
+    name: "Notespace",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive landing page - a quiet markdown notebook with AI explain panel",
-    siteUrl: "https://notebookarchive.lovable.app",
+    imageAlt: "Notespace landing page - a quiet markdown notebook with AI explain panel",
+    siteUrl: "https://notespace.lovable.app",
     tagline: "For people who liked Notion's notes but never used the databases.",
     description:
       "A serif markdown editor with notebooks, nesting, global tags, AI explain, focus mode, and plain-text export. No blocks, no databases, no formula language - just somewhere quiet to write that's still smart when you need it to be.",
@@ -62,7 +62,7 @@ const picks = [
     ],
     bestFor: "Tinkerers who want total control and don't mind building their own setup.",
     ourTake:
-      "Obsidian is the right answer if you enjoy assembling tools. Notebook Archive gives you the markdown portability without the plugin homework.",
+      "Obsidian is the right answer if you enjoy assembling tools. Notespace gives you the markdown portability without the plugin homework.",
   },
   {
     name: "Evernote",
@@ -131,7 +131,7 @@ const picks = [
     ],
     bestFor: "People who already journal daily and want AI to summarize their own thinking.",
     ourTake:
-      "Reflect is excellent if the daily-note model fits how you think. Notebook Archive gives you the AI and the calm without locking you into one workflow.",
+      "Reflect is excellent if the daily-note model fits how you think. Notespace gives you the AI and the calm without locking you into one workflow.",
   },
   {
     name: "Mem",
@@ -154,7 +154,7 @@ const picks = [
     ],
     bestFor: "Capture-heavy users who want the AI to do the filing.",
     ourTake:
-      "If you want to stop thinking about folders, Mem is the most committed to that vision. If you want some control, Notebook Archive's notebooks + global tags hit a middle ground.",
+      "If you want to stop thinking about folders, Mem is the most committed to that vision. If you want some control, Notespace's notebooks + global tags hit a middle ground.",
   },
 ];
 
@@ -165,19 +165,19 @@ const faq = [
   },
   {
     q: "Which Notion alternative is free?",
-    a: "Obsidian (free for personal use), OneNote (free with a Microsoft account), and Notebook Archive (free tier covers daily writing) are the three with genuinely usable free plans. Evernote's free tier was gutted in 2024.",
+    a: "Obsidian (free for personal use), OneNote (free with a Microsoft account), and Notespace (free tier covers daily writing) are the three with genuinely usable free plans. Evernote's free tier was gutted in 2024.",
   },
   {
     q: "Which Notion alternative is best for writing?",
-    a: "Notebook Archive and Obsidian, in that order. Notebook Archive ships with serif typography, focus mode, and a word-count goal out of the box. Obsidian needs configuration to get there but is just as capable once set up.",
+    a: "Notespace and Obsidian, in that order. Notespace ships with serif typography, focus mode, and a word-count goal out of the box. Obsidian needs configuration to get there but is just as capable once set up.",
   },
   {
     q: "Can I import my Notion pages?",
-    a: "Notion exports to Markdown and HTML. Obsidian and Notebook Archive both handle those formats directly. Evernote and OneNote import via their own converters with mixed fidelity.",
+    a: "Notion exports to Markdown and HTML. Obsidian and Notespace both handle those formats directly. Evernote and OneNote import via their own converters with mixed fidelity.",
   },
   {
     q: "Which alternative has the best AI?",
-    a: "Reflect and Notebook Archive both treat AI as a first-class feature. Reflect leans toward summarizing your own journaling; Notebook Archive leans toward explaining sources you've pasted in. Mem is the most aggressive about letting AI organize for you.",
+    a: "Reflect and Notespace both treat AI as a first-class feature. Reflect leans toward summarizing your own journaling; Notespace leans toward explaining sources you've pasted in. Mem is the most aggressive about letting AI organize for you.",
   },
 ];
 
@@ -187,12 +187,12 @@ const jsonLd = [
     "@type": "Article",
     headline: "Notion Alternatives in 2026 - Honest Comparison",
     description:
-      "Six Notion alternatives compared honestly: Notebook Archive, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
+      "Six Notion alternatives compared honestly: Notespace, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/notion-alternatives-2026",
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/notion-alternatives-2026",
   },
   {
     "@context": "https://schema.org",
@@ -220,7 +220,7 @@ export default function BlogNotionAlternatives() {
       <SeoHead
         type="article"
         title="Notion Alternatives in 2026 - 6 Honest Picks Compared"
-        description="Six Notion alternatives compared with screenshots, pros and cons, and pricing - Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive."
+        description="Six Notion alternatives compared with screenshots, pros and cons, and pricing - Obsidian, Evernote, OneNote, Reflect, Mem, and Notespace."
         path="/blog/notion-alternatives-2026" image="/og/og-notion-alternatives-2026.jpg"
         jsonLd={jsonLd}
       />
@@ -295,7 +295,7 @@ export default function BlogNotionAlternatives() {
               other half is easier to swap later.
             </p>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You only used Notion for docs:</strong> Notebook Archive.</li>
+              <li>• <strong>You only used Notion for docs:</strong> Notespace.</li>
               <li>• <strong>You want files you'll own in twenty years:</strong> Obsidian.</li>
               <li>• <strong>You capture more than you write:</strong> Evernote.</li>
               <li>• <strong>You're already in Microsoft 365:</strong> OneNote.</li>
@@ -329,13 +329,13 @@ export default function BlogNotionAlternatives() {
               The quiet alternative
             </p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive is free to start. No databases. No blocks. Just notes.
+              Notespace is free to start. No databases. No blocks. Just notes.
             </p>
             <Link
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notebook Archive
+              Open Notespace
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

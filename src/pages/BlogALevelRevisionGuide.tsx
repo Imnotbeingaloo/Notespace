@@ -47,10 +47,10 @@ const jsonLd = [
       "A practical A-level revision guide for 2026 - subject-by-subject techniques, hours to do, and a free A-level revision timetable.",
     datePublished: "2026-06-28",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/a-level-revision-guide-2026",
-    image: `https://notebookarchive.lovable.app${heroAsset.url}`,
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/a-level-revision-guide-2026",
+    image: `https://notespace.lovable.app${heroAsset.url}`,
   },
   {
     "@context": "https://schema.org",
@@ -247,7 +247,7 @@ export default function BlogALevelRevisionGuide() {
           <div className="border-t border-border pt-10 mt-10 text-center">
             <p className="font-serif text-2xl font-bold mb-4">Build the timetable first</p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive ships A-level starter timetables free. Five minutes
+              Notespace ships A-level starter timetables free. Five minutes
               to set up, and the schedule does the remembering for you.
             </p>
             <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">

@@ -11,7 +11,7 @@ import { test, expect, Page } from "@playwright/test";
  * to /auth and the suite is skipped.
  */
 
-const SPLASH_SELECTOR = 'img[alt="Notebook Archive"]';
+const SPLASH_SELECTOR = 'img[alt="Notespace"]';
 
 async function splashVisibleWithin(page: Page, ms: number): Promise<boolean> {
   try {

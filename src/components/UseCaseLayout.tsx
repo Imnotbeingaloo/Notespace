@@ -261,13 +261,13 @@ export function UseCaseLayout({
                 <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Side by side</span>
               </div>
               <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-                Notebook Archive vs. {comparison.headingOther}
+                Notespace vs. {comparison.headingOther}
               </h2>
             </div>
             <div className="overflow-hidden rounded-2xl border border-border bg-card">
               <div className="grid grid-cols-3 bg-muted/50 border-b border-border">
                 <div className="p-4 text-xs font-mono uppercase tracking-wider text-muted-foreground">Capability</div>
-                <div className="p-4 text-xs font-mono uppercase tracking-wider text-primary">Notebook Archive</div>
+                <div className="p-4 text-xs font-mono uppercase tracking-wider text-primary">Notespace</div>
                 <div className="p-4 text-xs font-mono uppercase tracking-wider text-muted-foreground">{comparison.headingOther}</div>
               </div>
               {comparison.rows.map((r, i) => (
@@ -412,7 +412,7 @@ export function UseCaseLayout({
               <h3 className="font-serif text-lg font-bold mb-2 group-hover:text-primary transition">
                 Six Honest Evernote Alternatives for 2026
               </h3>
-              <p className="text-sm text-muted-foreground">Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive - compared honestly.</p>
+              <p className="text-sm text-muted-foreground">Notion, Obsidian, OneNote, Reflect, Mem, and Notespace - compared honestly.</p>
             </Link>
             <Link
               to="/blog/obsidian-alternatives-2026"
@@ -422,7 +422,7 @@ export function UseCaseLayout({
               <h3 className="font-serif text-lg font-bold mb-2 group-hover:text-primary transition">
                 Six Honest Obsidian Alternatives for 2026
               </h3>
-              <p className="text-sm text-muted-foreground">Notion, Reflect, Mem, OneNote, Evernote, and Notebook Archive - compared honestly.</p>
+              <p className="text-sm text-muted-foreground">Notion, Reflect, Mem, OneNote, Evernote, and Notespace - compared honestly.</p>
             </Link>
             <Link
               to="/blog/notion-alternatives-2026"
@@ -432,7 +432,7 @@ export function UseCaseLayout({
               <h3 className="font-serif text-lg font-bold mb-2 group-hover:text-primary transition">
                 Six Honest Notion Alternatives for 2026
               </h3>
-              <p className="text-sm text-muted-foreground">Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive - screenshots and pros/cons.</p>
+              <p className="text-sm text-muted-foreground">Obsidian, Evernote, OneNote, Reflect, Mem, and Notespace - screenshots and pros/cons.</p>
             </Link>
           </div>
         </div>

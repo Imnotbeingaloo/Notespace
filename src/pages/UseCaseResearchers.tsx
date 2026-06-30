@@ -7,10 +7,10 @@ export default function UseCaseResearchers() {
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "Notebook Archive for Researchers",
+      name: "Notespace for Researchers",
       description:
         "Annotate papers, pull quotes from PDFs, and search across every notebook. A note-taking app for serious research workflows.",
-      url: "https://notebookarchive.lovable.app/use-cases/researchers",
+      url: "https://notespace.lovable.app/use-cases/researchers",
     },
     breadcrumbsJsonLd([
       { name: "Use cases", path: "/use-cases" },
@@ -21,7 +21,7 @@ export default function UseCaseResearchers() {
   return (
     <>
       <SeoHead
-        title="Note-Taking App for Researchers - Notebook Archive"
+        title="Note-Taking App for Researchers - Notespace"
         description="Annotate papers, summarize PDFs, and retrieve quotes across every notebook. Built for serious research."
         path="/use-cases/researchers"
         jsonLd={jsonLd}
@@ -34,7 +34,7 @@ export default function UseCaseResearchers() {
         primaryCta={{ label: "Start free", to: "/auth" }}
         overview={[
           "Research projects accumulate material the way old hard drives accumulate files - fast, in inconsistent formats, with relevance that only becomes clear months later. The note-taking system you choose at the start of a project determines whether month 18 is productive or paralyzing.",
-          "Notebook Archive is structured for the long arc of research: deep nested notebooks for organizing literature by topic, tags for the methodological threads that cut across topics, a global search that treats every PDF and note as one corpus, and AI explanations for the moments when a paper introduces a concept you need to internalize without an hour of background reading.",
+          "Notespace is structured for the long arc of research: deep nested notebooks for organizing literature by topic, tags for the methodological threads that cut across topics, a global search that treats every PDF and note as one corpus, and AI explanations for the moments when a paper introduces a concept you need to internalize without an hour of background reading.",
           "It is not a reference manager - Zotero or Mendeley still own that workflow. It is the place where your reading, annotation, and writing happen, with citations exported into whatever pipeline you already use.",
         ]}
         sections={[
@@ -62,7 +62,7 @@ export default function UseCaseResearchers() {
           {
             title: "Built for long projects",
             body:
-              "A doctoral project runs four to six years. The system you start with has to survive switching laptops, changing supervisors, and a meaningful revision of your research question. Notebook Archive is structured to absorb that change: deep nesting, tag-based cross-referencing, and Markdown export mean nothing is locked in.",
+              "A doctoral project runs four to six years. The system you start with has to survive switching laptops, changing supervisors, and a meaningful revision of your research question. Notespace is structured to absorb that change: deep nesting, tag-based cross-referencing, and Markdown export mean nothing is locked in.",
             bullets: [
               "Arbitrary nesting depth - fields, sub-fields, projects, papers",
               "Tag-based pivots when your research question shifts",
@@ -73,12 +73,12 @@ export default function UseCaseResearchers() {
           {
             title: "Private, portable, audit-friendly",
             body:
-              "Notes are private by default with row-level security on the database. Export to Markdown or PDF whenever you need a local copy, a record for compliance, or material to attach to a paper's supplementary information. Nothing is locked into a proprietary format. If you ever stop using Notebook Archive, the entire corpus is yours to take.",
+              "Notes are private by default with row-level security on the database. Export to Markdown or PDF whenever you need a local copy, a record for compliance, or material to attach to a paper's supplementary information. Nothing is locked into a proprietary format. If you ever stop using Notespace, the entire corpus is yours to take.",
           },
           {
             title: "Works alongside Zotero and your reference manager",
             body:
-              "Notebook Archive is where you read, think, and write - not where you manage citations. Keep your bibliography in Zotero, Mendeley, or BibTeX. Drop the PDFs into Notebook Archive for annotation and synthesis. Export your draft to Markdown, run it through pandoc with your .bib file, and your final document carries proper citations.",
+              "Notespace is where you read, think, and write - not where you manage citations. Keep your bibliography in Zotero, Mendeley, or BibTeX. Drop the PDFs into Notespace for annotation and synthesis. Export your draft to Markdown, run it through pandoc with your .bib file, and your final document carries proper citations.",
           },
         ]}
         scenarios={[
@@ -100,17 +100,17 @@ export default function UseCaseResearchers() {
           {
             situation: "You're at a conference. A talk gives you an idea you don't want to lose.",
             problem: "You don't have your laptop and your phone keyboard is small.",
-            solution: "Open Notebook Archive in the mobile browser. Create a standalone note in two taps. Type the idea, add #conference_2026 and the relevant topic tag. Sort it into a proper notebook when you're back at your desk.",
+            solution: "Open Notespace in the mobile browser. Create a standalone note in two taps. Type the idea, add #conference_2026 and the relevant topic tag. Sort it into a proper notebook when you're back at your desk.",
           },
         ]}
         painPoints={[
           {
             problem: "I already use Zotero / Mendeley / EndNote.",
-            answer: "Keep using it. Notebook Archive replaces the place you write, annotate, and synthesize - not the place you manage citations. Bibliography stays in your reference manager; the writing happens here.",
+            answer: "Keep using it. Notespace replaces the place you write, annotate, and synthesize - not the place you manage citations. Bibliography stays in your reference manager; the writing happens here.",
           },
           {
             problem: "I need formal citation export - BibTeX, APA, Chicago.",
-            answer: "Honest answer: native citation export isn't shipped. The standard workflow is to write in Notebook Archive, export to Markdown, run it through pandoc with your .bib file, and let pandoc generate citations in whatever style your venue requires." ,
+            answer: "Honest answer: native citation export isn't shipped. The standard workflow is to write in Notespace, export to Markdown, run it through pandoc with your .bib file, and let pandoc generate citations in whatever style your venue requires." ,
           },
           {
             problem: "I work with sensitive data - interviews, medical, classified.",
@@ -122,7 +122,7 @@ export default function UseCaseResearchers() {
           },
           {
             problem: "PDFs of scanned documents don't have text.",
-            answer: "Notebook Archive extracts embedded text, not OCR. For scanned material, run it through a separate OCR tool first (tesseract, ABBYY) and upload the resulting text-layer PDF. OCR is on the roadmap." ,
+            answer: "Notespace extracts embedded text, not OCR. For scanned material, run it through a separate OCR tool first (tesseract, ABBYY) and upload the resulting text-layer PDF. OCR is on the roadmap." ,
           },
           {
             problem: "I need version history for journal submissions.",
@@ -162,7 +162,7 @@ export default function UseCaseResearchers() {
         faqs={[
           { q: "How large can the PDFs be?", a: "Up to 1 GB per file. Text extraction runs locally in your browser for speed and privacy." },
           { q: "Can I share findings with collaborators?", a: "Yes - public share links generate a read-only page secured by token. Revoke access in one click. Real-time co-editing is on the roadmap but not shipped." },
-          { q: "Is there a citation manager?", a: "Not yet a full reference manager. The intended workflow is Zotero (or similar) for citations, Notebook Archive for reading, synthesis, and writing, pandoc to merge the two at export." },
+          { q: "Is there a citation manager?", a: "Not yet a full reference manager. The intended workflow is Zotero (or similar) for citations, Notespace for reading, synthesis, and writing, pandoc to merge the two at export." },
           { q: "How is my data stored?", a: "Encrypted at rest, private by default, accessible only to you unless you explicitly share. AI access is opt-in per request and never trains models." },
           { q: "Does it support LaTeX?", a: "Markdown export carries through to pandoc, which produces LaTeX. Inline LaTeX equations render in the editor via Markdown math syntax." },
           { q: "Can I use it for qualitative coding?", a: "Tags work well as a lightweight coding system. For axial or selective coding at scale, dedicated QDA software (NVivo, MAXQDA) is still more powerful." },

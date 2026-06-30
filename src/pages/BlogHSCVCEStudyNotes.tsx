@@ -31,7 +31,7 @@ const faq = [
   { q: "How do I make VCE study notes?", a: "Map every notes page to a study-design dot point. Two-column: content on the left, exam application on the right. The right column is what gets marked." },
   { q: "How long should HSC study notes be?", a: "Aim for 30-60 pages per subject - any more and you won't re-read them. Less is fine; flashcards do the recall work, notes are for synthesis." },
   { q: "Is writing study notes worth it for HSC?", a: "Yes, if you actually re-read and quiz from them. No, if they're a copy-paste of the textbook. The act of compressing is the learning - so write them yourself." },
-  { q: "What's the best app for HSC and VCE notes?", a: "Anything that lets you organize by subject, search instantly, and run flashcards or AI-explain on what you wrote. Notebook Archive does all three on a free plan." },
+  { q: "What's the best app for HSC and VCE notes?", a: "Anything that lets you organize by subject, search instantly, and run flashcards or AI-explain on what you wrote. Notespace does all three on a free plan." },
   { q: "Should I share notes with classmates?", a: "Yes, but reciprocally and after you've made your own. Reading someone else's compressed notes is useful; outsourcing the act of compression isn't - that's where the learning happens." },
   { q: "How early should I start Year 12 notes?", a: "Week one. Notes you build during the year and refine in October beat notes you start from scratch in October. The hardest version is the cram-build in spring break." },
 ];
@@ -45,10 +45,10 @@ const jsonLd = [
       "How to write HSC and VCE study notes that actually move ATAR. Per-subject techniques, structure tips, and a free study planner template.",
     datePublished: "2026-06-28",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/hsc-vce-study-notes-guide",
-    image: `https://notebookarchive.lovable.app${heroAsset.url}`,
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/hsc-vce-study-notes-guide",
+    image: `https://notespace.lovable.app${heroAsset.url}`,
   },
   {
     "@context": "https://schema.org",
@@ -184,7 +184,7 @@ export default function BlogHSCVCEStudyNotes() {
           </section>
 
           <section className="mb-12">
-            <h2 className="font-serif text-3xl font-bold mb-4">What to use Notebook Archive for</h2>
+            <h2 className="font-serif text-3xl font-bold mb-4">What to use Notespace for</h2>
             <ul className="space-y-3 text-muted-foreground leading-relaxed">
               <li>• <strong className="text-foreground">One notebook per subject.</strong> Sections for theory, past papers, mistakes.</li>
               <li>• <strong className="text-foreground">Tags across notebooks.</strong> Tag every page with the dot point - then jump to all biology pages on photosynthesis in one click.</li>
@@ -192,7 +192,7 @@ export default function BlogHSCVCEStudyNotes() {
               <li>• <strong className="text-foreground">Study planner</strong> built in - so the notes and the schedule live in one app.</li>
             </ul>
             <BlogCallout title="Free plan covers everything above">
-              Notebook Archive's free tier includes unlimited notebooks, tags, and
+              Notespace's free tier includes unlimited notebooks, tags, and
               the AI explain panel.{" "}
               <Link to="/study-planner" className="text-primary underline underline-offset-2 hover:text-primary/80">
                 See the study planner
@@ -240,7 +240,7 @@ export default function BlogHSCVCEStudyNotes() {
             <p className="font-serif text-2xl font-bold mb-4">Start your Year 12 notebook</p>
             <p className="text-muted-foreground mb-6">Free plan. Subjects, tags, AI explain, and a study planner - all in one notebook.</p>
             <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
-              Open Notebook Archive
+              Open Notespace
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
