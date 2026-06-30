@@ -29,6 +29,7 @@ const BlogObsidianAlternatives = lazy(() => import("./pages/BlogObsidianAlternat
 const BlogEvernoteAlternatives = lazy(() => import("./pages/BlogEvernoteAlternatives"));
 const BlogOtterAlternative = lazy(() => import("./pages/BlogOtterAlternative"));
 const BlogNotebookLMAlternative = lazy(() => import("./pages/BlogNotebookLMAlternative"));
+const BlogNotebookLMAPI = lazy(() => import("./pages/BlogNotebookLMAPI"));
 const BlogOneNoteAlternatives = lazy(() => import("./pages/BlogOneNoteAlternatives"));
 const BlogBestNoteTakingApp = lazy(() => import("./pages/BlogBestNoteTakingApp"));
 const BlogAIVoiceNotes = lazy(() => import("./pages/BlogAIVoiceNotes"));
@@ -174,6 +175,7 @@ const App = () => (
                 <Route path="/blog/onenote-alternatives-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogOneNoteAlternatives /></Suspense>} />
                 <Route path="/blog/otter-ai-alternative-for-students" element={<Suspense fallback={<BlogSkeleton />}><BlogOtterAlternative /></Suspense>} />
                 <Route path="/blog/notebooklm-alternative" element={<Suspense fallback={<BlogSkeleton />}><BlogNotebookLMAlternative /></Suspense>} />
+                <Route path="/blog/notebook-lm-api" element={<Suspense fallback={<BlogSkeleton />}><BlogNotebookLMAPI /></Suspense>} />
                 <Route path="/blog/best-note-taking-app-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogBestNoteTakingApp /></Suspense>} />
                 <Route path="/blog/ai-voice-notes-meeting-transcription" element={<Suspense fallback={<BlogSkeleton />}><BlogAIVoiceNotes /></Suspense>} />
                 <Route path="/blog/best-ai-writing-assistants-for-note-takers" element={<Suspense fallback={<BlogSkeleton />}><BlogAIWritingAssistants /></Suspense>} />
