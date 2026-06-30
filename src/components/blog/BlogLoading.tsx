@@ -1,32 +1,25 @@
-import { BookOpen } from "lucide-react";
-
-// Branded loading screen for lazy-loaded blog routes.
-// Replaces the skeleton — feels editorial, not like a half-rendered template.
+// Minimal, typographic loading state for lazy blog routes.
+// No pulsing halo, no "loading…" copy, no spinner — just the wordmark
+// with a thin underline that fills once. Reads like a print masthead.
 export function BlogLoading() {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
-      <div className="flex flex-col items-center gap-5 animate-fade-in">
-        <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
-          <div className="relative h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-            <BookOpen className="h-6 w-6 text-primary" strokeWidth={1.75} />
-          </div>
-        </div>
-        <div className="text-center">
-          <p className="font-serif text-base text-foreground/90">Opening the notebook…</p>
-          <p className="text-xs text-muted-foreground mt-1 tracking-wide">Notebook Archive</p>
-        </div>
-        <div className="h-0.5 w-32 bg-muted overflow-hidden rounded-full">
-          <div className="h-full w-1/3 bg-primary rounded-full blog-loading-bar" />
+    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <div className="flex flex-col items-start gap-3">
+        <span className="font-serif text-[1.35rem] tracking-tight text-foreground/90">
+          Notebook Archive
+        </span>
+        <div className="relative h-px w-44 bg-foreground/10 overflow-hidden">
+          <div className="absolute inset-y-0 left-0 w-full bg-foreground/70 origin-left blog-loading-fill" />
         </div>
       </div>
       <style>{`
-        @keyframes blog-loading-slide {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(400%); }
+        @keyframes blog-loading-fill {
+          0%   { transform: scaleX(0); }
+          70%  { transform: scaleX(0.85); }
+          100% { transform: scaleX(1); }
         }
-        .blog-loading-bar {
-          animation: blog-loading-slide 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        .blog-loading-fill {
+          animation: blog-loading-fill 1.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
         }
       `}</style>
     </div>
