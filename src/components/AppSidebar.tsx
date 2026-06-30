@@ -308,10 +308,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             >
               <img
                 src="/logo.png"
-                alt="Notespace"
+                alt="Notebook Archive"
                 className="h-[1.05rem] w-[1.05rem] sm:h-[1.2rem] sm:w-[1.2rem] object-contain flex-shrink-0"
               />
-              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap">Notespace</span>
+              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap">Notebook Archive</span>
               <button
                 type="button"
                 onClick={() => onOpenHome?.()}
@@ -337,7 +337,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               >
                 <img
                   src="/logo.png"
-                  alt="Notespace"
+                  alt="Notebook Archive"
                   className="absolute h-[1.425rem] w-[1.425rem] sm:h-[1.6625rem] sm:w-[1.6625rem] object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-[-8deg]"
                 />
                 <Menu className="absolute h-5 w-5 text-foreground opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100" />

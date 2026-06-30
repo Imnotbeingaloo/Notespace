@@ -20,15 +20,15 @@ export default function LearnIndex() {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "The Notespace Learn hub",
+      name: "The Notebook Archive Learn hub",
       description:
         "Plain-English definitions of the note-taking, PKM, and study terms people actually search for.",
-      url: "https://notespace.lovable.app/learn",
+      url: "https://notebookarchive.lovable.app/learn",
       hasPart: GLOSSARY.map((g) => ({
         "@type": "DefinedTerm",
         name: g.term,
         description: g.short,
-        url: `https://notespace.lovable.app/learn/${g.slug}`,
+        url: `https://notebookarchive.lovable.app/learn/${g.slug}`,
       })),
     },
     breadcrumbsJsonLd([{ name: "Learn", path: "/learn" }]),

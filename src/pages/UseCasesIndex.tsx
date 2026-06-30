@@ -108,8 +108,8 @@ export default function UseCasesIndex() {
   return (
     <>
       <SeoHead
-        title="Use Cases - Notespace"
-        description="Notespace for students, writers, and researchers. See how a calm, AI-assisted note-taking app fits each workflow."
+        title="Use Cases - Notebook Archive"
+        description="Notebook Archive for students, writers, and researchers. See how a calm, AI-assisted note-taking app fits each workflow."
         path="/use-cases"
         jsonLd={breadcrumbsJsonLd([{ name: "Use cases", path: "/use-cases" }])}
       />
@@ -138,7 +138,7 @@ export default function UseCasesIndex() {
                 Pick the workflow closest to <span className="text-primary">how you actually work</span>.
               </h1>
               <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Notespace isn't a generic note-taker bent to fit your life. Each
+                Notebook Archive isn't a generic note-taker bent to fit your life. Each
                 of the three workflows below is a separate page with real scenarios,
                 pain-point answers, and an honest comparison vs the apps you're probably
                 already trying.
@@ -300,7 +300,7 @@ export default function UseCasesIndex() {
                 "The fastest way to know if a tool fits is to read the workflow of
                 someone exactly like you. That's what these three pages are."
               </blockquote>
-              <p className="mt-5 text-sm text-muted-foreground">- The Notespace team</p>
+              <p className="mt-5 text-sm text-muted-foreground">- The Notebook Archive team</p>
             </motion.div>
           </div>
         </section>

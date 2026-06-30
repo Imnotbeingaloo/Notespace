@@ -28,14 +28,14 @@ const faq = [
   },
   {
     q: "How do I avoid hallucinated citations?",
-    a: "Never accept an AI-generated citation without opening the source. Tools that extract from PDFs you uploaded are far safer than tools that 'find' papers for you. In Notespace, the Explain panel only summarizes what's in the note - it doesn't invent references.",
+    a: "Never accept an AI-generated citation without opening the source. Tools that extract from PDFs you uploaded are far safer than tools that 'find' papers for you. In Notebook Archive, the Explain panel only summarizes what's in the note - it doesn't invent references.",
   },
   {
     q: "What's the best note-taking system for a literature review?",
     a: "One note per paper, plus a synthesis note per theme. Each paper note holds the citation, your one-sentence takeaway, the method, and verbatim quotes with page numbers. Synthesis notes link out to the paper notes. This maps cleanly onto Zettelkasten if you prefer that vocabulary.",
   },
   {
-    q: "Can Notespace handle long PDFs?",
+    q: "Can Notebook Archive handle long PDFs?",
     a: "Yes. Upload a PDF and the text is extracted into a note you can search, tag, and explain. For very long PDFs (100+ pages), split by chapter so the AI explain panel has tight context to work with.",
   },
 ];
@@ -49,10 +49,10 @@ const jsonLd = [
       "A practical, honest workflow for using AI to speed up academic literature reviews without losing rigor - covering PDF extraction, per-paper notes, thematic synthesis, and citation safety.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage:
-      "https://notespace.lovable.app/blog/ai-literature-review-guide",
+      "https://notebookarchive.lovable.app/blog/ai-literature-review-guide",
   },
   {
     "@context": "https://schema.org",
@@ -192,7 +192,7 @@ export default function BlogAILiteratureReview() {
                 2. Drop the PDF in, let extraction do the typing
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                In Notespace, upload the PDF directly to the paper note.
+                In Notebook Archive, upload the PDF directly to the paper note.
                 The text is extracted and becomes searchable, taggable, and
                 explainable. No more re-typing quotes or hunting through
                 screenshots.
@@ -360,7 +360,7 @@ export default function BlogAILiteratureReview() {
 
           <div className="border-t border-border pt-10 mt-10 text-center">
             <p className="font-serif text-2xl font-bold mb-4">
-              Run your next literature review in Notespace
+              Run your next literature review in Notebook Archive
             </p>
             <p className="text-muted-foreground mb-6">
               Upload PDFs, explain dense passages, tag by theme, and keep your
@@ -370,7 +370,7 @@ export default function BlogAILiteratureReview() {
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notespace
+              Open Notebook Archive
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

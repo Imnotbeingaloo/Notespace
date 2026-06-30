@@ -6,7 +6,7 @@ import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { PUBLIC_ROUTES, PRIVATE_ROUTE_PATTERNS } from "./site-routes";
 
-const BASE_URL = "https://notespace.lovable.app";
+const BASE_URL = "https://notebookarchive.lovable.app";
 
 function isPrivate(path: string): boolean {
   return PRIVATE_ROUTE_PATTERNS.some((p) => path === p || path.startsWith(p));

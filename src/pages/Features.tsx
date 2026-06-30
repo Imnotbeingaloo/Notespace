@@ -50,9 +50,9 @@ export default function FeaturesPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    document.title = "Features - Notespace";
+    document.title = "Features - Notebook Archive";
     const meta = document.querySelector('meta[name="description"]');
-    const content = "Every feature that makes Notespace a calm, intelligent place to think - writing, organization, and trust.";
+    const content = "Every feature that makes Notebook Archive a calm, intelligent place to think - writing, organization, and trust.";
     if (meta) meta.setAttribute("content", content);
     else {
       const m = document.createElement("meta");
@@ -65,7 +65,7 @@ export default function FeaturesPage() {
   return (
     <>
       <SeoHead
-        title="Features - Notespace"
+        title="Features - Notebook Archive"
         description="Markdown editor, AI explanations, focus mode, study planner, smart tags, find & replace, and frictionless sharing - every feature explained."
         path="/features"
       />

@@ -19,7 +19,7 @@ interface SeoHeadProps {
   alternateLocales?: string[];
 }
 
-const BASE_URL = "https://notespace.lovable.app";
+const BASE_URL = "https://notebookarchive.lovable.app";
 
 /**
  * Per-route head tags. Overrides the static <title>, meta description,

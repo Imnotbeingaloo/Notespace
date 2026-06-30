@@ -7,10 +7,10 @@ export default function UseCaseProjectManagers() {
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "Notespace for Project Managers",
+      name: "Notebook Archive for Project Managers",
       description:
         "AI note taking for meetings: extract action items, summarize stakeholder calls, and organize project documentation in one searchable workspace.",
-      url: "https://notespace.lovable.app/use-cases/project-managers",
+      url: "https://notebookarchive.lovable.app/use-cases/project-managers",
     },
     breadcrumbsJsonLd([
       { name: "Use cases", path: "/use-cases" },
@@ -21,7 +21,7 @@ export default function UseCaseProjectManagers() {
   return (
     <>
       <SeoHead
-        title="Best AI Note Taking App for Meetings - Notespace for Project Managers"
+        title="Best AI Note Taking App for Meetings - Notebook Archive for Project Managers"
         description="Capture meetings, extract action items, and keep stakeholder context organized. The note-taking system built for project managers running multiple workstreams."
         path="/use-cases/project-managers"
         jsonLd={jsonLd}
@@ -34,8 +34,8 @@ export default function UseCaseProjectManagers() {
         primaryCta={{ label: "Start free", to: "/auth" }}
         overview={[
           "A project manager's week is meetings. Kickoffs, stakeholder check-ins, standups, escalations, retros. Each one produces decisions, action items, dependencies, and risks that need to land somewhere - and most of them land in a notebook that becomes unreadable by month two.",
-          "Notespace is structured for that volume. One notebook per project, sub-notebooks per workstream, tags for the people and risks that cut across them, and a global search that finds the meeting where a decision was made without paging through twelve weeks of notes.",
-          "It is not a Jira replacement. Jira owns tickets, sprints, and burndowns. Notespace owns the unstructured reality around them - the conversations, the context, the why behind the ticket.",
+          "Notebook Archive is structured for that volume. One notebook per project, sub-notebooks per workstream, tags for the people and risks that cut across them, and a global search that finds the meeting where a decision was made without paging through twelve weeks of notes.",
+          "It is not a Jira replacement. Jira owns tickets, sprints, and burndowns. Notebook Archive owns the unstructured reality around them - the conversations, the context, the why behind the ticket.",
         ]}
         sections={[
           {
@@ -78,7 +78,7 @@ export default function UseCaseProjectManagers() {
           {
             title: "Works alongside Jira, Linear, and Slack",
             body:
-              "Notespace is not where tickets live. It's where the context around tickets lives - the meeting that produced the ticket, the decision that changed its scope, the stakeholder who needs to be in the loop. Tickets stay in your tracker; the why stays here, linked when useful.",
+              "Notebook Archive is not where tickets live. It's where the context around tickets lives - the meeting that produced the ticket, the decision that changed its scope, the stakeholder who needs to be in the loop. Tickets stay in your tracker; the why stays here, linked when useful.",
           },
         ]}
         scenarios={[
@@ -106,7 +106,7 @@ export default function UseCaseProjectManagers() {
         painPoints={[
           {
             problem: "We already use Confluence / Notion for documentation.",
-            answer: "Keep using it for permanent docs (PRDs, runbooks, team wikis). Notespace is faster for the working layer - the live meeting notes, the daily captures, the personal stash that feeds into formal docs. Many PMs use both.",
+            answer: "Keep using it for permanent docs (PRDs, runbooks, team wikis). Notebook Archive is faster for the working layer - the live meeting notes, the daily captures, the personal stash that feeds into formal docs. Many PMs use both.",
           },
           {
             problem: "I need automatic meeting transcription.",
@@ -118,7 +118,7 @@ export default function UseCaseProjectManagers() {
           },
           {
             problem: "I need Gantt charts, dependencies, and resource planning.",
-            answer: "Notespace is not a project planning tool - keep using Jira, Linear, Asana, MS Project, or whatever your team has standardized on. This is the unstructured layer around those tools, not a replacement.",
+            answer: "Notebook Archive is not a project planning tool - keep using Jira, Linear, Asana, MS Project, or whatever your team has standardized on. This is the unstructured layer around those tools, not a replacement.",
           },
           {
             problem: "Our security policy forbids cloud notes.",
@@ -163,7 +163,7 @@ export default function UseCaseProjectManagers() {
           { q: "Is this an AI note-taking app for meetings?", a: "Yes. AI summarizes long meeting threads on demand, extracts action items, and compresses stakeholder context into shareable updates. AI is opt-in per request - content is never sent unless you ask." },
           { q: "Does it transcribe meetings automatically?", a: "Not yet. The standard workflow is to type notes live (most PMs already do) or paste a transcript from a separate tool (Otter, Granola) and use AI to summarize. Native transcription is on the roadmap." },
           { q: "Can my team edit the same note?", a: "Public read-only share links work today. Real-time co-editing is on the roadmap. If simultaneous editing is required, the current workflow is one owner per notebook with shared read links." },
-          { q: "Does it replace Jira or Asana?", a: "No. Tickets and sprints belong in your tracker. Notespace owns the unstructured context - meetings, decisions, retros - that feeds into and follows from the tickets." },
+          { q: "Does it replace Jira or Asana?", a: "No. Tickets and sprints belong in your tracker. Notebook Archive owns the unstructured context - meetings, decisions, retros - that feeds into and follows from the tickets." },
           { q: "How is my data stored?", a: "Encrypted at rest, private by default, accessible only to you unless you explicitly share. AI access is opt-in per request and never trains models." },
           { q: "Can I export a project for handover?", a: "Yes. Export the entire notebook to Markdown or PDF. The new PM gets every meeting, decision, and tagged risk from day one." },
           { q: "What happens if you shut down?", a: "Markdown export gives you the entire corpus in a universal, plain-text format. No data is locked in. We're transparent about this because we'd want the same guarantee in your shoes." },

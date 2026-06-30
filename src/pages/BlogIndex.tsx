@@ -166,7 +166,7 @@ const posts = [
     slug: "best-ai-writing-assistants-for-note-takers",
     title: "Best AI Writing Assistants for Note-Takers (2026)",
     excerpt:
-      "Grammarly owns the search - but note-takers need something different. Six honest picks for AI writing assistants that live inside your notebook: Notespace, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
+      "Grammarly owns the search - but note-takers need something different. Six honest picks for AI writing assistants that live inside your notebook: Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
     date: "Jun 2026",
     tag: "AI Writing",
   },
@@ -174,7 +174,7 @@ const posts = [
     slug: "ai-voice-notes-meeting-transcription",
     title: "Best AI Voice Note Taking & Meeting Transcription Apps (2026)",
     excerpt:
-      "Voice in, organized notes out. Five honest picks for AI voice notes and meeting transcription - Notespace, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
+      "Voice in, organized notes out. Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
     date: "Jun 2026",
     tag: "AI Voice",
   },
@@ -182,7 +182,7 @@ const posts = [
     slug: "best-note-taking-app-2026",
     title: "The Best Note Taking App in 2026 - 7 Honest Picks",
     excerpt:
-      "Seven note taking apps compared honestly - Notespace, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and a clear pick for each kind of person.",
+      "Seven note taking apps compared honestly - Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and a clear pick for each kind of person.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -190,7 +190,7 @@ const posts = [
     slug: "evernote-alternatives-2026",
     title: "Six Honest Evernote Alternatives for 2026",
     excerpt:
-      "Evernote pioneered the digital shoebox - then the free tier shrank, the editor stayed in 2015, and the price kept climbing. The six apps people actually move to: Notion, Obsidian, OneNote, Reflect, Mem, and Notespace.",
+      "Evernote pioneered the digital shoebox - then the free tier shrank, the editor stayed in 2015, and the price kept climbing. The six apps people actually move to: Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -214,7 +214,7 @@ const posts = [
     slug: "notion-alternatives-2026",
     title: "Six Honest Notion Alternatives for 2026",
     excerpt:
-      "Notion grew into an everything-tool. If you only ever used it for notes, here are the six apps people actually leave for - Obsidian, Evernote, OneNote, Reflect, Mem, and Notespace.",
+      "Notion grew into an everything-tool. If you only ever used it for notes, here are the six apps people actually leave for - Obsidian, Evernote, OneNote, Reflect, Mem, and Notebook Archive.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -222,7 +222,7 @@ const posts = [
     slug: "otter-ai-alternative-for-students",
     title: "The Honest Otter.ai Alternative Guide for Students",
     excerpt:
-      "Otter is a transcript machine, not a study tool. Six honest alternatives compared for students - Notespace, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter itself.",
+      "Otter is a transcript machine, not a study tool. Six honest alternatives compared for students - Notebook Archive, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter itself.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -230,7 +230,7 @@ const posts = [
     slug: "best-ai-note-taking-apps-2026",
     title: "Best AI Note Taking Apps for Writers and Researchers in 2026",
     excerpt:
-      "An honest comparison of the seven AI note taking apps that actually earn the label - Notespace, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
+      "An honest comparison of the seven AI note taking apps that actually earn the label - Notebook Archive, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
     date: "Jun 2026",
     tag: "Comparison",
   },
@@ -238,7 +238,7 @@ const posts = [
     slug: "best-note-taking-app-for-writers",
     title: "The Best Note Taking App for Writers in 2026",
     excerpt:
-      "Most lists are written for project managers. Writers need something else. The four apps that actually fit how writers work - Scrivener, Obsidian, Ulysses, and Notespace.",
+      "Most lists are written for project managers. Writers need something else. The four apps that actually fit how writers work - Scrivener, Obsidian, Ulysses, and Notebook Archive.",
     date: "Jun 2026",
     tag: "For Writers",
   },
@@ -246,7 +246,7 @@ const posts = [
     slug: "ai-note-taking-app-for-students",
     title: "The Best AI Note Taking App for Students in 2026",
     excerpt:
-      "Per-course organization, AI that explains without writing your essay, free tiers that are actually usable. Notespace, Notion, Obsidian, and OneNote compared.",
+      "Per-course organization, AI that explains without writing your essay, free tiers that are actually usable. Notebook Archive, Notion, Obsidian, and OneNote compared.",
     date: "Jun 2026",
     tag: "For Students",
   },
@@ -255,14 +255,14 @@ const posts = [
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Blog",
-  name: "Notespace Blog",
-  url: "https://notespace.lovable.app/blog",
+  name: "Notebook Archive Blog",
+  url: "https://notebookarchive.lovable.app/blog",
   description:
-    "Honest writing on note taking, AI for writers and researchers, and the tools we build at Notespace.",
+    "Honest writing on note taking, AI for writers and researchers, and the tools we build at Notebook Archive.",
   blogPost: posts.map((p) => ({
     "@type": "BlogPosting",
     headline: p.title,
-    url: `https://notespace.lovable.app/blog/${p.slug}`,
+    url: `https://notebookarchive.lovable.app/blog/${p.slug}`,
   })),
 };
 
@@ -275,8 +275,8 @@ export default function BlogIndex() {
   return (
     <>
       <SeoHead
-        title="Blog - Notespace"
-        description="Honest writing on note taking apps, AI for writers and researchers, and the tools we build at Notespace."
+        title="Blog - Notebook Archive"
+        description="Honest writing on note taking apps, AI for writers and researchers, and the tools we build at Notebook Archive."
         path="/blog"
         jsonLd={[jsonLd, breadcrumbsJsonLd([{ name: "Blog", path: "/blog" }])]}
       />
@@ -292,14 +292,14 @@ export default function BlogIndex() {
             className="mb-16 text-center max-w-3xl mx-auto"
           >
             <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-4">
-              The Notespace Blog
+              The Notebook Archive Blog
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
               Writing about <span className="text-primary">writing, notes, and the tools between them</span>
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Honest comparisons, opinionated picks, and the occasional behind-the-scenes from
-              the team building Notespace.
+              the team building Notebook Archive.
             </p>
           </header>
 

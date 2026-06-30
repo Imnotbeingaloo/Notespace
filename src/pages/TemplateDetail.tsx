@@ -40,15 +40,15 @@ export default function TemplateDetail() {
       genre: template.category,
       inLanguage: "en",
       isAccessibleForFree: true,
-      url: `https://notespace.lovable.app${path}`,
+      url: `https://notebookarchive.lovable.app${path}`,
     },
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "https://notespace.lovable.app/" },
-        { "@type": "ListItem", position: 2, name: "Templates", item: "https://notespace.lovable.app/templates" },
-        { "@type": "ListItem", position: 3, name: template.name, item: `https://notespace.lovable.app${path}` },
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notebookarchive.lovable.app/" },
+        { "@type": "ListItem", position: 2, name: "Templates", item: "https://notebookarchive.lovable.app/templates" },
+        { "@type": "ListItem", position: 3, name: template.name, item: `https://notebookarchive.lovable.app${path}` },
       ],
     },
   ];
@@ -64,7 +64,7 @@ export default function TemplateDetail() {
     <>
       <SeoHead
         title={`${template.name} template - free note-taking template`}
-        description={`Free ${template.name.toLowerCase()} template - ${template.description}. Open in Notespace or copy the markdown to use anywhere.`}
+        description={`Free ${template.name.toLowerCase()} template - ${template.description}. Open in Notebook Archive or copy the markdown to use anywhere.`}
         path={path}
         jsonLd={jsonLd}
       />

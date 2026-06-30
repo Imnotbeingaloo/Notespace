@@ -17,7 +17,7 @@ export interface AppDetailCardProps {
 }
 
 export function AppDetailCard(p: AppDetailCardProps) {
-  const isOurSite = /notespace\.lovable\.app/i.test(p.siteUrl);
+  const isOurSite = /notebookarchive\.lovable\.app/i.test(p.siteUrl);
   let resolvedHref = p.siteUrl;
   if (isOurSite && typeof window !== "undefined") {
     try {
@@ -116,7 +116,7 @@ export function AppDetailCard(p: AppDetailCardProps) {
 
       {p.ourTake && (
         <p className="text-sm text-foreground/80 mt-3">
-          <strong className="text-foreground">Where Notespace wins: </strong>
+          <strong className="text-foreground">Where Notebook Archive wins: </strong>
           {p.ourTake}
         </p>
       )}

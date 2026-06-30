@@ -34,4 +34,4 @@ Disallow: /auth
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://notespace.lovable.app/sitemap.xml
+Sitemap: https://notebookarchive.lovable.app/sitemap.xml

@@ -537,7 +537,7 @@ const AuthPage = () => {
   if (authLoading || user || (hintGrace && !user)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <NoindexHead title="Sign in - Notespace" />
+        <NoindexHead title="Sign in - Notebook Archive" />
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
@@ -545,7 +545,7 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8 relative overflow-hidden">
-      <NoindexHead title="Sign in - Notespace" />
+      <NoindexHead title="Sign in - Notebook Archive" />
       {/* Decorative background - subtle grid + ambient gradient orbs (Mobbin/Aceternity inspired) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0">
         <div
@@ -577,9 +577,9 @@ const AuthPage = () => {
       >
         <div className="flex items-center justify-center gap-2 mb-8">
           <img src="/logo.png" alt="" aria-hidden="true" className="h-[1.224rem] w-[1.224rem] object-contain" />
-          <span className="font-serif text-2xl font-bold text-foreground">Notespace</span>
+          <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
         </div>
-        <h1 className="sr-only">{mode === "login" ? "Sign in to Notespace" : "Create your Notespace account"}</h1>
+        <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
         <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-8 shadow-xl">
           <div role="tablist" aria-label="Authentication mode" className="flex gap-1 bg-muted rounded-lg p-1 mb-6">

@@ -16,7 +16,7 @@
  *   bunx tsx scripts/sitemap-health.ts --render       # render with Playwright
  */
 
-const BASE = "https://notespace.lovable.app";
+const BASE = "https://notebookarchive.lovable.app";
 const SITEMAP = `${BASE}/sitemap.xml`;
 const RENDER = process.argv.includes("--render");
 

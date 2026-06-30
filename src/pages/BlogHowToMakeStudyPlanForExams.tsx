@@ -41,7 +41,7 @@ const faq = [
   },
   {
     q: "What's the best study plan template for exam revision?",
-    a: "Look for one that has both content blocks (what to cover) and a review schedule (when to revisit). The template lower down on this page is built that way. You can open it directly in Notespace's study planner.",
+    a: "Look for one that has both content blocks (what to cover) and a review schedule (when to revisit). The template lower down on this page is built that way. You can open it directly in Notebook Archive's study planner.",
   },
   {
     q: "Should I use spaced repetition in an exam study plan?",
@@ -72,9 +72,9 @@ const jsonLd = [
       "A practical six-week exam study plan template for finals, GCSEs, A-levels, the MCAT, GRE, and LSAT - with a copy-pasteable schedule.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
-    mainEntityOfPage: "https://notespace.lovable.app/blog/how-to-make-a-study-plan-for-exams",
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/how-to-make-a-study-plan-for-exams",
   },
   {
     "@context": "https://schema.org",
@@ -182,7 +182,7 @@ export default function BlogHowToMakeStudyPlanForExams() {
               <h2 className="font-serif text-2xl font-bold mb-3">Free exam study plan template</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Copy this into any document - or open it directly as a note in
-                Notespace's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link>.
+                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link>.
               </p>
               <pre className="bg-muted rounded-lg p-5 text-sm leading-relaxed overflow-x-auto whitespace-pre">{`# Exam Study Plan - [Subject / Exam name]
 Exam date: [date]   |   Weeks remaining: 6
@@ -252,7 +252,7 @@ Sun  REST
 
           <div className="border-t border-border pt-10 mt-10 text-center">
             <p className="font-serif text-2xl font-bold mb-4">
-              Run your exam study plan inside Notespace
+              Run your exam study plan inside Notebook Archive
             </p>
             <p className="text-muted-foreground mb-6">
               Open the study planner template, drop in your exam dates, and let
@@ -263,7 +263,7 @@ Sun  REST
                 Open the study planner template
               </Link>
               <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
-                Start using Notespace <ArrowRight className="h-4 w-4" />
+                Start using Notebook Archive <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>

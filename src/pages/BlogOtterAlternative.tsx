@@ -34,14 +34,14 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ot
 
 const picks = [
   {
-    name: "Notespace",
+    name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notespace - markdown notebook with an AI explain side panel",
-    siteUrl: "https://notespace.lovable.app",
+    imageAlt: "Notebook Archive - markdown notebook with an AI explain side panel",
+    siteUrl: "https://notebookarchive.lovable.app",
     tagline: "The study notebook Otter never tried to be.",
     description:
-      "Otter is a transcript machine. Notespace is a notebook. You can paste the raw transcript in, ask the AI panel to summarize a tricky section in plain English, tag the lecture, and have it next to the rest of the course - not stranded in a sidebar of meetings. Free tier covers daily study; nothing is gated behind a 600-minute monthly cap.",
+      "Otter is a transcript machine. Notebook Archive is a notebook. You can paste the raw transcript in, ask the AI panel to summarize a tricky section in plain English, tag the lecture, and have it next to the rest of the course - not stranded in a sidebar of meetings. Free tier covers daily study; nothing is gated behind a 600-minute monthly cap.",
     pros: [
       "Notebooks-by-course beats Otter's flat meeting list for studying",
       "AI explain panel turns a transcript into revision notes, not just text",
@@ -135,7 +135,7 @@ const picks = [
     cons: [
       "Less manual structure than course-based students often want",
       "Markdown export is lossy",
-      "Free tier is smaller than Notespace's",
+      "Free tier is smaller than Notebook Archive's",
     ],
     bestFor: "Students who capture more than they organize and want AI to do the filing.",
   },
@@ -169,19 +169,19 @@ const faq = [
   },
   {
     q: "What's the best free Otter.ai alternative for students?",
-    a: "Notespace's free tier covers daily lecture study including AI explain and markdown export, with no monthly minute cap. Obsidian with the community Whisper plugin is also free at the app level, but you pay per minute for the Whisper API and have to wire it up yourself.",
+    a: "Notebook Archive's free tier covers daily lecture study including AI explain and markdown export, with no monthly minute cap. Obsidian with the community Whisper plugin is also free at the app level, but you pay per minute for the Whisper API and have to wire it up yourself.",
   },
   {
     q: "Can I import my Otter transcripts into one of these apps?",
-    a: "Yes. Otter exports as .txt, .docx, .srt, or .pdf. Notespace, Notion, Obsidian, and Reflect all accept those formats directly. Paste the transcript in, run an AI summary, tag the lecture, and you're done.",
+    a: "Yes. Otter exports as .txt, .docx, .srt, or .pdf. Notebook Archive, Notion, Obsidian, and Reflect all accept those formats directly. Paste the transcript in, run an AI summary, tag the lecture, and you're done.",
   },
   {
     q: "Which Otter alternative has built-in AI summaries?",
-    a: "Notespace, Notion AI (paid add-on), Mem, and Reflect all have AI that summarizes and answers questions across your notes. Notespace's AI panel is included in the free tier; Notion AI is $10/mo extra on top of any paid plan.",
+    a: "Notebook Archive, Notion AI (paid add-on), Mem, and Reflect all have AI that summarizes and answers questions across your notes. Notebook Archive's AI panel is included in the free tier; Notion AI is $10/mo extra on top of any paid plan.",
   },
   {
     q: "Do I need a paid plan to record long lectures?",
-    a: "With Otter, yes - the free tier caps recordings at 30 minutes each. With Notespace, paste a transcript of any length and the AI panel can summarize it in sections. You only need a paid transcription tool when the lecture is happening; the studying afterward shouldn't need a subscription.",
+    a: "With Otter, yes - the free tier caps recordings at 30 minutes each. With Notebook Archive, paste a transcript of any length and the AI panel can summarize it in sections. You only need a paid transcription tool when the lecture is happening; the studying afterward shouldn't need a subscription.",
   },
 ];
 
@@ -191,13 +191,13 @@ const jsonLd = [
     "@type": "Article",
     headline: "Otter.ai Alternatives for Students - Honest Comparison",
     description:
-      "Six Otter.ai alternatives compared honestly for students - Notespace, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter itself. Screenshots, pros and cons, and who each one is for.",
+      "Six Otter.ai alternatives compared honestly for students - Notebook Archive, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter itself. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-29",
     dateModified: "2026-06-29",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage:
-      "https://notespace.lovable.app/blog/otter-ai-alternative-for-students",
+      "https://notebookarchive.lovable.app/blog/otter-ai-alternative-for-students",
   },
   {
     "@context": "https://schema.org",
@@ -228,7 +228,7 @@ export default function BlogOtterAlternative() {
       <SeoHead
         type="article"
         title="Otter.ai Alternatives for Students in 2026 - 6 Honest Picks"
-        description="Six Otter.ai alternatives for students compared with screenshots, pros and cons, and pricing - Notespace, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter."
+        description="Six Otter.ai alternatives for students compared with screenshots, pros and cons, and pricing - Notebook Archive, Notion AI, Obsidian + Whisper, Mem, Reflect, and Otter."
         path="/blog/otter-ai-alternative-for-students"
           jsonLd={jsonLd}
       />
@@ -309,7 +309,7 @@ export default function BlogOtterAlternative() {
             <BlogCompareTable
               headers={["", "Free tier", "Notebook model", "AI across all notes", "Markdown export"]}
               rows={[
-                ["Notespace", "Generous, no minute cap", "Yes, per-course", "Yes", "Yes"],
+                ["Notebook Archive", "Generous, no minute cap", "Yes, per-course", "Yes", "Yes"],
                 ["Otter.ai", "300 min/mo, 30 min/recording", "No - flat meeting list", "Per-meeting only", "No"],
                 ["Notion AI", "Free workspace; AI $10/mo extra", "Databases", "Yes (paid)", "Lossy"],
                 ["Obsidian + Whisper", "Free + ~$0.006/min", "Folders + backlinks", "Plugins", "Yes"],
@@ -340,7 +340,7 @@ export default function BlogOtterAlternative() {
                 {
                   title: "Paste it into a notebook organized by course",
                   body:
-                    "In Notespace (or your tool of choice), create a note inside the course notebook. Paste the transcript, tag it with the week number, save.",
+                    "In Notebook Archive (or your tool of choice), create a note inside the course notebook. Paste the transcript, tag it with the week number, save.",
                 },
                 {
                   title: "Use an AI panel to make it studyable",
@@ -361,7 +361,7 @@ export default function BlogOtterAlternative() {
             <ul className="space-y-3 text-muted-foreground">
               <li>
                 • <strong>You want one tool that handles studying after capture:</strong>{" "}
-                Notespace.
+                Notebook Archive.
               </li>
               <li>
                 • <strong>You only ever need the live transcript:</strong> Stay on Otter,
@@ -405,14 +405,14 @@ export default function BlogOtterAlternative() {
               The notebook your transcripts deserve
             </p>
             <p className="text-muted-foreground mb-6">
-              Notespace is free to start. Per-course notebooks. AI explain panel.
+              Notebook Archive is free to start. Per-course notebooks. AI explain panel.
               Real markdown export. No monthly minute cap.
             </p>
             <Link
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notespace
+              Open Notebook Archive
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
