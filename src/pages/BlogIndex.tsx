@@ -227,6 +227,14 @@ const posts = [
     tag: "Comparison",
   },
   {
+    slug: "notebook-lm-api",
+    title: "Does NotebookLM Have an API? Honest 2026 Answer",
+    excerpt:
+      "No public NotebookLM API exists as of 2026. Here's what that means for developers, how to build NotebookLM-style RAG on the Gemini API, and when to skip the build entirely.",
+    date: "Jun 2026",
+    tag: "Developer Guide",
+  },
+  {
     slug: "otter-ai-alternative-for-students",
     title: "The Honest Otter.ai Alternative Guide for Students",
     excerpt:
