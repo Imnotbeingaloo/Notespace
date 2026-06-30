@@ -43,7 +43,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
         <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0 group">
           <img
             src="/logo.png"
-            alt="Notebook Archive"
+            alt="Notespace"
             width={32}
             height={32}
             loading="eager"
@@ -52,7 +52,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
             className="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
           />
           <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">
-            Notebook Archive
+            Notespace
           </span>
         </Link>
 

@@ -31,14 +31,14 @@ export default function Footer() {
             >
               <img
                 src="/logo.png"
-                alt="Notebook Archive"
+                alt="Notespace"
                 width={32}
                 height={32}
                 loading="lazy"
                 decoding="async"
                 className="h-[1.224rem] w-[1.224rem] object-contain shrink-0"
               />
-              <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap leading-none">Notebook Archive</span>
+              <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap leading-none">Notespace</span>
             </motion.div>
 
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 lg:max-w-[260px]">
@@ -90,7 +90,7 @@ export default function Footer() {
             <h4 className={headingClass}>Company</h4>
             <ul className="space-y-3">
               <li><Link to="/about" className={linkClass}>About</Link></li>
-              <li><a href="mailto:support@notebookarchive.com" className={linkClass}>Contact</a></li>
+              <li><a href="mailto:support@notespace.com" className={linkClass}>Contact</a></li>
               <li><span className="text-sm text-muted-foreground">Privacy Policy</span></li>
               <li><span className="text-sm text-muted-foreground">Terms of Service</span></li>
             </ul>
@@ -115,7 +115,7 @@ export default function Footer() {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }}>
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-8" />
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Notebook Archive. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Notespace. All rights reserved.</p>
             <p className="text-xs text-muted-foreground">Built with ❤️ for thinkers everywhere</p>
           </div>
         </motion.div>

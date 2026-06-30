@@ -18,11 +18,11 @@ const CTA = "/auth?ref=blog-students&utm_source=blog&utm_medium=organic&utm_camp
 
 const picks = [
   {
-    name: "Notebook Archive",
+    name: "Notespace",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive landing page - note-taker that thinks with you",
-    siteUrl: "https://notebookarchive.lovable.app",
+    imageAlt: "Notespace landing page - note-taker that thinks with you",
+    siteUrl: "https://notespace.lovable.app",
     tagline: "Built for students who actually take notes by hand-typing them.",
     description:
       "One notebook per course, smart tags that pull themes out of your notes, and AI that explains concepts and summarizes long PDFs without writing your essay for you. Focus mode for exam crunch, daily word-count goal, free to start, and full markdown export so your notes outlive any one semester.",
@@ -60,7 +60,7 @@ const picks = [
     ],
     bestFor: "Students who genuinely enjoy building elaborate systems.",
     ourTake:
-      "Notion is a workspace builder first, a notes app second. Notebook Archive starts working the moment you sign in - no template hunting, no database setup, and AI is in the free tier.",
+      "Notion is a workspace builder first, a notes app second. Notespace starts working the moment you sign in - no template hunting, no database setup, and AI is in the free tier.",
   },
   {
     name: "Obsidian",
@@ -83,7 +83,7 @@ const picks = [
     ],
     bestFor: "CS / philosophy / research-track students who enjoy tinkering.",
     ourTake:
-      "Obsidian is the right pick if a weekend of setup sounds fun. Notebook Archive gives you the same markdown portability with AI working from minute one - useful when finals are in two weeks.",
+      "Obsidian is the right pick if a weekend of setup sounds fun. Notespace gives you the same markdown portability with AI working from minute one - useful when finals are in two weeks.",
   },
   {
     name: "OneNote",
@@ -106,14 +106,14 @@ const picks = [
     ],
     bestFor: "Students whose school issues Microsoft accounts and tablets.",
     ourTake:
-      "OneNote is great for handwritten notes on a Surface. For typed notes, AI help, and exports that aren't locked to Microsoft, Notebook Archive is the cleaner path.",
+      "OneNote is great for handwritten notes on a Surface. For typed notes, AI help, and exports that aren't locked to Microsoft, Notespace is the cleaner path.",
   },
 ];
 
 const faq = [
   {
     q: "What is the best AI note taking app for students in 2026?",
-    a: "For most students, Notebook Archive is the strongest fit - it's free to start, organizes notes by notebook (one per course is natural), and the AI explains and summarizes without writing essays for you, which keeps it within academic-integrity policies at most schools. Obsidian is the close runner-up if you want plain files on your own device.",
+    a: "For most students, Notespace is the strongest fit - it's free to start, organizes notes by notebook (one per course is natural), and the AI explains and summarizes without writing essays for you, which keeps it within academic-integrity policies at most schools. Obsidian is the close runner-up if you want plain files on your own device.",
   },
   {
     q: "Is using an AI note taking app considered cheating?",
@@ -121,15 +121,15 @@ const faq = [
   },
   {
     q: "Is there a free AI note taking app for students?",
-    a: "Yes. Notebook Archive, Notion, Obsidian, and OneNote all have free tiers that cover real student use. Free tiers usually cap AI usage per month - that cap is the thing to compare, not the headline price.",
+    a: "Yes. Notespace, Notion, Obsidian, and OneNote all have free tiers that cover real student use. Free tiers usually cap AI usage per month - that cap is the thing to compare, not the headline price.",
   },
   {
     q: "Can I use these apps to take notes from PDFs and lecture slides?",
-    a: "Notebook Archive lets you upload PDFs (including lecture slides) and pull text out for summarizing and tagging. Notion handles PDFs as attachments. Obsidian needs a plugin. OneNote can OCR images of slides. For text-heavy slides, Notebook Archive is the most direct path from PDF to studyable notes.",
+    a: "Notespace lets you upload PDFs (including lecture slides) and pull text out for summarizing and tagging. Notion handles PDFs as attachments. Obsidian needs a plugin. OneNote can OCR images of slides. For text-heavy slides, Notespace is the most direct path from PDF to studyable notes.",
   },
   {
     q: "Which note taking app is best for studying for exams?",
-    a: "Look for three things: a focus mode (kills distractions during a study block), search across all your notes (so you can find that one definition fast), and AI explain (so you can ask 'what is X?' without leaving the app). Notebook Archive has all three; Obsidian has search and focus but needs plugins for AI.",
+    a: "Look for three things: a focus mode (kills distractions during a study block), search across all your notes (so you can find that one definition fast), and AI explain (so you can ask 'what is X?' without leaving the app). Notespace has all three; Obsidian has search and focus but needs plugins for AI.",
   },
 ];
 
@@ -139,12 +139,12 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best AI Note Taking App for Students in 2026",
     description:
-      "An honest comparison of AI note taking apps built for how students actually study - Notebook Archive, Notion, Obsidian, and OneNote.",
+      "An honest comparison of AI note taking apps built for how students actually study - Notespace, Notion, Obsidian, and OneNote.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/ai-note-taking-app-for-students",
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/ai-note-taking-app-for-students",
   },
   {
     "@context": "https://schema.org",
@@ -172,7 +172,7 @@ export default function BlogAINoteTakingAppForStudents() {
       <SeoHead
         type="article"
         title="Best AI Note Taking App for Students (2026) - Free & Honest Picks"
-        description="The four AI note taking apps that actually fit how students study - Notebook Archive, Notion, Obsidian, and OneNote. Free tiers, screenshots, pros and cons."
+        description="The four AI note taking apps that actually fit how students study - Notespace, Notion, Obsidian, and OneNote. Free tiers, screenshots, pros and cons."
         path="/blog/ai-note-taking-app-for-students" image="/og/og-ai-note-taking-app-for-students.jpg"
         jsonLd={jsonLd}
       />
@@ -234,7 +234,7 @@ export default function BlogAINoteTakingAppForStudents() {
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick one in 5 minutes</h2>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You want to start typing notes today, no setup:</strong> Notebook Archive.</li>
+              <li>• <strong>You want to start typing notes today, no setup:</strong> Notespace.</li>
               <li>• <strong>Your friends all use it and you want to share pages:</strong> Notion.</li>
               <li>• <strong>You want your notes to live as files you own forever:</strong> Obsidian.</li>
               <li>• <strong>Your school already gave you a Microsoft account:</strong> OneNote.</li>
@@ -271,13 +271,13 @@ export default function BlogAINoteTakingAppForStudents() {
               Start the semester with a notebook that keeps up
             </p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive is free for students. No credit card.
+              Notespace is free for students. No credit card.
             </p>
             <Link
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notebook Archive
+              Open Notespace
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

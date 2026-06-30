@@ -28,14 +28,14 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ai
 
 const picks = [
   {
-    name: "Notebook Archive",
+    name: "Notespace",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive - a quiet markdown notebook with built-in AI",
-    siteUrl: "https://notebookarchive.lovable.app",
+    imageAlt: "Notespace - a quiet markdown notebook with built-in AI",
+    siteUrl: "https://notespace.lovable.app",
     tagline: "An AI writing assistant that lives inside your notes, not on top of them.",
     description:
-      "Notebook Archive bakes AI Explain, AI Edit, and Ask AI directly into a markdown editor that's built for note-takers first. Highlight any passage and ask for a tighter rewrite, a plain-English explanation, or a quick brainstorm - without leaving the notebook or pasting into a separate chatbot tab.",
+      "Notespace bakes AI Explain, AI Edit, and Ask AI directly into a markdown editor that's built for note-takers first. Highlight any passage and ask for a tighter rewrite, a plain-English explanation, or a quick brainstorm - without leaving the notebook or pasting into a separate chatbot tab.",
     pros: [
       "AI Explain, Edit, and Ask panels work on the selection you're already reading",
       "Markdown stays markdown - the AI never reformats your doc into HTML mush",
@@ -152,7 +152,7 @@ const picks = [
 const faq = [
   {
     q: "What is the best AI writing assistant for note-takers in 2026?",
-    a: "If you want AI that lives inside the same notebook as your notes - not in a separate chatbot tab - Notebook Archive is the cleanest pick. If your team is already on Notion, Notion AI is the path of least resistance. For full model control, Obsidian with the Copilot plugin wins.",
+    a: "If you want AI that lives inside the same notebook as your notes - not in a separate chatbot tab - Notespace is the cleanest pick. If your team is already on Notion, Notion AI is the path of least resistance. For full model control, Obsidian with the Copilot plugin wins.",
   },
   {
     q: "How is an AI writing assistant different from ChatGPT?",
@@ -160,15 +160,15 @@ const faq = [
   },
   {
     q: "Will an AI writing assistant make my notes sound generic?",
-    a: "If you let it write for you, yes. If you use it to explain, summarize, or tighten what you already wrote, no. The apps on this list that scope AI to editing (Notebook Archive, Ulysses) tend to preserve voice better than the ones that scope it to generation (Notion AI, Mem).",
+    a: "If you let it write for you, yes. If you use it to explain, summarize, or tighten what you already wrote, no. The apps on this list that scope AI to editing (Notespace, Ulysses) tend to preserve voice better than the ones that scope it to generation (Notion AI, Mem).",
   },
   {
     q: "Can I use an AI writing assistant for free?",
-    a: "Yes. Notebook Archive includes AI calls on the free tier and supports a bring-your-own-key path for unlimited use with Gemini. Obsidian + a community plugin is free if you supply your own API key. Notion AI, Reflect, and Ulysses are paid.",
+    a: "Yes. Notespace includes AI calls on the free tier and supports a bring-your-own-key path for unlimited use with Gemini. Obsidian + a community plugin is free if you supply your own API key. Notion AI, Reflect, and Ulysses are paid.",
   },
   {
     q: "Is it safe to put my notes through an AI writing assistant?",
-    a: "Read the privacy policy before pasting client work or anything sensitive. Local-first options like Obsidian + Ollama keep data on your machine. Reflect encrypts end-to-end. The hosted options (Notion AI, Notebook Archive, Mem) send selected text to their model provider - fine for personal notes, riskier for regulated industries.",
+    a: "Read the privacy policy before pasting client work or anything sensitive. Local-first options like Obsidian + Ollama keep data on your machine. Reflect encrypts end-to-end. The hosted options (Notion AI, Notespace, Mem) send selected text to their model provider - fine for personal notes, riskier for regulated industries.",
   },
 ];
 
@@ -178,13 +178,13 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best AI Writing Assistants for Note-Takers in 2026",
     description:
-      "Six honest picks for AI writing assistants built for note-takers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
+      "Six honest picks for AI writing assistants built for note-takers - Notespace, Notion AI, Obsidian, Mem, Reflect, and Ulysses.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
     mainEntityOfPage:
-      "https://notebookarchive.lovable.app/blog/best-ai-writing-assistants-for-note-takers",
+      "https://notespace.lovable.app/blog/best-ai-writing-assistants-for-note-takers",
   },
   {
     "@context": "https://schema.org",
@@ -212,7 +212,7 @@ export default function BlogAIWritingAssistants() {
       <SeoHead
         type="article"
         title="Best AI Writing Assistants for Note-Takers (2026)"
-        description="Six honest picks for AI writing assistants built for note-takers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and Ulysses. With pricing, pros and cons."
+        description="Six honest picks for AI writing assistants built for note-takers - Notespace, Notion AI, Obsidian, Mem, Reflect, and Ulysses. With pricing, pros and cons."
         path="/blog/best-ai-writing-assistants-for-note-takers" image="/og/og-best-ai-writing-assistants-for-note-takers.jpg"
         jsonLd={jsonLd}
       />
@@ -274,7 +274,7 @@ export default function BlogAIWritingAssistants() {
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You want AI inside a real notebook:</strong> Notebook Archive.</li>
+              <li>• <strong>You want AI inside a real notebook:</strong> Notespace.</li>
               <li>• <strong>Your team's already on Notion:</strong> Notion AI.</li>
               <li>• <strong>You want full model control:</strong> Obsidian + Copilot plugin.</li>
               <li>• <strong>You capture more than you organize:</strong> Mem.</li>
@@ -309,14 +309,14 @@ export default function BlogAIWritingAssistants() {
               An AI writing assistant that lives in your notebook.
             </p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive ships AI Explain, AI Edit, and Ask AI directly in the markdown
+              Notespace ships AI Explain, AI Edit, and Ask AI directly in the markdown
               editor - free to start, no separate AI tab.
             </p>
             <Link
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notebook Archive
+              Open Notespace
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

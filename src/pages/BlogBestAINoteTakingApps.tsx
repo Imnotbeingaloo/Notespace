@@ -21,14 +21,14 @@ const CTA = "/auth?ref=blog&utm_source=blog&utm_medium=organic&utm_campaign=best
 
 const apps = [
   {
-    name: "Notebook Archive",
+    name: "Notespace",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive landing page showing the editor and AI explain panel",
-    siteUrl: "https://notebookarchive.lovable.app",
+    imageAlt: "Notespace landing page showing the editor and AI explain panel",
+    siteUrl: "https://notespace.lovable.app",
     tagline: "An AI note-taker that helps you think - not one that writes for you.",
     description:
-      "Notebook Archive is built around a calm markdown editor with focus mode, daily word-count goal, and a side AI panel that explains and summarizes on demand. Notebooks nest, tags are global and clickable, and everything exports to plain markdown so your work is never trapped.",
+      "Notespace is built around a calm markdown editor with focus mode, daily word-count goal, and a side AI panel that explains and summarizes on demand. Notebooks nest, tags are global and clickable, and everything exports to plain markdown so your work is never trapped.",
     pros: [
       "AI side panel: explain a concept, summarize a source, pull smart tags - never auto-writes your prose",
       "Generous free tier, no credit card",
@@ -64,7 +64,7 @@ const apps = [
     ],
     bestFor: "People already invested in Evernote who want a lightweight AI bolted on top.",
     ourTake:
-      "Evernote treats AI as a search-and-transcribe layer over a 17-year-old database. Notebook Archive treats AI as a thinking partner inside a modern markdown editor - and the free tier isn't crippled.",
+      "Evernote treats AI as a search-and-transcribe layer over a 17-year-old database. Notespace treats AI as a thinking partner inside a modern markdown editor - and the free tier isn't crippled.",
   },
   {
     name: "Notion AI",
@@ -87,7 +87,7 @@ const apps = [
     ],
     bestFor: "Teams that need a wiki, a project tracker, and a notes app in one place.",
     ourTake:
-      "Notion shines as a team workspace. For solo writers and researchers, it's overkill - and the editor doesn't reward long-form prose the way a calm markdown surface does. Notebook Archive is the focused tool when the workspace is just you.",
+      "Notion shines as a team workspace. For solo writers and researchers, it's overkill - and the editor doesn't reward long-form prose the way a calm markdown surface does. Notespace is the focused tool when the workspace is just you.",
   },
   {
     name: "Obsidian",
@@ -110,7 +110,7 @@ const apps = [
     ],
     bestFor: "Power users who want total control and notes that live as files they own.",
     ourTake:
-      "Obsidian is the right answer if you want to spend a weekend building your perfect setup. Notebook Archive gives you the markdown-and-export portability Obsidian is loved for, with AI working out of the box and zero plugin assembly.",
+      "Obsidian is the right answer if you want to spend a weekend building your perfect setup. Notespace gives you the markdown-and-export portability Obsidian is loved for, with AI working out of the box and zero plugin assembly.",
   },
   {
     name: "Mem",
@@ -133,7 +133,7 @@ const apps = [
     ],
     bestFor: "People who hate organizing and want the app to do it.",
     ourTake:
-      "Mem's bet is that AI organizes better than you do. We disagree - categories you choose are easier to navigate than categories a model invents. Notebook Archive gives you nested notebooks and global smart-tags, so AI helps with retrieval but never owns your structure.",
+      "Mem's bet is that AI organizes better than you do. We disagree - categories you choose are easier to navigate than categories a model invents. Notespace gives you nested notebooks and global smart-tags, so AI helps with retrieval but never owns your structure.",
   },
   {
     name: "Reflect",
@@ -156,7 +156,7 @@ const apps = [
     ],
     bestFor: "Daily-journal people who like Roam-style backlinks and a graph view.",
     ourTake:
-      "Reflect is gorgeous, but you pay $10/mo before writing a single note and the daily-notes mental model is a commitment. Notebook Archive lets you start free with traditional notebooks and adds AI without forcing a specific workflow on you.",
+      "Reflect is gorgeous, but you pay $10/mo before writing a single note and the daily-notes mental model is a commitment. Notespace lets you start free with traditional notebooks and adds AI without forcing a specific workflow on you.",
   },
   {
     name: "Otter.ai",
@@ -179,26 +179,26 @@ const apps = [
     ],
     bestFor: "Meeting-heavy roles where notes start as voice, not as writing.",
     ourTake:
-      "Otter is a transcription tool wearing a notes-app label. Notebook Archive is built for the moment after the meeting - when you sit down to think through what was said, and you want AI to help you understand it, not just to spit out a transcript.",
+      "Otter is a transcription tool wearing a notes-app label. Notespace is built for the moment after the meeting - when you sit down to think through what was said, and you want AI to help you understand it, not just to spit out a transcript.",
   },
 ];
 
 const faq = [
   {
     q: "What is the best AI note taking app for writers in 2026?",
-    a: "It depends on whether you want AI to write for you or think with you. If you want a writing partner that explains concepts, summarizes long sources, and tags your prose without taking over your voice, Notebook Archive or Reflect are the closest fits. If you want full AI drafting inside a team wiki, Notion AI is the safer pick.",
+    a: "It depends on whether you want AI to write for you or think with you. If you want a writing partner that explains concepts, summarizes long sources, and tags your prose without taking over your voice, Notespace or Reflect are the closest fits. If you want full AI drafting inside a team wiki, Notion AI is the safer pick.",
   },
   {
     q: "Are AI note taking apps safe with private notes?",
-    a: "Most reputable apps (Notebook Archive, Evernote, Notion, Obsidian) encrypt notes in transit and isolate them per user in the database. The real question is whether your notes are used to train the AI provider's models. Read each app's data-use policy; default to apps that explicitly say no training on customer data.",
+    a: "Most reputable apps (Notespace, Evernote, Notion, Obsidian) encrypt notes in transit and isolate them per user in the database. The real question is whether your notes are used to train the AI provider's models. Read each app's data-use policy; default to apps that explicitly say no training on customer data.",
   },
   {
     q: "Can I use an AI note taking app offline?",
-    a: "Obsidian and Notebook Archive both work offline for writing and reading. AI features (explain, summarize) need a connection because the model runs on a server. Notion and Mem require a connection for everything.",
+    a: "Obsidian and Notespace both work offline for writing and reading. AI features (explain, summarize) need a connection because the model runs on a server. Notion and Mem require a connection for everything.",
   },
   {
     q: "Is there a free AI note taking app worth using?",
-    a: "Yes - Notebook Archive, Evernote, Notion, and Obsidian all have free tiers that cover real daily use. Free tiers usually cap how often AI features run per month; that cap is the thing to compare, not the headline price.",
+    a: "Yes - Notespace, Evernote, Notion, and Obsidian all have free tiers that cover real daily use. Free tiers usually cap how often AI features run per month; that cap is the thing to compare, not the headline price.",
   },
 ];
 
@@ -208,12 +208,12 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best AI Note Taking Apps for Writers and Researchers in 2026",
     description:
-      "An honest comparison of the seven AI note taking apps that actually earn the label - Notebook Archive, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
+      "An honest comparison of the seven AI note taking apps that actually earn the label - Notespace, Evernote, Notion AI, Obsidian, Mem, Reflect, and Otter.ai.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/best-ai-note-taking-apps-2026",
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/best-ai-note-taking-apps-2026",
   },
   {
     "@context": "https://schema.org",
@@ -306,7 +306,7 @@ export default function BlogBestAINoteTakingApps() {
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">Which one to pick</h2>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You're a writer or researcher and you want AI to help you think, not draft:</strong> Notebook Archive or Reflect.</li>
+              <li>• <strong>You're a writer or researcher and you want AI to help you think, not draft:</strong> Notespace or Reflect.</li>
               <li>• <strong>You live in meetings:</strong> Otter, with Notion AI for the writeup after.</li>
               <li>• <strong>You're a team that needs a wiki and a notes app in one:</strong> Notion AI.</li>
               <li>• <strong>You want local files and total control:</strong> Obsidian.</li>
@@ -336,13 +336,13 @@ export default function BlogBestAINoteTakingApps() {
               Want to try the one we built?
             </p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive is free to start. No credit card.
+              Notespace is free to start. No credit card.
             </p>
             <Link
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notebook Archive
+              Open Notespace
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

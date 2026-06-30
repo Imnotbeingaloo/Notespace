@@ -19,12 +19,12 @@ export default function CompareIndex() {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "Notebook Archive comparisons",
-      url: "https://notebookarchive.lovable.app/compare",
+      name: "Notespace comparisons",
+      url: "https://notespace.lovable.app/compare",
       hasPart: COMPARISONS.map((c) => ({
         "@type": "WebPage",
-        name: `Notebook Archive vs ${c.competitor}`,
-        url: `https://notebookarchive.lovable.app/compare/${c.slug}`,
+        name: `Notespace vs ${c.competitor}`,
+        url: `https://notespace.lovable.app/compare/${c.slug}`,
       })),
     },
   ];
@@ -32,8 +32,8 @@ export default function CompareIndex() {
   return (
     <>
       <SeoHead
-        title="Compare Notebook Archive vs other note apps (2026)"
-        description="Honest side-by-side comparisons of Notebook Archive against Notion, Obsidian, Evernote, OneNote, Roam, Bear, Mem, Reflect, Apple Notes, and Google Keep."
+        title="Compare Notespace vs other note apps (2026)"
+        description="Honest side-by-side comparisons of Notespace against Notion, Obsidian, Evernote, OneNote, Roam, Bear, Mem, Reflect, Apple Notes, and Google Keep."
         path="/compare"
         jsonLd={jsonLd}
       />
@@ -51,7 +51,7 @@ export default function CompareIndex() {
               <span className="h-px w-8 bg-accent" />
             </div>
             <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground leading-tight mb-5">
-              Notebook Archive <span className="text-primary">vs the rest</span>
+              Notespace <span className="text-primary">vs the rest</span>
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Honest, side-by-side comparisons. We'll tell you when the other tool is the right

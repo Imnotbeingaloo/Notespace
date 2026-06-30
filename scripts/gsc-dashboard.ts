@@ -18,7 +18,7 @@
 import { mkdirSync, appendFileSync, readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 
-const SITE = "https://notebookarchive.lovable.app/";
+const SITE = "https://notespace.lovable.app/";
 const SITE_ENC = encodeURIComponent(SITE);
 const GW = "https://connector-gateway.lovable.dev/google_search_console";
 const HISTORY = resolve(".seo/gsc-history.jsonl");

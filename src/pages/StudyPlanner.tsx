@@ -22,7 +22,7 @@ const faq = [
     a: "A study planner is a structured schedule that maps every subject and revision task into recurring time slots across your week. It replaces guesswork with a plan you can actually follow, and lets you see at a glance whether you're on track for exams.",
   },
   {
-    q: "Is the Notebook Archive study planner free?",
+    q: "Is the Notespace study planner free?",
     a: "Yes - the study planner is included on the free plan. You get unlimited sessions, daily and weekly views, and the full revision-timetable template.",
   },
   {
@@ -43,7 +43,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Notebook Archive Study Planner",
+    name: "Notespace Study Planner",
     operatingSystem: "Web, iOS, Android",
     applicationCategory: "EducationalApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },

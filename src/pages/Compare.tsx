@@ -28,25 +28,25 @@ export default function Compare() {
       "@type": "Article",
       headline: data.metaTitle,
       description: data.metaDescription,
-      author: { "@type": "Organization", name: "Notebook Archive" },
+      author: { "@type": "Organization", name: "Notespace" },
       publisher: {
         "@type": "Organization",
-        name: "Notebook Archive",
-        logo: { "@type": "ImageObject", url: "https://notebookarchive.lovable.app/logo.png" },
+        name: "Notespace",
+        logo: { "@type": "ImageObject", url: "https://notespace.lovable.app/logo.png" },
       },
-      mainEntityOfPage: { "@type": "WebPage", "@id": `https://notebookarchive.lovable.app${path}` },
+      mainEntityOfPage: { "@type": "WebPage", "@id": `https://notespace.lovable.app${path}` },
     },
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "https://notebookarchive.lovable.app/" },
-        { "@type": "ListItem", position: 2, name: "Compare", item: "https://notebookarchive.lovable.app/compare" },
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notespace.lovable.app/" },
+        { "@type": "ListItem", position: 2, name: "Compare", item: "https://notespace.lovable.app/compare" },
         {
           "@type": "ListItem",
           position: 3,
-          name: `Notebook Archive vs ${data.competitor}`,
-          item: `https://notebookarchive.lovable.app${path}`,
+          name: `Notespace vs ${data.competitor}`,
+          item: `https://notespace.lovable.app${path}`,
         },
       ],
     },
@@ -81,12 +81,12 @@ export default function Compare() {
               <div className="flex items-center justify-center gap-3 mb-6">
                 <span className="h-px w-8 bg-accent" />
                 <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">
-                  Notebook Archive vs {data.competitor}
+                  Notespace vs {data.competitor}
                 </span>
                 <span className="h-px w-8 bg-accent" />
               </div>
               <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] max-w-4xl mx-auto">
-                Notebook Archive vs <span className="text-primary">{data.competitor}</span>
+                Notespace vs <span className="text-primary">{data.competitor}</span>
               </h1>
               <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 {data.tagline}
@@ -94,7 +94,7 @@ export default function Compare() {
               <div className="mt-8 flex items-center justify-center gap-4">
                 <Button asChild size="lg" className="rounded-full">
                   <Link to="/auth">
-                    Try Notebook Archive free <ArrowRight className="ml-2 h-4 w-4" />
+                    Try Notespace free <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </div>
@@ -142,7 +142,7 @@ export default function Compare() {
                   Capability
                 </div>
                 <div className="p-4 text-xs font-mono uppercase tracking-wider text-primary">
-                  Notebook Archive
+                  Notespace
                 </div>
                 <div className="p-4 text-xs font-mono uppercase tracking-wider text-muted-foreground">
                   {data.competitor}
@@ -192,7 +192,7 @@ export default function Compare() {
               </div>
               <div className="rounded-2xl border-2 border-primary/40 bg-primary/[0.04] p-6">
                 <h3 className="font-serif text-xl font-bold text-foreground mb-4">
-                  Pick Notebook Archive if...
+                  Pick Notespace if...
                 </h3>
                 <ul className="space-y-3">
                   {data.pickUs.map((p) => (

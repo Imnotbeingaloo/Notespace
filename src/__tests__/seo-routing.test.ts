@@ -55,7 +55,7 @@ describe("sitemap.xml excludes every private route", () => {
 describe("sitemap.xml contains every public route", () => {
   for (const { path } of PUBLIC_ROUTES) {
     it(`contains ${path}`, () => {
-      expect(sitemap).toContain(`<loc>https://notebookarchive.lovable.app${path}</loc>`);
+      expect(sitemap).toContain(`<loc>https://notespace.lovable.app${path}</loc>`);
     });
   }
 });

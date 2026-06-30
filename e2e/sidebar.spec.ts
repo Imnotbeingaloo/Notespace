@@ -27,7 +27,7 @@ test.describe("Sidebar interactions", () => {
     expect(collapsedWidth).not.toBe(initialWidth);
 
     // Logo should be present in collapsed state.
-    await expect(page.locator('img[alt="Notebook Archive"]').first()).toBeVisible();
+    await expect(page.locator('img[alt="Notespace"]').first()).toBeVisible();
 
     await toggle.click();
     await page.waitForTimeout(450);

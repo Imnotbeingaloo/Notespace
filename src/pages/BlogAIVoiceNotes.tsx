@@ -26,14 +26,14 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ai
 
 const picks = [
   {
-    name: "Notebook Archive",
+    name: "Notespace",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive - a quiet markdown notebook with built-in AI",
-    siteUrl: "https://notebookarchive.lovable.app",
+    imageAlt: "Notespace - a quiet markdown notebook with built-in AI",
+    siteUrl: "https://notespace.lovable.app",
     tagline: "Voice in, organized markdown out - without the meeting-bot vibe.",
     description:
-      "Dictate or paste a transcript and Notebook Archive turns it into clean, structured markdown inside a real notebook. The AI explain panel summarizes long transcripts into headings and bullets without rewriting your voice. No meeting bots joining calls uninvited.",
+      "Dictate or paste a transcript and Notespace turns it into clean, structured markdown inside a real notebook. The AI explain panel summarizes long transcripts into headings and bullets without rewriting your voice. No meeting bots joining calls uninvited.",
     pros: [
       "Voice-to-text inside the editor, then real markdown structure on top",
       "AI explain panel summarizes transcripts into headings and bullets",
@@ -131,7 +131,7 @@ const picks = [
 const faq = [
   {
     q: "What is the best AI voice note taking app in 2026?",
-    a: "It depends on whether you want a transcript or a finished note. For polished, organized markdown notes from your voice, Notebook Archive is the cleanest pick. For raw, accurate meeting transcripts with speaker labels, Otter.ai is still the default.",
+    a: "It depends on whether you want a transcript or a finished note. For polished, organized markdown notes from your voice, Notespace is the cleanest pick. For raw, accurate meeting transcripts with speaker labels, Otter.ai is still the default.",
   },
   {
     q: "Are AI meeting transcription apps accurate enough to rely on?",
@@ -143,11 +143,11 @@ const faq = [
   },
   {
     q: "Can I get voice transcription without a meeting bot joining my calls?",
-    a: "Yes. Notebook Archive, Notion, and Obsidian let you dictate or upload audio without a bot ever joining the meeting. If you'd rather not have a stranger in your Zoom, dictate the highlights after the call instead.",
+    a: "Yes. Notespace, Notion, and Obsidian let you dictate or upload audio without a bot ever joining the meeting. If you'd rather not have a stranger in your Zoom, dictate the highlights after the call instead.",
   },
   {
     q: "What's the cheapest way to get AI voice notes?",
-    a: "Self-hosting OpenAI Whisper is free if you have the technical chops. Otherwise, Notebook Archive's free tier handles voice input + AI explain without a paid add-on, and Mem's free tier covers basic capture.",
+    a: "Self-hosting OpenAI Whisper is free if you have the technical chops. Otherwise, Notespace's free tier handles voice input + AI explain without a paid add-on, and Mem's free tier covers basic capture.",
   },
 ];
 
@@ -157,12 +157,12 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best AI Voice Note Taking and Meeting Transcription Apps in 2026",
     description:
-      "Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
+      "Five honest picks for AI voice notes and meeting transcription - Notespace, Otter.ai, Notion AI, Obsidian + Whisper, and Mem.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
-    mainEntityOfPage: "https://notebookarchive.lovable.app/blog/ai-voice-notes-meeting-transcription",
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
+    mainEntityOfPage: "https://notespace.lovable.app/blog/ai-voice-notes-meeting-transcription",
   },
   {
     "@context": "https://schema.org",
@@ -190,7 +190,7 @@ export default function BlogAIVoiceNotes() {
       <SeoHead
         type="article"
         title="Best AI Voice Note Taking & Meeting Transcription Apps (2026)"
-        description="Five honest picks for AI voice notes and meeting transcription - Notebook Archive, Otter.ai, Notion AI, Obsidian + Whisper, and Mem. With pricing, pros and cons."
+        description="Five honest picks for AI voice notes and meeting transcription - Notespace, Otter.ai, Notion AI, Obsidian + Whisper, and Mem. With pricing, pros and cons."
         path="/blog/ai-voice-notes-meeting-transcription" image="/og/og-ai-voice-notes-meeting-transcription.jpg"
         jsonLd={jsonLd}
       />
@@ -250,7 +250,7 @@ export default function BlogAIVoiceNotes() {
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You want voice in, finished notes out:</strong> Notebook Archive.</li>
+              <li>• <strong>You want voice in, finished notes out:</strong> Notespace.</li>
               <li>• <strong>You live in back-to-back meetings:</strong> Otter.ai.</li>
               <li>• <strong>Your team's already on Notion:</strong> Notion AI.</li>
               <li>• <strong>You want local-first privacy:</strong> Obsidian + Whisper.</li>
@@ -284,13 +284,13 @@ export default function BlogAIVoiceNotes() {
               Voice in. Real notes out.
             </p>
             <p className="text-muted-foreground mb-6">
-              Notebook Archive turns dictation and transcripts into clean, organized markdown - free to start, no meeting bot required.
+              Notespace turns dictation and transcripts into clean, organized markdown - free to start, no meeting bot required.
             </p>
             <Link
               to={CTA}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              Open Notebook Archive
+              Open Notespace
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

@@ -3,7 +3,7 @@
  * Pass labeled path crumbs starting from the page just under "Home".
  * "Home" is prepended automatically.
  */
-const BASE_URL = "https://notebookarchive.lovable.app";
+const BASE_URL = "https://notespace.lovable.app";
 
 export interface Crumb {
   name: string;
