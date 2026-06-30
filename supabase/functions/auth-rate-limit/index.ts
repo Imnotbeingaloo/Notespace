@@ -42,18 +42,31 @@ Deno.serve(async (req) => {
     const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-    // For signup/reset, log this attempt so the same throttle applies.
+    // Derive client IP and hash it (for IP-based throttling on signup/reset).
+    const xff = req.headers.get("x-forwarded-for") ?? "";
+    const ip = xff.split(",")[0].trim() || req.headers.get("cf-connecting-ip") || "unknown";
+    const ipSalt = Deno.env.get("SUPABASE_JWKS") ?? SERVICE_ROLE;
+    const ipBuf = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(`${ipSalt}:${ip}`)
+    );
+    const ipHash = Array.from(new Uint8Array(ipBuf))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    // For signup/reset, log this attempt by IP (NOT by email) so attackers
+    // cannot lock out arbitrary victim emails by spamming this endpoint.
     if (action !== "login") {
       const userAgent = req.headers.get("user-agent") ?? null;
       await admin.from("auth_failure_logs").insert({
-        email,
+        email, // kept for audit visibility; not used as the throttle key
         reason: action === "signup" ? "signup_attempt" : "reset_attempt",
         user_agent: userAgent,
+        ip_hash: ipHash,
       });
     }
 
     const since = new Date(Date.now() - WINDOW_MS).toISOString();
-    // For login: count only credential failures. For signup/reset: count attempts of the same kind.
     const reasonFilter =
       action === "login"
         ? ["wrong_password", "email_not_found"]
@@ -61,15 +74,22 @@ Deno.serve(async (req) => {
         ? ["signup_attempt"]
         : ["reset_attempt"];
 
-    const { data, error } = await admin
+    // Login is keyed by email (real credential failures recorded by
+    // check-email-exists). Signup/reset are keyed by IP hash to prevent
+    // email-targeted denial-of-service.
+    let query = admin
       .from("auth_failure_logs")
       .select("created_at")
-      .eq("email", email)
       .in("reason", reasonFilter)
       .gte("created_at", since)
       .order("created_at", { ascending: true });
 
+    query = action === "login" ? query.eq("email", email) : query.eq("ip_hash", ipHash);
+
+    const { data, error } = await query;
+
     if (error) return okBody();
+
 
     const count = data?.length ?? 0;
     const blocked = count >= MAX_ATTEMPTS;
