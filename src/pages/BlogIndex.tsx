@@ -243,6 +243,14 @@ const posts = [
     tag: "Explainer",
   },
   {
+    slug: "ai-study-tools",
+    title: "Best AI Study Tools in 2026: 11 Honest Picks (Free & Paid)",
+    excerpt:
+      "Eleven AI study tools compared honestly - NotebookLM, StudyFetch, Turbo.ai, Mindgrasp, Quizlet, Khanmigo, and more. What each is best at, and how to pick by job.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "otter-ai-alternative-for-students",
     title: "The Honest Otter.ai Alternative Guide for Students",
     excerpt:
