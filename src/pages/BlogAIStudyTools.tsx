@@ -17,6 +17,8 @@ import {
   BlogDivider,
 } from "@/components/blog/BlogVisuals";
 import { Callout } from "@/components/blog/Callout";
+import { BlogByline } from "@/components/blog/BlogByline";
+import { Pill } from "@/components/blog/Pill";
 
 const REF = "blog-ai-study-tools";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ai-study-tools`;
@@ -273,6 +275,8 @@ export default function BlogAIStudyTools() {
               the right one for the way you actually study.
             </p>
           </header>
+
+          <BlogByline date="June 2026" readingTime="11 min read" />
 
           <BlogKeyTakeaways
             points={[
