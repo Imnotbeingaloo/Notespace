@@ -218,6 +218,11 @@ const answer = await gemini.generate({ model: "gemini-2.5-pro", prompt });`}</co
               The questions developers ask most often about a NotebookLM API - answered without the
               speculation.
             </p>
+            <Callout tone="tip" title="Before you scroll">
+              If your question isn't here, it's almost certainly answered by the Gemini API docs - that's
+              the real surface area, and it's well documented. NotebookLM-specific behavior lives in the
+              app, not in any endpoint.
+            </Callout>
             <Accordion type="single" collapsible className="w-full">
               {faq.map((f, i) => (
                 <AccordionItem key={f.q} value={`item-${i}`}>
