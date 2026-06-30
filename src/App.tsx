@@ -173,6 +173,7 @@ const App = () => (
                 <Route path="/blog/evernote-alternatives-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogEvernoteAlternatives /></Suspense>} />
                 <Route path="/blog/onenote-alternatives-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogOneNoteAlternatives /></Suspense>} />
                 <Route path="/blog/otter-ai-alternative-for-students" element={<Suspense fallback={<BlogSkeleton />}><BlogOtterAlternative /></Suspense>} />
+                <Route path="/blog/notebooklm-alternative" element={<Suspense fallback={<BlogSkeleton />}><BlogNotebookLMAlternative /></Suspense>} />
                 <Route path="/blog/best-note-taking-app-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogBestNoteTakingApp /></Suspense>} />
                 <Route path="/blog/ai-voice-notes-meeting-transcription" element={<Suspense fallback={<BlogSkeleton />}><BlogAIVoiceNotes /></Suspense>} />
                 <Route path="/blog/best-ai-writing-assistants-for-note-takers" element={<Suspense fallback={<BlogSkeleton />}><BlogAIWritingAssistants /></Suspense>} />
