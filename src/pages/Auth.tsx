@@ -279,6 +279,19 @@ const AuthPage = () => {
     setLoading(true);
 
     if (mode === "login") {
+      // Pre-login rate limit: max 5 failed attempts per email per 15 min.
+      try {
+        const { data: rl } = await supabase.functions.invoke("auth-rate-limit", {
+          body: { email: email.trim() },
+        });
+        if (rl?.blocked) {
+          const mins = Math.max(1, Math.ceil((rl.retryAfter ?? 0) / 60));
+          setError(`Too many failed attempts. Try again in ${mins} minute${mins === 1 ? "" : "s"}, or reset your password below.`);
+          setLoading(false);
+          return;
+        }
+      } catch { /* fail open */ }
+
       // Kick off the existence check in parallel with sign-in so the
       // post-error branch resolves instantly instead of waiting on a cold call.
       const existsPromise = supabase.functions
