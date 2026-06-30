@@ -276,6 +276,8 @@ export default function BlogAIStudyTools() {
             </p>
           </header>
 
+          <BlogByline date="June 2026" readingTime="11 min read" />
+
           <BlogKeyTakeaways
             points={[
               "There is no single best AI study tool. Pick by job: reading, writing, flashcards, tutoring, or planning.",
