@@ -94,7 +94,7 @@ export default function AdminAuthLogs() {
   return (
     <>
       <NoindexHead />
-      <SeoHead title="Auth logs · Admin" description="Internal admin dashboard for authentication failure logs." />
+      <SeoHead title="Auth logs · Admin" description="Internal admin dashboard for authentication failure logs." path="/admin/auth-logs" />
       <main className="min-h-screen bg-background text-foreground px-4 py-10">
         <div className="mx-auto max-w-6xl">
           <header className="mb-6">

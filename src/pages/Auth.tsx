@@ -326,6 +326,18 @@ const AuthPage = () => {
         navigate(resolvePostAuthTarget());
       }
     } else {
+      // Rate limit signup attempts per email (5 / 15 min).
+      try {
+        const { data: rl } = await supabase.functions.invoke("auth-rate-limit", {
+          body: { email: email.trim(), action: "signup" },
+        });
+        if (rl?.blocked) {
+          const mins = Math.max(1, Math.ceil((rl.retryAfter ?? 0) / 60));
+          setError(`Too many signup attempts. Try again in ${mins} minute${mins === 1 ? "" : "s"}.`);
+          setLoading(false);
+          return;
+        }
+      } catch { /* fail open */ }
       const { error } = await signUp(email, password);
       if (error) {
         setError(friendlyError(error.message, "signup").message);
@@ -363,6 +375,18 @@ const AuthPage = () => {
       return;
     }
     setForgotLoading(true);
+    // Rate limit password reset requests per email (5 / 15 min).
+    try {
+      const { data: rl } = await supabase.functions.invoke("auth-rate-limit", {
+        body: { email: email.trim(), action: "reset" },
+      });
+      if (rl?.blocked) {
+        const mins = Math.max(1, Math.ceil((rl.retryAfter ?? 0) / 60));
+        setError(`Too many password reset requests. Try again in ${mins} minute${mins === 1 ? "" : "s"}.`);
+        setForgotLoading(false);
+        return;
+      }
+    } catch { /* fail open */ }
     const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
