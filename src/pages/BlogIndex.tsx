@@ -219,6 +219,14 @@ const posts = [
     tag: "Comparison",
   },
   {
+    slug: "notebooklm-alternative",
+    title: "NotebookLM Alternatives 2026 - 6 Honest Picks (Free & Paid)",
+    excerpt:
+      "NotebookLM is a great demo and not much of a notebook. Six honest alternatives compared - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and OneNote + Copilot.",
+    date: "Jun 2026",
+    tag: "Comparison",
+  },
+  {
     slug: "otter-ai-alternative-for-students",
     title: "The Honest Otter.ai Alternative Guide for Students",
     excerpt:
