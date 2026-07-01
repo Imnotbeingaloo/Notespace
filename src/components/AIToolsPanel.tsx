@@ -197,7 +197,7 @@ export function AIToolsPanel() {
                     </p>
                   </div>
                   <div className="grid grid-cols-4 gap-2">
-                    {[5, 10, 15, 20].map((n) => (
+                    {[3, 5, 7, 10].map((n) => (
                       <button
                         key={n}
                         onClick={() => setCardCount(n)}
