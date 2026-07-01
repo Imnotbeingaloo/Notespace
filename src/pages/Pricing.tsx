@@ -15,7 +15,18 @@ const tiers = [
     name: "Free",
     price: "$0",
     description: "A complete starting point with room to capture, organize, and search your work.",
-    features: ["Up to 3 notebooks", "Unlimited notes with markdown", "AI topic explanations (5/day)", "Instant ⌘K search", "Auto-save & sync", "Export to PDF & Markdown", "File attachments (50 MB)", "Version history (7 days)"],
+    features: [
+      "Up to 3 notebooks",
+      "Unlimited notes with markdown",
+      "AI topic explanations (5/day)",
+      "Instant ⌘K global search",
+      "Smart auto-tagging",
+      "Focus Mode & word-count goal",
+      "Templates gallery",
+      "Export to PDF & Markdown",
+      "File attachments (50 MB)",
+      "Offline write-queue & auto-sync",
+    ],
     cta: "Get Started",
     highlighted: false,
   },
@@ -24,7 +35,18 @@ const tiers = [
     price: "$19",
     period: "/month",
     description: "For daily users who require unlimited AI access and advanced workflow tools.",
-    features: ["Unlimited notebooks", "Unlimited AI explanations", "AI summaries & flashcard generation", "Smart auto-tagging & linking", "Voice-to-note transcription", "File attachments (10 GB)", "Version history (unlimited)", "Export to Notion & integrations", "Priority support"],
+    features: [
+      "Unlimited notebooks",
+      "Unlimited AI explanations",
+      "AI summaries & flashcard generation",
+      "Study Planner & Pomodoro tools",
+      "Temporary (session-only) notes",
+      "Share notes via public link",
+      "File attachments (10 GB)",
+      "PDF & document import with AI cleanup",
+      "Voice transcription (coming soon)",
+      "Priority support",
+    ],
     cta: "Start 14-Day Free Trial",
     highlighted: true,
   },
@@ -32,26 +54,38 @@ const tiers = [
     name: "Team",
     price: "$29",
     period: "/user/month",
-    description: "Shared notebooks for study groups, labs, and teams collaborating on long-form work.",
-    features: ["Everything in Pro", "Shared notebooks & real-time co-editing", "Team knowledge base", "Admin dashboard & permissions", "SSO & advanced security", "Custom AI training on team data", "API access & webhooks", "Dedicated account manager"],
+    description: "Shared workspaces for study groups, labs, and teams collaborating on long-form work.",
+    features: [
+      "Everything in Pro",
+      "Shared notebooks (coming soon)",
+      "Real-time co-editing (coming soon)",
+      "Team knowledge base",
+      "Admin dashboard & permissions",
+      "SSO & advanced security (on request)",
+      "Dedicated account manager",
+    ],
     cta: "Contact Sales",
     highlighted: false,
   },
 ];
 
-const comparisons = [
+const comparisons: { feature: string; free: boolean | "soon"; pro: boolean | "soon"; team: boolean | "soon" }[] = [
   { feature: "AI-powered explanations", free: true, pro: true, team: true },
   { feature: "AI summaries & flashcards", free: false, pro: true, team: true },
-  { feature: "Export (PDF & Markdown)", free: true, pro: true, team: true },
-  { feature: "Export to Notion", free: false, pro: true, team: true },
-  { feature: "Voice transcription", free: false, pro: true, team: true },
-  { feature: "Smart auto-tagging", free: false, pro: true, team: true },
-  { feature: "Version history", free: true, pro: true, team: true },
-  { feature: "Shared notebooks", free: false, pro: false, team: true },
-  { feature: "Real-time collaboration", free: false, pro: false, team: true },
-  { feature: "API access", free: false, pro: false, team: true },
-  { feature: "Custom AI training", free: false, pro: false, team: true },
+  { feature: "Smart auto-tagging", free: true, pro: true, team: true },
+  { feature: "Global ⌘K search", free: true, pro: true, team: true },
+  { feature: "Focus Mode & word-count goal", free: true, pro: true, team: true },
+  { feature: "Templates gallery", free: true, pro: true, team: true },
+  { feature: "Export to PDF & Markdown", free: true, pro: true, team: true },
+  { feature: "PDF/document import with AI cleanup", free: false, pro: true, team: true },
+  { feature: "Study Planner & Pomodoro", free: false, pro: true, team: true },
+  { feature: "Share notes via public link", free: false, pro: true, team: true },
+  { feature: "Offline write-queue & auto-sync", free: true, pro: true, team: true },
+  { feature: "Voice transcription", free: false, pro: "soon", team: "soon" },
+  { feature: "Shared notebooks", free: false, pro: false, team: "soon" },
+  { feature: "Real-time co-editing", free: false, pro: false, team: "soon" },
 ];
+
 
 const faqs = [
   { q: "Can I switch plans later?", a: "Yes. You can upgrade, downgrade, or cancel at any time. Mid-cycle upgrades are prorated, and there are no long-term commitments." },
@@ -191,20 +225,25 @@ export default function PricingPage() {
               <div className="p-4 font-semibold text-foreground text-center border-b border-border">Free</div>
               <div className="p-4 font-semibold text-primary text-center border-b border-border bg-primary/5">Pro</div>
               <div className="p-4 font-semibold text-foreground text-center border-b border-border">Team</div>
-              {comparisons.map((row, i) => (
-                <React.Fragment key={i}>
-                  <div className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
-                  <div className="p-4 text-center border-b border-border/50">
-                    {row.free ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">-</span>}
-                  </div>
-                  <div className="p-4 text-center border-b border-border/50 bg-primary/5">
-                    {row.pro ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">-</span>}
-                  </div>
-                  <div className="p-4 text-center border-b border-border/50">
-                    {row.team ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">-</span>}
-                  </div>
-                </React.Fragment>
-              ))}
+              {comparisons.map((row, i) => {
+                const cell = (v: boolean | "soon") =>
+                  v === "soon" ? (
+                    <span className="inline-block rounded-full bg-accent/15 text-accent px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider">Soon</span>
+                  ) : v ? (
+                    <Check className="h-4 w-4 text-primary mx-auto" />
+                  ) : (
+                    <span className="text-muted-foreground">-</span>
+                  );
+                return (
+                  <React.Fragment key={i}>
+                    <div className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
+                    <div className="p-4 text-center border-b border-border/50">{cell(row.free)}</div>
+                    <div className="p-4 text-center border-b border-border/50 bg-primary/5">{cell(row.pro)}</div>
+                    <div className="p-4 text-center border-b border-border/50">{cell(row.team)}</div>
+                  </React.Fragment>
+                );
+              })}
+
             </div>
             </div>
           </motion.div>
