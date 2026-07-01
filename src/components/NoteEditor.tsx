@@ -455,6 +455,11 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [dragOver, setDragOver] = useState(false);
+  // Live editor content mirror - updated synchronously on every keystroke so
+  // the word/char counter reflects typing/deletion in real time, without
+  // waiting for the debounced save to activeNote.content.
+  const [liveContent, setLiveContent] = useState(activeNote?.content || "");
+  useEffect(() => { setLiveContent(activeNote?.content || ""); }, [activeNote?.id]);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -1012,16 +1017,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           <HybridEditor
             ref={hybridEditorRef}
             content={activeNote.content || ""}
-            onChange={(content) => debouncedUpdate("content", content)}
+            onChange={(content) => { setLiveContent(content); debouncedUpdate("content", content); }}
             placeholder={focusMode ? "Just write..." : "Start writing..."}
           />
         </div>
 
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
-          <WordCount content={activeNote?.content || ""} />
+          <WordCount content={liveContent} />
           {wordCountGoalEnabled && (
-            <WordCountGoal content={activeNote?.content || ""} />
+            <WordCountGoal content={liveContent} />
           )}
         </div>
 
