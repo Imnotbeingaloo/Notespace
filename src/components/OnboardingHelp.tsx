@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/sonner";
 import { AnimatePresence, motion } from "framer-motion";
 
-type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string };
+type Tip = { Icon?: React.ElementType; glyph?: string; title: string; body: string; accent?: "flashcards" };
 type Section = { id: string; label: string; tips: Tip[] };
 
 const sections: Section[] = [
@@ -23,6 +23,7 @@ const sections: Section[] = [
       { Icon: Table2, title: "Table", body: "Pick a size from the popover. The table edit toolbar appears once your cursor is inside." },
       { Icon: TableProperties, title: "Edit table", body: "When inside a table, the table toolbar appears next to the main one - add/remove rows & columns inline." },
       { glyph: "Ω", title: "Insert symbol", body: "Picker for math symbols, arrows, currency, and Greek letters. Click any glyph to drop it at your cursor." },
+      { glyph: "#", title: "Markdown shortcuts", body: "Type `# `, `## `, `### `, `- `, `1. `, `> ` and they convert as you finish typing." },
     ],
   },
   {
@@ -37,6 +38,7 @@ const sections: Section[] = [
       { Icon: CalendarDays, title: "Study schedule", body: "Upcoming study plans for the next 3 days surface here." },
       { Icon: Trash2, title: "Trash", body: "Deleted notes/notebooks live here for 30 days. Restore or permanently delete." },
       { Icon: Menu, title: "Collapse", body: "Hamburger collapses the sidebar to an icon strip. Hover the logo to expand again." },
+      { Icon: Share2, title: "Share notes", body: "Public link or share by email. Public links can be toggled discoverable/hidden from search engines." },
     ],
   },
   {
@@ -45,13 +47,11 @@ const sections: Section[] = [
     tips: [
       { Icon: Sparkles, title: "Ask AI", body: "Side panel with two modes. Edit rewrites your selection in place; Explain answers questions about the note. Three quick-action chips above the bar cover the common asks." },
       { Icon: Wand2, title: "AI Edit intents", body: "Type verbs like rewrite, fix, shorten, expand, simplify, translate, or convert in Explain mode and Ask AI automatically routes them to the edit engine." },
-      { Icon: ClipboardType, title: "Auto-format on paste", body: "Paste plain text over 200 characters and the editor offers to format it - headings, lists, structure - with a live progress toast." },
+      { Icon: ClipboardType, title: "Auto-format on paste", body: "Paste plain text over 200 characters and the editor offers to format it with AI - headings, lists, structure - with a live progress toast." },
       { Icon: Mic, title: "Voice transcription", body: "Mic button records, transcribes with Whisper, and cleans it up with an LLM. The result is inserted exactly where your cursor was blinking. Word-level timestamps available." },
-      { Icon: Layers, title: "Flashcards", body: "Generate a deck from any note. Grade each card Correct or Wrong with a swipe-style animation; the deck reshuffles what you got wrong." },
+      { Icon: Layers, title: "Flashcards", body: "Generate a deck from any note. Grade each card Correct or Wrong with a swipe-style animation; the deck reshuffles what you got wrong.", accent: "flashcards" },
       { Icon: BookOpen, title: "Explain topic", body: "Highlight a term or phrase and open the Explain panel for a streamed, in-depth explanation without leaving your note." },
       { Icon: Languages, title: "Summarize & analyze", body: "Ask AI can summarize key points, extract action items, list what's missing, or analyze structure - all grounded in the current note." },
-      { glyph: "#", title: "Markdown shortcuts", body: "Type `# `, `## `, `### `, `- `, `1. `, `> ` and they convert as you finish typing." },
-      { Icon: Share2, title: "Share notes", body: "Public link or share by email. Public links can be toggled discoverable/hidden from search engines." },
     ],
   },
   {
@@ -242,9 +242,13 @@ export function OnboardingHelp() {
             {sections.map((s) => (
               <TabsContent key={s.id} value={s.id} className="flex-1 min-h-0 overflow-y-auto pr-1 mt-3 scrollbar-thin">
                 <ul className="space-y-2">
-                  {s.tips.map(({ Icon, glyph, title, body }) => (
+                  {s.tips.map(({ Icon, glyph, title, body, accent }) => (
                     <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
-                      <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                      <div className={
+                        accent === "flashcards"
+                          ? "w-9 h-9 shrink-0 rounded-lg bg-[hsl(280_60%_55%/0.15)] text-[hsl(280_65%_60%)] flex items-center justify-center"
+                          : "w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center"
+                      }>
                         {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
                       </div>
                       <div className="min-w-0">
