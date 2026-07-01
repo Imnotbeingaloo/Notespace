@@ -97,6 +97,7 @@ const picks = [
       "Each new device needs setup",
     ],
     bestFor: "Tinkerers who want NotebookLM's behavior on local files.",
+    aside: "Personal note: the Obsidian route is where most of our own writing lives, but every clean install eats a Sunday. Budget for it or don't start.",
   },
   {
     name: "Mem",
@@ -139,6 +140,7 @@ const picks = [
       "Smaller community than Obsidian or Notion",
     ],
     bestFor: "Writers and thinkers who already keep a daily journal.",
+    aside: "We tried Reflect for a full term of lecture notes. The daily-notes spine is beautiful and completely wrong for coursework - notes belonged to a course, not to a Tuesday.",
   },
   {
     name: "OneNote + Copilot",
@@ -274,10 +276,13 @@ export default function BlogNotebookLMAlternative() {
             ]}
           />
 
-          <BlogPullQuote cite="Graduate student, r/NotebookLM, 2026">
-            I loaded 80 papers into NotebookLM, asked great questions for a week, and at
-            the end of it had nothing I could turn in. The conversation wasn't the work.
-          </BlogPullQuote>
+          <p className="text-muted-foreground leading-relaxed mb-8">
+            One of us spent a week loading eighty papers into NotebookLM last
+            January. The Q&A was genuinely useful. At the end of the week there
+            was nothing to hand in - just a chat history that wouldn't export.
+            That is the shape of the problem this guide is trying to solve.
+          </p>
+
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-8 mb-4">How we picked</h2>
@@ -405,12 +410,8 @@ export default function BlogNotebookLMAlternative() {
               </li>
             </ul>
 
-            <Callout tone="tip" title="Before you scroll the FAQ">
-              The four questions we hear most about switching off NotebookLM are about
-              exporting sources, pricing certainty, source grounding, and privacy. Quick
-              answers below.
-            </Callout>
             <h2 className="font-serif text-2xl font-bold mt-16 mb-6">Frequently asked</h2>
+
             <Accordion type="single" collapsible className="w-full">
               {faq.map((f, i) => (
                 <AccordionItem key={f.q} value={`item-${i}`}>
