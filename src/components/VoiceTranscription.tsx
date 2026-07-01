@@ -77,17 +77,34 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const [error, setError] = useState<string | null>(null);
   const [showTimestamps, setShowTimestamps] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const [level, setLevel] = useState(0);
+  // Persisted mic sensitivity (0.5 - 3.5x). Applied to the pre-analyser gain
+  // so the waveform reacts more/less strongly per user preference.
+  const MIC_GAIN_KEY = "va.micGain";
+  const [micGain, setMicGain] = useState<number>(() => {
+    if (typeof window === "undefined") return 1.9;
+    const raw = window.localStorage.getItem(MIC_GAIN_KEY);
+    const n = raw ? Number(raw) : NaN;
+    return isFinite(n) && n >= 0.5 && n <= 3.5 ? n : 1.9;
+  });
+  const [clipping, setClipping] = useState(false);
+  const [calibrating, setCalibrating] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
   const barsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
   const targetsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  // Ref-driven DOM updates for the level meter + clip pip so we don't
+  // re-render React 60 times per second while recording.
+  const levelBarRef = useRef<HTMLDivElement | null>(null);
+  const clipPipRef = useRef<HTMLSpanElement | null>(null);
+  const calibratedFloorRef = useRef<number>(0.04);
+  const clipHitsRef = useRef<number>(0);
   const [visualizerReady, setVisualizerReady] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
