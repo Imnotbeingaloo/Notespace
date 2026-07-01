@@ -1047,12 +1047,6 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           </motion.div>
         )}
 
-        {/* File upload */}
-        {!focusMode && !isOverrideActive && (
-          <div className="shrink-0 border-t border-border">
-            <FileUpload onInsertMarkdown={handleInsertMarkdown} onSaveSelection={() => hybridEditorRef.current?.saveSelection()} />
-          </div>
-        )}
 
         {/* Shared Ask-AI panel (controlled). Triggered by Ask AI button and by AI Edit button. */}
         <AskAIPanel
