@@ -265,7 +265,10 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setCleanupNote(null);
     setElapsed(0);
     setLevel(0);
-    historyRef.current = new Array(HISTORY).fill(0);
+    barsRef.current = new Array(BAR_COUNT).fill(0);
+    targetsRef.current = new Array(BAR_COUNT).fill(0);
+    setVisualizerReady(false);
+
 
     setOpen(true);
     setPhase("recording");
