@@ -12,7 +12,7 @@ import { ExportButtons } from "@/components/ExportButtons";
 import { ShareNoteDialog } from "@/components/ShareNoteDialog";
 import { VoiceTranscription } from "@/components/VoiceTranscription";
 import { NoteTags } from "@/components/NoteTags";
-import { FileUpload } from "@/components/FileUpload";
+
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
 import { SymbolsPicker } from "@/components/SymbolsPicker";
