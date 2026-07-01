@@ -367,7 +367,7 @@ export default function LandingPage() {
                 <Link to={user ? "/home" : "/auth"} className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
                   {user ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5" />
                 </Link>
-                <Link to="/features" className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-foreground hover:bg-muted hover:text-foreground/80 transition-colors">
+                <Link to="/features" className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl border border-foreground/15 bg-secondary px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-foreground hover:bg-secondary/70 transition-colors">
                   See what it does
                 </Link>
 
