@@ -169,70 +169,96 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
                 ? { opacity: 1, y: 0, scale: 1, x: 0, rotate: 0 }
                 : {
                     opacity: 0,
-                    x: verdict === 1 ? 220 : -220,
-                    rotate: verdict === 1 ? 8 : -8,
-                    transition: { duration: 0.26, ease: [0.4, 0, 0.2, 1] },
+                    x: verdict === 1 ? 260 : -260,
+                    rotate: verdict === 1 ? 14 : -14,
+                    transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] },
                   }
             }
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className="absolute inset-0"
           >
-            <button
-              type="button"
-              onClick={() => setFlipped((f) => !f)}
-              className="group relative w-full h-full rounded-2xl text-left [transform-style:preserve-3d] transition-transform duration-500"
-              style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
-              aria-label={flipped ? "Show question" : "Show answer"}
-            >
-              {/* Front */}
-              <div
-                className="absolute inset-0 rounded-2xl bg-card border border-border shadow-md p-6 flex flex-col [backface-visibility:hidden]"
-              >
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Question</span>
-                <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">
-                  {card.q}
-                </p>
-                <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to reveal answer</span>
-              </div>
-              {/* Back */}
-              <div
-                className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.08] to-primary/[0.02] border border-primary/30 shadow-md p-6 flex flex-col [backface-visibility:hidden]"
-                style={{ transform: "rotateY(180deg)" }}
-              >
-                <span className="text-[10px] uppercase tracking-wider text-primary font-semibold">Answer</span>
-                <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">
-                  {card.a}
-                </p>
-                <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to flip back</span>
-              </div>
-            </button>
+            {(() => {
+              // Rotate a small palette so consecutive cards feel distinct
+              // instead of a single purple wall.
+              const PALETTES = [
+                { h: "265 70% 60%" },
+                { h: "200 85% 52%" },
+                { h: "160 65% 45%" },
+                { h: "35 90% 55%" },
+                { h: "340 80% 60%" },
+                { h: "185 70% 45%" },
+              ];
+              const pal = PALETTES[currentIdx % PALETTES.length];
+              return (
+                <button
+                  type="button"
+                  onClick={() => setFlipped((f) => !f)}
+                  className="group relative w-full h-full rounded-2xl text-left [transform-style:preserve-3d] transition-transform duration-500"
+                  style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
+                  aria-label={flipped ? "Show question" : "Show answer"}
+                >
+                  <div
+                    className="absolute inset-0 rounded-2xl shadow-md p-6 flex flex-col [backface-visibility:hidden]"
+                    style={{
+                      background: `linear-gradient(135deg, hsl(${pal.h} / 0.10), hsl(${pal.h} / 0.02))`,
+                      border: `1px solid hsl(${pal.h} / 0.35)`,
+                    }}
+                  >
+                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${pal.h})` }}>Question</span>
+                    <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">{card.q}</p>
+                    <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to reveal answer</span>
+                  </div>
+                  <div
+                    className="absolute inset-0 rounded-2xl shadow-md p-6 flex flex-col [backface-visibility:hidden]"
+                    style={{
+                      background: `linear-gradient(135deg, hsl(${pal.h} / 0.18), hsl(${pal.h} / 0.06))`,
+                      border: `1px solid hsl(${pal.h} / 0.5)`,
+                      transform: "rotateY(180deg)",
+                    }}
+                  >
+                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${pal.h})` }}>Answer</span>
+                    <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">{card.a}</p>
+                    <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to flip back</span>
+                  </div>
+                </button>
+              );
+            })()}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Grade buttons */}
-      <div className="mt-5 flex items-center gap-3">
-        <button
-          onClick={() => grade(false)}
-          disabled={!flipped || verdict !== 0}
-          className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:bg-rose-500/15 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <X className="h-4 w-4 transition-transform group-hover:scale-110" />
-          <span className="text-sm font-medium">Review again</span>
-        </button>
-        <button
-          onClick={() => grade(true)}
-          disabled={!flipped || verdict !== 0}
-          className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/15 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <Check className="h-4 w-4 transition-transform group-hover:scale-110" />
-          <span className="text-sm font-medium">Got it</span>
-        </button>
+      {/* Grade buttons only appear after reveal (NotebookLM-style). */}
+      <div className="mt-5 h-[46px] flex items-center justify-center">
+        {flipped ? (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center gap-3"
+          >
+            <button
+              onClick={() => grade(false)}
+              disabled={verdict !== 0}
+              className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <X className="h-4 w-4 transition-transform group-hover:scale-110" />
+              <span className="text-sm font-medium">Review again</span>
+            </button>
+            <button
+              onClick={() => grade(true)}
+              disabled={verdict !== 0}
+              className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Check className="h-4 w-4 transition-transform group-hover:scale-110" />
+              <span className="text-sm font-medium">Got it</span>
+            </button>
+          </motion.div>
+        ) : (
+          <p className="text-[11px] text-muted-foreground">Flip the card to grade your recall.</p>
+        )}
       </div>
-      {!flipped && (
-        <p className="mt-2 text-[11px] text-muted-foreground">Flip the card to grade your recall.</p>
-      )}
     </div>
   );
 }
+

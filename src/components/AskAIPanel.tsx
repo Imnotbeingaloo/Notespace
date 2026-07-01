@@ -415,21 +415,30 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
               transition={{ layout: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
               className="text-center py-12 flex flex-col items-center"
             >
-              {/* Persistent halo + leaf logo. Always mounted so it never
-                  disappears / reappears when the panel opens. */}
-              <div className="relative mb-3 h-10 w-10 flex items-center justify-center select-none" aria-hidden>
-                <motion.span
-                  className="absolute inset-0 rounded-full bg-primary/15 blur-md"
-                  animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
-                  transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <Feather className="relative h-5 w-5 text-primary" />
-              </div>
-
-              {/* Word vignette - remounts on every fresh open via emptyKey. */}
+              {/* Word vignette first - the quill only reveals once the word
+                  cycle settles so it never sits on top of the animation. */}
               <div key={`vignette-${emptyKey}`} className="mb-2" aria-hidden>
                 <IdleVignette reducedMotion={reducedMotion} />
               </div>
+
+              {/* Feather + halo, delayed until vignette word cycle completes
+                  (~1.65s). Reduced-motion users get it immediately. */}
+              <motion.div
+                key={`quill-${emptyKey}`}
+                initial={reducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 6, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1], delay: reducedMotion ? 0 : 1.65 }}
+                className="relative mt-3 mb-1 h-10 w-10 flex items-center justify-center select-none"
+                aria-hidden
+              >
+                <motion.span
+                  className="absolute inset-0 rounded-full bg-primary/15 blur-md"
+                  animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: reducedMotion ? 0 : 1.75 }}
+                />
+                <Feather className="relative h-5 w-5 text-primary" />
+              </motion.div>
+
 
               <motion.p
                 key={`line-${emptyKey}`}

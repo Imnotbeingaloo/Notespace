@@ -29,10 +29,28 @@ export function AIToolsPanel() {
     return plain.length === 0;
   };
 
+  /** Body-only length: strips HTML, strips markdown headings (# / ## / ###),
+   *  and drops empty lines. We never let the model quiz the learner on the
+   *  note's title or a bare heading - only on actual written content. */
+  const bodyLength = () => {
+    if (!activeNote) return 0;
+    const noHtml = (activeNote.content || "").replace(/<[^>]*>/g, "\n");
+    const lines = noHtml
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0 && !/^#{1,6}\s/.test(l));
+    return lines.join(" ").length;
+  };
+  const MIN_BODY = 100;
+
   const openFlashcardsSetup = () => {
     if (!activeNote) return;
     if (isNoteEmpty()) {
-      toast.error("Type something to generate flashcards.");
+      toast.error("Please write something in the note first.");
+      return;
+    }
+    if (bodyLength() < MIN_BODY) {
+      toast.error("Write a bit more first - at least ~100 characters of actual notes (headings don't count).");
       return;
     }
     setMode("flashcards");
@@ -47,9 +65,13 @@ export function AIToolsPanel() {
     if (isNoteEmpty()) {
       toast.error(
         toolMode === "flashcards"
-          ? "Type something to generate flashcards."
+          ? "Please write something in the note first."
           : "Notebook is empty - write something first."
       );
+      return;
+    }
+    if (toolMode === "flashcards" && bodyLength() < MIN_BODY) {
+      toast.error("Write at least ~100 characters of actual notes (headings don't count).");
       return;
     }
     setMode(toolMode);
@@ -175,7 +197,7 @@ export function AIToolsPanel() {
                     </p>
                   </div>
                   <div className="grid grid-cols-4 gap-2">
-                    {[5, 10, 15, 20].map((n) => (
+                    {[3, 5, 7, 10].map((n) => (
                       <button
                         key={n}
                         onClick={() => setCardCount(n)}
