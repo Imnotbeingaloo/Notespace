@@ -11,6 +11,9 @@ interface VoiceTranscriptionProps {
 type Word = { word: string; start: number; end: number };
 type Phase = "idle" | "recording" | "processing" | "review";
 
+// Chunky bar visualizer, mirrored top/bottom, driven by FFT amplitude.
+const BAR_COUNT = 28;
+
 const fmtTime = (s: number) => {
   if (!isFinite(s) || s < 0) s = 0;
   const m = Math.floor(s / 60);
@@ -72,6 +75,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const [showTimestamps, setShowTimestamps] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [level, setLevel] = useState(0); // 0-1 running amplitude for the mic pulse
+  const [bars, setBars] = useState<number[]>(() => new Array(BAR_COUNT).fill(0.05));
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -80,10 +84,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const timeDataRef = useRef<Uint8Array | null>(null);
-  const levelRef = useRef(0);
-  const lastElapsedTickRef = useRef(0);
+  const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
 
   const cleanupResources = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -110,97 +111,41 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const ctx = new Ctx();
     const source = ctx.createMediaStreamSource(stream);
     const analyser = ctx.createAnalyser();
-    analyser.fftSize = 2048; // time-domain resolution for a smooth wave
-    analyser.smoothingTimeConstant = 0.85;
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.6;
     source.connect(analyser);
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
-    timeDataRef.current = new Uint8Array(analyser.fftSize);
+    const bins = new Uint8Array(analyser.frequencyBinCount);
     startedAtRef.current = performance.now();
-    lastElapsedTickRef.current = 0;
 
     const tick = () => {
       const a = analyserRef.current;
-      const data = timeDataRef.current;
-      const canvas = canvasRef.current;
-      if (!a || !data) return;
-      a.getByteTimeDomainData(data as unknown as Uint8Array<ArrayBuffer>);
-
-      // Running RMS for the mic pulse.
-      let sumSq = 0;
-      for (let i = 0; i < data.length; i++) {
-        const v = (data[i] - 128) / 128;
-        sumSq += v * v;
+      if (!a) return;
+      a.getByteFrequencyData(bins);
+      // Bucket the freq bins into BAR_COUNT chunky groups (skip DC + hi-hiss).
+      const usable = Math.floor(bins.length * 0.78);
+      const step = usable / BAR_COUNT;
+      const next = smoothedRef.current;
+      let overall = 0;
+      for (let i = 0; i < BAR_COUNT; i++) {
+        const s = Math.floor(i * step) + 2;
+        const e = Math.max(s + 1, Math.floor((i + 1) * step) + 2);
+        let sum = 0;
+        for (let j = s; j < e; j++) sum += bins[j];
+        const avg = sum / (e - s) / 255; // 0..1
+        // Slight gamma so quiet speech still lifts the bars.
+        const shaped = Math.pow(avg, 0.72);
+        next[i] = next[i] * 0.55 + shaped * 0.45;
+        overall += next[i];
       }
-      const rms = Math.sqrt(sumSq / data.length);
-      levelRef.current = levelRef.current * 0.7 + rms * 0.3;
-
-      // Draw waveform to canvas (no React re-render per frame => no jank).
-      if (canvas) {
-        const dpr = window.devicePixelRatio || 1;
-        const cssW = canvas.clientWidth;
-        const cssH = canvas.clientHeight;
-        if (canvas.width !== cssW * dpr || canvas.height !== cssH * dpr) {
-          canvas.width = Math.max(1, Math.floor(cssW * dpr));
-          canvas.height = Math.max(1, Math.floor(cssH * dpr));
-        }
-        const g = canvas.getContext("2d");
-        if (g) {
-          const W = canvas.width;
-          const H = canvas.height;
-          g.clearRect(0, 0, W, H);
-
-          // Gain so quiet speech is visible; clamp so loud spikes don't clip flat.
-          const gain = 1.6 + Math.min(1.4, levelRef.current * 4);
-          const mid = H / 2;
-
-          // Soft glow trail.
-          const grad = g.createLinearGradient(0, 0, W, 0);
-          const primary = getComputedStyle(document.documentElement).getPropertyValue("--primary").trim() || "180 60% 40%";
-          grad.addColorStop(0, `hsla(${primary}, 0.25)`);
-          grad.addColorStop(0.5, `hsla(${primary}, 1)`);
-          grad.addColorStop(1, `hsla(${primary}, 0.25)`);
-          g.strokeStyle = grad;
-          g.lineWidth = Math.max(1.5, 2 * dpr);
-          g.lineCap = "round";
-          g.lineJoin = "round";
-
-          g.beginPath();
-          const step = data.length / W;
-          for (let x = 0; x < W; x++) {
-            const idx = Math.floor(x * step);
-            const v = ((data[idx] - 128) / 128) * gain;
-            const y = mid + v * (H * 0.42);
-            if (x === 0) g.moveTo(x, y);
-            else g.lineTo(x, y);
-          }
-          g.stroke();
-
-          // Center baseline hint when quiet.
-          if (levelRef.current < 0.02) {
-            g.strokeStyle = `hsla(${primary}, 0.15)`;
-            g.lineWidth = 1;
-            g.beginPath();
-            g.moveTo(0, mid);
-            g.lineTo(W, mid);
-            g.stroke();
-          }
-        }
-      }
-
-      // Throttle React updates to ~10fps for the pulse + clock (visual only).
-      const now = performance.now();
-      if (now - lastElapsedTickRef.current > 100) {
-        lastElapsedTickRef.current = now;
-        setLevel(Math.min(1, levelRef.current * 3));
-        setElapsed((now - startedAtRef.current) / 1000);
-      }
-
+      setBars([...next]);
+      setLevel(Math.min(1, (overall / BAR_COUNT) * 1.6));
+      setElapsed((performance.now() - startedAtRef.current) / 1000);
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
   }, []);
-
 
   const pickMimeType = () => {
     const candidates = [
@@ -224,8 +169,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setCleanupNote(null);
     setElapsed(0);
     setLevel(0);
-    levelRef.current = 0;
-
+    smoothedRef.current = new Array(BAR_COUNT).fill(0);
+    setBars(new Array(BAR_COUNT).fill(0.05));
     setOpen(true);
     setPhase("recording");
 
@@ -407,12 +352,19 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                     >
                       <Mic className="h-5 w-5 text-primary" />
                     </div>
-                    {/* Waveform canvas (drawn on rAF, no React re-renders) */}
-                    <canvas
-                      ref={canvasRef}
-                      className="absolute inset-y-2 left-24 right-4 w-[calc(100%-7.5rem)] h-[calc(100%-1rem)]"
-                    />
-
+                    {/* Bars */}
+                    <div className="absolute inset-y-0 left-24 right-4 flex items-center gap-[3px]">
+                      {bars.map((v, i) => {
+                        const h = Math.max(6, Math.min(1, v) * 88);
+                        return (
+                          <div
+                            key={i}
+                            className="flex-1 rounded-full bg-gradient-to-t from-primary/70 to-primary transition-[height,opacity] duration-75"
+                            style={{ height: `${h}%`, opacity: 0.55 + v * 0.45 }}
+                          />
+                        );
+                      })}
+                    </div>
                     {phase === "processing" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-card/70 backdrop-blur-sm">
                         <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
