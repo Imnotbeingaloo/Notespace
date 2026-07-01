@@ -27,8 +27,12 @@ export function WordCount({ content }: WordCountProps) {
     const words = text.split(/\s+/).filter(Boolean).length;
     const chars = text.replace(/\s/g, "").length;
     if (words === 0) return { words: 0, chars: 0, readTime: "" };
-    const minutes = Math.max(1, Math.ceil(words / 200));
-    const readTime = minutes === 1 ? "1 min read" : `${minutes} min read`;
+    // 200 wpm ≈ 3.33 words/sec. Show seconds under a minute so short notes feel live.
+    const totalSeconds = Math.max(1, Math.round((words / 200) * 60));
+    const readTime =
+      totalSeconds < 60
+        ? `${totalSeconds} sec read`
+        : `${Math.round(totalSeconds / 60)} min read`;
 
     return { words, chars, readTime };
   }, [content]);
