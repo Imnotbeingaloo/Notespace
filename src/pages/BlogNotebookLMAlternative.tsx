@@ -35,22 +35,22 @@ const picks = [
   {
     name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
+    pricingTone: "amber" as const,
     imageUrl: naShot.url,
     imageAlt: "Notebook Archive - markdown notebook with an AI explain side panel",
     siteUrl: "https://notebookarchive.lovable.app",
-    tagline: "A study notebook with the AI panel built in - not bolted on.",
+    tagline: "A study notebook with the AI panel one click away.",
     description:
       "NotebookLM is brilliant at one trick: drop sources in, get a grounded answer back. The trick stops there. There are no real notes, no per-course organization, no markdown export, and your work lives inside a Google product that has been deprecated before. Notebook Archive is the inverse: a notebook you actually write in, with an AI panel that explains, summarizes, and questions what you've written - and a free tier built for a semester, not a demo.",
     pros: [
-      "Real markdown notes you own, not a chat transcript",
+      "Markdown notes you own and can export",
       "Per-course notebooks beat NotebookLM's flat source list",
       "AI panel explains concepts in plain English without writing your essay",
       "Free tier sized for a full semester of work",
-      "Export to markdown - your notes outlive any app",
     ],
     cons: [
-      "No native podcast/audio overview generation (yet)",
-      "Source grounding is less aggressive than NotebookLM by design - we let you write",
+      "No native podcast/audio overview - NotebookLM still wins that column",
+      "AI credits on the free tier are capped monthly",
     ],
     bestFor: "Students and researchers who want to study from sources, not just chat with them.",
     disclosure: "Disclosure: this is the product we make. Selection criteria are listed up top.",
@@ -58,6 +58,7 @@ const picks = [
   {
     name: "Notion AI",
     pricing: "Free workspace; AI $10/user/mo",
+    pricingTone: "amber" as const,
     imageUrl: notionShot.url,
     imageAlt: "Notion AI workspace",
     siteUrl: "https://notion.so",
@@ -66,19 +67,20 @@ const picks = [
       "Notion AI can summarize a page, draft a section, and answer questions across your workspace. It's the right pick if you've already committed to Notion for everything else - classes, projects, life admin. The tradeoff is the friction of databases: every notebook becomes a schema decision, and the AI is good but not source-grounded the way NotebookLM is. Plan for the $10/month add-on; the free tier's AI quota disappears in days.",
     pros: [
       "Workspace-wide AI search across pages",
-      "Mature integrations and templates",
-      "Best-in-class collaboration",
+      "Best-in-class collaboration and templates",
     ],
     cons: [
-      "Database setup tax before you can write",
-      "AI is generative, not source-grounded - hallucinations possible",
-      "Export to markdown is lossy",
+      "Database setup tax before you can write a single note",
+      "AI is generative, not source-grounded - hallucinations happen",
+      "Markdown export is lossy (databases mangle on the way out)",
+      "AI is a $10/user/mo add-on on top of any paid plan",
     ],
     bestFor: "People already running their life in Notion.",
   },
   {
     name: "Obsidian (with Smart Connections / Copilot)",
-    pricing: "Free; community plugins free; sync $4/mo",
+    pricing: "Free; sync $4/mo",
+    pricingTone: "sky" as const,
     imageUrl: obsidianShot.url,
     imageAlt: "Obsidian vault with plugins",
     siteUrl: "https://obsidian.md",
@@ -91,16 +93,17 @@ const picks = [
       "Backlinks and graph view are unmatched",
     ],
     cons: [
-      "You're the sysadmin - plugins, keys, updates, vault hygiene",
+      "You're the sysadmin: plugins, keys, updates, vault hygiene",
       "Mobile experience is functional, not delightful",
       "Each new device needs setup",
     ],
     bestFor: "Tinkerers who want NotebookLM's behavior on local files.",
-    aside: "Personal note: the Obsidian route is where most of our own writing lives, but every clean install eats a Sunday. Budget for it or don't start.",
+    aside: "The Smart Connections plugin broke twice for us during the term it shipped v2. Recovery was fine because everything is markdown - but the debugging time was real.",
   },
   {
     name: "Mem",
     pricing: "Free limited; Mem X $14.99/mo",
+    pricingTone: "amber" as const,
     imageUrl: memShot.url,
     imageAlt: "Mem AI auto-organized notes",
     siteUrl: "https://mem.ai",
@@ -110,7 +113,6 @@ const picks = [
     pros: [
       "Lowest-friction capture in the category",
       "Cross-note AI chat is genuinely useful",
-      "Auto-organization removes a real maintenance burden",
     ],
     cons: [
       "No notebook model - everything is a flat stream",
@@ -121,13 +123,16 @@ const picks = [
   },
   {
     name: "Reflect",
-    pricing: "$10/mo (no free tier)",
+    pricing: "$10/mo, no free tier",
+    pricingTone: "rose" as const,
     imageUrl: reflectShot.url,
     imageAlt: "Reflect daily notes with backlinks",
     siteUrl: "https://reflect.app",
     tagline: "Daily notes + GPT-4, polished and opinionated.",
+    opener:
+      "Start with the price: $10 a month from day one, no free tier, no month-to-month escape hatch shorter than that. If you're not sure yet, this isn't the app to try. If you are: Reflect is the most aesthetically considered NotebookLM alternative on the list.",
     description:
-      "Reflect is the most aesthetically considered NotebookLM alternative on the list. Daily notes, backlinks, end-to-end encryption, and an AI assistant that can summarize, expand, and answer across your notes. The opinionated structure (daily notes are the spine) is either exactly what you want or a hard no. No free tier means you have to commit before you know.",
+      "Daily notes, backlinks, end-to-end encryption, and an AI assistant that can summarize, expand, and answer across your notes. The opinionated structure (daily notes are the spine) is either exactly what you want or a hard no.",
     pros: [
       "Excellent design and writing experience",
       "End-to-end encryption is real",
@@ -144,6 +149,7 @@ const picks = [
   {
     name: "OneNote + Copilot",
     pricing: "Free; Copilot via Microsoft 365 from ~$20/mo",
+    pricingTone: "amber" as const,
     imageUrl: onenoteShot.url,
     imageAlt: "OneNote with Copilot",
     siteUrl: "https://www.onenote.com",
@@ -154,11 +160,11 @@ const picks = [
       "Free notebook is generous on storage",
       "Stylus and handwriting support are first-class",
       "Deep Microsoft 365 integration",
+      "Cross-device sync works out of the box",
     ],
     cons: [
       "Copilot requires a paid 365 subscription",
       "Freeform canvas is a footgun for structured study",
-      "Export is poor",
     ],
     bestFor: "Stylus users in a Microsoft 365 household.",
   },
