@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, Square, AlertTriangle, X, Loader2, Clock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -288,7 +288,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     onBeforeOpen?.();
   }, [onBeforeOpen]);
 
-  const midLevel = useMemo(() => 0.6 + level * 0.6, [level]);
+  void level;
 
   return (
     <>
@@ -341,32 +341,27 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                 </button>
               </div>
 
-              {/* Visualizer (recording / processing) */}
+              {/* Clean mirrored wave visualizer - no frame, no mic, just bars */}
               {phase !== "review" && (
-                <div className="px-5 pt-5 pb-2">
-                  <div className="relative h-24 rounded-xl bg-muted/40 border border-border/60 overflow-hidden flex items-center justify-center">
-                    {/* Mic pulse orb */}
-                    <div
-                      className="absolute left-4 flex items-center justify-center h-14 w-14 rounded-full bg-primary/10 border border-primary/30 transition-transform duration-75"
-                      style={{ transform: `scale(${midLevel})` }}
-                    >
-                      <Mic className="h-5 w-5 text-primary" />
-                    </div>
-                    {/* Bars */}
-                    <div className="absolute inset-y-0 left-24 right-4 flex items-center gap-[3px]">
+                <div className="px-6 pt-8 pb-6">
+                  <div className="relative h-20 flex items-center justify-center">
+                    <div className="flex items-center gap-[4px] h-full w-full">
                       {bars.map((v, i) => {
-                        const h = Math.max(6, Math.min(1, v) * 88);
+                        const h = Math.max(8, Math.min(1, v) * 100);
                         return (
                           <div
                             key={i}
-                            className="flex-1 rounded-full bg-gradient-to-t from-primary/70 to-primary transition-[height,opacity] duration-75"
-                            style={{ height: `${h}%`, opacity: 0.55 + v * 0.45 }}
+                            className="flex-1 rounded-full bg-foreground/85 will-change-[height]"
+                            style={{
+                              height: `${h}%`,
+                              transition: "height 80ms linear",
+                            }}
                           />
                         );
                       })}
                     </div>
                     {phase === "processing" && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-card/70 backdrop-blur-sm">
+                      <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm">
                         <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                           <Loader2 className="h-4 w-4 animate-spin" />
                           Cleaning up your transcript…
