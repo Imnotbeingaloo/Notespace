@@ -538,7 +538,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       <button
         onMouseDown={handleTriggerMouseDown}
         onClick={start}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-rose-500/25 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/40 hover:shadow-sm transition-all duration-200"
         title="Voice to text"
         type="button"
       >

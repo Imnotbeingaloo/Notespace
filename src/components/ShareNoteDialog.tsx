@@ -131,12 +131,12 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
         <button
           type="button"
           title="Share this note - public link or by email"
-          className="magnetic-btn group inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-primary/25 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/40 hover:shadow-sm transition-all duration-200"
+          className="magnetic-btn group inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-teal-500/25 bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-500/20 hover:border-teal-500/40 hover:shadow-sm transition-all duration-200"
         >
           <Share2 className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-rotate-6" />
           <span>Share</span>
           {shares.length > 0 && (
-            <span className="ml-0.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold leading-none">
+            <span className="ml-0.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-teal-500 text-white text-[10px] font-semibold leading-none">
               {shares.length}
             </span>
           )}
