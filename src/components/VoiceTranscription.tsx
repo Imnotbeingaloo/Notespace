@@ -394,25 +394,15 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                 </button>
               </div>
 
-              {/* Clean mirrored wave visualizer - no frame, no mic, just bars */}
+              {/* Smooth continuous waveform - scrolls right-to-left as you speak */}
               {phase !== "review" && (
                 <div className="px-6 pt-8 pb-6">
-                  <div className="relative h-20 flex items-center justify-center">
-                    <div className="flex items-center gap-[4px] h-full w-full">
-                      {bars.map((v, i) => {
-                        const h = Math.max(8, Math.min(1, v) * 100);
-                        return (
-                          <div
-                            key={i}
-                            className="flex-1 rounded-full bg-foreground/85 will-change-[height]"
-                            style={{
-                              height: `${h}%`,
-                              transition: "height 80ms linear",
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
+                  <div className="relative h-24">
+                    <canvas
+                      ref={canvasRef}
+                      className="w-full h-full block text-foreground/90"
+                      aria-hidden="true"
+                    />
                     {phase === "processing" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm">
                         <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
@@ -423,6 +413,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                     )}
                   </div>
                 </div>
+
               )}
 
               {/* Review panel with timestamps */}
