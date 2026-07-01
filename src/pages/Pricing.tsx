@@ -76,14 +76,19 @@ const comparisons: { feature: string; free: boolean | "soon"; pro: boolean | "so
   { feature: "Global ⌘K search", free: true, pro: true, team: true },
   { feature: "Focus Mode & word-count goal", free: true, pro: true, team: true },
   { feature: "Templates gallery", free: true, pro: true, team: true },
-  { feature: "Export to PDF & Markdown", free: true, pro: true, team: true },
+  { feature: "Export to PDF", free: true, pro: true, team: true },
+  { feature: "Export to Markdown", free: true, pro: true, team: true },
+  { feature: "Export to Notion", free: false, pro: "soon", team: "soon" },
   { feature: "PDF/document import with AI cleanup", free: false, pro: true, team: true },
   { feature: "Study Planner & Pomodoro", free: false, pro: true, team: true },
   { feature: "Share notes via public link", free: false, pro: true, team: true },
   { feature: "Offline write-queue & auto-sync", free: true, pro: true, team: true },
-  { feature: "Voice transcription", free: false, pro: "soon", team: "soon" },
+  { feature: "Voice transcription + AI cleanup", free: false, pro: "soon", team: "soon" },
+  { feature: "Version history", free: false, pro: "soon", team: "soon" },
   { feature: "Shared notebooks", free: false, pro: false, team: "soon" },
   { feature: "Real-time co-editing", free: false, pro: false, team: "soon" },
+  { feature: "API access", free: false, pro: false, team: "soon" },
+  { feature: "Custom AI training on your notes", free: false, pro: false, team: "soon" },
 ];
 
 
