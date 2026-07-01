@@ -288,7 +288,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     onBeforeOpen?.();
   }, [onBeforeOpen]);
 
-  const midLevel = useMemo(() => 0.6 + level * 0.6, [level]);
+  void level;
 
   return (
     <>
