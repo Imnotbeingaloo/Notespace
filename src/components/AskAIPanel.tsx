@@ -158,18 +158,24 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   }, [messages, loading]);
 
   // Easter egg: plays once when the panel opens on an empty conversation.
-  // Quiet editorial vignette - cycles through three words, then retires.
+  // GLITCH FIX: previously we set idleEgg=true from an effect after a 150ms
+  // delay, so the "ember" fallback painted first and then swapped to the
+  // vignette (and swapped back on close) - two visible glitches. Now we
+  // commit the decision during render via a ref-guarded setState so the
+  // very first paint of the empty state is the vignette itself.
   const eggPlayedRef = useRef(false);
+  const canPlayEgg = open && !eggPlayedRef.current && messages.length === 0 && !input.trim() && !loading;
+  if (canPlayEgg && !idleEgg) {
+    eggPlayedRef.current = true;
+    setIdleEgg(true);
+  }
   useEffect(() => {
     if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
-    if (eggPlayedRef.current) return;
-    if (messages.length > 0 || input.trim() || loading) return;
-    eggPlayedRef.current = true;
+    if (!idleEgg) return;
     const total = reducedMotion ? 900 : 2300;
-    const show = setTimeout(() => setIdleEgg(true), 150);
-    const hide = setTimeout(() => setIdleEgg(false), 150 + total);
-    return () => { clearTimeout(show); clearTimeout(hide); };
-  }, [open, messages.length, input, loading, reducedMotion]);
+    const hide = setTimeout(() => setIdleEgg(false), total);
+    return () => { clearTimeout(hide); };
+  }, [open, idleEgg, reducedMotion]);
 
 
 

@@ -77,17 +77,34 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const [error, setError] = useState<string | null>(null);
   const [showTimestamps, setShowTimestamps] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const [level, setLevel] = useState(0);
+  // Persisted mic sensitivity (0.5 - 3.5x). Applied to the pre-analyser gain
+  // so the waveform reacts more/less strongly per user preference.
+  const MIC_GAIN_KEY = "va.micGain";
+  const [micGain, setMicGain] = useState<number>(() => {
+    if (typeof window === "undefined") return 1.9;
+    const raw = window.localStorage.getItem(MIC_GAIN_KEY);
+    const n = raw ? Number(raw) : NaN;
+    return isFinite(n) && n >= 0.5 && n <= 3.5 ? n : 1.9;
+  });
+  const [clipping, setClipping] = useState(false);
+  const [calibrating, setCalibrating] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
   const barsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
   const targetsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  // Ref-driven DOM updates for the level meter + clip pip so we don't
+  // re-render React 60 times per second while recording.
+  const levelBarRef = useRef<HTMLDivElement | null>(null);
+  const clipPipRef = useRef<HTMLSpanElement | null>(null);
+  const calibratedFloorRef = useRef<number>(0.04);
+  const clipHitsRef = useRef<number>(0);
   const [visualizerReady, setVisualizerReady] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -109,6 +126,23 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   }, []);
 
   useEffect(() => () => cleanupResources(), [cleanupResources]);
+
+  // Persist mic sensitivity and apply it live to the running audio graph
+  // so the slider reacts immediately without needing a re-record.
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(MIC_GAIN_KEY, String(micGain));
+    }
+    if (gainNodeRef.current && audioCtxRef.current) {
+      try {
+        gainNodeRef.current.gain.setTargetAtTime(
+          micGain,
+          audioCtxRef.current.currentTime,
+          0.05,
+        );
+      } catch { gainNodeRef.current.gain.value = micGain; }
+    }
+  }, [micGain]);
 
   const drawBars = useCallback(() => {
     const canvas = canvasRef.current;
@@ -176,8 +210,11 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const source = ctx.createMediaStreamSource(stream);
 
     // Pre-analyser gain boost so quiet voices still register visibly.
+    // The value is driven by the persisted `micGain` slider so users can
+    // dial sensitivity to their mic/room.
     const gain = ctx.createGain();
-    gain.gain.value = 1.9; // mic sensitivity
+    gain.gain.value = micGain;
+    gainNodeRef.current = gain;
 
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 1024;
@@ -195,6 +232,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     barsRef.current = new Array(BAR_COUNT).fill(0);
     targetsRef.current = new Array(BAR_COUNT).fill(0);
     setVisualizerReady(false);
+    setCalibrating(true);
 
     // Map FFT bins (skip DC + very high) into BAR_COUNT log-spaced buckets
     // so the visualizer emphasizes vocal range and shows pitch structure.
@@ -207,10 +245,21 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       edges.push(Math.floor(Math.exp(logMin + ((logMax - logMin) * i) / BAR_COUNT)));
     }
 
-    // Running noise floor + soft compressor so the wave reacts strongly
-    // without clipping when loud, and stays lively when quiet.
-    let noiseFloor = 0.04;
+    // Auto noise-floor calibration: for the first ~1s of recording we
+    // observe ambient input and lock a stable floor. This dramatically
+    // reduces jitter in quiet rooms while still tracking noisy ones.
+    let calibrationSamples: number[] = [];
+    const CALIBRATION_MS = 1000;
+    let noiseFloor = calibratedFloorRef.current;
+    let calibrated = false;
     let sawAudio = false;
+
+    // Throttled state updates: React does not need 60Hz for elapsed/clip.
+    let lastElapsedCommit = 0;
+    let lastClipCommit = 0;
+    // clip bookkeeping: count how many recent frames sat near the ceiling.
+    // Rolling window tracked by clipHitsRef (drained periodically).
+    let framesSinceDrain = 0;
 
     const tick = () => {
       const a = analyserRef.current;
@@ -230,9 +279,28 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
         raw[b] = avg;
         if (avg > peak) peak = avg;
       }
-      // Adapt noise floor slowly downward, quickly upward on sustained silence.
-      noiseFloor += (peak * 0.35 - noiseFloor) * (peak < noiseFloor ? 0.02 : 0.008);
-      const floor = Math.min(0.08, noiseFloor);
+
+      const now = performance.now();
+      const sinceStart = now - startedAtRef.current;
+
+      // --- Noise-floor calibration window ---
+      if (!calibrated) {
+        calibrationSamples.push(peak);
+        if (sinceStart >= CALIBRATION_MS) {
+          // Use the 85th percentile of ambient samples + a small margin so
+          // typical HVAC / fan hum sits below the threshold.
+          const sorted = [...calibrationSamples].sort((x, y) => x - y);
+          const p85 = sorted[Math.floor(sorted.length * 0.85)] ?? 0.04;
+          noiseFloor = Math.min(0.1, Math.max(0.02, p85 * 1.15));
+          calibratedFloorRef.current = noiseFloor;
+          calibrated = true;
+          setCalibrating(false);
+        }
+      } else {
+        // Slow adaptive tracking after calibration.
+        noiseFloor += (peak * 0.35 - noiseFloor) * (peak < noiseFloor ? 0.02 : 0.008);
+      }
+      const floor = Math.min(0.1, noiseFloor);
 
       for (let b = 0; b < BAR_COUNT; b++) {
         // Subtract noise, boost, soft-knee compress via pow, then clamp.
@@ -255,14 +323,13 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       // then cap every surrounding bar at 98% of the center peak so the wave
       // has a clean peak-in-the-middle silhouette instead of noisy edges.
       const centerIdx = half - 1;
-      // Weighted center amplitude pulls from the 4 middle bars for stability.
       const centerRaw = Math.max(
         ordered[centerIdx] || 0,
         ordered[centerIdx + 1] || 0,
         (ordered[centerIdx - 1] || 0) * 0.9,
         (ordered[centerIdx + 2] || 0) * 0.9,
       );
-      const centerLevel = Math.min(1, centerRaw * 1.35); // extra sensitivity in the middle
+      const centerLevel = Math.min(1, centerRaw * 1.35);
       ordered[centerIdx] = centerLevel;
       ordered[centerIdx + 1] = centerLevel;
       const cap = centerLevel * 0.98;
@@ -272,22 +339,49 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       }
       targetsRef.current = ordered;
 
+      // --- Ref-driven level meter (no React re-render) ---
+      // Scale a bit above raw peak so the meter reads like a proper VU.
+      const displayLevel = Math.min(1, peak * 1.6);
+      if (levelBarRef.current) {
+        levelBarRef.current.style.transform = `scaleX(${displayLevel.toFixed(3)})`;
+      }
+
+      // --- Clip / jitter detection ---
+      // Anything sitting above 0.95 for too many recent frames = clipping.
+      if (peak > 0.95) clipHitsRef.current += 1;
+      framesSinceDrain += 1;
+      if (framesSinceDrain >= 60) {
+        // Every ~1s: if >20% of frames clipped, mark clipping; else clear.
+        const isClipping = clipHitsRef.current > 12;
+        if (now - lastClipCommit > 250) {
+          setClipping(isClipping);
+          lastClipCommit = now;
+        }
+        clipHitsRef.current = 0;
+        framesSinceDrain = 0;
+      }
+
       if (!sawAudio && peak > 0.02) {
         sawAudio = true;
         setVisualizerReady(true);
       }
-      // Failsafe: reveal after 1.2s even if mic is silent.
-      if (!sawAudio && performance.now() - startedAtRef.current > 1200) {
+      if (!sawAudio && sinceStart > 1200) {
         sawAudio = true;
         setVisualizerReady(true);
       }
 
       drawBars();
-      setElapsed((performance.now() - startedAtRef.current) / 1000);
+      // Throttle elapsed updates to ~4Hz. That's enough for a stopwatch and
+      // avoids 60 React renders per second which was cascading into the
+      // whole dialog subtree.
+      if (now - lastElapsedCommit > 250) {
+        setElapsed(sinceStart / 1000);
+        lastElapsedCommit = now;
+      }
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
-  }, [drawBars]);
+  }, [drawBars, micGain]);
 
 
 
@@ -313,7 +407,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setWords([]);
     setCleanupNote(null);
     setElapsed(0);
-    setLevel(0);
+    setClipping(false);
+    clipHitsRef.current = 0;
     barsRef.current = new Array(BAR_COUNT).fill(0);
     targetsRef.current = new Array(BAR_COUNT).fill(0);
     setVisualizerReady(false);
@@ -436,7 +531,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     onBeforeOpen?.();
   }, [onBeforeOpen]);
 
-  void level;
+  
 
   return (
     <>
@@ -515,6 +610,57 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                       </div>
                     )}
                   </div>
+
+                  {/* Level meter + clip warning + mic sensitivity slider.
+                      The bar itself is updated via a ref every RAF so it
+                      never triggers React re-renders. */}
+                  {phase === "recording" && (
+                    <div className="mt-5 space-y-2.5">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground w-10">Level</span>
+                        <div className="relative flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div
+                            ref={levelBarRef}
+                            className={`absolute inset-y-0 left-0 w-full origin-left rounded-full transition-colors ${
+                              clipping ? "bg-rose-500" : "bg-emerald-500"
+                            }`}
+                            style={{ transform: "scaleX(0)" }}
+                          />
+                        </div>
+                        <span
+                          ref={clipPipRef}
+                          className={`text-[10px] font-mono w-14 text-right transition-colors ${
+                            clipping ? "text-rose-500" : calibrating ? "text-amber-500" : "text-muted-foreground"
+                          }`}
+                        >
+                          {calibrating ? "calibrating" : clipping ? "CLIP" : "OK"}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground w-10">Gain</span>
+                        <input
+                          type="range"
+                          min={0.5}
+                          max={3.5}
+                          step={0.05}
+                          value={micGain}
+                          onChange={(e) => setMicGain(Number(e.target.value))}
+                          className="flex-1 accent-primary h-1 cursor-pointer"
+                          aria-label="Microphone sensitivity"
+                        />
+                        <span className="text-[10px] font-mono w-14 text-right text-muted-foreground tabular-nums">
+                          {micGain.toFixed(2)}×
+                        </span>
+                      </div>
+
+                      {clipping && (
+                        <p className="text-[11px] text-rose-500/90 leading-snug">
+                          Signal is clipping - lower the gain slider or move back from the mic.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
