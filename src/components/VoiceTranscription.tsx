@@ -129,9 +129,12 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const targets = targetsRef.current;
     const N = bars.length;
 
-    // Ease bars toward their targets for smoothness (per-frame).
+    // Ease bars toward their targets. Rising fast (attack), falling slow (release)
+    // so brief voice gaps don't collapse the wave - it gently settles instead.
     for (let i = 0; i < N; i++) {
-      bars[i] += (targets[i] - bars[i]) * 0.35;
+      const rising = targets[i] > bars[i];
+      const k = rising ? 0.32 : 0.12;
+      bars[i] += (targets[i] - bars[i]) * k;
     }
 
     const style = getComputedStyle(canvas);
