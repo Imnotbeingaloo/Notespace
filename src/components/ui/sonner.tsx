@@ -187,14 +187,16 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       </div>
 
       {kind !== "loading" && (
-        <motion.div
+        <div
           key={barKey}
           aria-hidden="true"
           className="absolute bottom-0 left-0 h-1 rounded-br-full"
-          initial={{ width: "100%" }}
-          animate={hovered ? undefined : { width: "0%" }}
-          transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
-          style={{ backgroundColor: visual.accent }}
+          style={{
+            backgroundColor: visual.accent,
+            width: "100%",
+            animation: `toast-progress ${Number.isFinite(item.duration) ? item.duration : 10000}ms linear forwards`,
+            animationPlayState: hovered ? "paused" : "running",
+          }}
         />
       )}
     </motion.li>
