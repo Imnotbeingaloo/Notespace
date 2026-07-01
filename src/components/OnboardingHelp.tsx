@@ -242,9 +242,13 @@ export function OnboardingHelp() {
             {sections.map((s) => (
               <TabsContent key={s.id} value={s.id} className="flex-1 min-h-0 overflow-y-auto pr-1 mt-3 scrollbar-thin">
                 <ul className="space-y-2">
-                  {s.tips.map(({ Icon, glyph, title, body }) => (
+                  {s.tips.map(({ Icon, glyph, title, body, accent }) => (
                     <li key={title} className="flex gap-3 rounded-xl border border-border bg-card/50 p-3">
-                      <div className="w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                      <div className={
+                        accent === "flashcards"
+                          ? "w-9 h-9 shrink-0 rounded-lg bg-[hsl(280_60%_55%/0.15)] text-[hsl(280_65%_60%)] flex items-center justify-center"
+                          : "w-9 h-9 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center"
+                      }>
                         {Icon ? <Icon className="h-4 w-4" /> : <span className="text-base font-medium leading-none">{glyph}</span>}
                       </div>
                       <div className="min-w-0">
