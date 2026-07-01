@@ -695,7 +695,90 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     [pendingDocDrop, handleCreateNoteFromImport, handleMergeAt, handleReplaceFromImport]
   );
 
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      if (!user || !activeNote) return;
 
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length === 0) return;
+
+      const DOC_EXTS = [".md", ".markdown", ".txt", ".html", ".htm", ".csv", ".json", ".pdf"];
+      const docFile = files.find((f) => {
+        const dot = f.name.lastIndexOf(".");
+        const ext = dot === -1 ? "" : f.name.slice(dot).toLowerCase();
+        return DOC_EXTS.includes(ext);
+      });
+      if (docFile) {
+        try {
+          const { formatImportedDocument } = await import("@/lib/document-import");
+          const { extractPdfText } = await import("@/lib/pdf-extract");
+          const ext = docFile.name.slice(docFile.name.lastIndexOf(".")).toLowerCase();
+          let raw = "";
+          if (ext === ".pdf") {
+            const { text, isScanned } = await extractPdfText(docFile);
+            if (isScanned || !text.trim()) {
+              toast({ title: "Scanned PDF", description: "This PDF does not contain readable text.", variant: "destructive" });
+              return;
+            }
+            raw = text;
+          } else if (ext === ".html" || ext === ".htm") {
+            const html = await docFile.text();
+            raw = new DOMParser().parseFromString(html, "text/html").body.textContent || "";
+          } else {
+            raw = await docFile.text();
+          }
+          if (!raw.trim()) {
+            toast({ title: "Empty file", description: "The document appears to be empty.", variant: "destructive" });
+            return;
+          }
+          const formatted = formatImportedDocument(raw, docFile.name);
+          const hasContent = !!activeNote.content?.trim();
+          if (!hasContent) {
+            hybridEditorRef.current?.replaceAllUndoable(formatted);
+            toast({ title: "Imported", description: `"${docFile.name}" added to this note.` });
+          } else {
+            setPendingDocDrop({ content: formatted, fileName: docFile.name });
+          }
+        } catch (err) {
+          console.error("Doc drop failed", err);
+          toast({ title: "Import failed", description: "Could not read the document.", variant: "destructive" });
+        }
+        return;
+      }
+
+      const currentAttachments = activeNote.attachments || [];
+      const newAttachments = [...currentAttachments];
+      const markdownInserts: string[] = [];
+      let hasImages = false;
+
+      for (const file of files) {
+        if (!validateFile(file)) continue;
+        const path = buildStoragePath(user.id, activeNote.id, file.name);
+        const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+        if (error) { console.error("Drop upload error:", error); continue; }
+        const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+        const fileUrl = signedUrlData?.signedUrl || '';
+        newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
+        if (file.type.startsWith("image/")) {
+          markdownInserts.push(`![${file.name}](${fileUrl})`);
+          hasImages = true;
+        }
+      }
+
+      await updateNote(activeNotebookId, activeNote.id, { attachments: newAttachments });
+
+      if (markdownInserts.length > 0) {
+        for (const md of markdownInserts) hybridEditorRef.current?.insertAtCursor(md);
+      }
+      if (hasImages) toast({ title: "Image added", description: "Image inserted into note." });
+    },
+    [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote]
+  );
+
+  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setDragOver(true); };
+  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setDragOver(false); };
 
 
   if (!activeNotebook) {
