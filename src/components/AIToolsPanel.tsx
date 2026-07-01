@@ -29,18 +29,21 @@ export function AIToolsPanel() {
     return plain.length === 0;
   };
 
-  /** Body-only length: strips HTML, strips markdown headings (# / ## / ###),
-   *  and drops empty lines. We never let the model quiz the learner on the
-   *  note's title or a bare heading - only on actual written content. */
-  const bodyLength = () => {
-    if (!activeNote) return 0;
-    const noHtml = (activeNote.content || "").replace(/<[^>]*>/g, "\n");
-    const lines = noHtml
+  /** Body-only content: strips HTML, strips markdown/HTML headings, and drops
+   *  empty lines. Flashcards must only quiz actual note body data, never the
+   *  note title or a bare heading. */
+  const bodyContent = () => {
+    if (!activeNote) return "";
+    const withoutHtmlHeadings = (activeNote.content || "")
+      .replace(/<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>/gi, "\n")
+      .replace(/<[^>]*>/g, "\n");
+    const lines = withoutHtmlHeadings
       .split(/\r?\n/)
       .map((l) => l.trim())
-      .filter((l) => l.length > 0 && !/^#{1,6}\s/.test(l));
-    return lines.join(" ").length;
+      .filter((l) => l.length > 0 && !/^#{1,6}\s/.test(l) && !/^\s*={3,}\s*$/.test(l) && !/^\s*-{3,}\s*$/.test(l));
+    return lines.join(" ").trim();
   };
+  const bodyLength = () => bodyContent().length;
   const MIN_BODY = 100;
 
   const openFlashcardsSetup = () => {
@@ -96,7 +99,7 @@ export function AIToolsPanel() {
         body: JSON.stringify({
           action: toolMode,
           noteTitle: activeNote.title,
-          noteContent: activeNote.content,
+          noteContent: toolMode === "flashcards" ? bodyContent() : activeNote.content,
           ...(toolMode === "flashcards" && count ? { count } : {}),
         }),
       });

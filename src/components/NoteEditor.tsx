@@ -12,6 +12,7 @@ import { ExportButtons } from "@/components/ExportButtons";
 import { ShareNoteDialog } from "@/components/ShareNoteDialog";
 import { VoiceTranscription } from "@/components/VoiceTranscription";
 import { NoteTags } from "@/components/NoteTags";
+import { FlashcardDeck } from "@/components/FlashcardDeck";
 
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
@@ -28,225 +29,21 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
 import { useNavigate } from "react-router-dom";
 
-import { X as XIcon, ChevronLeft, ChevronRight, RotateCcw, Sparkles, Trophy } from "lucide-react";
+import { X as XIcon, Sparkles } from "lucide-react";
 import { toolPill } from "@/lib/tool-colors";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
-const CARD_COLORS = [
-  { bg: "from-violet-500/20 to-purple-600/20", border: "border-violet-400/30", accent: "text-violet-400", ring: "ring-violet-400/30", emoji: "🟣" },
-  { bg: "from-emerald-500/20 to-teal-600/20", border: "border-emerald-400/30", accent: "text-emerald-400", ring: "ring-emerald-400/30", emoji: "🟢" },
-  { bg: "from-amber-500/20 to-orange-600/20", border: "border-amber-400/30", accent: "text-amber-400", ring: "ring-amber-400/30", emoji: "🟡" },
-  { bg: "from-rose-500/20 to-pink-600/20", border: "border-rose-400/30", accent: "text-rose-400", ring: "ring-rose-400/30", emoji: "🔴" },
-  { bg: "from-sky-500/20 to-blue-600/20", border: "border-sky-400/30", accent: "text-sky-400", ring: "ring-sky-400/30", emoji: "🔵" },
-  { bg: "from-lime-500/20 to-green-600/20", border: "border-lime-400/30", accent: "text-lime-400", ring: "ring-lime-400/30", emoji: "🍏" },
-  { bg: "from-fuchsia-500/20 to-pink-600/20", border: "border-fuchsia-400/30", accent: "text-fuchsia-400", ring: "ring-fuchsia-400/30", emoji: "💜" },
-  { bg: "from-cyan-500/20 to-teal-600/20", border: "border-cyan-400/30", accent: "text-cyan-400", ring: "ring-cyan-400/30", emoji: "🩵" },
-];
-
-interface FlashCard {
-  question: string;
-  answer: string;
-}
-
-function parseFlashcards(text: string): FlashCard[] {
-  const cards: FlashCard[] = [];
-  // Match **Q:** ... **A:** ... patterns
-  const regex = /\*\*Q:\*\*\s*(.*?)(?:\n|\r\n?)\s*\*\*A:\*\*\s*(.*?)(?=\n\s*---|\n\s*\*\*Q:\*\*|$)/gs;
-  let match;
-  while ((match = regex.exec(text)) !== null) {
-    const q = match[1].trim();
-    const a = match[2].trim();
-    if (q && a) cards.push({ question: q, answer: a });
-  }
-  return cards;
-}
-
-function FlashcardGame({ cards, onClose }: { cards: FlashCard[]; onClose: () => void }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [revealed, setRevealed] = useState<Set<number>>(new Set());
-  const [completed, setCompleted] = useState(false);
-
-  const card = cards[currentIndex];
-  const color = CARD_COLORS[currentIndex % CARD_COLORS.length];
-  const isRevealed = revealed.has(currentIndex);
-  const revealedCount = revealed.size;
-
-  const revealCard = () => {
-    setRevealed((prev) => new Set(prev).add(currentIndex));
-  };
-
-  const goNext = () => {
-    if (currentIndex < cards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else if (revealedCount === cards.length) {
-      setCompleted(true);
-    }
-  };
-
-  const goPrev = () => {
-    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
-  };
-
-  const restart = () => {
-    setCurrentIndex(0);
-    setRevealed(new Set());
-    setCompleted(false);
-  };
-
-  if (completed) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center flex-1 p-8 text-center"
-      >
-        <motion.div
-          initial={{ rotate: -10, scale: 0 }}
-          animate={{ rotate: 0, scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15 }}
-        >
-          <Trophy className="h-16 w-16 text-amber-400 mb-4" />
-        </motion.div>
-        <h3 className="text-2xl font-bold text-foreground mb-2">🎉 All Done!</h3>
-        <p className="text-muted-foreground text-sm mb-6">
-          You reviewed all {cards.length} flashcards!
-        </p>
-        <div className="flex gap-3">
-          <button
-            onClick={restart}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Play Again
-          </button>
-          <button
-            onClick={onClose}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          >
-            Close
-          </button>
-        </div>
-      </motion.div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col flex-1 p-4 overflow-hidden">
-      {/* Progress */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70"
-            initial={{ width: 0 }}
-            animate={{ width: `${((revealedCount) / cards.length) * 100}%` }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          />
-        </div>
-        <span className="text-xs font-medium text-muted-foreground tabular-nums">
-          {revealedCount}/{cards.length}
-        </span>
-      </div>
-
-      {/* Card */}
-      <div className="flex-1 flex items-center justify-center min-h-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, x: 40, rotateY: -5 }}
-            animate={{ opacity: 1, x: 0, rotateY: 0 }}
-            exit={{ opacity: 0, x: -40, rotateY: 5 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full"
-          >
-            <div
-              onClick={!isRevealed ? revealCard : undefined}
-              className={`relative w-full rounded-3xl border-2 ${color.border} bg-gradient-to-br ${color.bg} p-6 ${
-                !isRevealed ? "cursor-pointer hover:ring-2 " + color.ring : ""
-              } transition-all duration-300`}
-              style={{ minHeight: 220 }}
-            >
-              {/* Card number badge */}
-              <div className="absolute top-4 left-4">
-                <span className={`text-xs font-bold ${color.accent} opacity-70`}>
-                  {color.emoji} Card {currentIndex + 1}
-                </span>
-              </div>
-
-              {/* Question */}
-              <div className="mt-8 mb-4">
-                <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-2">Question</p>
-                <p className="text-base font-semibold text-foreground leading-relaxed">{card.question}</p>
-              </div>
-
-              {/* Answer area */}
-              {isRevealed ? (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="pt-4 border-t border-foreground/10"
-                >
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-2">Answer</p>
-                  <p className="text-sm text-foreground/90 leading-relaxed">{card.answer}</p>
-                </motion.div>
-              ) : (
-                <motion.div
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="pt-4 border-t border-foreground/10"
-                >
-                  <div className="flex items-center justify-center gap-2 py-4">
-                    <Sparkles className={`h-4 w-4 ${color.accent}`} />
-                    <span className="text-sm font-medium text-muted-foreground">
-                      Tap to reveal answer
-                    </span>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Navigation */}
-      <div className="flex items-center justify-between mt-4 pt-2">
-        <button
-          onClick={goPrev}
-          disabled={currentIndex === 0}
-          className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-30 disabled:pointer-events-none transition-colors"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Prev
-        </button>
-
-        <div className="flex gap-1.5">
-          {cards.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
-                i === currentIndex
-                  ? "bg-primary scale-125"
-                  : revealed.has(i)
-                  ? "bg-primary/40"
-                  : "bg-muted-foreground/20"
-              }`}
-            />
-          ))}
-        </div>
-
-        <button
-          onClick={goNext}
-          disabled={currentIndex === cards.length - 1 && revealedCount < cards.length}
-          className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-30 disabled:pointer-events-none transition-colors"
-        >
-          {currentIndex === cards.length - 1 && revealedCount === cards.length ? "Finish" : "Next"}
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  );
+function getFlashcardBody(content: string) {
+  const withoutHtmlHeadings = (content || "")
+    .replace(/<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>/gi, "\n")
+    .replace(/<[^>]*>/g, "\n");
+  return withoutHtmlHeadings
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !/^#{1,6}\s/.test(line) && !/^\s*={3,}\s*$/.test(line) && !/^\s*-{3,}\s*$/.test(line))
+    .join("\n")
+    .trim();
 }
 
 function FlashcardsButton() {
@@ -255,22 +52,47 @@ function FlashcardsButton() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [cards, setCards] = useState<FlashCard[]>([]);
+  const [setup, setSetup] = useState(false);
+  const [cardCount, setCardCount] = useState(5);
 
-  // Parse cards whenever result updates
-  useEffect(() => {
-    if (result) {
-      const parsed = parseFlashcards(result);
-      if (parsed.length > 0) setCards(parsed);
-    }
-  }, [result]);
-
-  const run = async () => {
+  const openSetup = () => {
     if (!activeNote) return;
+    const body = getFlashcardBody(activeNote.content || "");
+    setOpen(true);
+    setResult("");
+    setLoading(false);
+    setSetup(false);
+    if (!body) {
+      setError("Please write something in the note first.");
+      return;
+    }
+    if (body.length < 100) {
+      setError("Write a bit more first - at least 100 characters of actual note content. Headings don't count.");
+      return;
+    }
+    setError("");
+    setSetup(true);
+  };
+
+  const run = async (count: number) => {
+    if (!activeNote) return;
+    const body = getFlashcardBody(activeNote.content || "");
+    if (!body) {
+      setOpen(true);
+      setSetup(false);
+      setError("Please write something in the note first.");
+      return;
+    }
+    if (body.length < 100) {
+      setOpen(true);
+      setSetup(false);
+      setError("Write a bit more first - at least 100 characters of actual note content. Headings don't count.");
+      return;
+    }
     setOpen(true);
     setResult("");
     setError("");
-    setCards([]);
+    setSetup(false);
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -283,7 +105,7 @@ function FlashcardsButton() {
           Authorization: `Bearer ${token}`,
           apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
-        body: JSON.stringify({ action: "flashcards", noteTitle: activeNote.title, noteContent: activeNote.content }),
+        body: JSON.stringify({ action: "flashcards", noteTitle: activeNote.title, noteContent: body, count }),
       });
       if (!resp.ok) {
         const data = await resp.json().catch(() => ({}));
@@ -325,7 +147,7 @@ function FlashcardsButton() {
   return (
     <>
       <button
-        onClick={run}
+        onClick={openSetup}
         className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-[hsl(280_60%_55%/0.35)] bg-[hsl(280_60%_55%/0.08)] text-[hsl(280_65%_55%)] hover:bg-[hsl(280_60%_55%/0.15)] hover:text-[hsl(280_70%_50%)] transition-all duration-200 dark:text-[hsl(280_75%_75%)] dark:hover:text-[hsl(280_80%_82%)]"
         title="Generate Flashcards"
       >
@@ -348,9 +170,7 @@ function FlashcardsButton() {
                 </div>
                 <div>
                   <span className="font-sans font-bold text-foreground text-sm">Flashcards</span>
-                  {cards.length > 0 && (
-                    <p className="text-[10px] text-muted-foreground">{cards.length} cards generated</p>
-                  )}
+                  {result && <p className="text-[10px] text-muted-foreground">Review your deck</p>}
                 </div>
               </div>
               <button onClick={() => setOpen(false)} className="p-1.5 rounded-xl hover:bg-muted transition-colors">
@@ -358,8 +178,40 @@ function FlashcardsButton() {
               </button>
             </div>
 
+            {/* Setup state */}
+            {setup && !loading && !result && !error && (
+              <div className="flex-1 flex flex-col justify-center p-6">
+                <div className="rounded-2xl border border-border bg-muted/30 p-5">
+                  <p className="text-sm font-semibold text-foreground">How many flashcards?</p>
+                  <p className="text-xs text-muted-foreground mt-1.5">Choose up to 10. Questions will only use the actual body text in this note, not headings.</p>
+                  <div className="grid grid-cols-4 gap-2 mt-5">
+                    {[3, 5, 7, 10].map((n) => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setCardCount(n)}
+                        className={`rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
+                          cardCount === n ? "border-[hsl(280_60%_55%/0.45)] bg-[hsl(280_60%_55%/0.12)] text-[hsl(280_65%_55%)] dark:text-[hsl(280_75%_78%)]" : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                        }`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => run(cardCount)}
+                    className="magnetic-btn mt-5 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+                  >
+                    <Layers className="h-4 w-4" />
+                    Generate {cardCount} cards
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Loading state */}
-            {loading && cards.length === 0 && (
+            {loading && !result && (
               <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8">
                 <motion.div
                   animate={{ rotate: 360 }}
@@ -381,14 +233,11 @@ function FlashcardsButton() {
               </div>
             )}
 
-            {/* Game view */}
-            {cards.length > 0 && !loading && (
-              <FlashcardGame cards={cards} onClose={() => setOpen(false)} />
-            )}
-
-            {/* Streaming preview while still loading */}
-            {loading && cards.length > 0 && (
-              <FlashcardGame cards={cards} onClose={() => setOpen(false)} />
+            {/* Deck view */}
+            {result && !error && (
+              <div className="flex-1 overflow-y-auto p-5">
+                <FlashcardDeck markdown={result} streaming={loading} />
+              </div>
             )}
           </motion.div>
         )}
