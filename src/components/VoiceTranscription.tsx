@@ -222,8 +222,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setCleanupNote(null);
     setElapsed(0);
     setLevel(0);
-    smoothedRef.current = new Array(BAR_COUNT).fill(0);
-    setBars(new Array(BAR_COUNT).fill(0.05));
+    historyRef.current = new Array(HISTORY).fill(0);
+
     setOpen(true);
     setPhase("recording");
 
