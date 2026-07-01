@@ -68,6 +68,7 @@ const PomodoroNotes = lazy(() => import("./pages/PomodoroNotes"));
 import { captureReferralFromUrl } from "@/lib/referral";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BlogLoading as BlogSkeleton } from "@/components/blog/BlogLoading";
+import { BlogSideRail } from "@/components/blog/BlogSideRail";
 import { usePaperStyleTransition } from "@/hooks/use-paper-style";
 import { PaperStyleSwitcher } from "@/components/PaperStyleSwitcher";
 import { NetworkStatusToasts } from "@/components/NetworkStatusToasts";
@@ -152,6 +153,7 @@ const App = () => (
               <NetworkStatusToasts />
 
               <PaperStyleTransitionOverlay />
+              <BlogSideRail />
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/app" element={<AppPage />} />
