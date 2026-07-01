@@ -45,8 +45,10 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
   };
 
   useEffect(() => {
-    if (open) fetchShares();
-  }, [open, noteId]);
+    // Fetch on mount so the trigger badge reflects existing shares, and refresh when opened.
+    fetchShares();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noteId, open]);
 
   const createPublicLink = async () => {
     setLoading(true);
