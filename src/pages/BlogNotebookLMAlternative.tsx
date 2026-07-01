@@ -173,7 +173,7 @@ const picks = [
 const faq = [
   {
     q: "Why look for a NotebookLM alternative at all?",
-    a: "NotebookLM is excellent at source-grounded Q&A, but it isn't a notebook - there's no real writing surface, no per-course organization, no markdown export, and the whole thing lives inside Google, which has shipped (and killed) similar experiments before. Most people end up wanting a tool they can actually write in, with the AI as a panel - not the entire interface.",
+    a: "Short version: NotebookLM is a research demo, not a notebook. Most people move on when they realize they can't export the chat, can't organize by course, and can't write a real note inside it.",
   },
   {
     q: "Can I import my NotebookLM sources somewhere else?",
@@ -181,7 +181,7 @@ const faq = [
   },
   {
     q: "Which alternative has the closest 'chat with my docs' feel?",
-    a: "Mem is closest out of the box - paste sources, chat across them, no setup. Obsidian with Smart Connections or Copilot gets you closer to NotebookLM's source-grounded behavior if you're willing to manage API keys. Notebook Archive takes a different approach: the AI is a panel that explains and summarizes the notes you write, which is what most students actually want once the novelty wears off.",
+    a: "Mem is closest out of the box - paste sources, chat across them, no setup. Obsidian with Smart Connections or Copilot gets you closer to NotebookLM's source-grounded behavior if you're willing to manage API keys. Notebook Archive takes a different approach: the AI is a panel that explains and summarizes the notes you write, which is what most students settle into after a few weeks.",
   },
   {
     q: "Is NotebookLM free forever?",
@@ -189,7 +189,7 @@ const faq = [
   },
   {
     q: "Does Notebook Archive do source-grounded answers like NotebookLM?",
-    a: "Differently. NotebookLM's bet is that the AI should only answer from your sources. Notebook Archive's bet is that you should write the notes and the AI should help you understand and revise them. You can paste source material in and ask the AI panel to summarize or explain it, but we're optimizing for a notebook you study from, not a chatbot you query.",
+    a: "Differently. NotebookLM's bet is that the AI should only answer from your sources. Notebook Archive's bet is that you should write the notes and the AI should help you understand and revise them. You can paste source material in and ask the AI panel to summarize or explain it, but the shape of the product is a notebook you study from.",
   },
   {
     q: "What about privacy?",
