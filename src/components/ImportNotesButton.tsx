@@ -5,6 +5,7 @@ import { extractPdfText } from "@/lib/pdf-extract";
 import { formatImportedDocument } from "@/lib/document-import";
 import { MAX_PROCESSABLE_SIZE } from "@/lib/file-validation";
 import { ImportActionDialog, type ImportChoice, type MergePosition } from "@/components/ImportActionDialog";
+import { toolPill } from "@/lib/tool-colors";
 
 interface ImportNotesButtonProps {
   /** Insert at cursor / merge into the current note (fallback if onMergeAt missing). */
@@ -129,7 +130,7 @@ export function ImportNotesButton({ onInsert, onMergeAt, onReplace, onCreateNew,
       <button
         onClick={() => inputRef.current?.click()}
         disabled={loading}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-sky-400/30 bg-sky-500/10 text-sky-600 dark:text-sky-300 hover:bg-sky-500/20 transition-all duration-200"
+        className={toolPill("import")}
         title="Import notes from a file and place in document"
       >
         {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileUp className="h-3.5 w-3.5" />}

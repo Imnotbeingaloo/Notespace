@@ -29,6 +29,7 @@ import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
 import { useNavigate } from "react-router-dom";
 
 import { X as XIcon, ChevronLeft, ChevronRight, RotateCcw, Sparkles, Trophy } from "lucide-react";
+import { toolPill } from "@/lib/tool-colors";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -406,7 +407,7 @@ function PreviewButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-indigo-400/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-500/20 transition-all duration-200"
+        className={toolPill("preview")}
         title="Preview Note"
       >
         <Eye className="h-3.5 w-3.5" />

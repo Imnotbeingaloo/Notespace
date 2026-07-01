@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, Square, AlertTriangle, X, Loader2, Clock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toolPill } from "@/lib/tool-colors";
 
 interface VoiceTranscriptionProps {
   onTranscript: (text: string) => void;
@@ -538,7 +539,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       <button
         onMouseDown={handleTriggerMouseDown}
         onClick={start}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-rose-400/30 bg-rose-500/10 text-rose-500 dark:text-rose-300 hover:bg-rose-500/20 transition-all duration-200"
+        className={toolPill("voice")}
         title="Voice to text"
         type="button"
       >

@@ -1,5 +1,6 @@
 import { Wand2 } from "lucide-react";
 import { useNotebooks } from "@/context/NotebookContext";
+import { toolPill } from "@/lib/tool-colors";
 
 interface AIEditPanelProps {
   onApplyEdit?: (newContent: string) => void;
@@ -16,7 +17,7 @@ export function AIEditPanel({ onOpen }: AIEditPanelProps) {
   return (
     <button
       onClick={() => onOpen?.()}
-      className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 transition-all duration-200"
+      className={toolPill("aiEdit")}
       title="AI Edit Document"
     >
       <Wand2 className="h-3.5 w-3.5" />
