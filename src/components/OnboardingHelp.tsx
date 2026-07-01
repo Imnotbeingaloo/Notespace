@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu, Bell } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu, Bell, Mic, Layers, Share2, Wand2, Languages, ClipboardType } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -43,9 +43,15 @@ const sections: Section[] = [
     id: "ai",
     label: "AI",
     tips: [
-      { Icon: Sparkles, title: "Ask AI", body: "Side panel. Edit mode rewrites your selection; Explain mode answers questions about your note. Three quick-action chips above the bar cover the common asks." },
-      { Icon: FileText, title: "Auto-format on paste", body: "Paste plain text over 200 characters and the editor offers to format it - headings, lists, and structure - with a live progress toast." },
+      { Icon: Sparkles, title: "Ask AI", body: "Side panel with two modes. Edit rewrites your selection in place; Explain answers questions about the note. Three quick-action chips above the bar cover the common asks." },
+      { Icon: Wand2, title: "AI Edit intents", body: "Type verbs like rewrite, fix, shorten, expand, simplify, translate, or convert in Explain mode and Ask AI automatically routes them to the edit engine." },
+      { Icon: ClipboardType, title: "Auto-format on paste", body: "Paste plain text over 200 characters and the editor offers to format it - headings, lists, structure - with a live progress toast." },
+      { Icon: Mic, title: "Voice transcription", body: "Mic button records, transcribes with Whisper, and cleans it up with an LLM. The result is inserted exactly where your cursor was blinking. Word-level timestamps available." },
+      { Icon: Layers, title: "Flashcards", body: "Generate a deck from any note. Grade each card Correct or Wrong with a swipe-style animation; the deck reshuffles what you got wrong." },
+      { Icon: BookOpen, title: "Explain topic", body: "Highlight a term or phrase and open the Explain panel for a streamed, in-depth explanation without leaving your note." },
+      { Icon: Languages, title: "Summarize & analyze", body: "Ask AI can summarize key points, extract action items, list what's missing, or analyze structure - all grounded in the current note." },
       { glyph: "#", title: "Markdown shortcuts", body: "Type `# `, `## `, `### `, `- `, `1. `, `> ` and they convert as you finish typing." },
+      { Icon: Share2, title: "Share notes", body: "Public link or share by email. Public links can be toggled discoverable/hidden from search engines." },
     ],
   },
   {

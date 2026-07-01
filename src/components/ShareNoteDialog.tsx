@@ -45,8 +45,10 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
   };
 
   useEffect(() => {
-    if (open) fetchShares();
-  }, [open, noteId]);
+    // Fetch on mount so the trigger badge reflects existing shares, and refresh when opened.
+    fetchShares();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noteId, open]);
 
   const createPublicLink = async () => {
     setLoading(true);
@@ -128,9 +130,16 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
       <DialogTrigger asChild>
         <button
           type="button"
-          className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+          title="Share this note - public link or by email"
+          className="magnetic-btn group inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-primary/25 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/40 hover:shadow-sm transition-all duration-200"
         >
-          <Share2 className="h-3.5 w-3.5" /> Share
+          <Share2 className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-rotate-6" />
+          <span>Share</span>
+          {shares.length > 0 && (
+            <span className="ml-0.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold leading-none">
+              {shares.length}
+            </span>
+          )}
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -139,6 +148,9 @@ export function ShareNoteDialog({ noteId, noteTitle, notebookName }: ShareNoteDi
             <Share2 className="h-4 w-4 text-primary" />
             {notebookName ? `Share "${notebookName}" Notebook` : `Share "${noteTitle}"`}
           </DialogTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            Create a public link anyone can open, or share directly with an email. Public links are hidden from search engines by default.
+          </p>
         </DialogHeader>
 
         <div className="space-y-4 py-2">

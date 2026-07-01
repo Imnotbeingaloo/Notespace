@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { usePaperStyle } from "@/hooks/use-paper-style";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
+import { useNotebookArrows } from "@/hooks/use-notebook-arrows";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -33,6 +34,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [paperStyle, setPaperStyle] = usePaperStyle();
   const [tempNotesEnabled, setTempNotesEnabled] = useTempNotesEnabled();
   const [wordCountGoalEnabled, setWordCountGoalEnabled] = useWordCountGoalEnabled();
+  const [notebookArrows, setNotebookArrows] = useNotebookArrows();
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
@@ -330,6 +332,33 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </p>
                   </div>
                 </div>
+
+                {import.meta.env.DEV && (
+                  <div className="rounded-xl border border-dashed border-border p-4 flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-3">
+                        <h4 className="text-sm font-semibold text-foreground">
+                          Notebook dropdown arrows
+                          <span className="ml-2 text-[10px] uppercase tracking-wider font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">Dev</span>
+                        </h4>
+                        <Switch
+                          checked={notebookArrows}
+                          onCheckedChange={(v) => {
+                            setNotebookArrows(v);
+                            (v ? toast.success : toast.warning)(v ? "Notebook arrows enabled" : "Notebook arrows disabled");
+                          }}
+                          aria-label="Toggle notebook dropdown arrows"
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Show a chevron on notebook rows in the sidebar that rotates when expanded. Dev-only preview.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
