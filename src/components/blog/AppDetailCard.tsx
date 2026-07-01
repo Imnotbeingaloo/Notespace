@@ -1,7 +1,7 @@
-import { Check, X } from "lucide-react";
+// AppDetailCard - intentionally asymmetric. No icon grids, no numbered anatomy.
 
 export interface AppDetailCardProps {
-  index: number;
+  index?: number; // kept for back-compat, not rendered
   name: string;
   pricing: string;
   imageUrl: string;
@@ -14,6 +14,8 @@ export interface AppDetailCardProps {
   bestFor: string;
   ourTake?: string;
   disclosure?: string;
+  /** Optional first-person aside - use on 1-2 cards to break template feel. */
+  aside?: string;
 }
 
 export function AppDetailCard(p: AppDetailCardProps) {
@@ -40,7 +42,7 @@ export function AppDetailCard(p: AppDetailCardProps) {
     <section className="border-t border-border pt-8 mt-8 first:border-t-0 first:pt-0 first:mt-0">
       <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
         <h3 className="font-serif text-2xl font-bold text-foreground">
-          {p.index}. {p.name}
+          {p.name}
         </h3>
         <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-amber-100 text-amber-900 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:ring-amber-500/30 whitespace-nowrap">
           {p.pricing}
