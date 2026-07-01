@@ -86,7 +86,10 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
-  const historyRef = useRef<number[]>(new Array(HISTORY).fill(0));
+  const barsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  const targetsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  const [visualizerReady, setVisualizerReady] = useState(false);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const cleanupResources = useCallback(() => {
