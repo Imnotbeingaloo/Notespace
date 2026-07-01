@@ -415,84 +415,37 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
               transition={{ layout: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
               className="text-center py-12 flex flex-col items-center"
             >
-              <AnimatePresence mode="popLayout" initial={false}>
-                {idleEgg ? (
-                  <motion.div
-                    key="egg"
-                    layout
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative mb-4 select-none"
-                    aria-hidden
-                  >
-                    <IdleVignette reducedMotion={reducedMotion} />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="ember"
-                    layout
-                    initial={{ opacity: 0, scale: 0.92, y: 4 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative mb-4 select-none flex flex-col items-center"
-                    aria-hidden
-                  >
-                    {/* Soft halo + sparkle: persistent visual anchor after the
-                        vignette retires so the empty state doesn't feel bare. */}
-                    <div className="relative h-9 w-9 flex items-center justify-center">
-                      <motion.span
-                        className="absolute inset-0 rounded-full bg-primary/15 blur-md"
-                        animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
-                        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-                      />
-                      <Feather className="relative h-4 w-4 text-primary" />
-                    </div>
-                    <svg width="64" height="6" viewBox="0 0 64 6" className="mt-2 overflow-visible" aria-hidden>
-                      <defs>
-                        <linearGradient id="aiEmberInk" x1="0" y1="0" x2="1" y2="0">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-                          <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.75" />
-                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <motion.path
-                        d="M 2 3 Q 32 1, 62 3"
-                        stroke="url(#aiEmberInk)"
-                        strokeWidth={1.5}
-                        strokeLinecap="round"
-                        fill="none"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.1, ease: [0.65, 0, 0.35, 1] }}
-                      />
-                    </svg>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Persistent halo + leaf logo. Always mounted so it never
+                  disappears / reappears when the panel opens. */}
+              <div className="relative mb-3 h-10 w-10 flex items-center justify-center select-none" aria-hidden>
+                <motion.span
+                  className="absolute inset-0 rounded-full bg-primary/15 blur-md"
+                  animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <Feather className="relative h-5 w-5 text-primary" />
+              </div>
 
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.p
-                  key={idleEgg ? "egg-line" : "default-line"}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-sm text-muted-foreground"
-                >
-                  {idleEgg
-                    ? "A blank page is just the start. Ask anything."
-                    : "Ask anything about your note, or use the quick actions below."}
-                </motion.p>
-              </AnimatePresence>
+              {/* Word vignette - remounts on every fresh open via emptyKey. */}
+              <div key={`vignette-${emptyKey}`} className="mb-2" aria-hidden>
+                <IdleVignette reducedMotion={reducedMotion} />
+              </div>
+
+              <motion.p
+                key={`line-${emptyKey}`}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+                className="text-sm text-muted-foreground mt-2"
+              >
+                A blank page is just the start. Ask anything.
+              </motion.p>
               <motion.p
                 layout
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
                 className="text-[11px] text-muted-foreground/70 mt-2"
               >
                 Try: "Summarize the key points" · "Rewrite in plain English" · "What am I missing?"
