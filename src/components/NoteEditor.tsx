@@ -454,7 +454,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  
+  const [dragOver, setDragOver] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
