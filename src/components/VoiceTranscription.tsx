@@ -440,15 +440,23 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                 </button>
               </div>
 
-              {/* Smooth continuous waveform - scrolls right-to-left as you speak */}
+              {/* Centered symmetric bar visualizer - responds to voice pitch & amplitude */}
               {phase !== "review" && (
                 <div className="px-6 pt-8 pb-6">
                   <div className="relative h-24">
                     <canvas
                       ref={canvasRef}
-                      className="w-full h-full block text-foreground/90"
+                      className={`w-full h-full block text-foreground/90 transition-opacity duration-300 ${visualizerReady && phase === "recording" ? "opacity-100" : "opacity-0"}`}
                       aria-hidden="true"
                     />
+                    {phase === "recording" && !visualizerReady && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Warming up mic…
+                        </span>
+                      </div>
+                    )}
                     {phase === "processing" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm">
                         <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
@@ -459,8 +467,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                     )}
                   </div>
                 </div>
-
               )}
+
 
               {/* Review panel with timestamps */}
               {phase === "review" && (
