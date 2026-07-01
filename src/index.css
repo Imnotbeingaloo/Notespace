@@ -63,8 +63,12 @@
     --muted: 40 15% 92%;
     --muted-foreground: 220 14% 30%;
 
-    --accent: 32 80% 55%;
+    /* Accent bench - teal stays primary. Antique brass is the warm accent
+       (replaces the old orange/yellow), claret is its editorial companion. */
+    --accent: 36 42% 52%;
     --accent-foreground: 0 0% 100%;
+    --accent-2: 352 38% 44%;
+    --accent-2-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -111,8 +115,10 @@
     --muted: 220 15% 16%;
     --muted-foreground: 220 12% 70%;
 
-    --accent: 32 70% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 36 48% 58%;
+    --accent-foreground: 220 20% 10%;
+    --accent-2: 352 45% 55%;
+    --accent-2-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
