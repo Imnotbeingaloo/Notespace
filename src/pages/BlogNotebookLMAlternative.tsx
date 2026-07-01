@@ -260,7 +260,7 @@ export default function BlogNotebookLMAlternative() {
               NotebookLM Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
-              The Honest <span className="text-primary">NotebookLM Alternative</span> Guide
+              <span className="text-primary">NotebookLM Alternatives</span>: 6 Apps People Actually Move To
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               NotebookLM is a remarkable demo of source-grounded AI. It is not, in any
@@ -274,19 +274,14 @@ export default function BlogNotebookLMAlternative() {
 
           <BlogKeyTakeaways
             points={[
-              "NotebookLM is great at Q&A over your sources. It's not great at notes - because it isn't one.",
+              "NotebookLM is great at Q&A over your sources. The gap starts when you want a place to write.",
               "There's no bulk export of your sources or chats. Treat NotebookLM as ephemeral.",
               "The right replacement depends on what you do with the answers - study, write, or just look them up.",
-              "Most people end up with a notebook + an AI panel, not a chatbot wearing a notebook costume.",
+              "Most people end up with a notebook and an AI panel side by side.",
             ]}
           />
 
-          <p className="text-muted-foreground leading-relaxed mb-8">
-            One of us spent a week loading eighty papers into NotebookLM last
-            January. The Q&A was genuinely useful. At the end of the week there
-            was nothing to hand in - just a chat history that wouldn't export.
-            That is the shape of the problem this guide is trying to solve.
-          </p>
+
 
 
           <section className="mb-12">
