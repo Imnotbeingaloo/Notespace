@@ -457,8 +457,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     }}
                     className={`group/note magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNoteId === note.id
-                        ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
-                        : "border-transparent text-sidebar-foreground hover:bg-sky-500/10 hover:border-sky-500/50 hover:text-foreground"
+                        ? "bg-sky-500/20 border-sky-500 text-foreground font-medium"
+                        : "border-transparent text-sidebar-foreground hover:bg-sky-500/15 hover:border-sky-500/60 hover:text-foreground"
                     } ${dragNoteId === note.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(null);
