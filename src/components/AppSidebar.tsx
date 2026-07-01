@@ -457,8 +457,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     }}
                     className={`group/note magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNoteId === note.id
-                        ? "bg-sky-500/10 border-sky-500/70 text-foreground font-medium"
-                        : "border-transparent text-sidebar-foreground hover:bg-sky-500/10 hover:border-sky-500/50 hover:text-foreground"
+                        ? "bg-sky-500/20 border-sky-500 text-foreground font-medium"
+                        : "border-transparent text-sidebar-foreground hover:bg-sky-500/15 hover:border-sky-500/60 hover:text-foreground"
                     } ${dragNoteId === note.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(null);
@@ -555,9 +555,9 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     }}
                     className={`group magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNotebookId === nb.id
-                        ? "bg-primary/10 border-primary/70 text-foreground font-medium"
-                        : "border-transparent text-sidebar-foreground hover:bg-primary/5 hover:border-primary/40"
-                    } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/5" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
+                        ? "bg-primary/20 border-primary text-foreground font-medium"
+                        : "border-transparent text-sidebar-foreground hover:bg-primary/15 hover:border-primary/60"
+                    } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/10" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(nb.id);
                       setExpandedNotebook(nb.id);

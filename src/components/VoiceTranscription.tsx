@@ -89,6 +89,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const targetsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
   const calibratedFloorRef = useRef<number>(0.04);
   const [visualizerReady, setVisualizerReady] = useState(false);
+  const [silent5s, setSilent5s] = useState(false);
+  const lastVoiceAtRef = useRef<number>(0);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -146,7 +148,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const barW = Math.max(2, (cssW - gap * (N - 1)) / N);
     const radius = barW / 2;
     const maxAmp = cssH * 0.44;
-    const minAmp = 3;
+    const minAmp = 2;
 
     for (let i = 0; i < N; i++) {
       const x = i * (barW + gap);
@@ -291,6 +293,16 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       }
       targetsRef.current = ordered;
 
+      // Silence gate: if peak is at/below the noise floor, force all bars to
+      // zero so the visualizer sits flat instead of dancing on ambient noise.
+      const voiceThreshold = floor + 0.04;
+      const isSpeaking = peak > voiceThreshold;
+      if (!isSpeaking) {
+        for (let i = 0; i < BAR_COUNT; i++) targetsRef.current[i] = 0;
+      } else {
+        lastVoiceAtRef.current = now;
+      }
+
       if (!sawAudio && peak > 0.02) {
         sawAudio = true;
         setVisualizerReady(true);
@@ -301,12 +313,15 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       }
 
       drawBars();
-      // Throttle elapsed updates to ~4Hz. That's enough for a stopwatch and
-      // avoids 60 React renders per second which was cascading into the
-      // whole dialog subtree.
       if (now - lastElapsedCommit > 250) {
         setElapsed(sinceStart / 1000);
         lastElapsedCommit = now;
+        // Silence hint after 5s without any detected voice (post-calibration).
+        if (calibrated && lastVoiceAtRef.current > 0) {
+          setSilent5s(now - lastVoiceAtRef.current > 5000);
+        } else if (calibrated && lastVoiceAtRef.current === 0) {
+          setSilent5s(sinceStart > 5000 + CALIBRATION_MS);
+        }
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -340,6 +355,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     barsRef.current = new Array(BAR_COUNT).fill(0);
     targetsRef.current = new Array(BAR_COUNT).fill(0);
     setVisualizerReady(false);
+    setSilent5s(false);
+    lastVoiceAtRef.current = 0;
 
 
     setOpen(true);
@@ -514,8 +531,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
 
               {/* Centered symmetric bar visualizer - responds to voice pitch & amplitude */}
               {phase !== "review" && (
-                <div className="px-6 pt-8 pb-6">
-                  <div className="relative h-24">
+                <div className="px-6 pt-6 pb-5 flex justify-center">
+                  <div className="relative h-16 w-[70%] max-w-[280px]">
                     <canvas
                       ref={canvasRef}
                       className={`w-full h-full block text-foreground/90 transition-opacity duration-300 ${visualizerReady && phase === "recording" ? "opacity-100" : "opacity-0"}`}
@@ -586,10 +603,10 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                 </div>
               )}
 
-              {/* Recording hint */}
-              {phase === "recording" && !error && (
+              {/* Silence hint after 5s of no detected speech */}
+              {phase === "recording" && !error && silent5s && (
                 <div className="px-5 pb-3">
-                  <p className="text-[12px] text-muted-foreground/80 italic">Speak clearly - hit Stop when you're done.</p>
+                  <p className="text-[12px] text-muted-foreground/80 italic">We can't hear you - check your mic or move closer.</p>
                 </div>
               )}
 
