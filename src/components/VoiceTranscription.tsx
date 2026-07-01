@@ -13,7 +13,7 @@ type Phase = "idle" | "recording" | "processing" | "review";
 
 // Centered symmetric bar visualizer driven by FFT frequency data.
 // Bars mirror from the center outwards, responding to pitch + amplitude.
-const BAR_COUNT = 32;
+const BAR_COUNT = 26;
 
 
 
