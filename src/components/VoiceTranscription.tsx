@@ -13,7 +13,7 @@ type Phase = "idle" | "recording" | "processing" | "review";
 
 // Centered symmetric bar visualizer driven by FFT frequency data.
 // Bars mirror from the center outwards, responding to pitch + amplitude.
-const BAR_COUNT = 32;
+const BAR_COUNT = 26;
 
 
 
@@ -249,6 +249,26 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       for (let i = 0; i < half; i++) {
         ordered[half - 1 - i] = targets[i * 2] || 0;
         ordered[half + i] = targets[i * 2 + 1] || 0;
+      }
+
+      // Boost the center bars so they react the most (they carry vocal energy),
+      // then cap every surrounding bar at 98% of the center peak so the wave
+      // has a clean peak-in-the-middle silhouette instead of noisy edges.
+      const centerIdx = half - 1;
+      // Weighted center amplitude pulls from the 4 middle bars for stability.
+      const centerRaw = Math.max(
+        ordered[centerIdx] || 0,
+        ordered[centerIdx + 1] || 0,
+        (ordered[centerIdx - 1] || 0) * 0.9,
+        (ordered[centerIdx + 2] || 0) * 0.9,
+      );
+      const centerLevel = Math.min(1, centerRaw * 1.35); // extra sensitivity in the middle
+      ordered[centerIdx] = centerLevel;
+      ordered[centerIdx + 1] = centerLevel;
+      const cap = centerLevel * 0.98;
+      for (let i = 0; i < BAR_COUNT; i++) {
+        if (i === centerIdx || i === centerIdx + 1) continue;
+        ordered[i] = Math.min(ordered[i], cap);
       }
       targetsRef.current = ordered;
 
