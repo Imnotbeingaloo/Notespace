@@ -454,7 +454,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  const [dragOver, setDragOver] = useState(false);
+  
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -695,102 +695,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     [pendingDocDrop, handleCreateNoteFromImport, handleMergeAt, handleReplaceFromImport]
   );
 
-  const handleDrop = useCallback(
-    async (e: React.DragEvent) => {
-      e.preventDefault();
-      setDragOver(false);
-      if (!user || !activeNote) return;
 
-      const files = Array.from(e.dataTransfer.files);
-      if (files.length === 0) return;
 
-      // Route document drops (.md/.pdf/.txt/.html/.csv/.json) through the same
-      // Create / Merge / Replace dialog used by the Import button. Drop only
-      // the first doc - mixing docs + media in one drop is rare and confusing.
-      const DOC_EXTS = [".md", ".markdown", ".txt", ".html", ".htm", ".csv", ".json", ".pdf"];
-      const docFile = files.find((f) => {
-        const dot = f.name.lastIndexOf(".");
-        const ext = dot === -1 ? "" : f.name.slice(dot).toLowerCase();
-        return DOC_EXTS.includes(ext);
-      });
-      if (docFile) {
-        try {
-          const { formatImportedDocument } = await import("@/lib/document-import");
-          const { extractPdfText } = await import("@/lib/pdf-extract");
-          const ext = docFile.name.slice(docFile.name.lastIndexOf(".")).toLowerCase();
-          let raw = "";
-          if (ext === ".pdf") {
-            const { text, isScanned } = await extractPdfText(docFile);
-            if (isScanned || !text.trim()) {
-              toast({ title: "Scanned PDF", description: "This PDF does not contain readable text.", variant: "destructive" });
-              return;
-            }
-            raw = text;
-          } else if (ext === ".html" || ext === ".htm") {
-            const html = await docFile.text();
-            raw = new DOMParser().parseFromString(html, "text/html").body.textContent || "";
-          } else {
-            raw = await docFile.text();
-          }
-          if (!raw.trim()) {
-            toast({ title: "Empty file", description: "The document appears to be empty.", variant: "destructive" });
-            return;
-          }
-          const formatted = formatImportedDocument(raw, docFile.name);
-          const hasContent = !!activeNote.content?.trim();
-          if (!hasContent) {
-            // Editor empty → drop content straight in (no dialog, no confirm).
-            hybridEditorRef.current?.replaceAllUndoable(formatted);
-            toast({ title: "Imported", description: `"${docFile.name}" added to this note.` });
-          } else {
-            setPendingDocDrop({ content: formatted, fileName: docFile.name });
-          }
-        } catch (err) {
-          console.error("Doc drop failed", err);
-          toast({ title: "Import failed", description: "Could not read the document.", variant: "destructive" });
-        }
-        return;
-      }
-
-      const currentAttachments = activeNote.attachments || [];
-      const newAttachments = [...currentAttachments];
-      let markdownInserts: string[] = [];
-      let hasImages = false;
-
-      for (const file of files) {
-        if (!validateFile(file)) continue;
-        const path = buildStoragePath(user.id, activeNote.id, file.name);
-        const { error } = await supabase.storage.from("note-attachments").upload(path, file);
-        if (error) { console.error("Drop upload error:", error); continue; }
-        const { data: signedUrlData } = await supabase.storage.from("note-attachments").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-        const fileUrl = signedUrlData?.signedUrl || '';
-        newAttachments.push({ name: file.name, url: fileUrl, path: path, type: file.type, size: file.size });
-        if (file.type.startsWith("image/")) {
-          markdownInserts.push(`![${file.name}](${fileUrl})`);
-          hasImages = true;
-        }
-      }
-
-      await updateNote(activeNotebookId, activeNote.id, {
-        attachments: newAttachments,
-      });
-
-      // Insert images at cursor position
-      if (markdownInserts.length > 0) {
-        for (const md of markdownInserts) {
-          hybridEditorRef.current?.insertAtCursor(md);
-        }
-      }
-
-      if (hasImages) {
-        toast({ title: "Image added", description: "Image inserted into note." });
-      }
-    },
-    [user, activeNote?.id, activeNotebookId, activeNote?.content, activeNote?.attachments, updateNote, handleCreateNoteFromImport, handleMergeAt, handleReplaceFromImport]
-  );
-
-  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setDragOver(true); };
-  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setDragOver(false); };
 
   if (!activeNotebook) {
     return (
@@ -837,29 +743,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.18 }}
-      className={`flex-1 flex flex-col bg-background overflow-hidden relative ${dragOver ? "ring-2 ring-primary/50 ring-inset" : ""}`}
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
+      className="flex-1 flex flex-col bg-background overflow-hidden relative"
     >
-        {/* Drag overlay */}
-        <AnimatePresence>
-          {dragOver && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 z-50 bg-primary/5 backdrop-blur-sm flex items-center justify-center pointer-events-none"
-            >
-              <div className="flex flex-col items-center gap-3 text-primary">
-                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center">
-                  <Upload className="h-8 w-8" />
-                </div>
-                <span className="text-sm font-medium">Drop files to add to note</span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Title bar */}
         <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
@@ -1024,7 +909,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             ref={hybridEditorRef}
             content={activeNote.content || ""}
             onChange={(content) => debouncedUpdate("content", content)}
-            placeholder={focusMode ? "Just write..." : "Start writing... (drag & drop files here)"}
+            placeholder={focusMode ? "Just write..." : "Start writing..."}
           />
         </div>
 
