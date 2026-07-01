@@ -237,7 +237,7 @@ function TemporaryWorkspaceInner() {
   }
 
   return (
-    <div className="min-h-screen bg-background relative flex flex-col">
+    <div className="h-screen overflow-hidden bg-background relative flex flex-col">
       {/* Floating top cluster */}
       <TooltipProvider delayDuration={150}>
         <div className="fixed top-3 left-3 right-3 z-30 flex items-center justify-between gap-2 pointer-events-none">
