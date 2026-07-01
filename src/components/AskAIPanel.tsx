@@ -159,16 +159,20 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
 
   // Easter egg: plays once when the panel opens on an empty conversation.
   // Quiet editorial vignette - cycles through three words, then retires.
+  // We commit the decision synchronously via useLayoutEffect so the "ember"
+  // fallback never flashes on the first paint (that was the open-time glitch),
+  // and we let the exit crossfade run at its own pace instead of snapping.
   const eggPlayedRef = useRef(false);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
     if (eggPlayedRef.current) return;
     if (messages.length > 0 || input.trim() || loading) return;
     eggPlayedRef.current = true;
+    // Set immediately - no delay - so the vignette is the first thing painted.
+    setIdleEgg(true);
     const total = reducedMotion ? 900 : 2300;
-    const show = setTimeout(() => setIdleEgg(true), 150);
-    const hide = setTimeout(() => setIdleEgg(false), 150 + total);
-    return () => { clearTimeout(show); clearTimeout(hide); };
+    const hide = setTimeout(() => setIdleEgg(false), total);
+    return () => { clearTimeout(hide); };
   }, [open, messages.length, input, loading, reducedMotion]);
 
 
