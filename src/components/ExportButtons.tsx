@@ -3,6 +3,7 @@ import { Download, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import DOMPurify from "dompurify";
 import { useNotebooks } from "@/context/NotebookContext";
+import { toolPill } from "@/lib/tool-colors";
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -106,7 +107,7 @@ export function ExportButtons() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-emerald-400/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500/20 transition-all duration-200 w-full"
+        className={toolPill("download", "w-full")}
       >
         <Download className="h-3.5 w-3.5" />
         <span>Download</span>
