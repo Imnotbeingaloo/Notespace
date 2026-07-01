@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu, Bell } from "lucide-react";
+import { HelpCircle, Highlighter, Code, Link2, Image as ImageIcon, Minus, Table2, Search, Maximize2, Timer, ArrowRight, TableProperties, BookOpen, FileText, Plus, Upload, Tag, CalendarDays, Sparkles, Keyboard, Settings as SettingsIcon, Trash2, Menu, Bell, Mic, Layers, Share2, Wand2, Languages, ClipboardType } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
