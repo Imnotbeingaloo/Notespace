@@ -157,25 +157,19 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
-  // Easter egg: plays once when the panel opens on an empty conversation.
-  // GLITCH FIX: previously we set idleEgg=true from an effect after a 150ms
-  // delay, so the "ember" fallback painted first and then swapped to the
-  // vignette (and swapped back on close) - two visible glitches. Now we
-  // commit the decision during render via a ref-guarded setState so the
-  // very first paint of the empty state is the vignette itself.
-  const eggPlayedRef = useRef(false);
-  const canPlayEgg = open && !eggPlayedRef.current && messages.length === 0 && !input.trim() && !loading;
-  if (canPlayEgg && !idleEgg) {
-    eggPlayedRef.current = true;
-    setIdleEgg(true);
-  }
+  // Empty-state vignette: the serif word-swap plays every time the panel
+  // opens on a blank conversation. It's a static graphic once it settles,
+  // so we just render <IdleVignette /> directly - no cross-swap with an
+  // "ember" fallback (that was the source of the double glitch). The
+  // vignette component internally advances through its 3 words and then
+  // holds its final resting state until messages arrive.
   useEffect(() => {
-    if (!open) { eggPlayedRef.current = false; setIdleEgg(false); return; }
-    if (!idleEgg) return;
-    const total = reducedMotion ? 900 : 2300;
-    const hide = setTimeout(() => setIdleEgg(false), total);
-    return () => { clearTimeout(hide); };
-  }, [open, idleEgg, reducedMotion]);
+    // Reset the internal word cycle whenever the panel reopens on empty
+    // by remounting via a key change below.
+    if (!open) setIdleEgg(false);
+    else if (messages.length === 0 && !input.trim() && !loading) setIdleEgg(true);
+  }, [open, messages.length, loading]);
+
 
 
 

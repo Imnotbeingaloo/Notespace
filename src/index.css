@@ -323,6 +323,14 @@
   to { transform: translateX(-50%); }
 }
 
+/* Toast auto-dismiss progress bar. Uses CSS animation-play-state so
+   hover truly freezes at the current width and resumes from the same
+   spot instead of restarting. */
+@keyframes toast-progress {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
 /* Ask AI streaming: GPU-accelerated soft fade-in for each newly painted
    markdown node, so freshly revealed characters/words feel buttery
    instead of popping in. Uses contain + content-visibility hints to keep

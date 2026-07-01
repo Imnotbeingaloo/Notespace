@@ -102,15 +102,13 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
   const showChevron = hasDescription || hasActions;
   const expandedOpen = item.expanded && showChevron;
   const [hovered, setHovered] = useState(false);
-  // Re-key the progress bar whenever the underlying timer restarts (on expand
-  // or hover-resume). framer-motion treats a new key as a fresh animation.
+  // Re-key the progress bar only when the underlying timer restarts (on
+  // expand). Hover is handled via CSS animation-play-state so the bar
+  // freezes in place instead of jumping back.
   const [barKey, setBarKey] = useState(0);
   useEffect(() => {
     setBarKey((k) => k + 1);
   }, [item.expanded]);
-  useEffect(() => {
-    if (!hovered) setBarKey((k) => k + 1);
-  }, [hovered]);
 
   return (
     <motion.li
@@ -189,14 +187,16 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
       </div>
 
       {kind !== "loading" && (
-        <motion.div
+        <div
           key={barKey}
           aria-hidden="true"
           className="absolute bottom-0 left-0 h-1 rounded-br-full"
-          initial={{ width: "100%" }}
-          animate={hovered ? undefined : { width: "0%" }}
-          transition={{ duration: Number.isFinite(item.duration) ? item.duration / 1000 : 10, ease: "linear" }}
-          style={{ backgroundColor: visual.accent }}
+          style={{
+            backgroundColor: visual.accent,
+            width: "100%",
+            animation: `toast-progress ${Number.isFinite(item.duration) ? item.duration : 10000}ms linear forwards`,
+            animationPlayState: hovered ? "paused" : "running",
+          }}
         />
       )}
     </motion.li>

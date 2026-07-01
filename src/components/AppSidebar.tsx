@@ -484,13 +484,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         <Trash2 className="h-3 w-3" />
                       </button>
                     </div>
-                    <ChevronRight
-                      className={`h-3 w-3 shrink-0 transition-all duration-200 ${
-                        activeNoteId === note.id
-                          ? "text-sky-500 opacity-100 translate-x-0"
-                          : "text-muted-foreground opacity-0 -translate-x-1 group-hover/note:opacity-100 group-hover/note:translate-x-0 group-hover/note:text-foreground"
-                      }`}
-                    />
                   </div>
                 </motion.div>
 
@@ -671,24 +664,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     >
                       <MoreHorizontal className="h-3 w-3" />
                     </button>
-
-                    {/* Chevron - always pinned to the far right */}
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setExpandedNotebook((prev) => (prev === nb.id ? null : nb.id));
-                      }}
-                      aria-label={expandedNotebook === nb.id ? "Collapse notebook" : "Expand notebook"}
-                      className="p-0.5 rounded hover:bg-accent/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                    >
-                      <ChevronRight
-                        className={`h-3 w-3 transition-transform duration-200 ${
-                          expandedNotebook === nb.id ? "rotate-90" : ""
-                        }`}
-                      />
-                    </button>
                   </div>
+
 
                   {/* Nested notes - shown only when the user has expanded this notebook via the chevron. */}
                   <AnimatePresence initial={false}>
