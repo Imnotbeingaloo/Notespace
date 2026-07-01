@@ -610,6 +610,57 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                       </div>
                     )}
                   </div>
+
+                  {/* Level meter + clip warning + mic sensitivity slider.
+                      The bar itself is updated via a ref every RAF so it
+                      never triggers React re-renders. */}
+                  {phase === "recording" && (
+                    <div className="mt-5 space-y-2.5">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground w-10">Level</span>
+                        <div className="relative flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div
+                            ref={levelBarRef}
+                            className={`absolute inset-y-0 left-0 w-full origin-left rounded-full transition-colors ${
+                              clipping ? "bg-rose-500" : "bg-emerald-500"
+                            }`}
+                            style={{ transform: "scaleX(0)" }}
+                          />
+                        </div>
+                        <span
+                          ref={clipPipRef}
+                          className={`text-[10px] font-mono w-14 text-right transition-colors ${
+                            clipping ? "text-rose-500" : calibrating ? "text-amber-500" : "text-muted-foreground"
+                          }`}
+                        >
+                          {calibrating ? "calibrating" : clipping ? "CLIP" : "OK"}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground w-10">Gain</span>
+                        <input
+                          type="range"
+                          min={0.5}
+                          max={3.5}
+                          step={0.05}
+                          value={micGain}
+                          onChange={(e) => setMicGain(Number(e.target.value))}
+                          className="flex-1 accent-primary h-1 cursor-pointer"
+                          aria-label="Microphone sensitivity"
+                        />
+                        <span className="text-[10px] font-mono w-14 text-right text-muted-foreground tabular-nums">
+                          {micGain.toFixed(2)}×
+                        </span>
+                      </div>
+
+                      {clipping && (
+                        <p className="text-[11px] text-rose-500/90 leading-snug">
+                          Signal is clipping - lower the gain slider or move back from the mic.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
