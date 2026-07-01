@@ -54,11 +54,15 @@ export function AppDetailCard(p: AppDetailCardProps) {
         <h3 className="font-serif text-2xl font-bold text-foreground">
           {p.name}
         </h3>
-        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-amber-100 text-amber-900 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:ring-amber-500/30 whitespace-nowrap">
+        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset whitespace-nowrap ${PRICING_TONE[p.pricingTone ?? "amber"]}`}>
           {p.pricing}
         </span>
       </div>
-      <p className="italic text-foreground/80 mb-4">{p.tagline}</p>
+      {p.opener ? (
+        <p className="text-foreground/85 mb-4 leading-relaxed">{p.opener}</p>
+      ) : (
+        <p className="italic text-foreground/80 mb-4">{p.tagline}</p>
+      )}
 
       {slug ? (
         <a
