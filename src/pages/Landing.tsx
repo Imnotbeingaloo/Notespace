@@ -621,7 +621,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 relative">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              What our <span className="text-accent">users</span> say
+              What our <span className="text-accent">Users</span> say
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
               Notes from researchers, students, and small teams who made the switch.
