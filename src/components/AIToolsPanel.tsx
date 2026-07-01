@@ -33,7 +33,7 @@ export function AIToolsPanel() {
    *  empty lines. Flashcards must only quiz actual note body data, never the
    *  note title or a bare heading. */
   const bodyContent = () => {
-    if (!activeNote) return 0;
+    if (!activeNote) return "";
     const withoutHtmlHeadings = (activeNote.content || "")
       .replace(/<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>/gi, "\n")
       .replace(/<[^>]*>/g, "\n");
