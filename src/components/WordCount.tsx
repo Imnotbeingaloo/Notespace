@@ -1,17 +1,25 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FileText, Clock } from "lucide-react";
 
 interface WordCountProps {
   content: string;
 }
 
+// Tiny pulse when a number changes: 120ms scale + color nudge, nothing loud.
+function usePulseOnChange<T>(value: T) {
+  const [pulse, setPulse] = useState(false);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    setPulse(true);
+    const t = setTimeout(() => setPulse(false), 160);
+    return () => clearTimeout(t);
+  }, [value]);
+  return pulse;
+}
+
 export function WordCount({ content }: WordCountProps) {
   const stats = useMemo(() => {
-    // 1) Strip HTML tags.
-    // 2) Strip blank-line sentinels & zero-width chars.
-    // 3) Decode common entities & strip remaining HTML entities.
-    // 4) Strip markdown syntax characters.
-    // 5) Collapse whitespace and trim.
     const text = (content ?? "")
       .replace(/<[^>]*>/g, " ")
       .replace(/&#8203;|\u200B|\u00A0/g, " ")
@@ -27,7 +35,6 @@ export function WordCount({ content }: WordCountProps) {
     const words = text.split(/\s+/).filter(Boolean).length;
     const chars = text.replace(/\s/g, "").length;
     if (words === 0) return { words: 0, chars: 0, readTime: "" };
-    // 200 wpm ≈ 3.33 words/sec. Show seconds under a minute so short notes feel live.
     const totalSeconds = Math.max(1, Math.round((words / 200) * 60));
     const readTime =
       totalSeconds < 60
@@ -37,21 +44,27 @@ export function WordCount({ content }: WordCountProps) {
     return { words, chars, readTime };
   }, [content]);
 
-  
+  const wordsPulse = usePulseOnChange(stats.words);
+  const charsPulse = usePulseOnChange(stats.chars);
 
   const compact = stats.chars > 5000 || stats.words > 5000;
+  const pulseCls = "transition-all duration-150 ease-out inline-block";
+  const active = "scale-110 text-foreground";
+  const rest = "scale-100";
 
   return (
     <div className="flex items-center gap-2 sm:gap-3 px-4 py-1.5 text-[10px] sm:text-[11px] text-muted-foreground select-none whitespace-nowrap tabular-nums">
       <span className="inline-flex items-center gap-1">
         <FileText className="h-3 w-3" />
-        {stats.words.toLocaleString()}{!compact && (
+        <span className={`${pulseCls} ${wordsPulse ? active : rest}`}>{stats.words.toLocaleString()}</span>
+        {!compact && (
           <span className="ml-1">{stats.words === 1 ? "word" : "words"}</span>
         )}
       </span>
       <span className="text-border">·</span>
       <span>
-        {stats.chars.toLocaleString()}{!compact && <span className="ml-1">chars</span>}
+        <span className={`${pulseCls} ${charsPulse ? active : rest}`}>{stats.chars.toLocaleString()}</span>
+        {!compact && <span className="ml-1">chars</span>}
       </span>
       {stats.readTime && <span className="text-border">·</span>}
       {stats.readTime && (
@@ -63,4 +76,5 @@ export function WordCount({ content }: WordCountProps) {
     </div>
   );
 }
+
 
