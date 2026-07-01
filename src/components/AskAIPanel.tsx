@@ -115,6 +115,57 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
+/** Plays the word vignette once, then cross-fades to the quill+halo in the
+ *  same slot so they never overlap. Remounts via `emptyKey`. */
+function VignetteToQuill({ emptyKey, reducedMotion }: { emptyKey: number; reducedMotion: boolean }) {
+  const [phase, setPhase] = useState<"vignette" | "quill">(reducedMotion ? "quill" : "vignette");
+  useEffect(() => {
+    setPhase(reducedMotion ? "quill" : "vignette");
+    if (reducedMotion) return;
+    // Vignette word cycle finishes around 1.65s; swap right after.
+    const t = setTimeout(() => setPhase("quill"), 1700);
+    return () => clearTimeout(t);
+  }, [emptyKey, reducedMotion]);
+
+  return (
+    <div className="relative mb-2 h-[44px] w-[180px] flex items-center justify-center" aria-hidden>
+      <AnimatePresence mode="wait" initial={false}>
+        {phase === "vignette" ? (
+          <motion.div
+            key={`v-${emptyKey}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -4, transition: { duration: 0.24, ease: [0.4, 0, 0.2, 1] } }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <IdleVignette reducedMotion={reducedMotion} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key={`q-${emptyKey}`}
+            initial={reducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, y: 6, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div className="relative h-10 w-10 flex items-center justify-center select-none">
+              <motion.span
+                className="absolute inset-0 rounded-full bg-primary/15 blur-md"
+                animate={reducedMotion ? undefined : { scale: [1, 1.18, 1], opacity: [0.55, 0.85, 0.55] }}
+                transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <Feather className="relative h-5 w-5 text-primary" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+
 
 export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, defaultMode = "chat", hideTrigger = false }: AskAIPanelProps) {
   const { activeNote } = useNotebooks();
