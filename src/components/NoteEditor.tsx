@@ -325,7 +325,7 @@ function FlashcardsButton() {
     <>
       <button
         onClick={run}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-amber-500/25 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/40 hover:shadow-sm transition-all duration-200"
         title="Generate Flashcards"
       >
         <Layers className="h-3.5 w-3.5" />
