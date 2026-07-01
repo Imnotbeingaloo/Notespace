@@ -619,11 +619,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const handleVoiceTranscript = useCallback(
     (text: string) => {
       if (!activeNote) return;
-      // Insert at cursor via the rich editor (works whether HybridEditor uses textarea or contenteditable)
-      hybridEditorRef.current?.insertAtCursor(" " + text);
+      // Drop at the exact caret position the user left; add a leading space only when we're mid-word.
+      hybridEditorRef.current?.insertAtCursor(text);
     },
-    [activeNotebookId, activeNote?.id]
+    [activeNote?.id]
   );
+
+  const handleVoiceBeforeOpen = useCallback(() => {
+    // Snapshot caret before focus moves to the mic button so we can restore it on insert.
+    hybridEditorRef.current?.saveSelection();
+  }, []);
 
   const handleAIEdit = useCallback(
     (newContent: string) => {
@@ -918,7 +923,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                   <Sparkles className="h-3.5 w-3.5" />
                   Ask AI
                 </button>
-                <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                <VoiceTranscription onTranscript={handleVoiceTranscript} onBeforeOpen={handleVoiceBeforeOpen} />
                 <ExportButtons />
                 {activeNote && !isOverrideActive && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} notebookName={activeNotebook?.name} />}
               </div>
@@ -949,7 +954,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                           onCreateNew={handleCreateNoteFromImport}
                           hasExistingContent={!!activeNote?.content?.trim()}
                         />
-                        <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                        <VoiceTranscription onTranscript={handleVoiceTranscript} onBeforeOpen={handleVoiceBeforeOpen} />
                         <button
                           onClick={() => { setMoreOpen(false); openAskAI("chat"); }}
                           className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
