@@ -293,6 +293,16 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       }
       targetsRef.current = ordered;
 
+      // Silence gate: if peak is at/below the noise floor, force all bars to
+      // zero so the visualizer sits flat instead of dancing on ambient noise.
+      const voiceThreshold = floor + 0.04;
+      const isSpeaking = peak > voiceThreshold;
+      if (!isSpeaking) {
+        for (let i = 0; i < BAR_COUNT; i++) targetsRef.current[i] = 0;
+      } else {
+        lastVoiceAtRef.current = now;
+      }
+
       if (!sawAudio && peak > 0.02) {
         sawAudio = true;
         setVisualizerReady(true);
@@ -303,12 +313,15 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       }
 
       drawBars();
-      // Throttle elapsed updates to ~4Hz. That's enough for a stopwatch and
-      // avoids 60 React renders per second which was cascading into the
-      // whole dialog subtree.
       if (now - lastElapsedCommit > 250) {
         setElapsed(sinceStart / 1000);
         lastElapsedCommit = now;
+        // Silence hint after 5s without any detected voice (post-calibration).
+        if (calibrated && lastVoiceAtRef.current > 0) {
+          setSilent5s(now - lastVoiceAtRef.current > 5000);
+        } else if (calibrated && lastVoiceAtRef.current === 0) {
+          setSilent5s(sinceStart > 5000 + CALIBRATION_MS);
+        }
       }
       rafRef.current = requestAnimationFrame(tick);
     };
