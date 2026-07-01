@@ -209,7 +209,9 @@ function TemporaryWorkspaceInner() {
     if (!row) return;
     setWorking(true);
     await supabase.from("temporary_notes").delete().eq("id", row.id);
-    toast("Temporary note discarded.");
+    toast("Moved to trash", {
+      description: "Your temporary note stays recoverable for the next 24 hours before it auto-deletes.",
+    });
     skipGuardRef.current = true;
     navigate("/app", { replace: true });
     setWorking(false);
