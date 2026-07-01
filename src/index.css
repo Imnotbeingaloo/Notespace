@@ -607,7 +607,7 @@
 
 /* ===== Blog article typography: readable, not cramped, not airy ===== */
 .blog-article {
-  font-size: 1.0625rem;
+  font-size: 1.115rem;
   line-height: 1.78;
   color: hsl(var(--foreground) / 0.92);
 }
@@ -672,7 +672,7 @@
 }
 @media (min-width: 768px) {
   .blog-article {
-    font-size: 1.0875rem;
+    font-size: 1.142rem;
     line-height: 1.72;
   }
   .blog-article h2 { margin-top: 2.75rem; }

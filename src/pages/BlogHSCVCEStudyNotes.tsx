@@ -22,6 +22,7 @@ import {
   BlogDivider,
 } from "@/components/blog/BlogVisuals";
 import { Callout } from "@/components/blog/Callout";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 
 const REF = "blog-hsc-vce-study-notes";
 const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=hsc-vce-notes`;
@@ -236,14 +237,11 @@ export default function BlogHSCVCEStudyNotes() {
             </Accordion>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">Start your Year 12 notebook</p>
-            <p className="text-muted-foreground mb-6">Free plan. Subjects, tags, AI explain, and a study planner - all in one notebook.</p>
-            <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
-              Open Notebook Archive
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <BlogFinalCTA
+            title="Start your Year 12 notebook"
+            body="Free plan. Subjects, tags, AI explain, and a study planner - all in one notebook."
+            to={CTA}
+          />
         </article>
 
         <Footer />

@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { Callout } from "@/components/blog/Callout";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
@@ -304,22 +305,11 @@ export default function BlogAIWritingAssistants() {
             </Accordion>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">
-              An AI writing assistant that lives in your notebook.
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Notebook Archive ships AI Explain, AI Edit, and Ask AI directly in the markdown
-              editor - free to start, no separate AI tab.
-            </p>
-            <Link
-              to={CTA}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
-            >
-              Open Notebook Archive
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <BlogFinalCTA
+            title="An AI writing assistant that lives in your notebook."
+            body="Notebook Archive ships AI Explain, AI Edit, and Ask AI directly in the markdown editor - free to start, no separate AI tab."
+            to={CTA}
+          />
         </article>
 
         <FurtherReading

@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
 import {
   BlogHero,
@@ -250,23 +251,14 @@ Sun  REST
             </div>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">
-              Run your exam study plan inside Notebook Archive
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Open the study planner template, drop in your exam dates, and let
-              the schedule do the remembering. Free to start.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link to="/templates/study-planner" className="inline-flex items-center gap-2 border border-border bg-card px-5 py-3 rounded-lg font-semibold hover:bg-muted transition">
-                Open the study planner template
-              </Link>
-              <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
-                Start using Notebook Archive <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
+          <BlogFinalCTA
+            title="Run your exam study plan inside Notebook Archive"
+            body="Open the study planner template, drop in your exam dates, and let the schedule do the remembering. Free to start."
+            to={CTA}
+            cta="Start using Notebook Archive"
+            secondaryTo="/templates/study-planner"
+            secondaryCta="Open the study planner template"
+          />
         </article>
 
         <RelatedReading currentPath="/blog/how-to-make-a-study-plan-for-exams" items={STUDY_PLANNER_RELATED} />
