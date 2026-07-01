@@ -27,6 +27,10 @@ export function WordCount({ content }: WordCountProps) {
       .replace(/&amp;/gi, "&")
       .replace(/&[a-z0-9#]+;/gi, " ")
       .replace(/[#*_~`>\-\[\]()!|]/g, " ")
+      // Strip emoji & pictographs so they don't inflate word/char counts.
+      .replace(/\p{Extended_Pictographic}/gu, " ")
+      .replace(/[\u{1F1E6}-\u{1F1FF}]/gu, " ")
+      .replace(/[\u200D\uFE0F\u20E3]/g, "")
       .replace(/\s+/g, " ")
       .trim();
 
