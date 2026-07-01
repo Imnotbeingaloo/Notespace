@@ -355,6 +355,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     barsRef.current = new Array(BAR_COUNT).fill(0);
     targetsRef.current = new Array(BAR_COUNT).fill(0);
     setVisualizerReady(false);
+    setSilent5s(false);
+    lastVoiceAtRef.current = 0;
 
 
     setOpen(true);
