@@ -16,7 +16,7 @@ export function AIEditPanel({ onOpen }: AIEditPanelProps) {
   return (
     <button
       onClick={() => onOpen?.()}
-      className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-fuchsia-500/25 bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 hover:bg-fuchsia-500/20 hover:border-fuchsia-500/40 hover:shadow-sm transition-all duration-200"
+      className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
       title="AI Edit Document"
     >
       <Wand2 className="h-3.5 w-3.5" />
