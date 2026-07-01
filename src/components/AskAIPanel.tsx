@@ -58,7 +58,7 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
       <div className="relative h-[44px] flex items-end justify-center overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait" initial={true}>
           <motion.span
             key={words[i]}
             initial={{ opacity: 0, y: 8 }}
