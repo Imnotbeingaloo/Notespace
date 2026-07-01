@@ -235,7 +235,7 @@ export function FileUpload({ onInsertMarkdown, onSaveSelection }: FileUploadProp
             ? `${uploadStep} ${progress.current + 1}/${progress.total} - ${progress.name}`
             : uploading
               ? uploadStep
-              : "Attach files or drag & drop"}
+              : "Attach files"}
         </span>
         {uploading && progress && (
           <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
