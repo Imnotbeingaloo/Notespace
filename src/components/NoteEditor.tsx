@@ -1018,7 +1018,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
         </div>
 
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
-        <div className="shrink-0 border-t border-border flex items-center justify-between">
+        <div className="shrink-0 border-t border-border flex items-center justify-between pb-[5vh]">
           <WordCount content={activeNote?.content || ""} />
           {wordCountGoalEnabled && (
             <WordCountGoal content={activeNote?.content || ""} />
