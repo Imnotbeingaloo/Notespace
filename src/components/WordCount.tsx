@@ -53,11 +53,13 @@ export function WordCount({ content }: WordCountProps) {
       <span>
         {stats.chars.toLocaleString()}{!compact && <span className="ml-1">chars</span>}
       </span>
-      <span className="text-border">·</span>
-      <span className="inline-flex items-center gap-1">
-        <Clock className="h-3 w-3" />
-        {stats.readTime}
-      </span>
+      {stats.readTime && <span className="text-border">·</span>}
+      {stats.readTime && (
+        <span className="inline-flex items-center gap-1">
+          <Clock className="h-3 w-3" />
+          {stats.readTime}
+        </span>
+      )}
     </div>
   );
 }
