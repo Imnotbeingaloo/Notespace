@@ -129,7 +129,7 @@ export function ImportNotesButton({ onInsert, onMergeAt, onReplace, onCreateNew,
       <button
         onClick={() => inputRef.current?.click()}
         disabled={loading}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-[hsl(210_75%_50%/0.35)] bg-[hsl(210_75%_50%/0.08)] text-[hsl(210_80%_44%)] hover:bg-[hsl(210_75%_50%/0.15)] hover:text-[hsl(210_85%_38%)] transition-all duration-200 dark:text-[hsl(210_85%_68%)] dark:hover:text-[hsl(210_90%_75%)]"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
         title="Import notes from a file and place in document"
       >
         {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileUp className="h-3.5 w-3.5" />}
