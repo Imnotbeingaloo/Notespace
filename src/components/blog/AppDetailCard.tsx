@@ -100,30 +100,20 @@ export function AppDetailCard(p: AppDetailCardProps) {
 
       <p className="text-foreground/80 leading-relaxed mb-5">{p.description}</p>
 
-      <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4 mb-4">
-        <div>
-          <h4 className="text-sm font-semibold text-foreground mb-2">Pros</h4>
-          <ul className="space-y-1.5">
-            {p.pros.map((pro) => (
-              <li key={pro} className="flex gap-2 text-sm text-foreground/80">
-                <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden />
-                <span>{pro}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h4 className="text-sm font-semibold text-foreground mb-2">Cons</h4>
-          <ul className="space-y-1.5">
-            {p.cons.map((con) => (
-              <li key={con} className="flex gap-2 text-sm text-foreground/80">
-                <X className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" aria-hidden />
-                <span>{con}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <p className="text-sm text-foreground/80 mb-3 leading-relaxed">
+        <strong className="text-foreground">What's good. </strong>
+        {p.pros.join(". ")}.
+      </p>
+      <p className="text-sm text-foreground/70 mb-4 leading-relaxed">
+        <strong className="text-foreground/90">Where it falls short. </strong>
+        {p.cons.join(". ")}.
+      </p>
+
+      {p.aside && (
+        <p className="text-sm text-foreground/80 italic border-l-2 border-primary/40 pl-4 my-4">
+          {p.aside}
+        </p>
+      )}
 
       <p className="text-sm text-foreground/80">
         <strong className="text-foreground">Best for: </strong>
@@ -136,6 +126,7 @@ export function AppDetailCard(p: AppDetailCardProps) {
           {p.ourTake}
         </p>
       )}
+
 
       {p.disclosure && (
         <p className="text-xs italic text-muted-foreground mt-4">{p.disclosure}</p>
