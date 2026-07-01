@@ -923,7 +923,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                   <Sparkles className="h-3.5 w-3.5" />
                   Ask AI
                 </button>
-                <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                <VoiceTranscription onTranscript={handleVoiceTranscript} onBeforeOpen={handleVoiceBeforeOpen} />
                 <ExportButtons />
                 {activeNote && !isOverrideActive && <ShareNoteDialog noteId={activeNote.id} noteTitle={activeNote.title} notebookName={activeNotebook?.name} />}
               </div>
@@ -954,7 +954,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                           onCreateNew={handleCreateNoteFromImport}
                           hasExistingContent={!!activeNote?.content?.trim()}
                         />
-                        <VoiceTranscription onTranscript={handleVoiceTranscript} />
+                        <VoiceTranscription onTranscript={handleVoiceTranscript} onBeforeOpen={handleVoiceBeforeOpen} />
                         <button
                           onClick={() => { setMoreOpen(false); openAskAI("chat"); }}
                           className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-accent/10"
