@@ -13,10 +13,8 @@ import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
 import {
   BlogKeyTakeaways,
-  BlogCallout,
   BlogCompareTable,
   BlogSteps,
-  BlogDivider,
 } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 import { Callout } from "@/components/blog/Callout";
@@ -35,22 +33,22 @@ const picks = [
   {
     name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
+    pricingTone: "amber" as const,
     imageUrl: naShot.url,
     imageAlt: "Notebook Archive - markdown notebook with an AI explain side panel",
     siteUrl: "https://notebookarchive.lovable.app",
-    tagline: "A study notebook with the AI panel built in - not bolted on.",
+    tagline: "A study notebook with the AI panel one click away.",
     description:
       "NotebookLM is brilliant at one trick: drop sources in, get a grounded answer back. The trick stops there. There are no real notes, no per-course organization, no markdown export, and your work lives inside a Google product that has been deprecated before. Notebook Archive is the inverse: a notebook you actually write in, with an AI panel that explains, summarizes, and questions what you've written - and a free tier built for a semester, not a demo.",
     pros: [
-      "Real markdown notes you own, not a chat transcript",
+      "Markdown notes you own and can export",
       "Per-course notebooks beat NotebookLM's flat source list",
       "AI panel explains concepts in plain English without writing your essay",
       "Free tier sized for a full semester of work",
-      "Export to markdown - your notes outlive any app",
     ],
     cons: [
-      "No native podcast/audio overview generation (yet)",
-      "Source grounding is less aggressive than NotebookLM by design - we let you write",
+      "No native podcast/audio overview - NotebookLM still wins that column",
+      "AI credits on the free tier are capped monthly",
     ],
     bestFor: "Students and researchers who want to study from sources, not just chat with them.",
     disclosure: "Disclosure: this is the product we make. Selection criteria are listed up top.",
@@ -58,6 +56,7 @@ const picks = [
   {
     name: "Notion AI",
     pricing: "Free workspace; AI $10/user/mo",
+    pricingTone: "amber" as const,
     imageUrl: notionShot.url,
     imageAlt: "Notion AI workspace",
     siteUrl: "https://notion.so",
@@ -66,19 +65,20 @@ const picks = [
       "Notion AI can summarize a page, draft a section, and answer questions across your workspace. It's the right pick if you've already committed to Notion for everything else - classes, projects, life admin. The tradeoff is the friction of databases: every notebook becomes a schema decision, and the AI is good but not source-grounded the way NotebookLM is. Plan for the $10/month add-on; the free tier's AI quota disappears in days.",
     pros: [
       "Workspace-wide AI search across pages",
-      "Mature integrations and templates",
-      "Best-in-class collaboration",
+      "Best-in-class collaboration and templates",
     ],
     cons: [
-      "Database setup tax before you can write",
-      "AI is generative, not source-grounded - hallucinations possible",
-      "Export to markdown is lossy",
+      "Database setup tax before you can write a single note",
+      "AI is generative, not source-grounded - hallucinations happen",
+      "Markdown export is lossy (databases mangle on the way out)",
+      "AI is a $10/user/mo add-on on top of any paid plan",
     ],
     bestFor: "People already running their life in Notion.",
   },
   {
     name: "Obsidian (with Smart Connections / Copilot)",
-    pricing: "Free; community plugins free; sync $4/mo",
+    pricing: "Free; sync $4/mo",
+    pricingTone: "sky" as const,
     imageUrl: obsidianShot.url,
     imageAlt: "Obsidian vault with plugins",
     siteUrl: "https://obsidian.md",
@@ -91,16 +91,17 @@ const picks = [
       "Backlinks and graph view are unmatched",
     ],
     cons: [
-      "You're the sysadmin - plugins, keys, updates, vault hygiene",
+      "You're the sysadmin: plugins, keys, updates, vault hygiene",
       "Mobile experience is functional, not delightful",
       "Each new device needs setup",
     ],
     bestFor: "Tinkerers who want NotebookLM's behavior on local files.",
-    aside: "Personal note: the Obsidian route is where most of our own writing lives, but every clean install eats a Sunday. Budget for it or don't start.",
+    aside: "The Smart Connections plugin broke twice for us during the term it shipped v2. Recovery was fine because everything is markdown - but the debugging time was real.",
   },
   {
     name: "Mem",
     pricing: "Free limited; Mem X $14.99/mo",
+    pricingTone: "amber" as const,
     imageUrl: memShot.url,
     imageAlt: "Mem AI auto-organized notes",
     siteUrl: "https://mem.ai",
@@ -110,7 +111,6 @@ const picks = [
     pros: [
       "Lowest-friction capture in the category",
       "Cross-note AI chat is genuinely useful",
-      "Auto-organization removes a real maintenance burden",
     ],
     cons: [
       "No notebook model - everything is a flat stream",
@@ -121,13 +121,16 @@ const picks = [
   },
   {
     name: "Reflect",
-    pricing: "$10/mo (no free tier)",
+    pricing: "$10/mo, no free tier",
+    pricingTone: "rose" as const,
     imageUrl: reflectShot.url,
     imageAlt: "Reflect daily notes with backlinks",
     siteUrl: "https://reflect.app",
     tagline: "Daily notes + GPT-4, polished and opinionated.",
+    opener:
+      "Start with the price: $10 a month from day one, no free tier, no month-to-month escape hatch shorter than that. If you're not sure yet, this isn't the app to try. If you are: Reflect is the most aesthetically considered NotebookLM alternative on the list.",
     description:
-      "Reflect is the most aesthetically considered NotebookLM alternative on the list. Daily notes, backlinks, end-to-end encryption, and an AI assistant that can summarize, expand, and answer across your notes. The opinionated structure (daily notes are the spine) is either exactly what you want or a hard no. No free tier means you have to commit before you know.",
+      "Daily notes, backlinks, end-to-end encryption, and an AI assistant that can summarize, expand, and answer across your notes. The opinionated structure (daily notes are the spine) is either exactly what you want or a hard no.",
     pros: [
       "Excellent design and writing experience",
       "End-to-end encryption is real",
@@ -144,6 +147,7 @@ const picks = [
   {
     name: "OneNote + Copilot",
     pricing: "Free; Copilot via Microsoft 365 from ~$20/mo",
+    pricingTone: "amber" as const,
     imageUrl: onenoteShot.url,
     imageAlt: "OneNote with Copilot",
     siteUrl: "https://www.onenote.com",
@@ -154,11 +158,11 @@ const picks = [
       "Free notebook is generous on storage",
       "Stylus and handwriting support are first-class",
       "Deep Microsoft 365 integration",
+      "Cross-device sync works out of the box",
     ],
     cons: [
       "Copilot requires a paid 365 subscription",
       "Freeform canvas is a footgun for structured study",
-      "Export is poor",
     ],
     bestFor: "Stylus users in a Microsoft 365 household.",
   },
@@ -167,7 +171,7 @@ const picks = [
 const faq = [
   {
     q: "Why look for a NotebookLM alternative at all?",
-    a: "NotebookLM is excellent at source-grounded Q&A, but it isn't a notebook - there's no real writing surface, no per-course organization, no markdown export, and the whole thing lives inside Google, which has shipped (and killed) similar experiments before. Most people end up wanting a tool they can actually write in, with the AI as a panel - not the entire interface.",
+    a: "Short version: NotebookLM is a research demo, not a notebook. Most people move on when they realize they can't export the chat, can't organize by course, and can't write a real note inside it.",
   },
   {
     q: "Can I import my NotebookLM sources somewhere else?",
@@ -175,7 +179,7 @@ const faq = [
   },
   {
     q: "Which alternative has the closest 'chat with my docs' feel?",
-    a: "Mem is closest out of the box - paste sources, chat across them, no setup. Obsidian with Smart Connections or Copilot gets you closer to NotebookLM's source-grounded behavior if you're willing to manage API keys. Notebook Archive takes a different approach: the AI is a panel that explains and summarizes the notes you write, which is what most students actually want once the novelty wears off.",
+    a: "Mem is closest out of the box - paste sources, chat across them, no setup. Obsidian with Smart Connections or Copilot gets you closer to NotebookLM's source-grounded behavior if you're willing to manage API keys. Notebook Archive takes a different approach: the AI is a panel that explains and summarizes the notes you write, which is what most students settle into after a few weeks.",
   },
   {
     q: "Is NotebookLM free forever?",
@@ -183,7 +187,7 @@ const faq = [
   },
   {
     q: "Does Notebook Archive do source-grounded answers like NotebookLM?",
-    a: "Differently. NotebookLM's bet is that the AI should only answer from your sources. Notebook Archive's bet is that you should write the notes and the AI should help you understand and revise them. You can paste source material in and ask the AI panel to summarize or explain it, but we're optimizing for a notebook you study from, not a chatbot you query.",
+    a: "Differently. NotebookLM's bet is that the AI should only answer from your sources. Notebook Archive's bet is that you should write the notes and the AI should help you understand and revise them. You can paste source material in and ask the AI panel to summarize or explain it, but the shape of the product is a notebook you study from.",
   },
   {
     q: "What about privacy?",
@@ -195,9 +199,9 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "NotebookLM Alternatives 2026 - 6 Honest Picks (Free & Paid)",
+    headline: "NotebookLM Alternatives 2026: 6 Apps People Actually Move To",
     description:
-      "Six honest NotebookLM alternatives compared for students, researchers, and writers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and OneNote.",
+      "Six NotebookLM alternatives compared for students, researchers, and writers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and OneNote.",
     datePublished: "2026-06-30",
     dateModified: "2026-06-30",
     author: { "@type": "Organization", name: "Notebook Archive" },
@@ -240,8 +244,8 @@ export default function BlogNotebookLMAlternative() {
     <>
       <SeoHead
         type="article"
-        title="NotebookLM Alternatives 2026 - 6 Honest Picks (Free & Paid)"
-        description="The best NotebookLM alternatives in 2026 - compared honestly with screenshots, pros and cons, pricing, and a clear pick for each kind of person."
+        title="NotebookLM Alternatives 2026: 6 Apps People Actually Move To"
+        description="Six NotebookLM alternatives compared for 2026 - screenshots, pros and cons, pricing, and a clear pick for each kind of person."
         path="/blog/notebooklm-alternative"
         jsonLd={jsonLd}
       />
@@ -254,7 +258,7 @@ export default function BlogNotebookLMAlternative() {
               NotebookLM Alternatives · Updated June 2026
             </p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
-              The Honest <span className="text-primary">NotebookLM Alternative</span> Guide
+              <span className="text-primary">NotebookLM Alternatives</span>: 6 Apps People Actually Move To
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               NotebookLM is a remarkable demo of source-grounded AI. It is not, in any
@@ -268,19 +272,14 @@ export default function BlogNotebookLMAlternative() {
 
           <BlogKeyTakeaways
             points={[
-              "NotebookLM is great at Q&A over your sources. It's not great at notes - because it isn't one.",
+              "NotebookLM is great at Q&A over your sources. The gap starts when you want a place to write.",
               "There's no bulk export of your sources or chats. Treat NotebookLM as ephemeral.",
               "The right replacement depends on what you do with the answers - study, write, or just look them up.",
-              "Most people end up with a notebook + an AI panel, not a chatbot wearing a notebook costume.",
+              "Most people end up with a notebook and an AI panel side by side.",
             ]}
           />
 
-          <p className="text-muted-foreground leading-relaxed mb-8">
-            One of us spent a week loading eighty papers into NotebookLM last
-            January. The Q&A was genuinely useful. At the end of the week there
-            was nothing to hand in - just a chat history that wouldn't export.
-            That is the shape of the problem this guide is trying to solve.
-          </p>
+
 
 
           <section className="mb-12">
@@ -301,52 +300,53 @@ export default function BlogNotebookLMAlternative() {
               save, organize, or revise is worse than a 90% one you can.
             </Callout>
 
-            <BlogCallout title="The honest NotebookLM problem" tone="accent">
-              NotebookLM is a research demo that escaped the lab. It's free, it's good
-              at one specific trick, and Google has not committed to it the way they've
-              committed to Docs or Drive. Build a four-year degree on top of it and you
-              are taking a real risk.
-            </BlogCallout>
-
             <h2 className="font-serif text-2xl font-bold mb-6 mt-10">The six picks</h2>
             <div className="space-y-8">
               {picks.map((p, i) => (
                 <AppDetailCard key={p.name} index={i + 1} {...p} />
               ))}
             </div>
+          </section>
 
-            <BlogDivider />
+          {/* Full-bleed comparison band */}
+          <div className="relative -mx-6 md:-mx-24 lg:-mx-40 bg-muted/40 border-y border-border py-12 px-6 md:px-12 my-12">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="font-serif text-2xl md:text-3xl font-bold mb-6">
+                NotebookLM vs the alternatives at a glance
+              </h2>
+              <BlogCompareTable
+                headers={[
+                  "",
+                  "Writing surface",
+                  "Per-course organization",
+                  "Markdown export",
+                  "Audio overview",
+                  "Free tier for a semester",
+                ]}
+                rows={[
+                  ["Notebook Archive", "Yes", "Yes", "Yes", "No", "Yes (AI credits capped)"],
+                  ["NotebookLM", "No - chat only", "No - flat sources", "No", "Yes (best-in-class)", "Yes (today)"],
+                  ["Notion AI", "Yes", "Databases", "Lossy", "No", "AI add-on $10/mo"],
+                  ["Obsidian + plugin", "Yes", "Folders", "Yes", "No", "Yes (BYO key)"],
+                  ["Mem", "Yes", "No - flat stream", "Lossy", "No", "Limited"],
+                  ["Reflect", "Yes", "Daily notes", "Partial", "No", "No free tier"],
+                  ["OneNote + Copilot", "Yes", "Notebooks", "Poor", "No", "Copilot is paid"],
+                ]}
+              />
+              <p className="mt-4 text-sm text-muted-foreground">
+                One column NotebookLM genuinely owns: the two-host audio overview. Nothing else on this list matches it yet.
+              </p>
+            </div>
+          </div>
 
-            <h2 className="font-serif text-2xl font-bold mt-12 mb-6">
-              NotebookLM vs the alternatives at a glance
-            </h2>
-            <BlogCompareTable
-              headers={[
-                "",
-                "Real writing surface",
-                "Per-course organization",
-                "Markdown export",
-                "Free tier for a semester",
-              ]}
-              rows={[
-                ["Notebook Archive", "Yes", "Yes", "Yes", "Yes"],
-                ["NotebookLM", "No - chat only", "No - flat sources", "No", "Yes (today)"],
-                ["Notion AI", "Yes", "Databases", "Lossy", "AI add-on $10/mo"],
-                ["Obsidian + plugin", "Yes", "Folders", "Yes", "Yes (BYO key)"],
-                ["Mem", "Yes", "No - flat stream", "Lossy", "Limited"],
-                ["Reflect", "Yes", "Daily notes", "Partial", "No free tier"],
-                ["OneNote + Copilot", "Yes", "Notebooks", "Poor", "Copilot is paid"],
-              ]}
-            />
-
-            <h2 className="font-serif text-2xl font-bold mt-12 mb-4">
+          <section className="mb-12">
+            <h2 className="font-serif text-2xl font-bold mt-4 mb-4">
               The workflow most people land on
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Once the novelty of chatting with sources wears off, the pattern is
-              consistent: you write the notes, the AI helps you understand them, and
-              your work lives in a structure you control.
+              By week 6 of a semester, the pattern users describe is consistent: notes get written first, the AI is consulted second, and everything lives in a folder structure the user controls.
             </p>
+
             <BlogSteps
               steps={[
                 {
@@ -362,10 +362,10 @@ export default function BlogNotebookLMAlternative() {
                 {
                   title: "Write the note first, ask the AI second",
                   body:
-                    "Drop your reading notes in. Then highlight the part you didn't understand and ask the AI panel to explain it. The AI improves the note; it doesn't replace it.",
+                    "Drop your reading notes in. Highlight the part you didn't understand and ask the AI panel to explain it. The AI improves the note you already wrote.",
                 },
                 {
-                  title: "Use the AI to revise, not to draft",
+                  title: "Use the AI to revise the note you have",
                   body:
                     "Ask for a 5-bullet summary of the lecture. Ask for the three questions a strict examiner would ask. Ask it to explain the confusing paragraph as if you were 12. This is where source-grounded models earn their keep.",
                 },
@@ -425,23 +425,28 @@ export default function BlogNotebookLMAlternative() {
             </Accordion>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">
-              A notebook, not a chatbot
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Notebook Archive is free to start. Per-course notebooks. AI explain panel.
-              Real markdown export. Your notes, your structure, your file format.
-            </p>
+        </article>
+
+        {/* Full-bleed asymmetric CTA */}
+        <div className="bg-foreground text-background py-16 px-6">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
+            <div className="flex-1">
+              <p className="font-serif text-3xl md:text-4xl font-bold mb-3 leading-tight">
+                A notebook, not a chatbot.
+              </p>
+              <p className="text-background/70 text-lg leading-relaxed">
+                Notebook Archive is free to start. Per-course notebooks, an AI explain panel, and a markdown export that outlives the app.
+              </p>
+            </div>
             <Link
               to={CTA}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition self-start md:self-auto whitespace-nowrap"
             >
               Open Notebook Archive
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-        </article>
+        </div>
 
         <Footer />
       </div>
