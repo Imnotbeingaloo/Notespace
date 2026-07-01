@@ -110,7 +110,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
 
   useEffect(() => () => cleanupResources(), [cleanupResources]);
 
-  const drawWave = useCallback(() => {
+  const drawBars = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -125,40 +125,44 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, cssW, cssH);
 
-    const mid = cssH / 2;
-    const hist = historyRef.current;
-    const N = hist.length;
-    const stepX = cssW / (N - 1);
-    const maxAmp = cssH * 0.42;
+    const bars = barsRef.current;
+    const targets = targetsRef.current;
+    const N = bars.length;
 
-    // Read foreground color from CSS var so it follows theme.
+    // Ease bars toward their targets for smoothness (per-frame).
+    for (let i = 0; i < N; i++) {
+      bars[i] += (targets[i] - bars[i]) * 0.35;
+    }
+
     const style = getComputedStyle(canvas);
-    const fg = style.getPropertyValue("color") || "#111";
+    const fg = style.color || "#111";
+    ctx.fillStyle = fg;
 
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.strokeStyle = fg;
-    ctx.lineWidth = 2;
+    const mid = cssH / 2;
+    const gap = 4;
+    const barW = Math.max(2, (cssW - gap * (N - 1)) / N);
+    const radius = barW / 2;
+    const maxAmp = cssH * 0.44;
+    const minAmp = 3;
 
-    // Build a smooth mirrored waveform using quadratic curves through midpoints.
-    const drawSide = (sign: 1 | -1) => {
+    for (let i = 0; i < N; i++) {
+      const x = i * (barW + gap);
+      const h = Math.max(minAmp, bars[i] * maxAmp * 2);
+      const y = mid - h / 2;
+      // rounded rect
+      const r = Math.min(radius, h / 2);
       ctx.beginPath();
-      const y0 = mid - sign * hist[0] * maxAmp;
-      ctx.moveTo(0, y0);
-      for (let i = 1; i < N - 1; i++) {
-        const x = i * stepX;
-        const y = mid - sign * hist[i] * maxAmp;
-        const xn = (i + 1) * stepX;
-        const yn = mid - sign * hist[i + 1] * maxAmp;
-        const cx = (x + xn) / 2;
-        const cy = (y + yn) / 2;
-        ctx.quadraticCurveTo(x, y, cx, cy);
-      }
-      ctx.lineTo((N - 1) * stepX, mid - sign * hist[N - 1] * maxAmp);
-      ctx.stroke();
-    };
-    drawSide(1);
-    drawSide(-1);
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + barW - r, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+      ctx.lineTo(x + barW, y + h - r);
+      ctx.quadraticCurveTo(x + barW, y + h, x + barW - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.fill();
+    }
   }, []);
 
   const startVisualizer = useCallback((stream: MediaStream) => {
@@ -168,40 +172,75 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const ctx = new Ctx();
     const source = ctx.createMediaStreamSource(stream);
     const analyser = ctx.createAnalyser();
-    analyser.fftSize = 1024;
-    analyser.smoothingTimeConstant = 0.3;
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.75;
     source.connect(analyser);
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
-    const time = new Uint8Array(analyser.fftSize);
+    const freq = new Uint8Array(analyser.frequencyBinCount);
     startedAtRef.current = performance.now();
-    historyRef.current = new Array(HISTORY).fill(0);
+    barsRef.current = new Array(BAR_COUNT).fill(0);
+    targetsRef.current = new Array(BAR_COUNT).fill(0);
+    setVisualizerReady(false);
 
+    // Map FFT bins (skip DC + very high) into BAR_COUNT log-spaced buckets
+    // so the visualizer emphasizes vocal range and shows pitch structure.
+    const binStart = 2;
+    const binEnd = Math.floor(freq.length * 0.75);
+    const logMin = Math.log(binStart);
+    const logMax = Math.log(binEnd);
+    const edges: number[] = [];
+    for (let i = 0; i <= BAR_COUNT; i++) {
+      edges.push(Math.floor(Math.exp(logMin + ((logMax - logMin) * i) / BAR_COUNT)));
+    }
+
+    let sawAudio = false;
     const tick = () => {
       const a = analyserRef.current;
       if (!a) return;
-      a.getByteTimeDomainData(time);
-      // Compute RMS around 128 midpoint -> 0..1 amplitude.
-      let sum = 0;
-      for (let i = 0; i < time.length; i++) {
-        const v = (time[i] - 128) / 128;
-        sum += v * v;
+      a.getByteFrequencyData(freq);
+      const targets = targetsRef.current;
+      let peak = 0;
+      for (let b = 0; b < BAR_COUNT; b++) {
+        let sum = 0;
+        let count = 0;
+        for (let j = edges[b]; j < edges[b + 1]; j++) {
+          sum += freq[j];
+          count++;
+        }
+        const avg = count ? sum / count / 255 : 0;
+        // Symmetric mirror around center: fold the spectrum outward so
+        // lows sit in the middle and highs at the edges (like the ref).
+        targets[b] = Math.min(1, Math.pow(avg, 0.85) * 1.2);
+        if (avg > peak) peak = avg;
       }
-      const rms = Math.sqrt(sum / time.length);
-      const shaped = Math.min(1, Math.pow(rms * 2.2, 0.75));
+      // Reorder so strongest bass reads in the middle -> mirrored highs on sides.
+      const ordered = new Array(BAR_COUNT).fill(0);
+      const half = Math.floor(BAR_COUNT / 2);
+      for (let i = 0; i < half; i++) {
+        ordered[half - 1 - i] = targets[i * 2] || 0;
+        ordered[half + i] = targets[i * 2 + 1] || 0;
+      }
+      targetsRef.current = ordered;
 
-      // Scroll history left, push new sample on the right.
-      const hist = historyRef.current;
-      hist.shift();
-      hist.push(shaped);
+      if (!sawAudio && peak > 0.02) {
+        sawAudio = true;
+        setVisualizerReady(true);
+      }
+      // Failsafe: reveal after 1.2s even if mic is silent.
+      if (!sawAudio && performance.now() - startedAtRef.current > 1200) {
+        sawAudio = true;
+        setVisualizerReady(true);
+      }
 
-      drawWave();
-      setLevel(shaped);
+      drawBars();
       setElapsed((performance.now() - startedAtRef.current) / 1000);
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
-  }, [drawWave]);
+  }, [drawBars]);
+
+
 
 
   const pickMimeType = () => {
