@@ -106,7 +106,7 @@ export function ExportButtons() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 w-full"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-[hsl(160_60%_40%/0.35)] bg-[hsl(160_60%_40%/0.08)] text-[hsl(160_65%_34%)] hover:bg-[hsl(160_60%_40%/0.15)] hover:text-[hsl(160_70%_28%)] transition-all duration-200 w-full dark:text-[hsl(160_65%_62%)] dark:hover:text-[hsl(160_70%_70%)]"
       >
         <Download className="h-3.5 w-3.5" />
         <span>Download</span>
