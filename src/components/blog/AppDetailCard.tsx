@@ -88,64 +88,39 @@ export function AppDetailCard(p: AppDetailCardProps) {
         <p className="italic text-foreground/80 mb-4">{p.tagline}</p>
       )}
 
-      {slug ? (
-        <a
-          href={resolvedHref}
-          target="_blank"
-          rel={linkRel}
-          className="block mb-5 group overflow-hidden rounded-md border border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5"
-        >
-          <picture>
-            <source
-              type="image/avif"
-              srcSet={`/blog-img/${slug}-800.avif 800w, /blog-img/${slug}-1600.avif 1600w`}
-              sizes="(max-width: 768px) 100vw, 760px"
-            />
-            <source
-              type="image/webp"
-              srcSet={`/blog-img/${slug}-800.webp 800w, /blog-img/${slug}-1600.webp 1600w`}
-              sizes="(max-width: 768px) 100vw, 760px"
-            />
-            <img
-              src={`/blog-img/${slug}-800.webp`}
-              alt={p.imageAlt}
-              width={1600}
-              height={1000}
-              loading={eager ? "eager" : "lazy"}
-              decoding="async"
-              {...(eager ? { fetchPriority: "high" as const } : {})}
-              className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-            />
-          </picture>
-        </a>
+      {variant === "top" && <div className="mb-5">{imageBlock}</div>}
+
+      {variant === "right" ? (
+        <div className="md:grid md:grid-cols-[1fr_18rem] md:gap-6 md:items-start">
+          <div>
+            <p className="text-foreground/80 leading-relaxed mb-5">{p.description}</p>
+            <p className="text-sm text-foreground/80 mb-3 leading-relaxed">
+              <strong className="text-foreground">What's good. </strong>
+              {p.pros.join(". ")}.
+            </p>
+            <p className="text-sm text-foreground/70 mb-4 leading-relaxed">
+              <strong className="text-foreground/90">Where it falls short. </strong>
+              {p.cons.join(". ")}.
+            </p>
+          </div>
+          <div className="mb-5 md:mb-0 md:mt-1">{imageBlock}</div>
+        </div>
       ) : (
-        <a
-          href={resolvedHref}
-          target="_blank"
-          rel={linkRel}
-          className="block mb-5 group overflow-hidden rounded-md border border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5"
-        >
-          <img
-            src={p.imageUrl}
-            alt={p.imageAlt}
-            loading={eager ? "eager" : "lazy"}
-            decoding="async"
-            {...(eager ? { fetchPriority: "high" as const } : {})}
-            className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-          />
-        </a>
+        <>
+          <p className="text-foreground/80 leading-relaxed mb-5">{p.description}</p>
+          <p className="text-sm text-foreground/80 mb-3 leading-relaxed">
+            <strong className="text-foreground">What's good. </strong>
+            {p.pros.join(". ")}.
+          </p>
+          <p className="text-sm text-foreground/70 mb-4 leading-relaxed">
+            <strong className="text-foreground/90">Where it falls short. </strong>
+            {p.cons.join(". ")}.
+          </p>
+        </>
       )}
 
-      <p className="text-foreground/80 leading-relaxed mb-5">{p.description}</p>
+      {variant === "below" && <div className="my-5">{imageBlock}</div>}
 
-      <p className="text-sm text-foreground/80 mb-3 leading-relaxed">
-        <strong className="text-foreground">What's good. </strong>
-        {p.pros.join(". ")}.
-      </p>
-      <p className="text-sm text-foreground/70 mb-4 leading-relaxed">
-        <strong className="text-foreground/90">Where it falls short. </strong>
-        {p.cons.join(". ")}.
-      </p>
 
       {p.aside && (
         <p className="text-sm text-foreground/80 italic border-l-2 border-primary/40 pl-4 my-4">
