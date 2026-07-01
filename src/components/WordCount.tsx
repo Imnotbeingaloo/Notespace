@@ -46,29 +46,29 @@ export function WordCount({ content }: WordCountProps) {
 
   const wordsPulse = usePulseOnChange(stats.words);
   const charsPulse = usePulseOnChange(stats.chars);
+  const readPulse = usePulseOnChange(stats.readTime);
 
   const compact = stats.chars > 5000 || stats.words > 5000;
-  const pulseCls = "transition-all duration-150 ease-out inline-block";
-  const active = "scale-110 text-foreground";
-  const rest = "scale-100";
+  const pulseCls = "inline-block transition-transform duration-150 ease-out";
+  const bounce = (on: boolean) => (on ? "scale-110" : "scale-100");
 
   return (
     <div className="flex items-center gap-2 sm:gap-3 px-4 py-1.5 text-[10px] sm:text-[11px] text-muted-foreground select-none whitespace-nowrap tabular-nums">
       <span className="inline-flex items-center gap-1">
         <FileText className="h-3 w-3" />
-        <span className={`${pulseCls} ${wordsPulse ? active : rest}`}>{stats.words.toLocaleString()}</span>
+        <span className={`${pulseCls} ${bounce(wordsPulse)}`}>{stats.words.toLocaleString()}</span>
         {!compact && (
           <span className="ml-1">{stats.words === 1 ? "word" : "words"}</span>
         )}
       </span>
       <span className="text-border">·</span>
       <span>
-        <span className={`${pulseCls} ${charsPulse ? active : rest}`}>{stats.chars.toLocaleString()}</span>
+        <span className={`${pulseCls} ${bounce(charsPulse)}`}>{stats.chars.toLocaleString()}</span>
         {!compact && <span className="ml-1">chars</span>}
       </span>
       {stats.readTime && <span className="text-border">·</span>}
       {stats.readTime && (
-        <span className="inline-flex items-center gap-1">
+        <span className={`inline-flex items-center gap-1 ${pulseCls} ${bounce(readPulse)}`}>
           <Clock className="h-3 w-3" />
           {stats.readTime}
         </span>
