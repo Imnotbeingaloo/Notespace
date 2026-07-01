@@ -11,8 +11,10 @@ interface VoiceTranscriptionProps {
 type Word = { word: string; start: number; end: number };
 type Phase = "idle" | "recording" | "processing" | "review";
 
-// Chunky bar visualizer, mirrored top/bottom, driven by FFT amplitude.
-const BAR_COUNT = 28;
+// Smooth continuous waveform, rendered to canvas. New audio enters from the right
+// and scrolls left, so the whole wave reacts - not just one side.
+const HISTORY = 220;
+
 
 const fmtTime = (s: number) => {
   if (!isFinite(s) || s < 0) s = 0;
