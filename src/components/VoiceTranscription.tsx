@@ -11,8 +11,10 @@ interface VoiceTranscriptionProps {
 type Word = { word: string; start: number; end: number };
 type Phase = "idle" | "recording" | "processing" | "review";
 
-// Chunky bar visualizer, mirrored top/bottom, driven by FFT amplitude.
-const BAR_COUNT = 28;
+// Smooth continuous waveform, rendered to canvas. New audio enters from the right
+// and scrolls left, so the whole wave reacts - not just one side.
+const HISTORY = 220;
+
 
 const fmtTime = (s: number) => {
   if (!isFinite(s) || s < 0) s = 0;
@@ -74,8 +76,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const [error, setError] = useState<string | null>(null);
   const [showTimestamps, setShowTimestamps] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const [level, setLevel] = useState(0); // 0-1 running amplitude for the mic pulse
-  const [bars, setBars] = useState<number[]>(() => new Array(BAR_COUNT).fill(0.05));
+  const [level, setLevel] = useState(0);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -84,7 +85,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
-  const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  const historyRef = useRef<number[]>(new Array(HISTORY).fill(0));
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const cleanupResources = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -104,6 +106,57 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
 
   useEffect(() => () => cleanupResources(), [cleanupResources]);
 
+  const drawWave = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = canvas.clientWidth;
+    const cssH = canvas.clientHeight;
+    if (canvas.width !== cssW * dpr || canvas.height !== cssH * dpr) {
+      canvas.width = cssW * dpr;
+      canvas.height = cssH * dpr;
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    const mid = cssH / 2;
+    const hist = historyRef.current;
+    const N = hist.length;
+    const stepX = cssW / (N - 1);
+    const maxAmp = cssH * 0.42;
+
+    // Read foreground color from CSS var so it follows theme.
+    const style = getComputedStyle(canvas);
+    const fg = style.getPropertyValue("color") || "#111";
+
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.strokeStyle = fg;
+    ctx.lineWidth = 2;
+
+    // Build a smooth mirrored waveform using quadratic curves through midpoints.
+    const drawSide = (sign: 1 | -1) => {
+      ctx.beginPath();
+      const y0 = mid - sign * hist[0] * maxAmp;
+      ctx.moveTo(0, y0);
+      for (let i = 1; i < N - 1; i++) {
+        const x = i * stepX;
+        const y = mid - sign * hist[i] * maxAmp;
+        const xn = (i + 1) * stepX;
+        const yn = mid - sign * hist[i + 1] * maxAmp;
+        const cx = (x + xn) / 2;
+        const cy = (y + yn) / 2;
+        ctx.quadraticCurveTo(x, y, cx, cy);
+      }
+      ctx.lineTo((N - 1) * stepX, mid - sign * hist[N - 1] * maxAmp);
+      ctx.stroke();
+    };
+    drawSide(1);
+    drawSide(-1);
+  }, []);
+
   const startVisualizer = useCallback((stream: MediaStream) => {
     const voiceWindow = window as VoiceWindow;
     const Ctx = voiceWindow.AudioContext || voiceWindow.webkitAudioContext;
@@ -111,41 +164,41 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const ctx = new Ctx();
     const source = ctx.createMediaStreamSource(stream);
     const analyser = ctx.createAnalyser();
-    analyser.fftSize = 512;
-    analyser.smoothingTimeConstant = 0.6;
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0.3;
     source.connect(analyser);
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
-    const bins = new Uint8Array(analyser.frequencyBinCount);
+    const time = new Uint8Array(analyser.fftSize);
     startedAtRef.current = performance.now();
+    historyRef.current = new Array(HISTORY).fill(0);
 
     const tick = () => {
       const a = analyserRef.current;
       if (!a) return;
-      a.getByteFrequencyData(bins);
-      // Bucket the freq bins into BAR_COUNT chunky groups (skip DC + hi-hiss).
-      const usable = Math.floor(bins.length * 0.78);
-      const step = usable / BAR_COUNT;
-      const next = smoothedRef.current;
-      let overall = 0;
-      for (let i = 0; i < BAR_COUNT; i++) {
-        const s = Math.floor(i * step) + 2;
-        const e = Math.max(s + 1, Math.floor((i + 1) * step) + 2);
-        let sum = 0;
-        for (let j = s; j < e; j++) sum += bins[j];
-        const avg = sum / (e - s) / 255; // 0..1
-        // Slight gamma so quiet speech still lifts the bars.
-        const shaped = Math.pow(avg, 0.72);
-        next[i] = next[i] * 0.55 + shaped * 0.45;
-        overall += next[i];
+      a.getByteTimeDomainData(time);
+      // Compute RMS around 128 midpoint -> 0..1 amplitude.
+      let sum = 0;
+      for (let i = 0; i < time.length; i++) {
+        const v = (time[i] - 128) / 128;
+        sum += v * v;
       }
-      setBars([...next]);
-      setLevel(Math.min(1, (overall / BAR_COUNT) * 1.6));
+      const rms = Math.sqrt(sum / time.length);
+      const shaped = Math.min(1, Math.pow(rms * 2.2, 0.75));
+
+      // Scroll history left, push new sample on the right.
+      const hist = historyRef.current;
+      hist.shift();
+      hist.push(shaped);
+
+      drawWave();
+      setLevel(shaped);
       setElapsed((performance.now() - startedAtRef.current) / 1000);
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
-  }, []);
+  }, [drawWave]);
+
 
   const pickMimeType = () => {
     const candidates = [
@@ -169,8 +222,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setCleanupNote(null);
     setElapsed(0);
     setLevel(0);
-    smoothedRef.current = new Array(BAR_COUNT).fill(0);
-    setBars(new Array(BAR_COUNT).fill(0.05));
+    historyRef.current = new Array(HISTORY).fill(0);
+
     setOpen(true);
     setPhase("recording");
 
@@ -341,25 +394,15 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                 </button>
               </div>
 
-              {/* Clean mirrored wave visualizer - no frame, no mic, just bars */}
+              {/* Smooth continuous waveform - scrolls right-to-left as you speak */}
               {phase !== "review" && (
                 <div className="px-6 pt-8 pb-6">
-                  <div className="relative h-20 flex items-center justify-center">
-                    <div className="flex items-center gap-[4px] h-full w-full">
-                      {bars.map((v, i) => {
-                        const h = Math.max(8, Math.min(1, v) * 100);
-                        return (
-                          <div
-                            key={i}
-                            className="flex-1 rounded-full bg-foreground/85 will-change-[height]"
-                            style={{
-                              height: `${h}%`,
-                              transition: "height 80ms linear",
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
+                  <div className="relative h-24">
+                    <canvas
+                      ref={canvasRef}
+                      className="w-full h-full block text-foreground/90"
+                      aria-hidden="true"
+                    />
                     {phase === "processing" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm">
                         <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
@@ -370,6 +413,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                     )}
                   </div>
                 </div>
+
               )}
 
               {/* Review panel with timestamps */}
