@@ -13,7 +13,9 @@ type Phase = "idle" | "recording" | "processing" | "review";
 
 // Smooth continuous waveform, rendered to canvas. New audio enters from the right
 // and scrolls left, so the whole wave reacts - not just one side.
-const HISTORY = 220;
+const BAR_COUNT = 56;
+const BAR_WIDTH = 3;
+const BAR_GAP = 4;
 
 
 const fmtTime = (s: number) => {
