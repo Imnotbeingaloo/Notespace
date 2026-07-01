@@ -15,7 +15,6 @@ import {
   BlogKeyTakeaways,
   BlogCompareTable,
   BlogSteps,
-  BlogDivider,
 } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 import { Callout } from "@/components/blog/Callout";
