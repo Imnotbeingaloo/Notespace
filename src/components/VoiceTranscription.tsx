@@ -341,18 +341,26 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                 </button>
               </div>
 
-              {/* Visualizer (recording / processing) - clean centered mirrored bars */}
+              {/* Visualizer (recording / processing) */}
               {phase !== "review" && (
                 <div className="px-5 pt-5 pb-2">
-                  <div className="relative h-28 rounded-2xl bg-muted/40 border border-border/60 overflow-hidden flex items-center justify-center">
-                    <div className="absolute inset-0 flex items-center justify-center gap-[4px] px-6">
+                  <div className="relative h-24 rounded-xl bg-muted/40 border border-border/60 overflow-hidden flex items-center justify-center">
+                    {/* Mic pulse orb */}
+                    <div
+                      className="absolute left-4 flex items-center justify-center h-14 w-14 rounded-full bg-primary/10 border border-primary/30 transition-transform duration-75"
+                      style={{ transform: `scale(${midLevel})` }}
+                    >
+                      <Mic className="h-5 w-5 text-primary" />
+                    </div>
+                    {/* Bars */}
+                    <div className="absolute inset-y-0 left-24 right-4 flex items-center gap-[3px]">
                       {bars.map((v, i) => {
-                        const h = Math.max(8, Math.min(1, v) * 92);
+                        const h = Math.max(6, Math.min(1, v) * 88);
                         return (
                           <div
                             key={i}
-                            className="w-[4px] rounded-full bg-primary transition-[height] duration-75 ease-out"
-                            style={{ height: `${h}%`, opacity: 0.7 + v * 0.3 }}
+                            className="flex-1 rounded-full bg-gradient-to-t from-primary/70 to-primary transition-[height,opacity] duration-75"
+                            style={{ height: `${h}%`, opacity: 0.55 + v * 0.45 }}
                           />
                         );
                       })}
