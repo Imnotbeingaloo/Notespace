@@ -94,7 +94,18 @@ function TemporaryWorkspaceInner() {
         }
         r = inserted as TempRow;
       }
-      if (!cancelled) { setRow(r); setLoading(false); }
+      if (!cancelled) {
+        setRow(r);
+        setLoading(false);
+        if (!sessionStorage.getItem("na_temp_trash_hint_shown")) {
+          sessionStorage.setItem("na_temp_trash_hint_shown", "1");
+          setTimeout(() => {
+            toast("Kept safe in trash for 24 hours", {
+              description: "If you close this temporary note, it stays recoverable from Trash for 24 hours before it auto-deletes.",
+            });
+          }, 800);
+        }
+      }
     })();
     return () => { cancelled = true; };
   }, [user, navigate]);
@@ -209,7 +220,9 @@ function TemporaryWorkspaceInner() {
     if (!row) return;
     setWorking(true);
     await supabase.from("temporary_notes").delete().eq("id", row.id);
-    toast("Temporary note discarded.");
+    toast("Moved to trash", {
+      description: "Your temporary note stays recoverable for the next 24 hours before it auto-deletes.",
+    });
     skipGuardRef.current = true;
     navigate("/app", { replace: true });
     setWorking(false);
