@@ -153,6 +153,7 @@ const App = () => (
               <NetworkStatusToasts />
 
               <PaperStyleTransitionOverlay />
+              <BlogSideRail />
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/app" element={<AppPage />} />
