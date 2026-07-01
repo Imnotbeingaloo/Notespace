@@ -124,37 +124,44 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const mid = cssH / 2;
     const hist = historyRef.current;
     const N = hist.length;
-    const stepX = cssW / (N - 1);
-    const maxAmp = cssH * 0.42;
+    const maxAmp = cssH * 0.4;
+    const t = performance.now() / 1000;
 
-    // Read foreground color from CSS var so it follows theme.
+    // Sample points: a smooth sine carrier whose amplitude is modulated by
+    // the audio history. Two overlaid sines create a soft, organic wave that
+    // never looks like discrete bars.
+    const points: Array<{ x: number; y: number }> = [];
+    const SAMPLES = 96;
+    for (let i = 0; i <= SAMPLES; i++) {
+      const u = i / SAMPLES;
+      const x = u * cssW;
+      const histIdx = Math.min(N - 1, Math.floor(u * (N - 1)));
+      const amp = hist[histIdx];
+      const carrier =
+        Math.sin(u * Math.PI * 4 - t * 2.4) * 0.6 +
+        Math.sin(u * Math.PI * 8 + t * 1.7) * 0.4;
+      // Envelope: fade at the edges so the line doesn't clip flat against the borders.
+      const envelope = Math.sin(u * Math.PI);
+      const y = mid + carrier * amp * maxAmp * envelope;
+      points.push({ x, y });
+    }
+
     const style = getComputedStyle(canvas);
-    const fg = style.getPropertyValue("color") || "#111";
-
+    const fg = style.color || "#111";
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.strokeStyle = fg;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.6;
 
-    // Build a smooth mirrored waveform using quadratic curves through midpoints.
-    const drawSide = (sign: 1 | -1) => {
-      ctx.beginPath();
-      const y0 = mid - sign * hist[0] * maxAmp;
-      ctx.moveTo(0, y0);
-      for (let i = 1; i < N - 1; i++) {
-        const x = i * stepX;
-        const y = mid - sign * hist[i] * maxAmp;
-        const xn = (i + 1) * stepX;
-        const yn = mid - sign * hist[i + 1] * maxAmp;
-        const cx = (x + xn) / 2;
-        const cy = (y + yn) / 2;
-        ctx.quadraticCurveTo(x, y, cx, cy);
-      }
-      ctx.lineTo((N - 1) * stepX, mid - sign * hist[N - 1] * maxAmp);
-      ctx.stroke();
-    };
-    drawSide(1);
-    drawSide(-1);
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length - 1; i++) {
+      const cx = (points[i].x + points[i + 1].x) / 2;
+      const cy = (points[i].y + points[i + 1].y) / 2;
+      ctx.quadraticCurveTo(points[i].x, points[i].y, cx, cy);
+    }
+    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    ctx.stroke();
   }, []);
 
   const startVisualizer = useCallback((stream: MediaStream) => {
@@ -165,31 +172,39 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const source = ctx.createMediaStreamSource(stream);
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 1024;
-    analyser.smoothingTimeConstant = 0.3;
+    analyser.smoothingTimeConstant = 0.85;
     source.connect(analyser);
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
     const time = new Uint8Array(analyser.fftSize);
     startedAtRef.current = performance.now();
-    historyRef.current = new Array(HISTORY).fill(0);
+    historyRef.current = new Array(HISTORY).fill(0.05);
 
     const tick = () => {
       const a = analyserRef.current;
-      if (!a) return;
+      if (!a) {
+        // Still animate the idle sine so the wave is never frozen.
+        drawWave();
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
       a.getByteTimeDomainData(time);
-      // Compute RMS around 128 midpoint -> 0..1 amplitude.
       let sum = 0;
       for (let i = 0; i < time.length; i++) {
         const v = (time[i] - 128) / 128;
         sum += v * v;
       }
       const rms = Math.sqrt(sum / time.length);
-      const shaped = Math.min(1, Math.pow(rms * 2.2, 0.75));
+      // Shape + floor so the wave always has a gentle idle presence.
+      const shaped = Math.max(0.08, Math.min(1, Math.pow(rms * 2.4, 0.7)));
 
-      // Scroll history left, push new sample on the right.
       const hist = historyRef.current;
-      hist.shift();
-      hist.push(shaped);
+      // Smoothly ease the whole history toward the new amplitude instead of
+      // shifting a ring buffer - this makes the entire wave breathe together,
+      // not just the left edge.
+      for (let i = 0; i < hist.length; i++) {
+        hist[i] = hist[i] * 0.82 + shaped * 0.18;
+      }
 
       drawWave();
       setLevel(shaped);
@@ -198,6 +213,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     };
     rafRef.current = requestAnimationFrame(tick);
   }, [drawWave]);
+
 
 
   const pickMimeType = () => {
