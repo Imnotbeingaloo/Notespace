@@ -87,7 +87,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
-  const historyRef = useRef<number[]>(new Array(HISTORY).fill(0));
+  const historyRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const cleanupResources = useCallback(() => {
@@ -170,7 +170,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     analyserRef.current = analyser;
     const time = new Uint8Array(analyser.fftSize);
     startedAtRef.current = performance.now();
-    historyRef.current = new Array(HISTORY).fill(0);
+    historyRef.current = new Array(BAR_COUNT).fill(0);
 
     const tick = () => {
       const a = analyserRef.current;
@@ -221,7 +221,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setCleanupNote(null);
     setElapsed(0);
     setLevel(0);
-    historyRef.current = new Array(HISTORY).fill(0);
+    historyRef.current = new Array(BAR_COUNT).fill(0);
 
     setOpen(true);
     setPhase("recording");
