@@ -664,9 +664,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     >
                       <MoreHorizontal className="h-3 w-3" />
                     </button>
-
-                    </button>
                   </div>
+
 
                   {/* Nested notes - shown only when the user has expanded this notebook via the chevron. */}
                   <AnimatePresence initial={false}>
