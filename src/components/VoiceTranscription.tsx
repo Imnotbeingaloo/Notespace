@@ -330,7 +330,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setWords([]);
     setCleanupNote(null);
     setElapsed(0);
-    setLevel(0);
+    setClipping(false);
+    clipHitsRef.current = 0;
     barsRef.current = new Array(BAR_COUNT).fill(0);
     targetsRef.current = new Array(BAR_COUNT).fill(0);
     setVisualizerReady(false);
