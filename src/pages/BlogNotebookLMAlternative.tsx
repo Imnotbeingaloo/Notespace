@@ -302,52 +302,53 @@ export default function BlogNotebookLMAlternative() {
               save, organize, or revise is worse than a 90% one you can.
             </Callout>
 
-            <BlogCallout title="The honest NotebookLM problem" tone="accent">
-              NotebookLM is a research demo that escaped the lab. It's free, it's good
-              at one specific trick, and Google has not committed to it the way they've
-              committed to Docs or Drive. Build a four-year degree on top of it and you
-              are taking a real risk.
-            </BlogCallout>
-
             <h2 className="font-serif text-2xl font-bold mb-6 mt-10">The six picks</h2>
             <div className="space-y-8">
               {picks.map((p, i) => (
                 <AppDetailCard key={p.name} index={i + 1} {...p} />
               ))}
             </div>
+          </section>
 
-            <BlogDivider />
+          {/* Full-bleed comparison band */}
+          <div className="relative -mx-6 md:-mx-24 lg:-mx-40 bg-muted/40 border-y border-border py-12 px-6 md:px-12 my-12">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="font-serif text-2xl md:text-3xl font-bold mb-6">
+                NotebookLM vs the alternatives at a glance
+              </h2>
+              <BlogCompareTable
+                headers={[
+                  "",
+                  "Writing surface",
+                  "Per-course organization",
+                  "Markdown export",
+                  "Audio overview",
+                  "Free tier for a semester",
+                ]}
+                rows={[
+                  ["Notebook Archive", "Yes", "Yes", "Yes", "No", "Yes (AI credits capped)"],
+                  ["NotebookLM", "No - chat only", "No - flat sources", "No", "Yes (best-in-class)", "Yes (today)"],
+                  ["Notion AI", "Yes", "Databases", "Lossy", "No", "AI add-on $10/mo"],
+                  ["Obsidian + plugin", "Yes", "Folders", "Yes", "No", "Yes (BYO key)"],
+                  ["Mem", "Yes", "No - flat stream", "Lossy", "No", "Limited"],
+                  ["Reflect", "Yes", "Daily notes", "Partial", "No", "No free tier"],
+                  ["OneNote + Copilot", "Yes", "Notebooks", "Poor", "No", "Copilot is paid"],
+                ]}
+              />
+              <p className="mt-4 text-sm text-muted-foreground">
+                One column NotebookLM genuinely owns: the two-host audio overview. Nothing else on this list matches it yet.
+              </p>
+            </div>
+          </div>
 
-            <h2 className="font-serif text-2xl font-bold mt-12 mb-6">
-              NotebookLM vs the alternatives at a glance
-            </h2>
-            <BlogCompareTable
-              headers={[
-                "",
-                "Real writing surface",
-                "Per-course organization",
-                "Markdown export",
-                "Free tier for a semester",
-              ]}
-              rows={[
-                ["Notebook Archive", "Yes", "Yes", "Yes", "Yes"],
-                ["NotebookLM", "No - chat only", "No - flat sources", "No", "Yes (today)"],
-                ["Notion AI", "Yes", "Databases", "Lossy", "AI add-on $10/mo"],
-                ["Obsidian + plugin", "Yes", "Folders", "Yes", "Yes (BYO key)"],
-                ["Mem", "Yes", "No - flat stream", "Lossy", "Limited"],
-                ["Reflect", "Yes", "Daily notes", "Partial", "No free tier"],
-                ["OneNote + Copilot", "Yes", "Notebooks", "Poor", "Copilot is paid"],
-              ]}
-            />
-
-            <h2 className="font-serif text-2xl font-bold mt-12 mb-4">
+          <section className="mb-12">
+            <h2 className="font-serif text-2xl font-bold mt-4 mb-4">
               The workflow most people land on
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Once the novelty of chatting with sources wears off, the pattern is
-              consistent: you write the notes, the AI helps you understand them, and
-              your work lives in a structure you control.
+              By week 6 of a semester, the pattern users describe is consistent: notes get written first, the AI is consulted second, and everything lives in a folder structure the user controls.
             </p>
+
             <BlogSteps
               steps={[
                 {
