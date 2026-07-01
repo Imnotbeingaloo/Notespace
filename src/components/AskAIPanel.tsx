@@ -33,11 +33,10 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
   const [i, setI] = useState(0);
   useEffect(() => {
     if (reducedMotion) return;
-    // Each word holds for the same dwell (~520ms net) on top of a 200ms
-    // crossfade transition, so "spark" doesn't feel rushed between
-    // "idea" and "note". Total ≈ 1.65s before settling.
-    const t1 = setTimeout(() => setI(1), 720);
-    const t2 = setTimeout(() => setI(2), 1440);
+    // All three words are intentionally readable before the quill appears:
+    // idea → spark → note, with "note" held long enough to never feel skipped.
+    const t1 = setTimeout(() => setI(1), 700);
+    const t2 = setTimeout(() => setI(2), 1400);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [reducedMotion]);
 
@@ -124,7 +123,7 @@ function VignetteToQuill({ emptyKey, reducedMotion }: { emptyKey: number; reduce
     if (reducedMotion) return;
     // All three words must fully play first; the quill replaces the finished
     // vignette afterward in the same slot, never on top of it.
-    const t = setTimeout(() => setPhase("quill"), 2200);
+    const t = setTimeout(() => setPhase("quill"), 2800);
     return () => clearTimeout(t);
   }, [emptyKey, reducedMotion]);
 
