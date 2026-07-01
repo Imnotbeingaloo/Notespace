@@ -826,8 +826,29 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.18 }}
-      className="flex-1 flex flex-col bg-background overflow-hidden relative"
+      className={`flex-1 flex flex-col bg-background overflow-hidden relative ${dragOver ? "ring-2 ring-primary/50 ring-inset" : ""}`}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
     >
+        <AnimatePresence>
+          {dragOver && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 bg-primary/5 backdrop-blur-sm flex items-center justify-center pointer-events-none"
+            >
+              <div className="flex flex-col items-center gap-3 text-primary">
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center">
+                  <Upload className="h-8 w-8" />
+                </div>
+                <span className="text-sm font-medium">Drop files to add to note</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
 
         {/* Title bar */}
         <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
