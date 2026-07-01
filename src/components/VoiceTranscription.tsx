@@ -127,6 +127,23 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
 
   useEffect(() => () => cleanupResources(), [cleanupResources]);
 
+  // Persist mic sensitivity and apply it live to the running audio graph
+  // so the slider reacts immediately without needing a re-record.
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(MIC_GAIN_KEY, String(micGain));
+    }
+    if (gainNodeRef.current && audioCtxRef.current) {
+      try {
+        gainNodeRef.current.gain.setTargetAtTime(
+          micGain,
+          audioCtxRef.current.currentTime,
+          0.05,
+        );
+      } catch { gainNodeRef.current.gain.value = micGain; }
+    }
+  }, [micGain]);
+
   const drawBars = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
