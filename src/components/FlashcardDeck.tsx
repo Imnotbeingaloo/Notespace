@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, RotateCw, Sparkles, Trophy } from "lucide-react";
 
@@ -36,12 +36,33 @@ interface FlashcardDeckProps {
 
 /**
  * NotebookLM-inspired flashcard reviewer. Cards flip on click to reveal the
- * answer, then the learner self-grades with "Got it" / "Review again". Cards
- * marked for review cycle back through the deck so the goal is genuine
- * concept mastery, not just clicking through.
+ * answer, then the learner self-grades with Correct / Wrong. Wrong cards
+ * cycle back through the deck so the goal is genuine concept mastery, not
+ * just clicking through.
  */
 export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
   const parsed = useMemo(() => parseFlashcards(markdown), [markdown]);
+  const palettes = useMemo(() => {
+    const curated = [
+      "268 62% 58%",
+      "204 76% 48%",
+      "162 58% 40%",
+      "38 78% 50%",
+      "344 62% 52%",
+      "186 62% 42%",
+      "225 64% 56%",
+      "20 68% 52%",
+      "142 52% 42%",
+      "312 52% 54%",
+    ];
+    let seed = markdown.length || 1;
+    for (let i = 0; i < markdown.length; i++) seed = (seed * 31 + markdown.charCodeAt(i)) >>> 0;
+    return [...curated].sort((a, b) => {
+      const av = (seed ^ a.charCodeAt(0) ^ a.charCodeAt(a.length - 1)) % 97;
+      const bv = (seed ^ b.charCodeAt(0) ^ b.charCodeAt(b.length - 1)) % 97;
+      return av - bv;
+    });
+  }, [markdown]);
   // Working queue of indices into `parsed`. Wrong cards get re-queued.
   const [queue, setQueue] = useState<number[] | null>(null);
   const [flipped, setFlipped] = useState(false);
@@ -51,13 +72,16 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
   const [verdict, setVerdict] = useState<-1 | 0 | 1>(0);
 
   // Initialize/reset queue when the parsed deck changes (e.g. new generation).
-  const deckKey = parsed.length;
+  const deckKey = parsed.map((card) => `${card.q}\u0000${card.a}`).join("\u0001");
+  useEffect(() => {
+    setQueue(parsed.length > 0 ? parsed.map((_, i) => i) : null);
+    setFlipped(false);
+    setCorrect(0);
+    setWrong(0);
+    setVerdict(0);
+  }, [deckKey, parsed.length]);
+
   const activeQueue = queue ?? parsed.map((_, i) => i);
-  if (queue == null && parsed.length > 0) {
-    // First render with a non-empty deck: seed lazily without a useEffect to
-    // avoid an extra render flicker during streaming.
-    setQueue(parsed.map((_, i) => i));
-  }
 
   if (parsed.length === 0) {
     return (
@@ -106,7 +130,7 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
   const currentIdx = activeQueue[0];
   const card = parsed[currentIdx];
   const total = parsed.length;
-  const reviewedCount = correct + wrong;
+  const masteredCount = correct;
 
   const grade = (isCorrect: boolean) => {
     setVerdict(isCorrect ? 1 : -1);
@@ -129,7 +153,7 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
       {/* Progress strip */}
       <div className="w-full max-w-md mb-3">
         <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
-          <span className="font-medium">Card {Math.min(reviewedCount + 1, total)} of {total}</span>
+          <span className="font-medium">Card {Math.min(masteredCount + 1, total)} of {total}</span>
           <span className="inline-flex items-center gap-2">
             <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
               <Check className="h-3 w-3" /> {correct}
@@ -143,7 +167,7 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
           <motion.div
             className="h-full bg-primary"
             initial={false}
-            animate={{ width: `${(reviewedCount / total) * 100}%` }}
+            animate={{ width: `${(masteredCount / total) * 100}%` }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           />
         </div>
@@ -179,17 +203,7 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
             className="absolute inset-0"
           >
             {(() => {
-              // Rotate a small palette so consecutive cards feel distinct
-              // instead of a single purple wall.
-              const PALETTES = [
-                { h: "265 70% 60%" },
-                { h: "200 85% 52%" },
-                { h: "160 65% 45%" },
-                { h: "35 90% 55%" },
-                { h: "340 80% 60%" },
-                { h: "185 70% 45%" },
-              ];
-              const pal = PALETTES[currentIdx % PALETTES.length];
+              const hue = palettes[currentIdx % palettes.length];
               return (
                 <button
                   type="button"
@@ -201,23 +215,23 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
                   <div
                     className="absolute inset-0 rounded-2xl shadow-md p-6 flex flex-col [backface-visibility:hidden]"
                     style={{
-                      background: `linear-gradient(135deg, hsl(${pal.h} / 0.10), hsl(${pal.h} / 0.02))`,
-                      border: `1px solid hsl(${pal.h} / 0.35)`,
+                      background: `linear-gradient(135deg, hsl(${hue} / 0.11), hsl(${hue} / 0.025))`,
+                      border: `1px solid hsl(${hue} / 0.34)`,
                     }}
                   >
-                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${pal.h})` }}>Question</span>
+                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${hue})` }}>Question</span>
                     <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">{card.q}</p>
                     <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to reveal answer</span>
                   </div>
                   <div
                     className="absolute inset-0 rounded-2xl shadow-md p-6 flex flex-col [backface-visibility:hidden]"
                     style={{
-                      background: `linear-gradient(135deg, hsl(${pal.h} / 0.18), hsl(${pal.h} / 0.06))`,
-                      border: `1px solid hsl(${pal.h} / 0.5)`,
+                      background: `linear-gradient(135deg, hsl(${hue} / 0.17), hsl(${hue} / 0.055))`,
+                      border: `1px solid hsl(${hue} / 0.46)`,
                       transform: "rotateY(180deg)",
                     }}
                   >
-                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${pal.h})` }}>Answer</span>
+                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${hue})` }}>Answer</span>
                     <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">{card.a}</p>
                     <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to flip back</span>
                   </div>
@@ -243,7 +257,7 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
               className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <X className="h-4 w-4 transition-transform group-hover:scale-110" />
-              <span className="text-sm font-medium">Review again</span>
+              <span className="text-sm font-medium">Wrong</span>
             </button>
             <button
               onClick={() => grade(true)}
@@ -251,7 +265,7 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
               className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Check className="h-4 w-4 transition-transform group-hover:scale-110" />
-              <span className="text-sm font-medium">Got it</span>
+              <span className="text-sm font-medium">Correct</span>
             </button>
           </motion.div>
         ) : (

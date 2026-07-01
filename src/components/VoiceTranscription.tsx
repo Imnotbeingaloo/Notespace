@@ -14,7 +14,7 @@ type Phase = "idle" | "recording" | "processing" | "review";
 
 // Centered symmetric bar visualizer driven by FFT frequency data.
 // Bars mirror from the center outwards, responding to pitch + amplitude.
-const BAR_COUNT = 26;
+const BAR_COUNT = 14;
 
 
 
@@ -78,34 +78,16 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const [error, setError] = useState<string | null>(null);
   const [showTimestamps, setShowTimestamps] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  // Persisted mic sensitivity (0.5 - 3.5x). Applied to the pre-analyser gain
-  // so the waveform reacts more/less strongly per user preference.
-  const MIC_GAIN_KEY = "va.micGain";
-  const [micGain, setMicGain] = useState<number>(() => {
-    if (typeof window === "undefined") return 1.9;
-    const raw = window.localStorage.getItem(MIC_GAIN_KEY);
-    const n = raw ? Number(raw) : NaN;
-    return isFinite(n) && n >= 0.5 && n <= 3.5 ? n : 1.9;
-  });
-  const [clipping, setClipping] = useState(false);
-  const [calibrating, setCalibrating] = useState(false);
-
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
   const barsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
   const targetsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
-  // Ref-driven DOM updates for the level meter + clip pip so we don't
-  // re-render React 60 times per second while recording.
-  const levelBarRef = useRef<HTMLDivElement | null>(null);
-  const clipPipRef = useRef<HTMLSpanElement | null>(null);
   const calibratedFloorRef = useRef<number>(0.04);
-  const clipHitsRef = useRef<number>(0);
   const [visualizerReady, setVisualizerReady] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -127,23 +109,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   }, []);
 
   useEffect(() => () => cleanupResources(), [cleanupResources]);
-
-  // Persist mic sensitivity and apply it live to the running audio graph
-  // so the slider reacts immediately without needing a re-record.
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(MIC_GAIN_KEY, String(micGain));
-    }
-    if (gainNodeRef.current && audioCtxRef.current) {
-      try {
-        gainNodeRef.current.gain.setTargetAtTime(
-          micGain,
-          audioCtxRef.current.currentTime,
-          0.05,
-        );
-      } catch { gainNodeRef.current.gain.value = micGain; }
-    }
-  }, [micGain]);
 
   const drawBars = useCallback(() => {
     const canvas = canvasRef.current;
@@ -210,13 +175,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const ctx = new Ctx();
     const source = ctx.createMediaStreamSource(stream);
 
-    // Pre-analyser gain boost so quiet voices still register visibly.
-    // The value is driven by the persisted `micGain` slider so users can
-    // dial sensitivity to their mic/room.
-    const gain = ctx.createGain();
-    gain.gain.value = micGain;
-    gainNodeRef.current = gain;
-
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 1024;
     // High smoothing keeps the wave fluid across brief pauses / plosives.
@@ -224,8 +182,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     analyser.minDecibels = -85;
     analyser.maxDecibels = -18;
 
-    source.connect(gain);
-    gain.connect(analyser);
+    source.connect(analyser);
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
     const freq = new Uint8Array(analyser.frequencyBinCount);
@@ -233,7 +190,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     barsRef.current = new Array(BAR_COUNT).fill(0);
     targetsRef.current = new Array(BAR_COUNT).fill(0);
     setVisualizerReady(false);
-    setCalibrating(true);
 
     // Map FFT bins (skip DC + very high) into BAR_COUNT log-spaced buckets
     // so the visualizer emphasizes vocal range and shows pitch structure.
@@ -257,10 +213,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
 
     // Throttled state updates: React does not need 60Hz for elapsed/clip.
     let lastElapsedCommit = 0;
-    let lastClipCommit = 0;
-    // clip bookkeeping: count how many recent frames sat near the ceiling.
-    // Rolling window tracked by clipHitsRef (drained periodically).
-    let framesSinceDrain = 0;
 
     const tick = () => {
       const a = analyserRef.current;
@@ -295,7 +247,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
           noiseFloor = Math.min(0.1, Math.max(0.02, p85 * 1.15));
           calibratedFloorRef.current = noiseFloor;
           calibrated = true;
-          setCalibrating(false);
         }
       } else {
         // Slow adaptive tracking after calibration.
@@ -340,28 +291,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       }
       targetsRef.current = ordered;
 
-      // --- Ref-driven level meter (no React re-render) ---
-      // Scale a bit above raw peak so the meter reads like a proper VU.
-      const displayLevel = Math.min(1, peak * 1.6);
-      if (levelBarRef.current) {
-        levelBarRef.current.style.transform = `scaleX(${displayLevel.toFixed(3)})`;
-      }
-
-      // --- Clip / jitter detection ---
-      // Anything sitting above 0.95 for too many recent frames = clipping.
-      if (peak > 0.95) clipHitsRef.current += 1;
-      framesSinceDrain += 1;
-      if (framesSinceDrain >= 60) {
-        // Every ~1s: if >20% of frames clipped, mark clipping; else clear.
-        const isClipping = clipHitsRef.current > 12;
-        if (now - lastClipCommit > 250) {
-          setClipping(isClipping);
-          lastClipCommit = now;
-        }
-        clipHitsRef.current = 0;
-        framesSinceDrain = 0;
-      }
-
       if (!sawAudio && peak > 0.02) {
         sawAudio = true;
         setVisualizerReady(true);
@@ -382,7 +311,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
-  }, [drawBars, micGain]);
+  }, [drawBars]);
 
 
 
@@ -408,8 +337,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setWords([]);
     setCleanupNote(null);
     setElapsed(0);
-    setClipping(false);
-    clipHitsRef.current = 0;
     barsRef.current = new Array(BAR_COUNT).fill(0);
     targetsRef.current = new Array(BAR_COUNT).fill(0);
     setVisualizerReady(false);
@@ -611,9 +538,6 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                       </div>
                     )}
                   </div>
-
-                  {/* Level meter + gain slider removed - kept the waveform
-                      simple. It's a note taking app, not a studio. */}
                 </div>
               )}
 
