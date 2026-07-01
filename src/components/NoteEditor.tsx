@@ -406,7 +406,7 @@ function PreviewButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+        className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-indigo-400/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-500/20 transition-all duration-200"
         title="Preview Note"
       >
         <Eye className="h-3.5 w-3.5" />
