@@ -427,23 +427,28 @@ export default function BlogNotebookLMAlternative() {
             </Accordion>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">
-              A notebook, not a chatbot
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Notebook Archive is free to start. Per-course notebooks. AI explain panel.
-              Real markdown export. Your notes, your structure, your file format.
-            </p>
+        </article>
+
+        {/* Full-bleed asymmetric CTA */}
+        <div className="bg-foreground text-background py-16 px-6">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
+            <div className="flex-1">
+              <p className="font-serif text-3xl md:text-4xl font-bold mb-3 leading-tight">
+                A notebook, not a chatbot.
+              </p>
+              <p className="text-background/70 text-lg leading-relaxed">
+                Notebook Archive is free to start. Per-course notebooks, an AI explain panel, and a markdown export that outlives the app.
+              </p>
+            </div>
             <Link
               to={CTA}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition self-start md:self-auto whitespace-nowrap"
             >
               Open Notebook Archive
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-        </article>
+        </div>
 
         <Footer />
       </div>
