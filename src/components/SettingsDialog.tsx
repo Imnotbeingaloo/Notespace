@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { usePaperStyle } from "@/hooks/use-paper-style";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
+import { useNotebookArrows } from "@/hooks/use-notebook-arrows";
 
 interface SettingsDialogProps {
   open: boolean;
