@@ -34,6 +34,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [paperStyle, setPaperStyle] = usePaperStyle();
   const [tempNotesEnabled, setTempNotesEnabled] = useTempNotesEnabled();
   const [wordCountGoalEnabled, setWordCountGoalEnabled] = useWordCountGoalEnabled();
+  const [notebookArrows, setNotebookArrows] = useNotebookArrows();
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
