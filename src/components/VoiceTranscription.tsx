@@ -124,7 +124,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       const data = timeDataRef.current;
       const canvas = canvasRef.current;
       if (!a || !data) return;
-      a.getByteTimeDomainData(data);
+      a.getByteTimeDomainData(data as unknown as Uint8Array<ArrayBuffer>);
 
       // Running RMS for the mic pulse.
       let sumSq = 0;
