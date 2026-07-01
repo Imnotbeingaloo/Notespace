@@ -81,14 +81,17 @@ export function BlogCompareTable({
   headers,
   rows,
   caption,
+  bleed = true,
 }: {
   headers: string[];
   rows: (string | ReactNode)[][];
   caption?: string;
+  /** Full-bleed band that breaks out of the reading column. Default on. */
+  bleed?: boolean;
 }) {
-  return (
-    <figure className="my-8">
-      <div className="overflow-x-auto rounded-md border border-border">
+  const table = (
+    <figure className={bleed ? "" : "my-8"}>
+      <div className="overflow-x-auto rounded-md border border-border bg-background">
         <table className="w-full text-sm">
           <thead>
             <tr>
@@ -101,7 +104,7 @@ export function BlogCompareTable({
           </thead>
           <tbody>
             {rows.map((r, ri) => (
-              <tr key={ri} className="border-b border-border last:border-0">
+              <tr key={ri} className="border-b border-border last:border-0 odd:bg-muted/20">
                 {r.map((cell, ci) => (
                   <td key={ci} className="px-4 py-2.5 text-foreground/80 align-top leading-relaxed">
                     {cell}
@@ -116,6 +119,14 @@ export function BlogCompareTable({
         <figcaption className="mt-2 text-sm text-muted-foreground text-center">{caption}</figcaption>
       ) : null}
     </figure>
+  );
+
+  if (!bleed) return table;
+
+  return (
+    <div className="not-prose relative left-1/2 right-1/2 -mx-[50vw] w-screen my-10 bg-muted/40 py-10 md:py-12">
+      <div className="mx-auto max-w-5xl px-6">{table}</div>
+    </div>
   );
 }
 

@@ -315,6 +315,7 @@ export default function BlogNotebookLMAlternative() {
                 NotebookLM vs the alternatives at a glance
               </h2>
               <BlogCompareTable
+                bleed={false}
                 headers={[
                   "",
                   "Writing surface",
