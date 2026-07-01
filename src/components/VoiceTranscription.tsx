@@ -129,9 +129,12 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const targets = targetsRef.current;
     const N = bars.length;
 
-    // Ease bars toward their targets for smoothness (per-frame).
+    // Ease bars toward their targets. Rising fast (attack), falling slow (release)
+    // so brief voice gaps don't collapse the wave - it gently settles instead.
     for (let i = 0; i < N; i++) {
-      bars[i] += (targets[i] - bars[i]) * 0.35;
+      const rising = targets[i] > bars[i];
+      const k = rising ? 0.32 : 0.12;
+      bars[i] += (targets[i] - bars[i]) * k;
     }
 
     const style = getComputedStyle(canvas);
@@ -171,10 +174,20 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     if (!Ctx) return;
     const ctx = new Ctx();
     const source = ctx.createMediaStreamSource(stream);
+
+    // Pre-analyser gain boost so quiet voices still register visibly.
+    const gain = ctx.createGain();
+    gain.gain.value = 1.9; // mic sensitivity
+
     const analyser = ctx.createAnalyser();
-    analyser.fftSize = 512;
-    analyser.smoothingTimeConstant = 0.75;
-    source.connect(analyser);
+    analyser.fftSize = 1024;
+    // High smoothing keeps the wave fluid across brief pauses / plosives.
+    analyser.smoothingTimeConstant = 0.86;
+    analyser.minDecibels = -85;
+    analyser.maxDecibels = -18;
+
+    source.connect(gain);
+    gain.connect(analyser);
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
     const freq = new Uint8Array(analyser.frequencyBinCount);
@@ -194,13 +207,18 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
       edges.push(Math.floor(Math.exp(logMin + ((logMax - logMin) * i) / BAR_COUNT)));
     }
 
+    // Running noise floor + soft compressor so the wave reacts strongly
+    // without clipping when loud, and stays lively when quiet.
+    let noiseFloor = 0.04;
     let sawAudio = false;
+
     const tick = () => {
       const a = analyserRef.current;
       if (!a) return;
       a.getByteFrequencyData(freq);
       const targets = targetsRef.current;
       let peak = 0;
+      const raw: number[] = new Array(BAR_COUNT);
       for (let b = 0; b < BAR_COUNT; b++) {
         let sum = 0;
         let count = 0;
@@ -209,11 +227,22 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
           count++;
         }
         const avg = count ? sum / count / 255 : 0;
-        // Symmetric mirror around center: fold the spectrum outward so
-        // lows sit in the middle and highs at the edges (like the ref).
-        targets[b] = Math.min(1, Math.pow(avg, 0.85) * 1.2);
+        raw[b] = avg;
         if (avg > peak) peak = avg;
       }
+      // Adapt noise floor slowly downward, quickly upward on sustained silence.
+      noiseFloor += (peak * 0.35 - noiseFloor) * (peak < noiseFloor ? 0.02 : 0.008);
+      const floor = Math.min(0.08, noiseFloor);
+
+      for (let b = 0; b < BAR_COUNT; b++) {
+        // Subtract noise, boost, soft-knee compress via pow, then clamp.
+        let v = Math.max(0, raw[b] - floor) * 1.9;
+        v = Math.pow(v, 0.7); // expand dynamic response
+        // Soft ceiling to prevent clipping/jitter at loud peaks.
+        v = v > 0.9 ? 0.9 + (v - 0.9) * 0.25 : v;
+        targets[b] = Math.min(1, v);
+      }
+
       // Reorder so strongest bass reads in the middle -> mirrored highs on sides.
       const ordered = new Array(BAR_COUNT).fill(0);
       const half = Math.floor(BAR_COUNT / 2);
