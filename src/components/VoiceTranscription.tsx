@@ -148,7 +148,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const barW = Math.max(2, (cssW - gap * (N - 1)) / N);
     const radius = barW / 2;
     const maxAmp = cssH * 0.44;
-    const minAmp = 3;
+    const minAmp = 2;
 
     for (let i = 0; i < N; i++) {
       const x = i * (barW + gap);
