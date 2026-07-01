@@ -454,7 +454,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     onBeforeOpen?.();
   }, [onBeforeOpen]);
 
-  void level;
+  
 
   return (
     <>
