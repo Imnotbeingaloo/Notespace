@@ -13,9 +13,7 @@ type Phase = "idle" | "recording" | "processing" | "review";
 
 // Smooth continuous waveform, rendered to canvas. New audio enters from the right
 // and scrolls left, so the whole wave reacts - not just one side.
-const BAR_COUNT = 56;
-const BAR_WIDTH = 3;
-const BAR_GAP = 4;
+const HISTORY = 220;
 
 
 const fmtTime = (s: number) => {
@@ -87,7 +85,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
-  const historyRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
+  const historyRef = useRef<number[]>(new Array(HISTORY).fill(0));
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const cleanupResources = useCallback(() => {
@@ -126,34 +124,37 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     const mid = cssH / 2;
     const hist = historyRef.current;
     const N = hist.length;
-    const totalW = N * BAR_WIDTH + (N - 1) * BAR_GAP;
-    const startX = (cssW - totalW) / 2;
-    const maxAmp = cssH * 0.44;
-    const minAmp = 2;
+    const stepX = cssW / (N - 1);
+    const maxAmp = cssH * 0.42;
 
+    // Read foreground color from CSS var so it follows theme.
     const style = getComputedStyle(canvas);
-    const fg = style.color || "#111";
-    ctx.fillStyle = fg;
+    const fg = style.getPropertyValue("color") || "#111";
 
-    for (let i = 0; i < N; i++) {
-      const amp = Math.max(minAmp, hist[i] * maxAmp);
-      const x = startX + i * (BAR_WIDTH + BAR_GAP);
-      const y = mid - amp;
-      const h = amp * 2;
-      // rounded bar
-      const r = BAR_WIDTH / 2;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.strokeStyle = fg;
+    ctx.lineWidth = 2;
+
+    // Build a smooth mirrored waveform using quadratic curves through midpoints.
+    const drawSide = (sign: 1 | -1) => {
       ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + BAR_WIDTH, y, x + BAR_WIDTH, y + r, r);
-      ctx.lineTo(x + BAR_WIDTH, y + h - r);
-      ctx.arcTo(x + BAR_WIDTH, y + h, x + BAR_WIDTH - r, y + h, r);
-      ctx.lineTo(x + r, y + h);
-      ctx.arcTo(x, y + h, x, y + h - r, r);
-      ctx.lineTo(x, y + r);
-      ctx.arcTo(x, y, x + r, y, r);
-      ctx.closePath();
-      ctx.fill();
-    }
+      const y0 = mid - sign * hist[0] * maxAmp;
+      ctx.moveTo(0, y0);
+      for (let i = 1; i < N - 1; i++) {
+        const x = i * stepX;
+        const y = mid - sign * hist[i] * maxAmp;
+        const xn = (i + 1) * stepX;
+        const yn = mid - sign * hist[i + 1] * maxAmp;
+        const cx = (x + xn) / 2;
+        const cy = (y + yn) / 2;
+        ctx.quadraticCurveTo(x, y, cx, cy);
+      }
+      ctx.lineTo((N - 1) * stepX, mid - sign * hist[N - 1] * maxAmp);
+      ctx.stroke();
+    };
+    drawSide(1);
+    drawSide(-1);
   }, []);
 
   const startVisualizer = useCallback((stream: MediaStream) => {
@@ -170,7 +171,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     analyserRef.current = analyser;
     const time = new Uint8Array(analyser.fftSize);
     startedAtRef.current = performance.now();
-    historyRef.current = new Array(BAR_COUNT).fill(0);
+    historyRef.current = new Array(HISTORY).fill(0);
 
     const tick = () => {
       const a = analyserRef.current;
@@ -221,7 +222,7 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
     setCleanupNote(null);
     setElapsed(0);
     setLevel(0);
-    historyRef.current = new Array(BAR_COUNT).fill(0);
+    historyRef.current = new Array(HISTORY).fill(0);
 
     setOpen(true);
     setPhase("recording");
