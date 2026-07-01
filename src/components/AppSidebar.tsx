@@ -484,13 +484,6 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         <Trash2 className="h-3 w-3" />
                       </button>
                     </div>
-                    <ChevronRight
-                      className={`h-3 w-3 shrink-0 transition-all duration-200 ${
-                        activeNoteId === note.id
-                          ? "text-sky-500 opacity-100 translate-x-0"
-                          : "text-muted-foreground opacity-0 -translate-x-1 group-hover/note:opacity-100 group-hover/note:translate-x-0 group-hover/note:text-foreground"
-                      }`}
-                    />
                   </div>
                 </motion.div>
 
