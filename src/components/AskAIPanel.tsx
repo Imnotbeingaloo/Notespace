@@ -128,7 +128,6 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
   const [mode, setMode] = useState<"chat" | "edit">(defaultMode);
   const [loading, setLoading] = useState(false);
   const [showEmptyNotice, setShowEmptyNotice] = useState(false);
-  const [idleEgg, setIdleEgg] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
   const isNoteEmpty = !((activeNote?.content ?? "").replace(/[\s\u200B\u2063]|&#8203;/g, "").length);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -147,7 +146,7 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     });
   };
 
-  // Sync mode whenever the caller changes defaultMode (e.g. opened from AI Edit trigger)
+  // Sync mode whenever the caller changes defaultMode
   useEffect(() => {
     setMode(defaultMode);
   }, [defaultMode]);
@@ -157,18 +156,14 @@ export function AskAIPanel({ onApplyEdit, open: controlledOpen, onOpenChange, de
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, loading]);
 
-  // Empty-state vignette: the serif word-swap plays every time the panel
-  // opens on a blank conversation. It's a static graphic once it settles,
-  // so we just render <IdleVignette /> directly - no cross-swap with an
-  // "ember" fallback (that was the source of the double glitch). The
-  // vignette component internally advances through its 3 words and then
-  // holds its final resting state until messages arrive.
+  // Empty-state remount key: bumps whenever the panel opens or the active
+  // note changes, so the vignette word cycle replays fresh. The leaf halo
+  // is always mounted, so there is never a swap flash.
+  const [emptyKey, setEmptyKey] = useState(0);
   useEffect(() => {
-    // Reset the internal word cycle whenever the panel reopens on empty
-    // by remounting via a key change below.
-    if (!open) setIdleEgg(false);
-    else if (messages.length === 0 && !input.trim() && !loading) setIdleEgg(true);
-  }, [open, messages.length, loading]);
+    if (open && messages.length === 0) setEmptyKey((k) => k + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, activeNote?.id, mode]);
 
 
 
