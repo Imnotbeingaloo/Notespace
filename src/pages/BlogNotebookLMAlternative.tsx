@@ -201,9 +201,9 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "NotebookLM Alternatives 2026 - 6 Honest Picks (Free & Paid)",
+    headline: "NotebookLM Alternatives 2026: 6 Apps People Actually Move To",
     description:
-      "Six honest NotebookLM alternatives compared for students, researchers, and writers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and OneNote.",
+      "Six NotebookLM alternatives compared for students, researchers, and writers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and OneNote.",
     datePublished: "2026-06-30",
     dateModified: "2026-06-30",
     author: { "@type": "Organization", name: "Notebook Archive" },
