@@ -69,7 +69,7 @@ const tiers = [
   },
 ];
 
-const comparisons = [
+const comparisons: { feature: string; free: boolean | "soon"; pro: boolean | "soon"; team: boolean | "soon" }[] = [
   { feature: "AI-powered explanations", free: true, pro: true, team: true },
   { feature: "AI summaries & flashcards", free: false, pro: true, team: true },
   { feature: "Smart auto-tagging", free: true, pro: true, team: true },
