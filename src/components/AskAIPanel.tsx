@@ -122,8 +122,9 @@ function VignetteToQuill({ emptyKey, reducedMotion }: { emptyKey: number; reduce
   useEffect(() => {
     setPhase(reducedMotion ? "quill" : "vignette");
     if (reducedMotion) return;
-    // Vignette word cycle finishes around 1.65s; swap right after.
-    const t = setTimeout(() => setPhase("quill"), 1700);
+    // All three words must fully play first; the quill replaces the finished
+    // vignette afterward in the same slot, never on top of it.
+    const t = setTimeout(() => setPhase("quill"), 2200);
     return () => clearTimeout(t);
   }, [emptyKey, reducedMotion]);
 

@@ -7,6 +7,7 @@ import { useNotebooks } from "@/context/NotebookContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { FlashcardDeck } from "@/components/FlashcardDeck";
+import { getFlashcardSourceText, MIN_FLASHCARD_BODY_CHARS } from "@/lib/note-body";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -23,33 +24,16 @@ export function AIToolsPanel() {
   const [setupMode, setSetupMode] = useState<null | "flashcards">(null);
   const [cardCount, setCardCount] = useState<number>(10);
 
-  const isNoteEmpty = () => {
-    if (!activeNote) return true;
-    const plain = (activeNote.content || "").replace(/<[^>]*>/g, "").trim();
-    return plain.length === 0;
-  };
-
-  /** Body-only length: strips HTML, strips markdown headings (# / ## / ###),
-   *  and drops empty lines. We never let the model quiz the learner on the
-   *  note's title or a bare heading - only on actual written content. */
-  const bodyLength = () => {
-    if (!activeNote) return 0;
-    const noHtml = (activeNote.content || "").replace(/<[^>]*>/g, "\n");
-    const lines = noHtml
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter((l) => l.length > 0 && !/^#{1,6}\s/.test(l));
-    return lines.join(" ").length;
-  };
-  const MIN_BODY = 100;
+  const flashcardSource = () => getFlashcardSourceText(activeNote?.content || "", activeNote?.title || "");
 
   const openFlashcardsSetup = () => {
     if (!activeNote) return;
-    if (isNoteEmpty()) {
+    const source = flashcardSource();
+    if (!source) {
       toast.error("Please write something in the note first.");
       return;
     }
-    if (bodyLength() < MIN_BODY) {
+    if (source.length < MIN_FLASHCARD_BODY_CHARS) {
       toast.error("Write a bit more first - at least ~100 characters of actual notes (headings don't count).");
       return;
     }
@@ -62,7 +46,8 @@ export function AIToolsPanel() {
 
   const runTool = async (toolMode: ToolMode, count?: number) => {
     if (!activeNote) return;
-    if (isNoteEmpty()) {
+    const source = toolMode === "flashcards" ? flashcardSource() : (activeNote.content || "").replace(/<[^>]*>/g, "").trim();
+    if (!source) {
       toast.error(
         toolMode === "flashcards"
           ? "Please write something in the note first."
@@ -70,7 +55,7 @@ export function AIToolsPanel() {
       );
       return;
     }
-    if (toolMode === "flashcards" && bodyLength() < MIN_BODY) {
+    if (toolMode === "flashcards" && source.length < MIN_FLASHCARD_BODY_CHARS) {
       toast.error("Write at least ~100 characters of actual notes (headings don't count).");
       return;
     }
@@ -95,8 +80,8 @@ export function AIToolsPanel() {
         },
         body: JSON.stringify({
           action: toolMode,
-          noteTitle: activeNote.title,
-          noteContent: activeNote.content,
+          noteTitle: toolMode === "flashcards" ? "" : activeNote.title,
+          noteContent: toolMode === "flashcards" ? source : activeNote.content,
           ...(toolMode === "flashcards" && count ? { count } : {}),
         }),
       });
