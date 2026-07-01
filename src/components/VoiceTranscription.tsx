@@ -1,41 +1,81 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, Square, AlertTriangle, X, Loader2 } from "lucide-react";
+import { Mic, Square, AlertTriangle, X, Loader2, Clock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface VoiceTranscriptionProps {
   onTranscript: (text: string) => void;
+  onBeforeOpen?: () => void; // called BEFORE the dialog opens so the caller can snapshot caret
 }
 
-const POINT_COUNT = 72;
-const W = 320;
-const H = 80;
-const MID = H / 2;
-const STEP_X = W / POINT_COUNT;
-const BAR_WIDTH = Math.max(1.2, STEP_X * 0.42);
+type Word = { word: string; start: number; end: number };
+type Phase = "idle" | "recording" | "processing" | "review";
+
+// Chunky bar visualizer, mirrored top/bottom, driven by FFT amplitude.
+const BAR_COUNT = 28;
+
+const fmtTime = (s: number) => {
+  if (!isFinite(s) || s < 0) s = 0;
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+};
 
 type VoiceWindow = Window & {
   AudioContext?: typeof AudioContext;
   webkitAudioContext?: typeof AudioContext;
 };
 
-const getErrorMessage = (error: unknown, fallback: string) => {
-  if (error instanceof Error && error.message) return error.message;
-  return fallback;
+// Map various failure surfaces to a friendly, actionable string.
+const explainError = (raw: unknown, fallback = "Something went wrong. Please try again."): string => {
+  // Supabase FunctionsError often stashes JSON body on `context`.
+  type MaybeErr = { message?: string; name?: string; context?: unknown; code?: string; error?: string };
+  const e = raw as MaybeErr;
+  const readCtx = async () => null; // no-op; we use best-effort synchronous shape below
+  void readCtx;
+
+  const asObj = (v: unknown): Record<string, unknown> | null =>
+    v && typeof v === "object" ? (v as Record<string, unknown>) : null;
+  const ctx = asObj(e?.context);
+  const bodyMsg = ctx && typeof ctx.error === "string" ? (ctx.error as string) : undefined;
+  const code = ctx && typeof ctx.code === "string" ? (ctx.code as string) : e?.code;
+  const msg = bodyMsg || e?.message || (typeof raw === "string" ? raw : "");
+
+  if (code === "unauthorized" || /unauth|401|jwt|sign in/i.test(msg)) {
+    return "You've been signed out. Please sign back in and try again.";
+  }
+  if (code === "stt_timeout" || /timeout|timed out/i.test(msg)) {
+    return "Transcription timed out - try a shorter clip.";
+  }
+  if (code === "stt_rate_limit" || /429|rate.?limit|busy/i.test(msg)) {
+    return "Voice service is busy right now. Please try again in a moment.";
+  }
+  if (code === "stt_too_large" || code === "too_large" || /too large|413/i.test(msg)) {
+    return "Recording is too long. Please keep it under about 20 minutes.";
+  }
+  if (code === "stt_network" || /network|fetch|failed to fetch/i.test(msg)) {
+    return "Couldn't reach the voice service. Check your connection and retry.";
+  }
+  if (code === "stt_auth") {
+    return "Voice service authentication failed. Please contact support.";
+  }
+  if (code === "config") {
+    return "Voice service isn't configured. Please contact support.";
+  }
+  return msg || fallback;
 };
 
-/**
- * Voice → text via Groq Whisper (transcription) + Groq Llama (cleanup).
- * Records mic audio with MediaRecorder, uploads to the `voice-transcribe`
- * edge function, and returns the cleaned transcript. Works in every modern
- * browser (Chrome, Safari, Firefox, mobile) - no reliance on the flaky
- * webkitSpeechRecognition API.
- */
-export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
+export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscriptionProps) {
   const [open, setOpen] = useState(false);
-  const [phase, setPhase] = useState<"idle" | "recording" | "processing">("idle");
-  const [preview, setPreview] = useState("");
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [cleaned, setCleaned] = useState("");
+  const [words, setWords] = useState<Word[]>([]);
+  const [cleanupNote, setCleanupNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showTimestamps, setShowTimestamps] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [level, setLevel] = useState(0); // 0-1 running amplitude for the mic pulse
+  const [bars, setBars] = useState<number[]>(() => new Array(BAR_COUNT).fill(0.05));
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -43,17 +83,13 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
-  const idleRafRef = useRef<number | null>(null);
-  const smoothedRef = useRef<number[]>(new Array(POINT_COUNT).fill(0));
-  const barsPathRef = useRef<SVGPathElement | null>(null);
   const startedAtRef = useRef<number>(0);
+  const smoothedRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
 
-  const cleanup = useCallback(() => {
+  const cleanupResources = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
-    if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
-    idleRafRef.current = null;
-    try { mediaRecorderRef.current?.stream.getTracks().forEach((t) => t.stop()); } catch {}
+    try { mediaRecorderRef.current?.stream.getTracks().forEach((t) => t.stop()); } catch { /* ignore */ }
     mediaRecorderRef.current = null;
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -64,45 +100,9 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     audioCtxRef.current = null;
     analyserRef.current = null;
-    smoothedRef.current = new Array(POINT_COUNT).fill(0);
   }, []);
 
-  useEffect(() => () => cleanup(), [cleanup]);
-
-  const buildBarsPath = (vals: number[]) => {
-    const minHalf = 1.2;
-    const maxHalf = H / 2 - 4;
-    let d = "";
-    for (let i = 0; i < vals.length; i++) {
-      const x = (i + 0.5) * STEP_X;
-      const half = Math.max(minHalf, Math.min(1, vals[i]) * maxHalf);
-      d += `M ${x.toFixed(2)} ${(MID - half).toFixed(2)} L ${x.toFixed(2)} ${(MID + half).toFixed(2)} `;
-    }
-    return d;
-  };
-
-  const setBarsPath = useCallback((el: SVGPathElement | null) => {
-    barsPathRef.current = el;
-    if (el) el.setAttribute("d", buildBarsPath(smoothedRef.current));
-  }, []);
-
-  const startIdleAnimation = useCallback(() => {
-    if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
-    const startTs = performance.now();
-    const idleTick = (now: number) => {
-      if (analyserRef.current) { idleRafRef.current = null; return; }
-      const t = (now - startTs) / 1000;
-      const next = smoothedRef.current;
-      for (let i = 0; i < POINT_COUNT; i++) {
-        const phase = (i / POINT_COUNT) * Math.PI * 2;
-        const v = 0.08 + 0.05 * Math.sin(t * 3 + phase) + 0.04 * Math.sin(t * 5 + phase * 1.7);
-        next[i] = Math.max(0.02, v);
-      }
-      if (barsPathRef.current) barsPathRef.current.setAttribute("d", buildBarsPath(next));
-      idleRafRef.current = requestAnimationFrame(idleTick);
-    };
-    idleRafRef.current = requestAnimationFrame(idleTick);
-  }, []);
+  useEffect(() => () => cleanupResources(), [cleanupResources]);
 
   const startVisualizer = useCallback((stream: MediaStream) => {
     const voiceWindow = window as VoiceWindow;
@@ -111,37 +111,42 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     const ctx = new Ctx();
     const source = ctx.createMediaStreamSource(stream);
     const analyser = ctx.createAnalyser();
-    analyser.fftSize = 1024;
-    analyser.smoothingTimeConstant = 0.9;
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.6;
     source.connect(analyser);
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
-    const data = new Uint8Array(analyser.fftSize);
+    const bins = new Uint8Array(analyser.frequencyBinCount);
+    startedAtRef.current = performance.now();
+
     const tick = () => {
-      if (!analyserRef.current) return;
-      analyserRef.current.getByteTimeDomainData(data);
-      const step = data.length / POINT_COUNT;
+      const a = analyserRef.current;
+      if (!a) return;
+      a.getByteFrequencyData(bins);
+      // Bucket the freq bins into BAR_COUNT chunky groups (skip DC + hi-hiss).
+      const usable = Math.floor(bins.length * 0.78);
+      const step = usable / BAR_COUNT;
       const next = smoothedRef.current;
-      for (let i = 0; i < POINT_COUNT; i++) {
-        const start = Math.floor(i * step);
-        const end = Math.max(start + 1, Math.floor((i + 1) * step));
-        let peak = 0, sumSquares = 0;
-        for (let j = start; j < end; j++) {
-          const sample = Math.abs(data[j] - 128) / 128;
-          peak = Math.max(peak, sample);
-          sumSquares += sample * sample;
-        }
-        const rms = Math.sqrt(sumSquares / (end - start));
-        const target = Math.min(1, Math.max(peak * 0.72, rms * 1.9));
-        next[i] = next[i] * 0.78 + target * 0.22;
+      let overall = 0;
+      for (let i = 0; i < BAR_COUNT; i++) {
+        const s = Math.floor(i * step) + 2;
+        const e = Math.max(s + 1, Math.floor((i + 1) * step) + 2);
+        let sum = 0;
+        for (let j = s; j < e; j++) sum += bins[j];
+        const avg = sum / (e - s) / 255; // 0..1
+        // Slight gamma so quiet speech still lifts the bars.
+        const shaped = Math.pow(avg, 0.72);
+        next[i] = next[i] * 0.55 + shaped * 0.45;
+        overall += next[i];
       }
-      if (barsPathRef.current) barsPathRef.current.setAttribute("d", buildBarsPath(next));
+      setBars([...next]);
+      setLevel(Math.min(1, (overall / BAR_COUNT) * 1.6));
+      setElapsed((performance.now() - startedAtRef.current) / 1000);
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
-  // Pick a MediaRecorder mimeType Groq Whisper accepts.
   const pickMimeType = () => {
     const candidates = [
       "audio/webm;codecs=opus",
@@ -155,27 +160,34 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     }
     return "";
   };
-
-  const extForMime = (mime: string) => {
-    if (mime.includes("mp4")) return "m4a";
-    if (mime.includes("ogg")) return "ogg";
-    return "webm";
-  };
+  const extForMime = (mime: string) => (mime.includes("mp4") ? "m4a" : mime.includes("ogg") ? "ogg" : "webm");
 
   const start = useCallback(async () => {
     setError(null);
-    setPreview("");
+    setCleaned("");
+    setWords([]);
+    setCleanupNote(null);
+    setElapsed(0);
+    setLevel(0);
+    smoothedRef.current = new Array(BAR_COUNT).fill(0);
+    setBars(new Array(BAR_COUNT).fill(0.05));
     setOpen(true);
     setPhase("recording");
-    startIdleAnimation();
 
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
       });
-    } catch (e: unknown) {
-      setError(getErrorMessage(e, "Microphone access denied."));
+    } catch (e) {
+      const name = (e as Error)?.name;
+      setError(
+        name === "NotAllowedError"
+          ? "Microphone permission was denied. Enable it in your browser and try again."
+          : name === "NotFoundError"
+          ? "No microphone found. Plug one in and try again."
+          : explainError(e, "Could not access the microphone."),
+      );
       setPhase("idle");
       return;
     }
@@ -186,82 +198,102 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
     let recorder: MediaRecorder;
     try {
       recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
-    } catch (e: unknown) {
-      setError(getErrorMessage(e, "Recording not supported in this browser."));
-      cleanup();
+    } catch (e) {
+      setError(explainError(e, "Recording is not supported in this browser."));
+      cleanupResources();
       setPhase("idle");
       return;
     }
     chunksRef.current = [];
     recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
     mediaRecorderRef.current = recorder;
-    startedAtRef.current = performance.now();
-    // No timeslice - single self-contained container at stop().
     recorder.start();
-  }, [cleanup, startIdleAnimation, startVisualizer]);
+  }, [cleanupResources, startVisualizer]);
 
   const sendForTranscription = useCallback(async (blob: Blob, mime: string) => {
     setPhase("processing");
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
-      if (!token) throw new Error("Please sign in to use voice transcription.");
+      if (!token) throw new Error("You've been signed out. Please sign back in and try again.");
 
       const form = new FormData();
       const ext = extForMime(mime);
       form.append("file", blob, `voice.${ext}`);
 
-      const { data, error } = await supabase.functions.invoke("voice-transcribe", { body: form });
-      if (error) throw error;
-      const cleaned = ((data as { cleaned?: string; raw?: string })?.cleaned || (data as { raw?: string })?.raw || "").trim();
-      if (!cleaned) {
-        setError("Nothing was transcribed - please try again.");
+      const { data, error: fnErr } = await supabase.functions.invoke("voice-transcribe", { body: form });
+      if (fnErr) throw fnErr;
+
+      const payload = data as { cleaned?: string; raw?: string; words?: Word[]; cleanup_error?: string } | null;
+      const text = (payload?.cleaned || payload?.raw || "").trim();
+      if (!text) {
+        setError("Nothing was heard - please try again.");
         setPhase("recording");
         return;
       }
-      setPreview(cleaned);
-      onTranscript(cleaned);
-      cleanup();
-      setOpen(false);
-      setPhase("idle");
-    } catch (e: unknown) {
-      setError(getErrorMessage(e, "Transcription failed."));
+      setCleaned(text);
+      setWords(Array.isArray(payload?.words) ? payload!.words! : []);
+      setCleanupNote(payload?.cleanup_error || null);
+      setPhase("review");
+    } catch (e) {
+      setError(explainError(e, "Transcription failed. Please try again."));
       setPhase("recording");
     }
-  }, [cleanup, onTranscript]);
+  }, []);
 
-  const stopAndInsert = useCallback(() => {
+  const stopAndProcess = useCallback(() => {
     const recorder = mediaRecorderRef.current;
     if (!recorder || recorder.state === "inactive") return;
     const durationMs = performance.now() - startedAtRef.current;
     recorder.onstop = () => {
       const mime = recorder.mimeType || "audio/webm";
       const blob = new Blob(chunksRef.current, { type: mime });
-      // Guard: <400 ms or <2 KB blobs are typically empty/silent captures.
       if (blob.size < 2048 || durationMs < 400) {
         setError("That recording was too short - try again.");
         setPhase("recording");
         return;
       }
-      // Stop the mic + visualizer immediately; keep the dialog for the processing spinner.
       if (streamRef.current) { streamRef.current.getTracks().forEach((t) => t.stop()); streamRef.current = null; }
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
       sendForTranscription(blob, mime);
     };
-    try { recorder.stop(); } catch {}
+    try { recorder.stop(); } catch { /* ignore */ }
   }, [sendForTranscription]);
 
-  const cancel = useCallback(() => {
-    cleanup();
+  const insertAndClose = useCallback(() => {
+    if (!cleaned) return;
+    onTranscript(cleaned);
+    cleanupResources();
     setOpen(false);
     setPhase("idle");
-    setPreview("");
-  }, [cleanup]);
+    setCleaned("");
+    setWords([]);
+    setCleanupNote(null);
+  }, [cleaned, cleanupResources, onTranscript]);
+
+  const cancel = useCallback(() => {
+    cleanupResources();
+    setOpen(false);
+    setPhase("idle");
+    setCleaned("");
+    setWords([]);
+    setCleanupNote(null);
+    setError(null);
+  }, [cleanupResources]);
+
+  // Preserve caret: capture on mousedown BEFORE focus moves to the button.
+  const handleTriggerMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    onBeforeOpen?.();
+  }, [onBeforeOpen]);
+
+  const midLevel = useMemo(() => 0.6 + level * 0.6, [level]);
 
   return (
     <>
       <button
+        onMouseDown={handleTriggerMouseDown}
         onClick={start}
         className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
         title="Voice to text"
@@ -277,82 +309,145 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.18 }}
             className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-background/70 backdrop-blur-sm p-4"
             onClick={cancel}
           >
             <motion.div
-              initial={{ y: 30, scale: 0.96 }}
+              initial={{ y: 24, scale: 0.97 }}
               animate={{ y: 0, scale: 1 }}
-              exit={{ y: 30, scale: 0.96 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl overflow-hidden"
+              exit={{ y: 24, scale: 0.97 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-lg rounded-2xl border border-border bg-card shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-label="Voice transcription"
             >
+              {/* Header */}
               <div className="flex items-center justify-between px-5 py-3 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <div className={`relative h-2.5 w-2.5 rounded-full ${phase === "recording" ? "bg-rose-500" : "bg-muted-foreground"}`}>
-                    {phase === "recording" && (
-                      <span className="absolute inset-0 rounded-full bg-rose-500 animate-ping opacity-60" />
-                    )}
+                  <div className={`relative h-2.5 w-2.5 rounded-full ${phase === "recording" ? "bg-rose-500" : phase === "processing" ? "bg-amber-500" : phase === "review" ? "bg-emerald-500" : "bg-muted-foreground"}`}>
+                    {phase === "recording" && <span className="absolute inset-0 rounded-full bg-rose-500 animate-ping opacity-60" />}
                   </div>
                   <span className="font-sans font-bold text-foreground text-sm">
-                    {phase === "recording" ? "Listening…" : phase === "processing" ? "Transcribing…" : "Voice"}
+                    {phase === "recording" ? "Listening…" : phase === "processing" ? "Transcribing…" : phase === "review" ? "Review transcript" : "Voice"}
                   </span>
+                  {phase === "recording" && (
+                    <span className="ml-2 text-[11px] tabular-nums text-muted-foreground">{fmtTime(elapsed)}</span>
+                  )}
                 </div>
-                <button
-                  onClick={cancel}
-                  className="p-1 rounded-md hover:bg-muted text-muted-foreground"
-                  aria-label="Close"
-                >
+                <button onClick={cancel} className="p-1 rounded-md hover:bg-muted text-muted-foreground" aria-label="Close">
                   <X className="h-4 w-4" />
                 </button>
               </div>
 
-              <div className="px-5 pt-5 pb-3">
-                <svg
-                  viewBox={`0 0 ${W} ${H}`}
-                  preserveAspectRatio="none"
-                  className="w-full h-20"
-                  aria-hidden="true"
-                >
-                  <path
-                    ref={setBarsPath}
-                    d={buildBarsPath(smoothedRef.current)}
-                    fill="none"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={BAR_WIDTH}
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
+              {/* Visualizer (recording / processing) */}
+              {phase !== "review" && (
+                <div className="px-5 pt-5 pb-2">
+                  <div className="relative h-24 rounded-xl bg-muted/40 border border-border/60 overflow-hidden flex items-center justify-center">
+                    {/* Mic pulse orb */}
+                    <div
+                      className="absolute left-4 flex items-center justify-center h-14 w-14 rounded-full bg-primary/10 border border-primary/30 transition-transform duration-75"
+                      style={{ transform: `scale(${midLevel})` }}
+                    >
+                      <Mic className="h-5 w-5 text-primary" />
+                    </div>
+                    {/* Bars */}
+                    <div className="absolute inset-y-0 left-24 right-4 flex items-center gap-[3px]">
+                      {bars.map((v, i) => {
+                        const h = Math.max(6, Math.min(1, v) * 88);
+                        return (
+                          <div
+                            key={i}
+                            className="flex-1 rounded-full bg-gradient-to-t from-primary/70 to-primary transition-[height,opacity] duration-75"
+                            style={{ height: `${h}%`, opacity: 0.55 + v * 0.45 }}
+                          />
+                        );
+                      })}
+                    </div>
+                    {phase === "processing" && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-card/70 backdrop-blur-sm">
+                        <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Cleaning up your transcript…
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
-              <div className="px-5 pb-4">
-                <div className="min-h-[72px] rounded-xl border border-border bg-muted/40 p-3 text-sm text-foreground leading-relaxed flex items-center">
-                  {phase === "processing" ? (
-                    <span className="inline-flex items-center gap-2 text-muted-foreground">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Cleaning up your transcript…
-                    </span>
-                  ) : preview ? (
-                    <span>{preview}</span>
-                  ) : (
-                    <span className="text-muted-foreground/70 italic">
-                      Start speaking - hit Stop when you're done.
-                    </span>
+              {/* Review panel with timestamps */}
+              {phase === "review" && (
+                <div className="px-5 pt-4 pb-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Transcript</span>
+                    {words.length > 0 && (
+                      <button
+                        onClick={() => setShowTimestamps((v) => !v)}
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+                        type="button"
+                      >
+                        <Clock className="h-3 w-3" />
+                        {showTimestamps ? "Hide timestamps" : "Show word timestamps"}
+                      </button>
+                    )}
+                  </div>
+                  <div className="max-h-[240px] overflow-auto rounded-xl border border-border bg-muted/30 p-3 text-sm text-foreground leading-relaxed">
+                    {showTimestamps && words.length > 0 ? (
+                      <div className="flex flex-wrap gap-x-1.5 gap-y-2">
+                        {words.map((w, i) => (
+                          <span key={i} className="group relative inline-flex items-baseline">
+                            <span
+                              className="absolute -top-4 left-0 text-[9px] font-mono text-muted-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+                              aria-hidden="true"
+                            >
+                              {fmtTime(w.start)}
+                            </span>
+                            <span className="px-1 rounded hover:bg-primary/10">{w.word}</span>
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="whitespace-pre-wrap">{cleaned}</p>
+                    )}
+                  </div>
+                  {cleanupNote && (
+                    <div className="flex items-start gap-2 text-[11px] text-amber-700 dark:text-amber-400">
+                      <Sparkles className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                      <span>{cleanupNote}</span>
+                    </div>
                   )}
                 </div>
+              )}
 
-                {error && (
-                  <div className="mt-3 flex items-start gap-2 p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
-                    <AlertTriangle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                    <span>{error}</span>
+              {/* Recording hint */}
+              {phase === "recording" && !error && (
+                <div className="px-5 pb-3">
+                  <p className="text-[12px] text-muted-foreground/80 italic">Speak clearly - hit Stop when you're done.</p>
+                </div>
+              )}
+
+              {/* Error */}
+              {error && (
+                <div className="mx-5 mb-3 flex items-start gap-2 p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
+                  <AlertTriangle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div>{error}</div>
+                    {phase !== "processing" && (
+                      <button
+                        onClick={() => { setError(null); if (phase === "idle") start(); }}
+                        className="mt-1 underline underline-offset-2 hover:opacity-80"
+                        type="button"
+                      >
+                        Try again
+                      </button>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
+              {/* Footer */}
               <div className="flex items-center justify-between gap-2 px-5 py-3 border-t border-border bg-muted/30">
                 <button
                   onClick={cancel}
@@ -361,19 +456,34 @@ export function VoiceTranscription({ onTranscript }: VoiceTranscriptionProps) {
                 >
                   Cancel
                 </button>
-                <button
-                  onClick={stopAndInsert}
-                  disabled={phase !== "recording"}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  type="button"
-                >
-                  {phase === "processing" ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Square className="h-3.5 w-3.5 fill-current" />
-                  )}
-                  Stop & Insert
-                </button>
+                {phase === "review" ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => { setCleaned(""); setWords([]); setCleanupNote(null); start(); }}
+                      className="px-3 py-2 text-xs font-medium rounded-lg border border-border text-foreground hover:bg-muted transition-colors"
+                      type="button"
+                    >
+                      Re-record
+                    </button>
+                    <button
+                      onClick={insertAndClose}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                      type="button"
+                    >
+                      Insert at cursor
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={stopAndProcess}
+                    disabled={phase !== "recording"}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    type="button"
+                  >
+                    {phase === "processing" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Square className="h-3.5 w-3.5 fill-current" />}
+                    Stop & Transcribe
+                  </button>
+                )}
               </div>
             </motion.div>
           </motion.div>
