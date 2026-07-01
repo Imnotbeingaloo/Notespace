@@ -225,20 +225,25 @@ export default function PricingPage() {
               <div className="p-4 font-semibold text-foreground text-center border-b border-border">Free</div>
               <div className="p-4 font-semibold text-primary text-center border-b border-border bg-primary/5">Pro</div>
               <div className="p-4 font-semibold text-foreground text-center border-b border-border">Team</div>
-              {comparisons.map((row, i) => (
-                <React.Fragment key={i}>
-                  <div className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
-                  <div className="p-4 text-center border-b border-border/50">
-                    {row.free ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">-</span>}
-                  </div>
-                  <div className="p-4 text-center border-b border-border/50 bg-primary/5">
-                    {row.pro ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">-</span>}
-                  </div>
-                  <div className="p-4 text-center border-b border-border/50">
-                    {row.team ? <Check className="h-4 w-4 text-primary mx-auto" /> : <span className="text-muted-foreground">-</span>}
-                  </div>
-                </React.Fragment>
-              ))}
+              {comparisons.map((row, i) => {
+                const cell = (v: boolean | "soon") =>
+                  v === "soon" ? (
+                    <span className="inline-block rounded-full bg-accent/15 text-accent px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider">Soon</span>
+                  ) : v ? (
+                    <Check className="h-4 w-4 text-primary mx-auto" />
+                  ) : (
+                    <span className="text-muted-foreground">-</span>
+                  );
+                return (
+                  <React.Fragment key={i}>
+                    <div className="p-4 text-foreground border-b border-border/50">{row.feature}</div>
+                    <div className="p-4 text-center border-b border-border/50">{cell(row.free)}</div>
+                    <div className="p-4 text-center border-b border-border/50 bg-primary/5">{cell(row.pro)}</div>
+                    <div className="p-4 text-center border-b border-border/50">{cell(row.team)}</div>
+                  </React.Fragment>
+                );
+              })}
+
             </div>
             </div>
           </motion.div>
