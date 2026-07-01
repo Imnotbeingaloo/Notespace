@@ -37,7 +37,7 @@ export function WordCount({ content }: WordCountProps) {
     return { words, chars, readTime };
   }, [content]);
 
-  if (stats.words === 0) return null;
+  
 
   const compact = stats.chars > 5000 || stats.words > 5000;
 
