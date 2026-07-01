@@ -407,19 +407,12 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                     >
                       <Mic className="h-5 w-5 text-primary" />
                     </div>
-                    {/* Bars */}
-                    <div className="absolute inset-y-0 left-24 right-4 flex items-center gap-[3px]">
-                      {bars.map((v, i) => {
-                        const h = Math.max(6, Math.min(1, v) * 88);
-                        return (
-                          <div
-                            key={i}
-                            className="flex-1 rounded-full bg-gradient-to-t from-primary/70 to-primary transition-[height,opacity] duration-75"
-                            style={{ height: `${h}%`, opacity: 0.55 + v * 0.45 }}
-                          />
-                        );
-                      })}
-                    </div>
+                    {/* Waveform canvas (drawn on rAF, no React re-renders) */}
+                    <canvas
+                      ref={canvasRef}
+                      className="absolute inset-y-2 left-24 right-4 w-[calc(100%-7.5rem)] h-[calc(100%-1rem)]"
+                    />
+
                     {phase === "processing" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-card/70 backdrop-blur-sm">
                         <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
