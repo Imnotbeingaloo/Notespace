@@ -89,6 +89,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
   const targetsRef = useRef<number[]>(new Array(BAR_COUNT).fill(0));
   const calibratedFloorRef = useRef<number>(0.04);
   const [visualizerReady, setVisualizerReady] = useState(false);
+  const [silent5s, setSilent5s] = useState(false);
+  const lastVoiceAtRef = useRef<number>(0);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
