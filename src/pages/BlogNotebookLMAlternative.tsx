@@ -18,6 +18,8 @@ import {
 } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 import { Callout } from "@/components/blog/Callout";
+import { BlogBleed } from "@/components/blog/BlogBleed";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 
 import naShot from "@/assets/blog/notebook-archive.png.asset.json";
 import notionShot from "@/assets/blog/notion.png.asset.json";
@@ -308,37 +310,34 @@ export default function BlogNotebookLMAlternative() {
             </div>
           </section>
 
-          {/* Full-bleed comparison band */}
-          <div className="relative -mx-6 md:-mx-24 lg:-mx-40 bg-muted/40 border-y border-border py-12 px-6 md:px-12 my-12">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="font-serif text-2xl md:text-3xl font-bold mb-6">
-                NotebookLM vs the alternatives at a glance
-              </h2>
-              <BlogCompareTable
-                bleed={false}
-                headers={[
-                  "",
-                  "Writing surface",
-                  "Per-course organization",
-                  "Markdown export",
-                  "Audio overview",
-                  "Free tier for a semester",
-                ]}
-                rows={[
-                  ["Notebook Archive", "Yes", "Yes", "Yes", "No", "Yes (AI credits capped)"],
-                  ["NotebookLM", "No - chat only", "No - flat sources", "No", "Yes (best-in-class)", "Yes (today)"],
-                  ["Notion AI", "Yes", "Databases", "Lossy", "No", "AI add-on $10/mo"],
-                  ["Obsidian + plugin", "Yes", "Folders", "Yes", "No", "Yes (BYO key)"],
-                  ["Mem", "Yes", "No - flat stream", "Lossy", "No", "Limited"],
-                  ["Reflect", "Yes", "Daily notes", "Partial", "No", "No free tier"],
-                  ["OneNote + Copilot", "Yes", "Notebooks", "Poor", "No", "Copilot is paid"],
-                ]}
-              />
-              <p className="mt-4 text-sm text-muted-foreground">
-                One column NotebookLM genuinely owns: the two-host audio overview. Nothing else on this list matches it yet.
-              </p>
-            </div>
-          </div>
+          <BlogBleed tone="muted" inner="narrow">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold mb-6">
+              NotebookLM vs the alternatives at a glance
+            </h2>
+            <BlogCompareTable
+              bleed={false}
+              headers={[
+                "",
+                "Writing surface",
+                "Per-course organization",
+                "Markdown export",
+                "Audio overview",
+                "Free tier for a semester",
+              ]}
+              rows={[
+                ["Notebook Archive", "Yes", "Yes", "Yes", "No", "Yes (AI credits capped)"],
+                ["NotebookLM", "No - chat only", "No - flat sources", "No", "Yes (best-in-class)", "Yes (today)"],
+                ["Notion AI", "Yes", "Databases", "Lossy", "No", "AI add-on $10/mo"],
+                ["Obsidian + plugin", "Yes", "Folders", "Yes", "No", "Yes (BYO key)"],
+                ["Mem", "Yes", "No - flat stream", "Lossy", "No", "Limited"],
+                ["Reflect", "Yes", "Daily notes", "Partial", "No", "No free tier"],
+                ["OneNote + Copilot", "Yes", "Notebooks", "Poor", "No", "Copilot is paid"],
+              ]}
+            />
+            <p className="mt-4 text-sm text-muted-foreground">
+              One column NotebookLM genuinely owns: the two-host audio overview. Nothing else on this list matches it yet.
+            </p>
+          </BlogBleed>
 
           <section className="mb-12">
             <h2 className="font-serif text-2xl font-bold mt-4 mb-4">
@@ -426,28 +425,12 @@ export default function BlogNotebookLMAlternative() {
             </Accordion>
           </section>
 
+          <BlogFinalCTA
+            title="A notebook, not a chatbot."
+            body="Notebook Archive is free to start. Per-course notebooks, an AI explain panel, and a markdown export that outlives the app."
+            to={CTA}
+          />
         </article>
-
-        {/* Full-bleed asymmetric CTA */}
-        <div className="bg-foreground text-background py-16 px-6">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
-            <div className="flex-1">
-              <p className="font-serif text-3xl md:text-4xl font-bold mb-3 leading-tight">
-                A notebook, not a chatbot.
-              </p>
-              <p className="text-background/70 text-lg leading-relaxed">
-                Notebook Archive is free to start. Per-course notebooks, an AI explain panel, and a markdown export that outlives the app.
-              </p>
-            </div>
-            <Link
-              to={CTA}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition self-start md:self-auto whitespace-nowrap"
-            >
-              Open Notebook Archive
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
 
         <Footer />
       </div>

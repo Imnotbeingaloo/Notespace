@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 import heroAsset from "@/assets/blog/hero-gcse.jpg.asset.json";
 import {
   BlogHero,
@@ -270,17 +271,12 @@ export default function BlogGCSERevisionGuide() {
             </Accordion>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">Start with the timetable</p>
-            <p className="text-muted-foreground mb-6">
-              Notebook Archive's revision planner is free. Pick a GCSE starter, drop
-              in your exam dates, and you're done in five minutes.
-            </p>
-            <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
-              Open my GCSE timetable
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <BlogFinalCTA
+            title="Start with the timetable"
+            body="Notebook Archive's revision planner is free. Pick a GCSE starter, drop in your exam dates, and you're done in five minutes."
+            to={CTA}
+            cta="Open my GCSE timetable"
+          />
         </article>
 
         <Footer />

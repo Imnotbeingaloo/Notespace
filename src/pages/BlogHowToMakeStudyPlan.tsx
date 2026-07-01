@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { Callout } from "@/components/blog/Callout";
 import { RelatedReading, STUDY_PLANNER_RELATED } from "@/components/RelatedReading";
@@ -308,23 +309,14 @@ Sun  10:00-10:30  Weekly review
             </div>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">
-              Build your study schedule inside Notebook Archive
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Open the study planner template, edit the slots to match your week,
-              and tick sessions off as you finish them. Free to start.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link to="/templates/study-planner" className="inline-flex items-center gap-2 border border-border bg-card px-5 py-3 rounded-lg font-semibold hover:bg-muted transition">
-                Open the study planner template
-              </Link>
-              <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
-                Start using Notebook Archive <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
+          <BlogFinalCTA
+            title="Build your study schedule inside Notebook Archive"
+            body="Open the study planner template, edit the slots to match your week, and tick sessions off as you finish them. Free to start."
+            to={CTA}
+            cta="Start using Notebook Archive"
+            secondaryTo="/templates/study-planner"
+            secondaryCta="Open the study planner template"
+          />
         </article>
 
         <RelatedReading currentPath="/blog/how-to-make-a-study-plan" items={STUDY_PLANNER_RELATED} />

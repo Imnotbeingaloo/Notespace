@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 import { BlogKeyTakeaways, BlogPullQuote, BlogCallout } from "@/components/blog/BlogVisuals";
 import { AppDetailCard } from "@/components/blog/AppDetailCard";
 import { Callout } from "@/components/blog/Callout";
@@ -324,21 +325,11 @@ export default function BlogEvernoteAlternatives() {
             </Accordion>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">
-              The calm alternative
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Notebook Archive is free to start. Real markdown export. Sync that works. No price hikes.
-            </p>
-            <Link
-              to={CTA}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
-            >
-              Open Notebook Archive
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <BlogFinalCTA
+            title="The calm alternative"
+            body="Notebook Archive is free to start. Real markdown export. Sync that works. No price hikes."
+            to={CTA}
+          />
         </article>
 
         <Footer />

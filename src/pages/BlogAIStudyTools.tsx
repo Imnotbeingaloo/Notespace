@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SeoHead } from "@/components/SeoHead";
 import { breadcrumbsJsonLd } from "@/lib/seo-breadcrumbs";
 import Footer from "@/components/Footer";
+import { BlogFinalCTA } from "@/components/blog/BlogFinalCTA";
 import {
   BlogKeyTakeaways,
   BlogPullQuote,
@@ -479,22 +480,12 @@ export default function BlogAIStudyTools() {
             </ul>
           </section>
 
-          <div className="border-t border-border pt-10 mt-10 text-center">
-            <p className="font-serif text-2xl font-bold mb-4">
-              A study notebook with the AI built in.
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Notebook Archive pairs markdown notes, AI explanations, and auto-generated flashcards
-              in one place - free to start, no lecture-recording gimmicks, your notes stay yours.
-            </p>
-            <Link
-              to={CTA}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
-            >
-              Try Notebook Archive free
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <BlogFinalCTA
+            title="A study notebook with the AI built in."
+            body="Notebook Archive pairs markdown notes, AI explanations, and auto-generated flashcards in one place - free to start, no lecture-recording gimmicks, your notes stay yours."
+            to={CTA}
+            cta="Try Notebook Archive free"
+          />
         </article>
 
         <Footer />
