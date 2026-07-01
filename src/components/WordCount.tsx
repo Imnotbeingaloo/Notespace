@@ -27,13 +27,17 @@ export function WordCount({ content }: WordCountProps) {
     const words = text.split(/\s+/).filter(Boolean).length;
     const chars = text.replace(/\s/g, "").length;
     if (words === 0) return { words: 0, chars: 0, readTime: "" };
-    const minutes = Math.max(1, Math.ceil(words / 200));
-    const readTime = minutes === 1 ? "1 min read" : `${minutes} min read`;
+    // 200 wpm ≈ 3.33 words/sec. Show seconds under a minute so short notes feel live.
+    const totalSeconds = Math.max(1, Math.round((words / 200) * 60));
+    const readTime =
+      totalSeconds < 60
+        ? `${totalSeconds} sec read`
+        : `${Math.round(totalSeconds / 60)} min read`;
 
     return { words, chars, readTime };
   }, [content]);
 
-  if (stats.words === 0) return null;
+  
 
   const compact = stats.chars > 5000 || stats.words > 5000;
 
@@ -49,11 +53,13 @@ export function WordCount({ content }: WordCountProps) {
       <span>
         {stats.chars.toLocaleString()}{!compact && <span className="ml-1">chars</span>}
       </span>
-      <span className="text-border">·</span>
-      <span className="inline-flex items-center gap-1">
-        <Clock className="h-3 w-3" />
-        {stats.readTime}
-      </span>
+      {stats.readTime && <span className="text-border">·</span>}
+      {stats.readTime && (
+        <span className="inline-flex items-center gap-1">
+          <Clock className="h-3 w-3" />
+          {stats.readTime}
+        </span>
+      )}
     </div>
   );
 }
