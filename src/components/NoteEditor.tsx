@@ -1003,7 +1003,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             ref={hybridEditorRef}
             content={activeNote.content || ""}
             onChange={(content) => debouncedUpdate("content", content)}
-            placeholder={focusMode ? "Just write..." : "Start writing... (drag & drop files here)"}
+            placeholder={focusMode ? "Just write..." : "Start writing..."}
           />
         </div>
 
