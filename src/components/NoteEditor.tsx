@@ -160,7 +160,12 @@ function FlashcardsButton() {
                   {result && <p className="text-[10px] text-muted-foreground">Ready to review</p>}
                 </div>
               </div>
-              <button onClick={() => setOpen(false)} className="p-1.5 rounded-xl hover:bg-muted transition-colors">
+              <button
+                type="button"
+                aria-label="Close Flashcards"
+                onClick={() => setOpen(false)}
+                className="p-1.5 rounded-xl hover:bg-muted transition-colors"
+              >
                 <XIcon className="h-4 w-4 text-muted-foreground" />
               </button>
             </div>
