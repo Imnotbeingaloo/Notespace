@@ -619,11 +619,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const handleVoiceTranscript = useCallback(
     (text: string) => {
       if (!activeNote) return;
-      // Insert at cursor via the rich editor (works whether HybridEditor uses textarea or contenteditable)
-      hybridEditorRef.current?.insertAtCursor(" " + text);
+      // Drop at the exact caret position the user left; add a leading space only when we're mid-word.
+      hybridEditorRef.current?.insertAtCursor(text);
     },
-    [activeNotebookId, activeNote?.id]
+    [activeNote?.id]
   );
+
+  const handleVoiceBeforeOpen = useCallback(() => {
+    // Snapshot caret before focus moves to the mic button so we can restore it on insert.
+    hybridEditorRef.current?.saveSelection();
+  }, []);
 
   const handleAIEdit = useCallback(
     (newContent: string) => {
