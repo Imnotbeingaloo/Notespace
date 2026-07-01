@@ -47,6 +47,30 @@ export function AppDetailCard(p: AppDetailCardProps) {
   const m = /([^/]+)\.(png|jpg|jpeg)(?:\?|$)/i.exec(p.imageUrl);
   const slug = m ? m[1] : null;
   const eager = p.index === 1;
+  // Auto-rotate layout so a list of cards doesn't repeat identical anatomy.
+  // 0,3,6 → top image (default); 1,4 → image right (asymmetric); 2,5 → text-first, image below.
+  const idx = p.index ?? 0;
+  const variant: "top" | "right" | "below" =
+    idx % 3 === 1 ? "right" : idx % 3 === 2 ? "below" : "top";
+
+  const imageBlock = slug ? (
+    <a
+      href={resolvedHref}
+      target="_blank"
+      rel={linkRel}
+      className="block group overflow-hidden rounded-md border border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5"
+    >
+      <picture>
+        <source type="image/avif" srcSet={`/blog-img/${slug}-800.avif 800w, /blog-img/${slug}-1600.avif 1600w`} sizes="(max-width: 768px) 100vw, 760px" />
+        <source type="image/webp" srcSet={`/blog-img/${slug}-800.webp 800w, /blog-img/${slug}-1600.webp 1600w`} sizes="(max-width: 768px) 100vw, 760px" />
+        <img src={`/blog-img/${slug}-800.webp`} alt={p.imageAlt} width={1600} height={1000} loading={eager ? "eager" : "lazy"} decoding="async" {...(eager ? { fetchPriority: "high" as const } : {})} className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]" />
+      </picture>
+    </a>
+  ) : (
+    <a href={resolvedHref} target="_blank" rel={linkRel} className="block group overflow-hidden rounded-md border border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5">
+      <img src={p.imageUrl} alt={p.imageAlt} loading={eager ? "eager" : "lazy"} decoding="async" {...(eager ? { fetchPriority: "high" as const } : {})} className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]" />
+    </a>
+  );
 
   return (
     <section className="border-t border-border pt-8 mt-8 first:border-t-0 first:pt-0 first:mt-0">
