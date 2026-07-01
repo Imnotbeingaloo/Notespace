@@ -364,10 +364,10 @@ export default function BlogNotebookLMAlternative() {
                 {
                   title: "Write the note first, ask the AI second",
                   body:
-                    "Drop your reading notes in. Then highlight the part you didn't understand and ask the AI panel to explain it. The AI improves the note; it doesn't replace it.",
+                    "Drop your reading notes in. Highlight the part you didn't understand and ask the AI panel to explain it. The AI improves the note you already wrote.",
                 },
                 {
-                  title: "Use the AI to revise, not to draft",
+                  title: "Use the AI to revise the note you have",
                   body:
                     "Ask for a 5-bullet summary of the lecture. Ask for the three questions a strict examiner would ask. Ask it to explain the confusing paragraph as if you were 12. This is where source-grounded models earn their keep.",
                 },
