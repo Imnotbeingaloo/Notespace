@@ -586,10 +586,10 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
                 </div>
               )}
 
-              {/* Recording hint */}
-              {phase === "recording" && !error && (
+              {/* Silence hint after 5s of no detected speech */}
+              {phase === "recording" && !error && silent5s && (
                 <div className="px-5 pb-3">
-                  <p className="text-[12px] text-muted-foreground/80 italic">Speak clearly - hit Stop when you're done.</p>
+                  <p className="text-[12px] text-muted-foreground/80 italic">We can't hear you - check your mic or move closer.</p>
                 </div>
               )}
 
