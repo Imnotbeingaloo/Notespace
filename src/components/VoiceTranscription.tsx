@@ -531,8 +531,8 @@ export function VoiceTranscription({ onTranscript, onBeforeOpen }: VoiceTranscri
 
               {/* Centered symmetric bar visualizer - responds to voice pitch & amplitude */}
               {phase !== "review" && (
-                <div className="px-6 pt-8 pb-6">
-                  <div className="relative h-24">
+                <div className="px-6 pt-6 pb-5 flex justify-center">
+                  <div className="relative h-16 w-[70%] max-w-[280px]">
                     <canvas
                       ref={canvasRef}
                       className={`w-full h-full block text-foreground/90 transition-opacity duration-300 ${visualizerReady && phase === "recording" ? "opacity-100" : "opacity-0"}`}
