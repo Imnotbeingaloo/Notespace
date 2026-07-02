@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2, Upload } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
