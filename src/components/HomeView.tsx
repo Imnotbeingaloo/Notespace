@@ -58,6 +58,8 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
   const [namePromptOpen, setNamePromptOpen] = useState(false);
   const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const homeUploadInputRef = useRef<HTMLInputElement>(null);
+
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
