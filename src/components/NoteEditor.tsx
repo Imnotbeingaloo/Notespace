@@ -823,12 +823,14 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
                         <ImportNotesButton
-                          onInsert={handleImportNotes}
+                          onInsert={handleInsertMarkdown}
                           onMergeAt={handleMergeAt}
                           onReplace={handleReplaceFromImport}
                           onCreateNew={handleCreateNoteFromImport}
                           hasExistingContent={!!activeNote?.content?.trim()}
+                          onSaveSelection={() => hybridEditorRef.current?.saveSelection()}
                         />
+
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
                       </div>
