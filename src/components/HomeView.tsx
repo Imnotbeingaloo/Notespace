@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowDownAZ, ArrowUpAZ, BookOpen, ChevronDown, Clock, FileText, Loader2, Plus, RotateCcw, StickyNote, Trash2, Upload } from "lucide-react";
 import { ScratchIcon } from "@/components/ScratchIcon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -58,6 +58,8 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
   const [namePromptOpen, setNamePromptOpen] = useState(false);
   const [welcomeBackOpen, setWelcomeBackOpen] = useState(false);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const homeUploadInputRef = useRef<HTMLInputElement>(null);
+
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
@@ -298,58 +300,37 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
           {/* Quick actions row - separated from the notebook grid */}
           <div className="flex flex-wrap items-center gap-2 mt-6">
-            {tempEnabled ? (
-              (onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      data-testid="home-create"
-                      className="inline-flex w-44 items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Create
-                      <ChevronDown className="h-3.5 w-3.5 opacity-80" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-44">
-                    <DropdownMenuItem
-                      onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
-                      className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
-                    >
-                      <FileText className="h-4 w-4 text-primary" />
-                      <span>Note</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
-                      className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
-                    >
-                      <BookOpen className="h-4 w-4 text-primary" />
-                      <span>Notebook</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )
-            ) : (
-              <>
-                <button
-                  onClick={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
-                  data-testid="home-create-note"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
-                >
-                  <FileText className="h-4 w-4" />
-                  New Note
-                </button>
-                <button
-                  onClick={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
-                  data-testid="home-create-notebook"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
-                >
-                  <BookOpen className="h-4 w-4" />
-                  New Notebook
-                </button>
-              </>
+            {(onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    data-testid="home-create"
+                    className="inline-flex w-44 items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create
+                    <ChevronDown className="h-3.5 w-3.5 opacity-80" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-44">
+                  <DropdownMenuItem
+                    onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
+                    className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
+                  >
+                    <FileText className="h-4 w-4 text-primary" />
+                    <span>Note</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => (onCreateNotebookDirect ?? onCreateNotebook)?.()}
+                    className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
+                  >
+                    <BookOpen className="h-4 w-4 text-primary" />
+                    <span>Notebook</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
-            {tempEnabled && onCreateScratchNote && (
+            {tempEnabled && onCreateScratchNote ? (
               <button
                 onClick={onCreateScratchNote}
                 data-testid="home-create-temporary"
@@ -360,8 +341,35 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                 <span className="sm:hidden">Temp Note</span>
                 <span className="hidden sm:inline">Temporary Note</span>
               </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => homeUploadInputRef.current?.click()}
+                  data-testid="home-upload"
+                  title="Upload a file (PDF, EPUB, DOCX, TXT, MD, CSV, JSON, images - up to 1 GB)."
+                  className="inline-flex min-w-[8rem] sm:min-w-[10.5rem] items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl border border-primary/30 bg-primary/[0.06] text-primary text-sm font-medium hover:bg-primary/[0.12] transition-all duration-150 active:scale-[0.97]"
+                >
+                  <Upload className="h-4 w-4" />
+                  <span className="sm:hidden">Upload</span>
+                  <span className="hidden sm:inline">Upload a file</span>
+                </button>
+                <input
+                  ref={homeUploadInputRef}
+                  type="file"
+                  className="hidden"
+                  accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.epub,.txt,.md,.markdown,.csv,.json,.doc,.docx,.xls,.xlsx,.mp4,.mov,.webm,image/*,video/mp4,video/quicktime,video/webm,application/pdf,application/epub+zip,text/plain,text/markdown,text/csv,application/json,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      window.dispatchEvent(new CustomEvent("na:home-upload-file", { detail: file }));
+                    }
+                    if (homeUploadInputRef.current) homeUploadInputRef.current.value = "";
+                  }}
+                />
+              </>
             )}
           </div>
+
 
           <div className="flex flex-col sm:flex-row gap-3 mt-7 sm:items-center">
             <div className="relative flex-1 max-w-md">
