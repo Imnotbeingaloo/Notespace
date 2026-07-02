@@ -799,12 +799,14 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                       {/* Mobile / tablet ordering: Import → Voice → Ask AI → Flashcards → AI Edit → Download → Preview */}
                       <div className="lg:hidden flex flex-col gap-1">
                         <ImportNotesButton
-                          onInsert={handleImportNotes}
+                          onInsert={handleInsertMarkdown}
                           onMergeAt={handleMergeAt}
                           onReplace={handleReplaceFromImport}
                           onCreateNew={handleCreateNoteFromImport}
                           hasExistingContent={!!activeNote?.content?.trim()}
+                          onSaveSelection={() => hybridEditorRef.current?.saveSelection()}
                         />
+
                         <VoiceTranscription onTranscript={handleVoiceTranscript} onBeforeOpen={handleVoiceBeforeOpen} />
                         <button
                           onClick={() => { setMoreOpen(false); openAskAI("chat"); }}
