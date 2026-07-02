@@ -271,6 +271,17 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
     if (sidebarUploadRef.current) sidebarUploadRef.current.value = "";
   };
 
+  // Bridge: Home view's Upload pill dispatches this when Temporary Notes is off.
+  useEffect(() => {
+    const onHomeUpload = (e: Event) => {
+      const file = (e as CustomEvent<File>).detail;
+      if (file instanceof File && user) setPendingUploadFile(file);
+    };
+    window.addEventListener("na:home-upload-file", onHomeUpload as EventListener);
+    return () => window.removeEventListener("na:home-upload-file", onHomeUpload as EventListener);
+  }, [user]);
+
+
 
 
   // (Inline create form removed; we now use the CreateNotebookDialog modal.)
