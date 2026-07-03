@@ -1055,8 +1055,15 @@ const AuthPage = () => {
                       if (recentRot.every((r) => Math.abs(((rotate - r + 540) % 360) - 180) > 25)) break;
                       rotate = Math.floor(Math.random() * 360);
                     }
-                    const width = 68 + Math.random() * 68;
-                    const height = 18 + Math.random() * 8;
+                    // Wider size range + avoid repeating a similar length to the last 2 tapes.
+                    let width = 55 + Math.random() * 95; // ~55-150px
+                    const recentW = t.slice(-2).map((p) => p.width);
+                    for (let i = 0; i < 20; i++) {
+                      if (recentW.every((w) => Math.abs(width - w) > 25)) break;
+                      width = 55 + Math.random() * 95;
+                    }
+                    const height = 16 + Math.random() * 10;
+
                     return [
                       ...t,
                       { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ cls, h: height }) },
