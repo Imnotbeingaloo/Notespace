@@ -20,38 +20,55 @@ export function AIToolsPanel() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  // Flashcards setup step: ask the user how many cards before generating.
-  const [setupMode, setSetupMode] = useState<null | "flashcards">(null);
-  const [cardCount, setCardCount] = useState<number>(10);
 
   const flashcardSource = () => getFlashcardSourceText(activeNote?.content || "", activeNote?.title || "");
 
-  const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
-
   /**
-   * Cheap gibberish heuristic: reject text that is technically long enough but
-   * has almost no vocabulary variety, no vowels, or is mostly one character.
-   * Used to short-circuit flashcard generation before wasting an AI call.
+   * Stricter gibberish heuristic. Rejects text that is technically long enough
+   * but is mostly noise: repeated tokens, low vocabulary variety, low ratio of
+   * plausibly-real words (vowel + consonant, no 3+ char runs, no repeated bigrams).
    */
   const looksLikeGibberish = (text: string) => {
     const clean = text.toLowerCase().replace(/\s+/g, " ").trim();
     if (!clean) return true;
-    const words = clean.split(/\s+/).filter(Boolean);
-    const uniqueWords = new Set(words);
-    if (words.length >= 5 && uniqueWords.size <= 2) return true;
-    const letters = clean.replace(/[^a-z]/g, "");
-    if (letters.length >= 20) {
-      const vowels = (letters.match(/[aeiou]/g) || []).length;
-      if (vowels / letters.length < 0.12) return true;
-      const uniqueChars = new Set(letters);
-      if (uniqueChars.size <= 3) return true;
+    const tokens = clean.split(/\s+/).filter((t) => /[a-z]/.test(t));
+    if (tokens.length < 3) return true;
+
+    // Repeated identical tokens run: "the the the the"
+    let maxRun = 1, run = 1;
+    for (let i = 1; i < tokens.length; i++) {
+      if (tokens[i] === tokens[i - 1]) { run++; maxRun = Math.max(maxRun, run); } else run = 1;
     }
+    if (maxRun >= 4) return true;
+
+    // Repeated bigrams: "maka dora maka dora maka dora"
+    const bigrams = new Map<string, number>();
+    for (let i = 0; i < tokens.length - 1; i++) {
+      const bg = tokens[i] + " " + tokens[i + 1];
+      bigrams.set(bg, (bigrams.get(bg) || 0) + 1);
+    }
+    for (const c of bigrams.values()) if (c >= 3) return true;
+
+    // Vocabulary diversity
+    const uniqueWords = new Set(tokens);
+    if (tokens.length >= 8 && uniqueWords.size / tokens.length < 0.35) return true;
+
+    // Plausible-word ratio: has vowel + consonant, no 3+ same-char run
+    const looksLikeWord = (w: string) => {
+      const letters = w.replace(/[^a-z]/g, "");
+      if (letters.length < 2) return false;
+      if (!/[aeiouy]/.test(letters)) return false;
+      if (!/[bcdfghjklmnpqrstvwxz]/.test(letters)) return false;
+      if (/(.)\1{2,}/.test(letters)) return false;
+      return true;
+    };
+    const validRatio = tokens.filter(looksLikeWord).length / tokens.length;
+    if (validRatio < 0.55) return true;
+
     return false;
   };
 
-  const WORD_GATE = 100;
-
-  const openFlashcardsSetup = () => {
+  const openFlashcards = () => {
     if (!activeNote) return;
     const source = flashcardSource();
     if (!source) {
@@ -64,23 +81,14 @@ export function AIToolsPanel() {
     }
     if (looksLikeGibberish(source)) {
       setMode("flashcards");
-      setSetupMode(null);
       setResult("");
       setError("__gibberish__");
       setOpen(true);
       return;
     }
-    // Only ask for deck size once the learner has enough material (>100 words).
-    // Shorter notes just auto-generate a small deck (5 cards) with no prompt.
-    if (wordCount(source) <= WORD_GATE) {
-      runTool("flashcards", 5);
-      return;
-    }
-    setMode("flashcards");
-    setSetupMode("flashcards");
-    setResult("");
-    setError("");
-    setOpen(true);
+    // Auto-detect: no picker. Edge function extracts every atomic concept and
+    // emits exactly one card per concept (capped at 50).
+    runTool("flashcards");
   };
 
   const runTool = async (toolMode: ToolMode, count?: number) => {
