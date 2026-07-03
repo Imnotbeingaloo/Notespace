@@ -78,6 +78,7 @@ const AuthPage = () => {
   const [appleLoading, setAppleLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
   const [tapes, setTapes] = useState<Array<{ id: number; top: number; left: number; rotate: number; width: number; color: string }>>([]);
+  const [tapesFalling, setTapesFalling] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
