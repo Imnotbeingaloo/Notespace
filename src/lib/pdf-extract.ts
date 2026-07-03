@@ -37,7 +37,8 @@ function renderLineWithStyles(items: PdfItem[]): string {
   }
   let out = "";
   let buffer = "";
-  let mode: "plain" | "bold" | "italic" = "plain";
+  type StyleMode = "plain" | "bold" | "italic";
+  let mode: StyleMode = "plain";
   const flush = () => {
     if (!buffer) return;
     if (mode === "bold") out += `**${buffer.trim()}**${buffer.endsWith(" ") ? " " : ""}`;
@@ -46,7 +47,7 @@ function renderLineWithStyles(items: PdfItem[]): string {
     buffer = "";
   };
   for (const it of items) {
-    const nextMode: typeof mode = it.bold ? "bold" : it.italic ? "italic" : "plain";
+    const nextMode: StyleMode = it.bold ? "bold" : it.italic ? "italic" : "plain";
     if (nextMode !== mode) {
       flush();
       mode = nextMode;
