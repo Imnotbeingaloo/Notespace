@@ -257,7 +257,7 @@ function FlashcardsButton() {
             )}
 
             {result && !result.trim().toUpperCase().includes("NO_CONCEPTS") && (
-              <div className="flex-1 overflow-y-auto p-5">
+              <div data-testid="flashcards-deck" className="flex-1 overflow-y-auto p-5">
                 <FlashcardDeck markdown={result} streaming={loading} />
               </div>
             )}
