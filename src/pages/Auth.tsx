@@ -616,21 +616,80 @@ const AuthPage = () => {
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
       <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(45_45%_97%)] dark:bg-background">
-        {/* Ambient background for mobile / small screens */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden">
+        {/* Notebook paper background + scattered tapes for mobile & tablet (below lg) */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden overflow-hidden">
+          {/* Ruled paper lines */}
           <div
-            className="absolute inset-0 opacity-[0.35] dark:opacity-[0.18]"
+            className="absolute inset-0 opacity-70 dark:opacity-30"
             style={{
               backgroundImage:
-                "linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)",
-              backgroundSize: "44px 44px",
-              maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-              WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+                "repeating-linear-gradient(to bottom, transparent 0, transparent 31px, hsl(210 60% 55% / 0.22) 31px, hsl(210 60% 55% / 0.22) 32px)",
             }}
           />
-          <div className="absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
-          <div className="absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-amber-400/15 blur-3xl" />
+          {/* Red margin line */}
+          <div
+            className="absolute top-0 bottom-0 w-px"
+            style={{
+              left: "56px",
+              background: "hsl(0 70% 55% / 0.45)",
+            }}
+          />
+          {/* Punch holes down the left edge */}
+          <div className="absolute top-0 bottom-0 left-3 flex flex-col justify-around py-10">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-3 w-3 rounded-full bg-background/80 border border-border/60 shadow-inner"
+              />
+            ))}
+          </div>
+          {/* Subtle warm wash */}
+          <div className="absolute -top-32 -right-32 h-[420px] w-[420px] rounded-full bg-amber-300/15 blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/10 blur-3xl" />
+
+          {/* Scattered decorative tapes */}
+          {(() => {
+            const clip =
+              "polygon(3% 0%, 97% 0%, 100% 35%, 96% 65%, 100% 100%, 3% 100%, 0% 65%, 4% 35%)";
+            const tapes: Array<{
+              top?: string; bottom?: string; left?: string; right?: string;
+              rotate: number; width: number; height: number; cls: string;
+            }> = [
+              // Top band
+              { top: "3%",  left: "18%", rotate: -14, width: 74, height: 18, cls: "bg-amber-300/60 border-amber-400/40" },
+              { top: "5%",  right: "10%", rotate: 22, width: 62, height: 16, cls: "bg-cyan-300/55 border-cyan-400/40" },
+              { top: "2%",  left: "62%", rotate: 6,  width: 54, height: 16, cls: "bg-pink-300/55 border-pink-400/40" },
+              // Mid scatter — kept along edges so the form stays readable
+              { top: "26%", left: "4%",  rotate: 20,  width: 68, height: 18, cls: "bg-lime-300/55 border-lime-400/40" },
+              { top: "30%", right: "5%", rotate: -24, width: 72, height: 20, cls: "bg-sky-300/60 border-sky-400/40" },
+              { top: "52%", left: "3%",  rotate: -12, width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40" },
+              { top: "56%", right: "4%", rotate: 16,  width: 78, height: 20, cls: "bg-emerald-300/55 border-emerald-400/40" },
+              // Lower band
+              { bottom: "22%", left: "8%",  rotate: 28,  width: 66, height: 18, cls: "bg-fuchsia-300/55 border-fuchsia-400/40" },
+              { bottom: "18%", right: "7%", rotate: -8,  width: 82, height: 20, cls: "bg-violet-300/55 border-violet-400/40" },
+              { bottom: "5%",  left: "38%", rotate: 10,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
+              { bottom: "8%",  right: "24%", rotate: -18, width: 56, height: 16, cls: "bg-yellow-300/60 border-yellow-400/40" },
+            ];
+            return tapes.map((t, i) => (
+              <div
+                key={i}
+                className={`absolute border-y shadow-sm ${t.cls}`}
+                style={{
+                  top: t.top,
+                  bottom: t.bottom,
+                  left: t.left,
+                  right: t.right,
+                  width: `${t.width}px`,
+                  height: `${t.height}px`,
+                  transform: `rotate(${t.rotate}deg)`,
+                  clipPath: clip,
+                  transformOrigin: "center",
+                }}
+              />
+            ));
+          })()}
         </div>
+
         {/* Decorative brand mark — purely visual, no navigation. */}
         <div
           aria-hidden="true"
