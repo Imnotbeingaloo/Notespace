@@ -53,6 +53,7 @@ function FlashcardsButton() {
     setResult("");
     setError("");
     setNotice("");
+    setGibberishReason("");
     const source = getFlashcardSourceText(activeNote.content || "", activeNote.title || "");
     if (!source) {
       setNotice("Please write something in the notes first.");
@@ -62,7 +63,9 @@ function FlashcardsButton() {
       setNotice("Write a little more first - flashcards need about 100 characters of actual notes. Headings do not count.");
       return;
     }
-    if (looksLikeGibberish(source)) {
+    const g = describeGibberish(source);
+    if (g.gibberish) {
+      setGibberishReason(g.reason || "");
       setError("__gibberish__");
       return;
     }
