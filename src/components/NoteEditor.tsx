@@ -44,6 +44,7 @@ function FlashcardsButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [gibberishReason, setGibberishReason] = useState<string>("");
   
 
   const openSetup = () => {
