@@ -990,21 +990,31 @@ const AuthPage = () => {
                 tabIndex={-1}
                 onClick={() => {
                   setTapes((t) => {
-                    // Block colors used in the last 5 tapes so repeats don't feel predictable.
+                    if (t.length >= 10) return t; // cap at 10
+                    // Forbidden zones (percent) covering headline, body, testimonial text, footer.
+                    const FORBIDDEN: Array<[number, number, number, number]> = [
+                      [25, 38, 8, 62],   // headline
+                      [40, 52, 8, 62],   // body copy
+                      [60, 74, 14, 56],  // testimonial quote (corners of card still ok)
+                      [86, 94, 8, 72],   // footer avatars + caption
+                    ];
+                    const inForbidden = (tp: number, lf: number) =>
+                      FORBIDDEN.some(([t1, t2, l1, l2]) => tp >= t1 && tp <= t2 && lf >= l1 && lf <= l2);
                     const recent = t.slice(-5).map((x) => (JSON.parse(x.color) as { cls: string }).cls);
                     const pool = TAPE_COLORS.filter((c) => !recent.includes(c));
                     const source = pool.length ? pool : TAPE_COLORS;
                     const cls = source[Math.floor(Math.random() * source.length)];
-                    const top = 5 + Math.random() * 90;
-                    const left = 5 + Math.random() * 90;
-                    const rotate = Math.floor(Math.random() * 360); // any angle 0-359°
-                    const width = 68 + Math.random() * 68; // ~68-136px
+                    let top = 0, left = 0;
+                    for (let i = 0; i < 40; i++) {
+                      top = 5 + Math.random() * 90;
+                      left = 5 + Math.random() * 90;
+                      if (!inForbidden(top, left)) break;
+                    }
+                    const rotate = Math.floor(Math.random() * 360);
+                    const width = 68 + Math.random() * 68;
                     const height = 18 + Math.random() * 8;
-
-
                     return [
                       ...t,
-
                       { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ cls, h: height }) },
                     ];
                   });
