@@ -920,12 +920,83 @@ const AuthPage = () => {
                 </>
               )}
             </button>
-          </form>
+          </motion.form>
+          </AnimatePresence>
           ))}
         </div>
       </motion.div>
       </div>
+
+      {/* Right column — editorial notebook panel. */}
+      <aside
+        aria-hidden="true"
+        className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-14"
+      >
+        {/* Ruled paper */}
+        <div
+          className="absolute inset-0 opacity-70 dark:opacity-25"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(to bottom, transparent 0, transparent 27px, hsl(200 45% 55% / 0.18) 27px, hsl(200 45% 55% / 0.18) 28px)",
+          }}
+        />
+        {/* Red margin rule */}
+        <div className="absolute inset-y-0 left-16 w-px bg-[hsl(0_60%_55%/0.4)]" />
+        {/* Paper grain */}
+        <div
+          className="absolute inset-0 opacity-[0.08] mix-blend-multiply"
+          style={{
+            backgroundImage:
+              "radial-gradient(hsl(30 20% 30%) 1px, transparent 1px)",
+            backgroundSize: "3px 3px",
+          }}
+        />
+        {/* Warm glows */}
+        <div className="absolute -top-24 -right-16 h-[380px] w-[380px] rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute -bottom-24 -left-12 h-[420px] w-[420px] rounded-full bg-amber-400/20 blur-3xl" />
+
+        {/* Corner tape */}
+        <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-amber-200/70 dark:bg-amber-300/25 shadow-sm rounded-[2px]" />
+
+        <div className="relative z-10 flex items-center gap-2 pl-20">
+          <img src="/logo.png" alt="" className="h-7 w-7 object-contain" />
+          <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
+        </div>
+
+        <div className="relative z-10 max-w-md pl-20">
+          <p className="font-serif text-3xl xl:text-[2.35rem] leading-[1.2] text-foreground tracking-tight">
+            A calm place to think, write, and remember what mattered.
+          </p>
+          <p className="mt-5 text-sm text-muted-foreground leading-relaxed">
+            Every note lives in a ruled-paper canvas — with AI that explains,
+            summarises, and turns your reading into flashcards when you need it.
+          </p>
+
+          {/* Handwritten-style annotation card */}
+          <div className="mt-8 relative max-w-sm rotate-[-1.2deg]">
+            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-5 py-4 shadow-md">
+              <p className="font-serif italic text-[15px] leading-relaxed text-foreground/90">
+                "It replaced three apps for me — notes, flashcards, and my study
+                planner. And it actually feels good to open."
+              </p>
+              <p className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">
+                — Maya, medical student
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20">
+          <div className="flex -space-x-1.5">
+            {["#0d9488", "#f59e0b", "#6366f1"].map((c) => (
+              <span key={c} className="h-6 w-6 rounded-full border-2 border-background" style={{ background: c }} />
+            ))}
+          </div>
+          <span>Students, writers, and researchers keep their thinking here.</span>
+        </div>
+      </aside>
     </div>
+
 
   );
 };
