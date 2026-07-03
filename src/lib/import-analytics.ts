@@ -14,7 +14,7 @@
 export type ImportEvent =
   | { kind: "batch-start"; count: number; hasExistingContent: boolean }
   | { kind: "file-skipped"; name: string; reason: string }
-  | { kind: "file-classified"; name: string; type: string; size: number; route: "text" | "pdf-text" | "pdf-attach" | "attach" }
+  | { kind: "file-classified"; name: string; type: string; size: number; route: "text" | "pdf-text" | "pdf-attach" | "attach" | "pdf" | "image" | "video" | "audio" }
   | { kind: "import-choice"; name: string; action: "merge" | "replace" | "create"; position?: "top" | "cursor" | "end" }
   | { kind: "attach-uploaded"; name: string; path: string; size: number }
   | { kind: "attach-upload-failed"; name: string; message: string }
