@@ -991,15 +991,16 @@ const AuthPage = () => {
                 tabIndex={-1}
                 onClick={() => {
                   if (tapesFalling) return;
-                  // 11th click: trigger gravity fall, then clear.
-                  if (tapes.length >= 10) {
+                  // 21st click: trigger gravity fall, then clear.
+                  if (tapes.length >= 20) {
                     setTapesFalling(true);
                     window.setTimeout(() => {
                       setTapes([]);
                       setTapesFalling(false);
-                    }, 2200);
+                    }, 2600);
                     return;
                   }
+
                   setTapes((t) => {
                     const FORBIDDEN: Array<[number, number, number, number]> = [
                       [25, 38, 8, 62],   // headline
@@ -1033,16 +1034,15 @@ const AuthPage = () => {
               />
               {tapes.map((t, idx) => {
                 const parsed = JSON.parse(t.color) as { cls: string; h: number };
-                // Gravity: pseudo-random extra spin per tape so they tumble differently.
-                const spin = ((t.id * 137) % 720) - 360;
+                const spin = ((t.id * 137) % 540) - 270;
                 const fallTransform = tapesFalling
-                  ? `translate(-50%, calc(-50% + 120vh)) rotate(${t.rotate + spin}deg)`
+                  ? `translate(-50%, calc(-50% + 130vh)) rotate(${t.rotate + spin}deg)`
                   : `translate(-50%, -50%) rotate(${t.rotate}deg)`;
                 return (
                   <div
                     key={t.id}
                     aria-hidden="true"
-                    className={`absolute z-20 border-y shadow-sm ${tapesFalling ? "" : "animate-in fade-in zoom-in-95 duration-200"} ${parsed.cls}`}
+                    className={`absolute z-20 border-y shadow-sm ${parsed.cls}`}
                     style={{
                       top: `${t.top}%`,
                       left: `${t.left}%`,
@@ -1050,14 +1050,30 @@ const AuthPage = () => {
                       height: `${parsed.h}px`,
                       transform: fallTransform,
                       clipPath: tapeClip,
+                      transformOrigin: "center",
+                      willChange: "transform, opacity",
+                      // Smooth fall: gentle ease-in-out (no jerky end), staggered slightly.
                       transition: tapesFalling
-                        ? `transform 2000ms cubic-bezier(0.55, 0.05, 0.9, 0.35) ${idx * 40}ms, opacity 400ms ease-in ${1600 + idx * 40}ms`
+                        ? `transform 2200ms cubic-bezier(0.37, 0, 0.63, 1) ${idx * 30}ms, opacity 500ms ease-out ${1900 + idx * 30}ms`
                         : undefined,
                       opacity: tapesFalling ? 0 : 1,
+                      // Slap-down spawn: settles smoothly into place.
+                      animation: tapesFalling
+                        ? undefined
+                        : `tapeSlap 520ms cubic-bezier(0.22, 1, 0.36, 1) both`,
+                      // CSS var used by @keyframes tapeSlap to preserve per-tape rotation.
+                      ["--tape-rot" as string]: `${t.rotate}deg`,
                     }}
                   />
                 );
               })}
+              <style>{`
+                @keyframes tapeSlap {
+                  0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(1.55); opacity: 0; filter: blur(3px); }
+                  55%  { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(0.93); opacity: 1; filter: blur(0); }
+                  100% { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(1);    opacity: 1; filter: blur(0); }
+                }
+              `}</style>
             </>
           );
         })()}
