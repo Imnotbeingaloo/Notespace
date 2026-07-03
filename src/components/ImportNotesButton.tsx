@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { FileUp, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonner } from "@/components/ui/sonner";
@@ -13,6 +13,10 @@ import {
   isImageFile,
 } from "@/lib/file-validation";
 import { ImportActionDialog, type ImportChoice, type MergePosition } from "@/components/ImportActionDialog";
+import { UploadRoutingDialog, type UploadTarget } from "@/components/UploadRoutingDialog";
+import { BatchImportDialog, type BatchChoice } from "@/components/BatchImportDialog";
+import { UploadProgressToast } from "@/components/UploadProgressToast";
+import { hashFile } from "@/lib/file-hash";
 import { toolPill } from "@/lib/tool-colors";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
@@ -43,6 +47,18 @@ type PendingItem = {
   resolve: (choice: ImportChoice | null) => void;
 };
 
+type FileKind = "text" | "image" | "video" | "audio" | "attach" | "pdf";
+
+function classifyKind(file: File): FileKind {
+  const ext = "." + (file.name.split(".").pop()?.toLowerCase() ?? "");
+  if (isTextDocument(file) || TEXT_EXTS.includes(ext)) return "text";
+  if (isPdfFile(file)) return "pdf";
+  if (isImageFile(file)) return "image";
+  if (file.type.startsWith("video/")) return "video";
+  if (file.type.startsWith("audio/")) return "audio";
+  return "attach";
+}
+
 export function ImportNotesButton({
   onInsert,
   onMergeAt,
@@ -56,18 +72,43 @@ export function ImportNotesButton({
   const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
   const [pending, setPending] = useState<PendingItem | null>(null);
 
+  // Batch orchestration state.
+  const [routing, setRouting] = useState<{ files: File[]; resolve: (t: UploadTarget | null) => void } | null>(null);
+  const [batch, setBatch] = useState<{
+    files: { name: string; size: number; kind: "text" | "image" | "video" | "audio" | "attach" }[];
+    resolve: (choice: BatchChoice | null) => void;
+  } | null>(null);
+
+  // Progress + retry state (shown as its own sticky card, not via the toast queue).
+  const [progressCard, setProgressCard] = useState<{
+    active: boolean;
+    current: number;
+    total: number;
+    currentName?: string;
+    failed: File[];
+    finished: boolean;
+  }>({ active: false, current: 0, total: 0, failed: [], finished: false });
+
   const { user } = useAuth();
-  const { activeNote, activeNotebookId, updateNote } = useNotebooks();
+  const { activeNote, activeNotebookId, activeNotebook, updateNote, createNotebook, createNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
 
   const dialogEnabled = !!onReplace || !!onCreateNew;
 
-  /**
-   * Prompt the user with the import dialog and wait for their choice.
-   * Serializes prompts so multi-file imports don't overwrite each other.
-   */
   const askForChoice = useCallback((content: string, fileName: string) => {
     return new Promise<ImportChoice | null>((resolve) => {
       setPending({ content, fileName, resolve });
+    });
+  }, []);
+
+  const askRouting = useCallback((files: File[]) => {
+    return new Promise<UploadTarget | null>((resolve) => {
+      setRouting({ files, resolve });
+    });
+  }, []);
+
+  const askBatch = useCallback((files: { name: string; size: number; kind: "text" | "image" | "video" | "audio" | "attach" }[]) => {
+    return new Promise<BatchChoice | null>((resolve) => {
+      setBatch({ files, resolve });
     });
   }, []);
 
@@ -79,17 +120,10 @@ export function ImportNotesButton({
         toast({ title: "New note created", description: `"${fileName}" imported into a new note.` });
       } else if (choice.action === "merge") {
         const pos = choice.position ?? "cursor";
-        if (onMergeAt) {
-          onMergeAt(content, pos);
-        } else {
-          onInsert(`\n${content}`);
-        }
+        if (onMergeAt) onMergeAt(content, pos); else onInsert(`\n${content}`);
         const where = pos === "top" ? "at the top" : pos === "end" ? "at the end" : "at your cursor";
         toast({ title: "Merged", description: `"${fileName}" inserted ${where}.` });
       } else if (choice.action === "replace") {
-        // Replacing wipes the previous body, which typically also orphans
-        // every attachment link that used to reference storage objects.
-        // Purge those objects so the bucket doesn't grow unbounded.
         if (activeNote?.attachments?.length) {
           void removeAttachmentObjects(activeNote.attachments, "replace", activeNote.id);
         }
@@ -100,71 +134,31 @@ export function ImportNotesButton({
     [onCreateNew, onInsert, onMergeAt, onReplace, activeNote],
   );
 
+  const extractText = useCallback(async (file: File): Promise<string | null> => {
+    const ext = "." + file.name.split(".").pop()?.toLowerCase();
+    if (file.size > MAX_PROCESSABLE_SIZE) {
+      sonner.warning(`"${file.name}" is ${humanSize(file.size)} — attaching as a file link instead.`);
+      return null;
+    }
+    if (ext === ".pdf") {
+      const { text, isScanned } = await extractPdfText(file);
+      if (isScanned || !text.trim()) return null;
+      return formatImportedDocument(text, file.name);
+    }
+    const raw = await file.text();
+    if (!raw.trim()) return null;
+    return formatImportedDocument(raw, file.name);
+  }, []);
 
-  const importText = useCallback(
-    async (file: File, hasContentNow: boolean): Promise<boolean> => {
-      const ext = "." + file.name.split(".").pop()?.toLowerCase();
-      if (file.size > MAX_PROCESSABLE_SIZE) {
-        toast({
-          title: "File too large to import as text",
-          description: `"${file.name}" is ${humanSize(file.size)}. Text import supports files under 100 MB. Try a smaller file.`,
-          variant: "destructive",
-        });
-        return true;
-      }
-      let content = "";
-      if (ext === ".pdf") {
-        const { text, isScanned, pageCount } = await extractPdfText(file);
-        if (isScanned || !text.trim()) {
-          sonner.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
-          return false;
-        }
-        content = text;
-        if (!content.trim()) {
-          toast({ title: "Empty file", description: "The file appears to be empty.", variant: "destructive" });
-          return true;
-        }
-        const formatted = formatImportedDocument(content, file.name);
-        if (dialogEnabled && hasContentNow) {
-          const choice = await askForChoice(formatted, file.name);
-          if (choice) applyChoice(choice, formatted, file.name);
-        } else {
-          onInsert(`\n${formatted}`);
-          sonner.success(`Imported "${file.name}" (${pageCount} page${pageCount === 1 ? "" : "s"})`);
-        }
-        return true;
-      }
-      content = await file.text();
-      if (!content.trim()) {
-        toast({ title: "Empty file", description: "The file appears to be empty.", variant: "destructive" });
-        return true;
-      }
-      const formatted = formatImportedDocument(content, file.name);
-      if (dialogEnabled && hasContentNow) {
-        const choice = await askForChoice(formatted, file.name);
-        if (choice) applyChoice(choice, formatted, file.name);
-      } else {
-        onInsert(`\n${formatted}`);
-        sonner.success(`Imported "${file.name}"`);
-      }
-      return true;
-    },
-    [dialogEnabled, onInsert, askForChoice, applyChoice],
-  );
-
-  /**
-   * Upload one file and return the attachment record. The caller is
-   * responsible for accumulating records and persisting them in a single
-   * updateNote call so concurrent uploads don't clobber each other.
-   */
   const uploadOne = useCallback(
-    async (file: File): Promise<{ name: string; url: string; path: string; type: string; size: number } | null> => {
-      if (!user || !activeNote) {
+    async (file: File, noteId?: string): Promise<{ name: string; url: string; path: string; type: string; size: number; hash?: string } | null> => {
+      const targetNoteId = noteId ?? activeNote?.id;
+      if (!user || !targetNoteId) {
         toast({ title: "Cannot attach", description: "Open a note first, then try again.", variant: "destructive" });
         return null;
       }
       try {
-        const path = buildStoragePath(user.id, activeNote.id, file.name);
+        const path = buildStoragePath(user.id, targetNoteId, file.name);
         const { error } = await supabase.storage.from("note-attachments").upload(path, file, { upsert: false });
         if (error) throw error;
         const { data: signed, error: signErr } = await supabase.storage
@@ -173,100 +167,212 @@ export function ImportNotesButton({
         if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not generate file URL");
 
         const fileUrl = signed.signedUrl;
-        if (isImageFile(file)) {
-          onInsert(`\n![${file.name}](${fileUrl})\n`);
-        } else {
-          onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
+        if (!noteId) {
+          if (isImageFile(file)) onInsert(`\n![${file.name}](${fileUrl})\n`);
+          else onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
         }
-        sonner.success(`Attached "${file.name}"`);
+        const hash = await hashFile(file).catch(() => undefined);
         logImport({ kind: "attach-uploaded", name: file.name, path, size: file.size });
-        return { name: file.name, url: fileUrl, path, type: file.type, size: file.size };
+        return { name: file.name, url: fileUrl, path, type: file.type, size: file.size, hash };
       } catch (err: any) {
         const message = err?.message || "unknown error";
         sonner.error(`Upload failed for "${file.name}": ${message}`);
         logImport({ kind: "attach-upload-failed", name: file.name, message });
         return null;
       }
-
     },
     [user, activeNote, onInsert],
   );
 
-  const handleFiles = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files ? Array.from(e.target.files) : [];
-      if (!files.length) return;
+  const validateBatch = useCallback((files: File[]): { ok: File[]; bad: File[] } => {
+    const ok: File[] = [];
+    const bad: File[] = [];
+    for (const f of files) {
+      if (!validateFile(f)) { bad.push(f); continue; }
+      ok.push(f);
+    }
+    return { ok, bad };
+  }, []);
+
+  const dedupe = useCallback(async (files: File[]): Promise<{ unique: File[]; dupes: File[] }> => {
+    const existing = new Set<string>((activeNote?.attachments || []).map((a: any) => a.hash).filter(Boolean));
+    if (existing.size === 0) return { unique: files, dupes: [] };
+    const unique: File[] = [];
+    const dupes: File[] = [];
+    for (const f of files) {
+      const h = await hashFile(f).catch(() => "");
+      if (h && existing.has(h)) dupes.push(f); else unique.push(f);
+    }
+    return { unique, dupes };
+  }, [activeNote]);
+
+  const runBatch = useCallback(
+    async (files: File[], target: UploadTarget, batchChoice: BatchChoice | null) => {
+      // Resolve destination note.
+      let destNoteId: string | undefined = activeNote?.id;
+      let destNotebookId: string | null = activeNotebookId;
+      let createdNewContainer = false;
+
+      if (target === "new-notebook") {
+        const nbName = files.length === 1
+          ? files[0].name.replace(/\.[^.]+$/, "").slice(0, 60) || "Imported"
+          : `Imported (${new Date().toLocaleDateString()})`;
+        const newNbId = await createNotebook(nbName);
+        if (!newNbId) { sonner.error("Could not create notebook."); return; }
+        destNotebookId = newNbId;
+        createdNewContainer = true;
+      }
+
+      if (target === "new-note" || target === "new-notebook") {
+        if (destNotebookId) {
+          const noteId = await createNote(destNotebookId, files.length === 1 ? files[0].name.replace(/\.[^.]+$/, "") : "Imported files");
+          if (!noteId) { sonner.error("Could not create note."); return; }
+          destNoteId = noteId;
+          setActiveNotebookId(destNotebookId);
+          setActiveNoteId(noteId);
+          createdNewContainer = true;
+        }
+      }
+
+      // Reorder + skip per batch dialog.
+      let ordered = files;
+      if (batchChoice) {
+        const nameOrder = batchChoice.order.filter((n) => !batchChoice.skipped.includes(n));
+        ordered = nameOrder.map((n) => files.find((f) => f.name === n)!).filter(Boolean);
+      }
+
       setLoading(true);
-      // Track existing-content-ness locally so mid-loop insertions flip the
-      // dialog branch on for later files.
-      let hasContentNow = hasExistingContent;
-      // Accumulate new attachments so we only issue one updateNote per batch,
-      // avoiding the stale-activeNote overwrite bug on rapid multi-uploads.
-      const newAttachments: Array<{ name: string; url: string; path: string; type: string; size: number }> = [];
+      setProgressCard({ active: true, current: 0, total: ordered.length, failed: [], finished: false });
+      logImport({ kind: "batch-start", count: ordered.length, hasExistingContent });
+
+      const newAttachments: Array<{ name: string; url: string; path: string; type: string; size: number; hash?: string }> = [];
+      const failed: File[] = [];
+      let hasContentNow = createdNewContainer ? false : hasExistingContent;
       let importedCount = 0;
-      let failedCount = 0;
-      logImport({ kind: "batch-start", count: files.length, hasExistingContent });
+
       try {
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          setProgress({ current: i, total: files.length, name: file.name });
-          if (!validateFile(file)) {
-            failedCount += 1;
-            logImport({ kind: "file-skipped", name: file.name, reason: "validation" });
-            continue;
+        for (let i = 0; i < ordered.length; i++) {
+          const file = ordered[i];
+          setProgress({ current: i, total: ordered.length, name: file.name });
+          setProgressCard((s) => ({ ...s, current: i + 1, currentName: file.name }));
+
+          const kind = classifyKind(file);
+          logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: kind });
+
+          try {
+            if (kind === "text" || kind === "pdf") {
+              const content = await extractText(file).catch(() => null);
+              if (content) {
+                // For batch imports with a merge choice, apply directly without dialog.
+                if (batchChoice && dialogEnabled && hasContentNow) {
+                  applyChoice({ action: "merge", position: batchChoice.position }, content, file.name);
+                } else if (dialogEnabled && hasContentNow) {
+                  const choice = await askForChoice(content, file.name);
+                  if (choice) applyChoice(choice, content, file.name);
+                } else {
+                  onInsert(`\n${content}`);
+                  sonner.success(`Imported "${file.name}"`);
+                }
+                hasContentNow = true;
+                importedCount += 1;
+                continue;
+              }
+              if (kind === "pdf") {
+                // Fall through to attach as file.
+                const rec = await uploadOne(file, createdNewContainer ? destNoteId : undefined);
+                if (rec) newAttachments.push(rec); else failed.push(file);
+                continue;
+              }
+              // Empty text file.
+              failed.push(file);
+              continue;
+            }
+
+            const rec = await uploadOne(file, createdNewContainer ? destNoteId : undefined);
+            if (rec) newAttachments.push(rec); else failed.push(file);
+          } catch (err) {
+            failed.push(file);
+            logImport({ kind: "file-skipped", name: file.name, reason: "exception" });
           }
-
-          const ext = "." + (file.name.split(".").pop()?.toLowerCase() ?? "");
-
-          if (isTextDocument(file) || TEXT_EXTS.includes(ext)) {
-            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "text" });
-            await importText(file, hasContentNow);
-            hasContentNow = true;
-            importedCount += 1;
-            continue;
-          }
-
-          if (isPdfFile(file)) {
-            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "pdf-text" });
-            const handled = await importText(file, hasContentNow).catch(() => false);
-            if (handled) { hasContentNow = true; importedCount += 1; continue; }
-            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "pdf-attach" });
-            const rec = await uploadOne(file);
-            if (rec) newAttachments.push(rec); else failedCount += 1;
-            continue;
-          }
-
-          logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "attach" });
-          const rec = await uploadOne(file);
-          if (rec) newAttachments.push(rec); else failedCount += 1;
         }
 
-        if (newAttachments.length && activeNote) {
-          const merged = [...(activeNote.attachments || []), ...newAttachments];
-          await updateNote(activeNotebookId, activeNote.id, { attachments: merged });
-          logImport({
-            kind: "attachments-persisted",
-            noteId: activeNote.id,
-            added: newAttachments.length,
-            total: merged.length,
-          });
+        if (newAttachments.length && destNoteId) {
+          // Read latest attachments from context for the destination note.
+          const noteAttachments = destNoteId === activeNote?.id ? (activeNote?.attachments || []) : [];
+          const merged = [...noteAttachments, ...newAttachments];
+          await updateNote(destNotebookId, destNoteId, { attachments: merged });
+          logImport({ kind: "attachments-persisted", noteId: destNoteId, added: newAttachments.length, total: merged.length });
         }
       } finally {
         setLoading(false);
         setProgress(null);
         if (inputRef.current) inputRef.current.value = "";
-        logImport({
-          kind: "batch-complete",
-          imported: importedCount,
-          attached: newAttachments.length,
-          failed: failedCount,
-        });
+        setProgressCard((s) => ({ ...s, finished: true, failed }));
+        logImport({ kind: "batch-complete", imported: importedCount, attached: newAttachments.length, failed: failed.length });
       }
     },
-    [importText, uploadOne, hasExistingContent, activeNote, activeNotebookId, updateNote],
+    [activeNote, activeNotebookId, hasExistingContent, dialogEnabled, extractText, uploadOne, askForChoice, applyChoice, onInsert, createNotebook, createNote, setActiveNotebookId, setActiveNoteId, updateNote],
   );
 
+  const handleFiles = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const rawFiles = e.target.files ? Array.from(e.target.files) : [];
+      if (!rawFiles.length) return;
 
+      // 1. Upfront validation — reject the whole batch cleanly if anything is off.
+      const { ok, bad } = validateBatch(rawFiles);
+      if (bad.length && ok.length === 0) {
+        if (inputRef.current) inputRef.current.value = "";
+        return; // errors already toasted by validateFile
+      }
+      if (bad.length) {
+        sonner.warning(`Skipped ${bad.length} unsupported file${bad.length === 1 ? "" : "s"}.`);
+      }
+
+      // 2. Duplicate detection against existing attachments on the current note.
+      const { unique, dupes } = await dedupe(ok);
+      if (dupes.length) {
+        sonner.info(`Skipped ${dupes.length} duplicate${dupes.length === 1 ? "" : "s"} already attached.`);
+      }
+      if (unique.length === 0) {
+        if (inputRef.current) inputRef.current.value = "";
+        return;
+      }
+
+      // 3. Routing dialog — always ask when multiple files OR when a notebook is open.
+      const needsRouting = unique.length > 1 || !!activeNotebook;
+      const target: UploadTarget = needsRouting ? (await askRouting(unique)) ?? "current" : "current";
+      if (needsRouting && target === null) {
+        if (inputRef.current) inputRef.current.value = "";
+        return;
+      }
+
+      // 4. Batch dialog — only when there are 2+ text-mergeable files landing in current note.
+      let batchChoice: BatchChoice | null = null;
+      const mergeableCount = unique.filter((f) => classifyKind(f) === "text" || classifyKind(f) === "pdf").length;
+      if (target === "current" && mergeableCount >= 2 && hasExistingContent) {
+        batchChoice = await askBatch(unique.map((f) => ({
+          name: f.name,
+          size: f.size,
+          kind: (classifyKind(f) === "pdf" ? "text" : classifyKind(f)) as "text" | "image" | "video" | "audio" | "attach",
+        })));
+        if (!batchChoice) {
+          if (inputRef.current) inputRef.current.value = "";
+          return;
+        }
+      }
+
+      await runBatch(unique, target, batchChoice);
+    },
+    [validateBatch, dedupe, activeNotebook, askRouting, hasExistingContent, askBatch, runBatch],
+  );
+
+  const retryFailed = useCallback(async () => {
+    const files = progressCard.failed;
+    if (!files.length) return;
+    setProgressCard({ active: true, current: 0, total: files.length, failed: [], finished: false });
+    await runBatch(files, "current", null);
+  }, [progressCard.failed, runBatch]);
 
   const handleChoice = useCallback(
     (choice: ImportChoice | null) => {
@@ -278,10 +384,32 @@ export function ImportNotesButton({
     [pending],
   );
 
+  const handleRouting = useCallback((t: UploadTarget | null) => {
+    if (!routing) return;
+    const { resolve } = routing;
+    setRouting(null);
+    resolve(t);
+  }, [routing]);
+
+  const handleBatch = useCallback((c: BatchChoice | null) => {
+    if (!batch) return;
+    const { resolve } = batch;
+    setBatch(null);
+    resolve(c);
+  }, [batch]);
+
   const openPicker = () => {
     onSaveSelection?.();
     inputRef.current?.click();
   };
+
+  // Auto-hide finished progress card after a short delay unless there are failures.
+  useEffect(() => {
+    if (progressCard.finished && progressCard.failed.length === 0) {
+      const t = setTimeout(() => setProgressCard((s) => ({ ...s, active: false })), 2500);
+      return () => clearTimeout(t);
+    }
+  }, [progressCard.finished, progressCard.failed.length]);
 
   const label = loading
     ? progress
@@ -292,9 +420,6 @@ export function ImportNotesButton({
   return (
     <>
       <button
-        // Save caret on both mouse and touch — iOS/Android don't fire
-        // onMouseDown reliably before onClick, so touchstart guarantees the
-        // selection is captured before the file picker steals focus.
         onMouseDown={() => onSaveSelection?.()}
         onTouchStart={() => onSaveSelection?.()}
         onClick={openPicker}
@@ -315,6 +440,26 @@ export function ImportNotesButton({
         className="hidden"
         onChange={handleFiles}
       />
+
+      {routing && (
+        <UploadRoutingDialog
+          open
+          fileCount={routing.files.length}
+          contextLabel={activeNotebook?.name ?? "this note"}
+          contextKind={activeNotebook ? "notebook" : "note"}
+          onChoose={handleRouting}
+        />
+      )}
+
+      {batch && (
+        <BatchImportDialog
+          open
+          files={batch.files}
+          hasExistingContent={hasExistingContent}
+          onChoose={handleBatch}
+        />
+      )}
+
       {pending && (
         <ImportActionDialog
           open
@@ -323,6 +468,17 @@ export function ImportNotesButton({
           onChoose={handleChoice}
         />
       )}
+
+      <UploadProgressToast
+        active={progressCard.active}
+        current={progressCard.current}
+        total={progressCard.total}
+        currentName={progressCard.currentName}
+        failedNames={progressCard.failed.map((f) => f.name)}
+        finished={progressCard.finished}
+        onRetry={progressCard.failed.length ? retryFailed : undefined}
+        onDismiss={() => setProgressCard((s) => ({ ...s, active: false }))}
+      />
     </>
   );
 }
