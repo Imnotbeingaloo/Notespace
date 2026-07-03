@@ -227,7 +227,7 @@ function FlashcardsButton() {
             {/* Gibberish / NO_CONCEPTS state */}
             {!loading && (error === "__gibberish__" ||
               (result && result.trim().toUpperCase().includes("NO_CONCEPTS"))) && (
-              <div className="flex-1 flex items-center justify-center p-8">
+              <div data-testid="flashcards-empty-state" className="flex-1 flex items-center justify-center p-8">
                 <div className="max-w-sm text-center">
                   <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[hsl(280_60%_55%/0.10)] text-[hsl(280_65%_55%)] dark:text-[hsl(280_75%_78%)]">
                     <Layers className="h-5 w-5" />
@@ -237,6 +237,14 @@ function FlashcardsButton() {
                     I can only build flashcards from notes that actually explain something. Add real
                     sentences (definitions, examples, cause &amp; effect) and try again.
                   </p>
+                  {error === "__gibberish__" && gibberishReason && (
+                    <p
+                      data-testid="gibberish-reason"
+                      className="mt-3 text-xs text-foreground/80 bg-[hsl(280_60%_55%/0.08)] border border-[hsl(280_60%_55%/0.20)] rounded-lg px-3 py-2"
+                    >
+                      <span className="font-medium">Why:</span> {gibberishReason}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
