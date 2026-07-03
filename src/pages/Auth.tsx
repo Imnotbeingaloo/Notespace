@@ -944,16 +944,22 @@ const AuthPage = () => {
             </div>
 
 
-            {notice && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-foreground"
-                role="status"
-              >
-                <p className="leading-snug">{notice}</p>
-              </motion.div>
-            )}
+            <AnimatePresence initial={false} mode="popLayout">
+              {notice && (
+                <motion.div
+                  key="notice"
+                  layout
+                  initial={{ opacity: 0, y: -6, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -6, height: 0 }}
+                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-foreground"
+                  role="status"
+                >
+                  <p className="leading-snug">{notice}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {mode === "login" && unknownEmail && unknownEmail === email.trim() && (
               <button
@@ -966,16 +972,23 @@ const AuthPage = () => {
               </button>
             )}
 
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive"
-                role="alert"
-              >
-                <p className="leading-snug">{error}</p>
-              </motion.div>
-            )}
+            <AnimatePresence initial={false} mode="popLayout">
+              {error && (
+                <motion.div
+                  key="error"
+                  layout
+                  initial={{ opacity: 0, y: -6, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -6, height: 0 }}
+                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive"
+                  role="alert"
+                >
+                  <p className="leading-snug">{error}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
 
             <button
               type="submit"
