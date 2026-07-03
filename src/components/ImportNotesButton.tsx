@@ -179,11 +179,15 @@ export function ImportNotesButton({
           onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
         }
         sonner.success(`Attached "${file.name}"`);
+        logImport({ kind: "attach-uploaded", name: file.name, path, size: file.size });
         return { name: file.name, url: fileUrl, path, type: file.type, size: file.size };
       } catch (err: any) {
-        sonner.error(`Upload failed for "${file.name}": ${err?.message || "unknown error"}`);
+        const message = err?.message || "unknown error";
+        sonner.error(`Upload failed for "${file.name}": ${message}`);
+        logImport({ kind: "attach-upload-failed", name: file.name, message });
         return null;
       }
+
     },
     [user, activeNote, onInsert],
   );
