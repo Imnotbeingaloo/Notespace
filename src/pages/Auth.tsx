@@ -80,6 +80,7 @@ const AuthPage = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [microsoftLoading, setMicrosoftLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
+  const [easterTapes, setEasterTapes] = useState(0);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
