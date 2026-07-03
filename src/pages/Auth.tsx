@@ -961,34 +961,64 @@ const AuthPage = () => {
         <div className="absolute -top-32 -right-24 h-[300px] w-[300px] rounded-full bg-primary/8 blur-3xl" />
         <div className="absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-amber-400/[0.06] blur-3xl" />
 
-        {/* Corner tape — clickable easter egg. Each click drops another tape strip
-            somewhere on the notebook panel. Resets on mode change / reload. */}
-        <button
-          type="button"
-          aria-label="Decorative tape"
-          tabIndex={-1}
-          onClick={() => setEasterTapes((n) => Math.min(3, n + 1))}
-          className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
-        />
-        {/* Easter egg tapes */}
-        {easterTapes >= 1 && (
-          <div
-            aria-hidden="true"
-            className="absolute top-[34%] left-16 h-5 w-20 -rotate-[8deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
-          />
-        )}
-        {easterTapes >= 2 && (
-          <div
-            aria-hidden="true"
-            className="absolute bottom-[30%] right-10 h-5 w-24 rotate-[12deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
-          />
-        )}
-        {easterTapes >= 3 && (
-          <div
-            aria-hidden="true"
-            className="absolute bottom-10 left-1/3 h-5 w-24 -rotate-[4deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
-          />
-        )}
+        {/* Corner tape — clickable easter egg. Each click drops another tape
+            strip at a random spot with a random color/rotation. Resets on
+            mode change / reload. */}
+        {(() => {
+          const TAPE_COLORS = [
+            { a: "rgba(251,113,133,0.72)", b: "rgba(244,63,94,0.62)", edge: "rgba(190,18,60,0.55)" },   // rose
+            { a: "rgba(253,224,71,0.72)",  b: "rgba(234,179,8,0.60)",  edge: "rgba(161,98,7,0.5)" },     // amber
+            { a: "rgba(94,234,212,0.70)",  b: "rgba(45,212,191,0.60)", edge: "rgba(15,118,110,0.5)" },   // teal
+            { a: "rgba(186,230,253,0.75)", b: "rgba(125,211,252,0.60)",edge: "rgba(3,105,161,0.5)" },    // sky
+            { a: "rgba(221,214,254,0.75)", b: "rgba(196,181,253,0.60)",edge: "rgba(109,40,217,0.5)" },   // lavender
+            { a: "rgba(187,247,208,0.75)", b: "rgba(134,239,172,0.60)",edge: "rgba(21,128,61,0.5)" },    // mint
+          ];
+          const tapeStyle = (c: { a: string; b: string; edge: string }): React.CSSProperties => ({
+            background: `linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 45%, rgba(0,0,0,0.08) 100%), repeating-linear-gradient(90deg, ${c.a} 0px, ${c.a} 7px, ${c.b} 7px, ${c.b} 14px)`,
+            boxShadow: "0 2px 5px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.25)",
+            borderTop: `1px solid ${c.edge}`,
+            borderBottom: `1px solid ${c.edge}`,
+            clipPath:
+              "polygon(2% 12%, 6% 0%, 14% 8%, 26% 2%, 40% 10%, 55% 0%, 68% 8%, 82% 2%, 94% 10%, 100% 4%, 98% 30%, 100% 60%, 97% 90%, 92% 100%, 78% 94%, 62% 100%, 48% 92%, 32% 100%, 18% 94%, 6% 100%, 0% 88%, 3% 60%, 0% 30%)",
+          });
+          const cornerColor = TAPE_COLORS[0];
+          return (
+            <>
+              <button
+                type="button"
+                aria-label="Decorative tape"
+                tabIndex={-1}
+                onClick={() => {
+                  const color = TAPE_COLORS[Math.floor(Math.random() * TAPE_COLORS.length)];
+                  const top = 8 + Math.random() * 78;   // % within panel
+                  const left = 8 + Math.random() * 74;
+                  const rotate = -20 + Math.random() * 40;
+                  const width = 70 + Math.random() * 60; // px
+                  setTapes((t) => [...t, { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify(color) }]);
+                }}
+                className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+                style={tapeStyle(cornerColor)}
+              />
+              {tapes.map((t) => {
+                const c = JSON.parse(t.color) as { a: string; b: string; edge: string };
+                return (
+                  <div
+                    key={t.id}
+                    aria-hidden="true"
+                    className="absolute h-5 z-20 animate-in fade-in zoom-in-95 duration-200"
+                    style={{
+                      top: `${t.top}%`,
+                      left: `${t.left}%`,
+                      width: `${t.width}px`,
+                      transform: `rotate(${t.rotate}deg)`,
+                      ...tapeStyle(c),
+                    }}
+                  />
+                );
+              })}
+            </>
+          );
+        })()}
 
         <div className="relative z-10 pl-20" />
 
