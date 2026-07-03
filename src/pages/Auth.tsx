@@ -78,6 +78,7 @@ const AuthPage = () => {
   const [appleLoading, setAppleLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
   const [tapes, setTapes] = useState<Array<{ id: number; top: number; left: number; rotate: number; width: number; color: string }>>([]);
+  const [tapesFalling, setTapesFalling] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -989,9 +990,17 @@ const AuthPage = () => {
                 aria-label="Decorative tape"
                 tabIndex={-1}
                 onClick={() => {
+                  if (tapesFalling) return;
+                  // 11th click: trigger gravity fall, then clear.
+                  if (tapes.length >= 10) {
+                    setTapesFalling(true);
+                    window.setTimeout(() => {
+                      setTapes([]);
+                      setTapesFalling(false);
+                    }, 2200);
+                    return;
+                  }
                   setTapes((t) => {
-                    if (t.length >= 10) return t; // cap at 10
-                    // Forbidden zones (percent) covering headline, body, testimonial text, footer.
                     const FORBIDDEN: Array<[number, number, number, number]> = [
                       [25, 38, 8, 62],   // headline
                       [40, 52, 8, 62],   // body copy
@@ -1022,20 +1031,29 @@ const AuthPage = () => {
                 className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
                 style={{ clipPath: tapeClip }}
               />
-              {tapes.map((t) => {
+              {tapes.map((t, idx) => {
                 const parsed = JSON.parse(t.color) as { cls: string; h: number };
+                // Gravity: pseudo-random extra spin per tape so they tumble differently.
+                const spin = ((t.id * 137) % 720) - 360;
+                const fallTransform = tapesFalling
+                  ? `translate(-50%, calc(-50% + 120vh)) rotate(${t.rotate + spin}deg)`
+                  : `translate(-50%, -50%) rotate(${t.rotate}deg)`;
                 return (
                   <div
                     key={t.id}
                     aria-hidden="true"
-                    className={`absolute z-20 border-y shadow-sm animate-in fade-in zoom-in-95 duration-200 ${parsed.cls}`}
+                    className={`absolute z-20 border-y shadow-sm ${tapesFalling ? "" : "animate-in fade-in zoom-in-95 duration-200"} ${parsed.cls}`}
                     style={{
                       top: `${t.top}%`,
                       left: `${t.left}%`,
                       width: `${t.width}px`,
                       height: `${parsed.h}px`,
-                      transform: `translate(-50%, -50%) rotate(${t.rotate}deg)`,
+                      transform: fallTransform,
                       clipPath: tapeClip,
+                      transition: tapesFalling
+                        ? `transform 2000ms cubic-bezier(0.55, 0.05, 0.9, 0.35) ${idx * 40}ms, opacity 400ms ease-in ${1600 + idx * 40}ms`
+                        : undefined,
+                      opacity: tapesFalling ? 0 : 1,
                     }}
                   />
                 );
