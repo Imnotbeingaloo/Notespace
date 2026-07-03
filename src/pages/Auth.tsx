@@ -593,7 +593,7 @@ const AuthPage = () => {
             <div className="mx-auto max-w-[304px]">
 
               <div className="mb-5 text-center">
-                <h2 className="font-serif text-2xl font-semibold text-foreground">
+                <h2 className="font-serif text-[1.75rem] leading-tight font-semibold text-foreground">
                   {mode === "login" ? "Welcome back" : "Create your account"}
                 </h2>
                 <p className="mt-1.5 text-sm text-muted-foreground">
