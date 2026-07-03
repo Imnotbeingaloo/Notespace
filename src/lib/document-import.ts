@@ -80,13 +80,34 @@ function enrichInline(text: string): string {
   return out;
 }
 
+// A filename is "id-like" when it carries no human meaning — long random
+// alphanumerics ("vid3434234902"), UUIDs, hashes, timestamps. When the
+// filename is id-like, we NEVER want to use it as a fallback title.
+function isIdLikeFilename(fileName: string): boolean {
+  const stem = fileName.replace(/\.[^.]+$/, "").trim();
+  if (!stem) return true;
+  // UUID / hash-ish
+  if (/^[0-9a-f]{16,}$/i.test(stem)) return true;
+  // Mostly digits or timestamp-like
+  if (/^\d{6,}$/.test(stem)) return true;
+  // Short prefix followed by a long digit run: vid3434234902, IMG_1234567890, doc-1699999999
+  if (/^[A-Za-z]{1,6}[_-]?\d{6,}$/.test(stem)) return true;
+  // No vowels + 8+ chars → almost certainly not a real word (e.g. "xkfjrhtd12")
+  if (stem.length >= 8 && !/[aeiouAEIOU]/.test(stem)) return true;
+  return false;
+}
+
 // Extract the actual document title from raw content — first non-empty,
-// non-watermark, heading-like line. Falls back to a filename-derived title.
+// non-watermark, heading-like line. Falls back to a filename-derived title
+// UNLESS the filename is id-like, in which case we relax constraints and
+// take the first substantive line of the document instead.
 export function extractDocumentTitle(rawText: string, fileName: string): string {
-  const fallback = titleFromFile(fileName) || "Imported Note";
+  const idLike = isIdLikeFilename(fileName);
+  const fallback = idLike ? "Imported Note" : (titleFromFile(fileName) || "Imported Note");
   const normalized = (rawText || "").replace(/\r\n?/g, "\n").trim();
   if (!normalized) return fallback;
   const lines = normalized.split("\n").map((l) => l.trim());
+  // Pass 1: strict — heading-shaped line near the top.
   for (let i = 0; i < Math.min(lines.length, 15); i++) {
     const raw = lines[i];
     if (!raw) continue;
@@ -97,6 +118,22 @@ export function extractDocumentTitle(rawText: string, fileName: string): string 
     if (/^https?:\/\//i.test(clean)) continue;
     if (/[.!?]$/.test(clean) && clean.length > 40) continue;
     return clean.replace(/\s+/g, " ").slice(0, 80);
+  }
+  // Pass 2 (id-like filename only): looser — first meaningful sentence,
+  // trimmed to a reasonable title length so we never surface "vid3434234902".
+  if (idLike) {
+    for (let i = 0; i < Math.min(lines.length, 25); i++) {
+      const raw = lines[i];
+      if (!raw) continue;
+      if (isWatermark(raw)) continue;
+      const clean = raw.replace(/^#{1,6}\s+/, "").replace(/^\*+|\*+$/g, "").trim();
+      if (clean.length < 6) continue;
+      if (/^(page\s+)?\d+$/i.test(clean)) continue;
+      if (/^https?:\/\//i.test(clean)) continue;
+      // Take the first sentence-ish chunk, cap at 80 chars.
+      const firstSentence = clean.split(/(?<=[.!?])\s+/, 1)[0] || clean;
+      return firstSentence.replace(/\s+/g, " ").slice(0, 80).trim();
+    }
   }
   return fallback;
 }
