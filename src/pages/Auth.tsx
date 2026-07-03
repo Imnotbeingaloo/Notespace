@@ -544,37 +544,84 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8 relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[1.05fr_1fr] bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
-      {/* Decorative background - subtle grid + ambient gradient orbs (Mobbin/Aceternity inspired) */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0">
+
+      {/* Editorial left panel — hidden on small screens so the form leads on mobile. */}
+      <aside
+        aria-hidden="true"
+        className="hidden lg:flex relative flex-col justify-between overflow-hidden border-r border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-14"
+      >
+        {/* Ruled-notebook backdrop */}
         <div
-          className="absolute inset-0 opacity-[0.35] dark:opacity-[0.18]"
+          className="absolute inset-0 opacity-70 dark:opacity-30"
           style={{
             backgroundImage:
-              "linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)",
-            backgroundSize: "44px 44px",
-            maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-            WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+              "repeating-linear-gradient(to bottom, transparent 0, transparent 27px, hsl(200 45% 55% / 0.18) 27px, hsl(200 45% 55% / 0.18) 28px)",
           }}
         />
-        <div className="absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-amber-400/15 blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[260px] w-[260px] rounded-full bg-emerald-400/10 blur-3xl" />
-      </div>
-      <button
-        onClick={() => navigate("/")}
-        className={`absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-lg border border-border bg-card/80 backdrop-blur px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to website
-      </button>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="relative z-10 w-full max-w-md sm:max-w-[460px]"
-      >
+        <div
+          className="absolute inset-y-0 left-16 w-px bg-[hsl(0_60%_55%/0.35)]"
+        />
+        <div className="absolute -top-24 -left-16 h-[380px] w-[380px] rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute -bottom-24 -right-12 h-[420px] w-[420px] rounded-full bg-amber-400/15 blur-3xl" />
+
+        <div className="relative z-10 flex items-center gap-2">
+          <img src="/logo.png" alt="" className="h-7 w-7 object-contain" />
+          <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
+        </div>
+
+        <div className="relative z-10 max-w-md">
+          <p className="font-serif text-3xl xl:text-[2.35rem] leading-[1.15] text-foreground tracking-tight">
+            A calm place to think, write, and remember what mattered.
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+            Every note lives in a ruled-paper canvas — with AI that explains, summarises,
+            and turns your reading into flashcards when you need it.
+          </p>
+        </div>
+
+        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex -space-x-1.5">
+            {["#0d9488", "#f59e0b", "#6366f1"].map((c) => (
+              <span key={c} className="h-6 w-6 rounded-full border-2 border-background" style={{ background: c }} />
+            ))}
+          </div>
+          <span>Students, writers, and researchers keep their thinking here.</span>
+        </div>
+      </aside>
+
+      {/* Right column — the original form card, unchanged. */}
+      <div className="flex items-center justify-center px-4 py-8 relative overflow-hidden">
+        {/* Ambient background retained for mobile / small screens */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden">
+          <div
+            className="absolute inset-0 opacity-[0.35] dark:opacity-[0.18]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)",
+              backgroundSize: "44px 44px",
+              maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+              WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+            }}
+          />
+          <div className="absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
+          <div className="absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-amber-400/15 blur-3xl" />
+        </div>
+        <button
+          onClick={() => navigate("/")}
+          className={`absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-lg border border-border bg-card/80 backdrop-blur px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to website
+        </button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="relative z-10 w-full max-w-md sm:max-w-[460px]"
+        >
+
         <div className="flex items-center justify-center gap-2 mb-8">
           <img src="/logo.png" alt="" aria-hidden="true" className="h-[1.224rem] w-[1.224rem] object-contain" />
           <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
@@ -896,7 +943,9 @@ const AuthPage = () => {
           ))}
         </div>
       </motion.div>
+      </div>
     </div>
+
   );
 };
 
