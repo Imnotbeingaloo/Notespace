@@ -974,6 +974,10 @@ const AuthPage = () => {
             "bg-emerald-300/70 border-emerald-400/50",
             "bg-violet-300/70 border-violet-400/50",
             "bg-pink-300/70 border-pink-400/50",
+            "bg-lime-300/70 border-lime-400/50",
+            "bg-orange-300/70 border-orange-400/50",
+            "bg-cyan-300/70 border-cyan-400/50",
+            "bg-fuchsia-300/70 border-fuchsia-400/50",
           ];
           // Slightly jagged/pointed tape ends — sharper corner silhouette.
           const tapeClip =
@@ -985,19 +989,20 @@ const AuthPage = () => {
                 aria-label="Decorative tape"
                 tabIndex={-1}
                 onClick={() => {
-                  // Avoid repeating the previous color so it feels genuinely random.
-                  let lastCls: string | null = null;
                   setTapes((t) => {
-                    lastCls = t.length ? (JSON.parse(t[t.length - 1].color) as { cls: string }).cls : null;
-                    const pool = TAPE_COLORS.filter((c) => c !== lastCls);
-                    const cls = pool[Math.floor(Math.random() * pool.length)];
+                    // Block colors used in the last 5 tapes so repeats don't feel predictable.
+                    const recent = t.slice(-5).map((x) => (JSON.parse(x.color) as { cls: string }).cls);
+                    const pool = TAPE_COLORS.filter((c) => !recent.includes(c));
+                    const source = pool.length ? pool : TAPE_COLORS;
+                    const cls = source[Math.floor(Math.random() * source.length)];
                     const top = 5 + Math.random() * 84;
                     const left = 4 + Math.random() * 78;
                     const rotate = -60 + Math.random() * 120;
-                    const width = 70 + Math.random() * 90;
-                    const height = 18 + Math.random() * 8;
+                    const width = 55 + Math.random() * 45; // shorter tapes
+                    const height = 16 + Math.random() * 6;
                     return [
                       ...t,
+
                       { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ cls, h: height }) },
                     ];
                   });
