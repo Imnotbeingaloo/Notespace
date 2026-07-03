@@ -121,11 +121,31 @@ function FlashcardsButton() {
           const json = line.slice(6).trim();
           if (json === "[DONE]") break;
           try {
-            const parsed = JSON.parse(json);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) { text += content; setResult(text); }
-          } catch {}
+            const parsed: unknown = JSON.parse(json);
+            // Runtime shape validation — protect against malformed edge-function payloads.
+            if (
+              parsed &&
+              typeof parsed === "object" &&
+              "choices" in parsed &&
+              Array.isArray((parsed as any).choices) &&
+              (parsed as any).choices[0] &&
+              typeof (parsed as any).choices[0] === "object"
+            ) {
+              const delta = (parsed as any).choices[0].delta;
+              const content = delta && typeof delta === "object" ? delta.content : undefined;
+              if (typeof content === "string" && content.length > 0) {
+                text += content;
+                setResult(text);
+              }
+            }
+          } catch {
+            // Non-JSON / partial chunk — ignore silently, next iteration will retry.
+          }
         }
+      }
+      // Final sanity check: if the stream produced nothing usable, surface a clear error.
+      if (!text.trim()) {
+        throw new Error("The flashcard service returned an empty response. Please try again.");
       }
     } catch (e: any) {
       setError(e.message || "Failed");
