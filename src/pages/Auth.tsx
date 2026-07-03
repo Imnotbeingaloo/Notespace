@@ -2,11 +2,13 @@ import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw, Check, X, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { NoindexHead } from "@/components/NoindexHead";
+
 
 const BTN_PRESS = "transition-all duration-150 active:scale-95 hover:-translate-y-0.5 hover:shadow-md";
 
