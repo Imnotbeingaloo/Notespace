@@ -34,6 +34,19 @@ vi.mock("@/components/HomeHeaderMenu", () => ({
   HomeHeaderMenu: () => null,
 }));
 
+vi.mock("@/components/NamePromptDialog", () => ({
+  NamePromptDialog: () => null,
+}));
+
+vi.mock("@/components/WelcomeBackDialog", () => ({
+  WelcomeBackDialog: () => null,
+}));
+
+vi.mock("@/components/ConfirmDialog", () => ({
+  ConfirmDialog: () => null,
+}));
+
+
 const renderHome = () =>
   render(
     <MemoryRouter initialEntries={["/home"]}>
