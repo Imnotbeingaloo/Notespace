@@ -975,6 +975,9 @@ const AuthPage = () => {
             "bg-violet-300/70 border-violet-400/50",
             "bg-pink-300/70 border-pink-400/50",
           ];
+          // Slightly jagged/pointed tape ends — sharper corner silhouette.
+          const tapeClip =
+            "polygon(3% 0%, 97% 0%, 100% 35%, 96% 65%, 100% 100%, 3% 100%, 0% 65%, 4% 35%)";
           return (
             <>
               <button
@@ -982,18 +985,25 @@ const AuthPage = () => {
                 aria-label="Decorative tape"
                 tabIndex={-1}
                 onClick={() => {
-                  const cls = TAPE_COLORS[Math.floor(Math.random() * TAPE_COLORS.length)];
-                  const top = 5 + Math.random() * 84;
-                  const left = 4 + Math.random() * 78;
-                  const rotate = -60 + Math.random() * 120;
-                  const width = 70 + Math.random() * 90;
-                  const height = 18 + Math.random() * 8;
-                  setTapes((t) => [
-                    ...t,
-                    { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ cls, h: height }) },
-                  ]);
+                  // Avoid repeating the previous color so it feels genuinely random.
+                  let lastCls: string | null = null;
+                  setTapes((t) => {
+                    lastCls = t.length ? (JSON.parse(t[t.length - 1].color) as { cls: string }).cls : null;
+                    const pool = TAPE_COLORS.filter((c) => c !== lastCls);
+                    const cls = pool[Math.floor(Math.random() * pool.length)];
+                    const top = 5 + Math.random() * 84;
+                    const left = 4 + Math.random() * 78;
+                    const rotate = -60 + Math.random() * 120;
+                    const width = 70 + Math.random() * 90;
+                    const height = 18 + Math.random() * 8;
+                    return [
+                      ...t,
+                      { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ cls, h: height }) },
+                    ];
+                  });
                 }}
                 className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
+                style={{ clipPath: tapeClip }}
               />
               {tapes.map((t) => {
                 const parsed = JSON.parse(t.color) as { cls: string; h: number };
@@ -1008,6 +1018,7 @@ const AuthPage = () => {
                       width: `${t.width}px`,
                       height: `${parsed.h}px`,
                       transform: `rotate(${t.rotate}deg)`,
+                      clipPath: tapeClip,
                     }}
                   />
                 );
