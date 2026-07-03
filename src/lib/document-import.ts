@@ -87,7 +87,7 @@ function isIdLikeFilename(fileName: string): boolean {
   const stem = fileName.replace(/\.[^.]+$/, "").trim();
   if (!stem) return true;
   // UUID / hash-ish
-  if (/^[0-9a-f]{16,}$/i.test(stem)) return true;
+  if (/^[0-9a-f]{12,}$/i.test(stem)) return true;
   // Mostly digits or timestamp-like
   if (/^\d{6,}$/.test(stem)) return true;
   // Short prefix followed by a long digit run: vid3434234902, IMG_1234567890, doc-1699999999
