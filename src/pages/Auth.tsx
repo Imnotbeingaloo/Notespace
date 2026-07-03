@@ -75,9 +75,9 @@ const AuthPage = () => {
   const [highlightEmail, setHighlightEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [microsoftLoading, setMicrosoftLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
-  const [easterTapes, setEasterTapes] = useState(0);
+  const [tapes, setTapes] = useState<Array<{ id: number; top: number; left: number; rotate: number; width: number; color: string }>>([]);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
