@@ -97,6 +97,11 @@ const AuthPage = () => {
       window.removeEventListener("scroll", measure, true);
     };
   }, []);
+  const [tapeHint, setTapeHint] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setTapeHint(true), 5000);
+    return () => window.clearTimeout(id);
+  }, []);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -1011,6 +1016,7 @@ const AuthPage = () => {
                 aria-label="Decorative tape"
                 tabIndex={-1}
                 onClick={() => {
+                  setTapeHint(false);
                   if (tapesFalling) return;
                   // 21st click: trigger gravity fall, then clear.
                   if (tapes.length >= 20) {
@@ -1058,7 +1064,11 @@ const AuthPage = () => {
                   });
                 }}
                 className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
-                style={{ clipPath: tapeClip }}
+                style={{
+                  clipPath: tapeClip,
+                  animation: tapeHint ? "tapeHintPop 1.4s ease-in-out infinite" : undefined,
+                  transformOrigin: "center",
+                }}
               />
               {asideRect && createPortal(
                 <>
@@ -1082,7 +1092,7 @@ const AuthPage = () => {
                           clipPath: tapeClip,
                           transformOrigin: "center",
                           willChange: "transform",
-                          zIndex: 999,
+                          zIndex: 2147483000,
                           animation: tapesFalling
                             ? `tapeFall 2200ms cubic-bezier(0.45, 0, 0.75, 0.6) ${idx * 20}ms both`
                             : `tapeAppear 380ms cubic-bezier(0.22, 1, 0.36, 1) both`,
@@ -1101,6 +1111,9 @@ const AuthPage = () => {
                     @keyframes tapeFall {
                       0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)); }
                       100% { transform: translate(-50%, calc(-50% + var(--fall-dy))) rotate(calc(var(--tape-rot) + var(--fall-spin))); }
+                    @keyframes tapeHintPop {
+                      0%, 100% { transform: rotate(6deg) scale(1); }
+                      50%      { transform: rotate(6deg) scale(1.18); }
                     }
                   `}</style>
                 </>,
