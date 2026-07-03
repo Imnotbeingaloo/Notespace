@@ -43,8 +43,7 @@ function FlashcardsButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [setup, setSetup] = useState(false);
-  const [cardCount, setCardCount] = useState(5);
+  
 
   const openSetup = () => {
     if (!activeNote) return;
@@ -54,32 +53,28 @@ function FlashcardsButton() {
     setNotice("");
     const source = getFlashcardSourceText(activeNote.content || "", activeNote.title || "");
     if (!source) {
-      setSetup(false);
       setNotice("Please write something in the notes first.");
       return;
     }
     if (source.length < MIN_FLASHCARD_BODY_CHARS) {
-      setSetup(false);
       setNotice("Write a little more first - flashcards need about 100 characters of actual notes. Headings do not count.");
       return;
     }
-    setSetup(true);
+    // Auto-detect: skip picker, edge function extracts every concept.
+    void run();
   };
 
   const run = async () => {
     if (!activeNote) return;
     const source = getFlashcardSourceText(activeNote.content || "", activeNote.title || "");
     if (!source) {
-      setSetup(false);
       setNotice("Please write something in the notes first.");
       return;
     }
     if (source.length < MIN_FLASHCARD_BODY_CHARS) {
-      setSetup(false);
       setNotice("Write a little more first - flashcards need about 100 characters of actual notes. Headings do not count.");
       return;
     }
-    setSetup(false);
     setNotice("");
     setLoading(true);
     try {
@@ -93,7 +88,7 @@ function FlashcardsButton() {
           Authorization: `Bearer ${token}`,
           apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
-        body: JSON.stringify({ action: "flashcards", noteTitle: "", noteContent: source, count: cardCount }),
+        body: JSON.stringify({ action: "flashcards", noteTitle: "", noteContent: source }),
       });
       if (!resp.ok) {
         const data = await resp.json().catch(() => ({}));
@@ -171,36 +166,7 @@ function FlashcardsButton() {
               </button>
             </div>
 
-            {setup && !loading && !result && !notice && (
-              <div className="flex-1 flex flex-col justify-center p-6 space-y-4">
-                <div>
-                  <p className="text-sm font-semibold text-foreground">How many flashcards?</p>
-                  <p className="text-xs text-muted-foreground mt-1">Max 10. Cards will only use the written note body, not headings.</p>
-                </div>
-                <div className="grid grid-cols-4 gap-2">
-                  {[3, 5, 7, 10].map((n) => (
-                    <button
-                      key={n}
-                      onClick={() => setCardCount(n)}
-                      className={`rounded-xl border px-3 py-3 text-sm font-semibold transition-colors ${
-                        cardCount === n
-                          ? "border-[hsl(280_60%_55%/0.45)] bg-[hsl(280_60%_55%/0.12)] text-[hsl(280_65%_55%)] dark:text-[hsl(280_75%_78%)]"
-                          : "border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
-                      }`}
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={run}
-                  className="magnetic-btn inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  <Layers className="h-4 w-4" />
-                  Generate {cardCount} flashcards
-                </button>
-              </div>
-            )}
+
 
             {notice && (
               <div className="flex-1 flex items-center justify-center p-8">
