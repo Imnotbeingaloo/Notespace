@@ -105,13 +105,11 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
   const showChevron = hasDescription || hasActions;
   const expandedOpen = item.expanded && showChevron;
   const [hovered, setHovered] = useState(false);
-  // Re-key the progress bar only when the underlying timer restarts (on
-  // expand). Hover is handled via CSS animation-play-state so the bar
-  // freezes in place instead of jumping back.
-  const [barKey, setBarKey] = useState(0);
-  useEffect(() => {
-    setBarKey((k) => k + 1);
-  }, [item.expanded]);
+  // The CSS progress bar is only re-keyed when the toast itself is created —
+  // NOT on hover, focus, or expand. Re-keying mid-life restarts the animation
+  // from 0 which looked like the countdown was "resetting". Hover pause uses
+  // animation-play-state so the bar simply freezes and continues in place.
+
 
   return (
     <motion.li
