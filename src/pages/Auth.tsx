@@ -587,15 +587,15 @@ const AuthPage = () => {
 
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="mx-auto max-w-[380px] px-1 sm:px-2">
+        <div className="mx-auto max-w-[400px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[280px]">
+            <div className="mx-auto max-w-[320px]">
               <div className="mb-5 text-center">
-                <h2 className="font-serif text-xl font-semibold text-foreground">
+                <h2 className="font-serif text-2xl font-semibold text-foreground">
                   {mode === "login" ? "Welcome back" : "Create your account"}
                 </h2>
-                <p className="mt-1 text-xs text-muted-foreground">
+                <p className="mt-1.5 text-sm text-muted-foreground">
                   {mode === "login" ? "Sign in to pick up where you left off." : "Sign up to get started in seconds."}
                 </p>
               </div>
@@ -603,7 +603,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={handleGoogle}
-                  disabled={googleLoading || microsoftLoading}
+                  disabled={googleLoading || appleLoading}
                   className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
@@ -611,12 +611,12 @@ const AuthPage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={handleMicrosoft}
-                  disabled={googleLoading || microsoftLoading}
+                  onClick={handleApple}
+                  disabled={googleLoading || appleLoading}
                   className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
-                  {microsoftLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MicrosoftIcon />}
-                  {mode === "login" ? "Sign in with Microsoft" : "Sign up with Microsoft"}
+                  {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
+                  {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
                 </button>
                 <button
                   type="button"
@@ -648,7 +648,7 @@ const AuthPage = () => {
               <button
                 type="button"
                 onClick={handleGoogle}
-                disabled={googleLoading || microsoftLoading}
+                disabled={googleLoading || appleLoading}
                 className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
