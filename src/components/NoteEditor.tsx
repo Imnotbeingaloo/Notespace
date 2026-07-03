@@ -92,7 +92,7 @@ function FlashcardsButton() {
           Authorization: `Bearer ${token}`,
           apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
-        body: JSON.stringify({ action: "flashcards", noteTitle: "", noteContent: source, count: cardCount }),
+        body: JSON.stringify({ action: "flashcards", noteTitle: "", noteContent: source }),
       });
       if (!resp.ok) {
         const data = await resp.json().catch(() => ({}));
