@@ -626,7 +626,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleGoogle}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
