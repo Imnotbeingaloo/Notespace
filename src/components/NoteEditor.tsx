@@ -33,7 +33,7 @@ import { useNavigate } from "react-router-dom";
 import { X as XIcon, Sparkles } from "lucide-react";
 import { toolPill } from "@/lib/tool-colors";
 import { getFlashcardSourceText, MIN_FLASHCARD_BODY_CHARS } from "@/lib/note-body";
-import { looksLikeGibberish } from "@/lib/gibberish";
+import { looksLikeGibberish, describeGibberish } from "@/lib/gibberish";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
@@ -44,6 +44,7 @@ function FlashcardsButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [gibberishReason, setGibberishReason] = useState<string>("");
   
 
   const openSetup = () => {
@@ -52,6 +53,7 @@ function FlashcardsButton() {
     setResult("");
     setError("");
     setNotice("");
+    setGibberishReason("");
     const source = getFlashcardSourceText(activeNote.content || "", activeNote.title || "");
     if (!source) {
       setNotice("Please write something in the notes first.");
@@ -61,7 +63,9 @@ function FlashcardsButton() {
       setNotice("Write a little more first - flashcards need about 100 characters of actual notes. Headings do not count.");
       return;
     }
-    if (looksLikeGibberish(source)) {
+    const g = describeGibberish(source);
+    if (g.gibberish) {
+      setGibberishReason(g.reason || "");
       setError("__gibberish__");
       return;
     }
@@ -117,11 +121,31 @@ function FlashcardsButton() {
           const json = line.slice(6).trim();
           if (json === "[DONE]") break;
           try {
-            const parsed = JSON.parse(json);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) { text += content; setResult(text); }
-          } catch {}
+            const parsed: unknown = JSON.parse(json);
+            // Runtime shape validation — protect against malformed edge-function payloads.
+            if (
+              parsed &&
+              typeof parsed === "object" &&
+              "choices" in parsed &&
+              Array.isArray((parsed as any).choices) &&
+              (parsed as any).choices[0] &&
+              typeof (parsed as any).choices[0] === "object"
+            ) {
+              const delta = (parsed as any).choices[0].delta;
+              const content = delta && typeof delta === "object" ? delta.content : undefined;
+              if (typeof content === "string" && content.length > 0) {
+                text += content;
+                setResult(text);
+              }
+            }
+          } catch {
+            // Non-JSON / partial chunk — ignore silently, next iteration will retry.
+          }
         }
+      }
+      // Final sanity check: if the stream produced nothing usable, surface a clear error.
+      if (!text.trim()) {
+        throw new Error("The flashcard service returned an empty response. Please try again.");
       }
     } catch (e: any) {
       setError(e.message || "Failed");
@@ -203,7 +227,7 @@ function FlashcardsButton() {
             {/* Gibberish / NO_CONCEPTS state */}
             {!loading && (error === "__gibberish__" ||
               (result && result.trim().toUpperCase().includes("NO_CONCEPTS"))) && (
-              <div className="flex-1 flex items-center justify-center p-8">
+              <div data-testid="flashcards-empty-state" className="flex-1 flex items-center justify-center p-8">
                 <div className="max-w-sm text-center">
                   <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[hsl(280_60%_55%/0.10)] text-[hsl(280_65%_55%)] dark:text-[hsl(280_75%_78%)]">
                     <Layers className="h-5 w-5" />
@@ -213,6 +237,14 @@ function FlashcardsButton() {
                     I can only build flashcards from notes that actually explain something. Add real
                     sentences (definitions, examples, cause &amp; effect) and try again.
                   </p>
+                  {error === "__gibberish__" && gibberishReason && (
+                    <p
+                      data-testid="gibberish-reason"
+                      className="mt-3 text-xs text-foreground/80 bg-[hsl(280_60%_55%/0.08)] border border-[hsl(280_60%_55%/0.20)] rounded-lg px-3 py-2"
+                    >
+                      <span className="font-medium">Why:</span> {gibberishReason}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -225,7 +257,7 @@ function FlashcardsButton() {
             )}
 
             {result && !result.trim().toUpperCase().includes("NO_CONCEPTS") && (
-              <div className="flex-1 overflow-y-auto p-5">
+              <div data-testid="flashcards-deck" className="flex-1 overflow-y-auto p-5">
                 <FlashcardDeck markdown={result} streaming={loading} />
               </div>
             )}
