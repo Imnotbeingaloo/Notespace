@@ -149,9 +149,9 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         reader.readAsText(f);
       });
       onProgress(78, "Formatting document…");
-      const body = formatImportedDocument(text, f.name);
+      const { body, title } = formatImportedDocument(text, f.name);
       onProgress(100, "Ready to add to notebook");
-      return { kind: "text", body };
+      return { kind: "text", body, title };
     }
     if (isPdfFile(f)) {
       onProgress(10, "Reading PDF…");
@@ -161,12 +161,13 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
         return prepareBinary(f, userId, onProgress);
       }
       onProgress(90, "Formatting extracted text…");
-      const body = formatImportedDocument(text, f.name);
+      const { body, title } = formatImportedDocument(text, f.name);
       onProgress(100, "Ready to add to notebook");
       return {
         kind: "pdf",
         pageCount,
         body,
+        title,
       };
     }
     return prepareBinary(f, userId, onProgress);
