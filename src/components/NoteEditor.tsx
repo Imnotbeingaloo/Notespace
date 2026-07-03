@@ -752,6 +752,35 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           )}
         </AnimatePresence>
 
+        <AnimatePresence>
+          {dropProgress && (
+            <motion.div
+              key="drop-progress"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.2 }}
+              role="status"
+              aria-live="polite"
+              className="fixed bottom-4 right-4 z-[70] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl bg-card border border-border p-4 shadow-lg"
+            >
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
+                <span className="font-medium text-foreground truncate pr-2" title={dropProgress.name}>{dropProgress.name}</span>
+                <span>{dropProgress.pct}%</span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">{dropProgress.stage}</p>
+              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                <motion.div
+                  className="h-full bg-primary"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${dropProgress.pct}%` }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
 
         {/* Title bar */}
         <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
