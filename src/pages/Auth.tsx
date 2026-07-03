@@ -146,6 +146,21 @@ const AuthPage = () => {
     try { localStorage.setItem("hasVisitedAuth", "1"); } catch {}
   }, []);
 
+  // Smoothly focus the email field when switching into email flow or between modes.
+  useEffect(() => {
+    if (authMethod !== "email") return;
+    const t = window.setTimeout(() => {
+      const el = emailInputRef.current;
+      if (!el) return;
+      el.focus({ preventScroll: true });
+      // Place caret at end so the preserved value stays intact.
+      const len = el.value.length;
+      try { el.setSelectionRange(len, len); } catch { /* noop */ }
+    }, 320); // wait for slide-in animation
+    return () => window.clearTimeout(t);
+  }, [authMethod, mode]);
+
+
   // Easter egg: reset extra tape stickers when the user switches modes or method.
   // Tapes persist across mode/authMethod changes; they only clear on full page reload.
 
