@@ -997,7 +997,7 @@ const AuthPage = () => {
                     const cls = source[Math.floor(Math.random() * source.length)];
                     const top = 5 + Math.random() * 90;
                     const left = 5 + Math.random() * 90;
-                    const rotate = -60 + Math.random() * 120;
+                    const rotate = Math.floor(Math.random() * 360); // any angle 0-359°
                     const width = 68 + Math.random() * 68; // ~68-136px
                     const height = 18 + Math.random() * 8;
 
