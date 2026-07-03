@@ -678,9 +678,8 @@ const AuthPage = () => {
                 <h2 className="font-serif text-[29px] leading-tight font-semibold text-foreground">
                   {mode === "login" ? "Welcome back" : "Create your account"}
                 </h2>
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                  {mode === "login" ? "Sign in to pick up where you left off." : "Sign up to get started in seconds."}
-                </p>
+
+
               </div>
 
               <button
