@@ -1299,7 +1299,7 @@ const AuthPage = () => {
           );
         })()}
 
-        <div className="relative z-10 max-w-xl mx-auto text-left w-full">
+        <div className="relative z-10 max-w-md mx-auto text-left w-full">
           <p className="font-serif text-[1.75rem] xl:text-[2rem] leading-[1.2] text-foreground tracking-tight text-left">
             A calm place to think, write, and remember what mattered.
           </p>
