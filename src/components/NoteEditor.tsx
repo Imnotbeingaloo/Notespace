@@ -882,6 +882,9 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
         </div>
 
+        {/* Attachments footer (drag-to-reorder, rename, replace, remove) */}
+        {!focusMode && <AttachmentsFooter />}
+
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
           <WordCount content={liveContent} />
