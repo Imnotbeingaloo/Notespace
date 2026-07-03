@@ -955,6 +955,7 @@ const AuthPage = () => {
 
       {/* Right column — editorial notebook panel. */}
       <aside
+        ref={asideRef}
         aria-hidden="true"
         className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-14"
       >
