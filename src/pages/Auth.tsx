@@ -18,12 +18,9 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const MicrosoftIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-    <path fill="#F25022" d="M1 1h10v10H1z"/>
-    <path fill="#7FBA00" d="M13 1h10v10H13z"/>
-    <path fill="#00A4EF" d="M1 13h10v10H1z"/>
-    <path fill="#FFB900" d="M13 13h10v10H13z"/>
+const AppleIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="currentColor">
+    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
   </svg>
 );
 
@@ -78,9 +75,9 @@ const AuthPage = () => {
   const [highlightEmail, setHighlightEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [microsoftLoading, setMicrosoftLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
-  const [easterTapes, setEasterTapes] = useState(0);
+  const [tapes, setTapes] = useState<Array<{ id: number; top: number; left: number; rotate: number; width: number; color: string }>>([]);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -122,7 +119,7 @@ const AuthPage = () => {
   }, []);
 
   // Easter egg: reset extra tape stickers when the user switches modes or method.
-  useEffect(() => { setEasterTapes(0); }, [mode, authMethod]);
+  useEffect(() => { setTapes([]); }, [mode, authMethod]);
 
   useEffect(() => {
     if (!authLoading && user) navigate(resolvePostAuthTarget(), { replace: true });
@@ -235,25 +232,30 @@ const AuthPage = () => {
     }
   };
 
-  const handleMicrosoft = async () => {
+  const handleApple = async () => {
     setError("");
-    setMicrosoftLoading(true);
+    setAppleLoading(true);
     try {
-      // Lovable Cloud managed OAuth only supports google/apple natively.
-      // Attempt Microsoft (azure) via Supabase; surface a friendly note if not configured.
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "azure" as any,
-        options: { redirectTo: window.location.origin },
+      const result = await lovable.auth.signInWithOAuth("apple", {
+        redirect_uri: window.location.origin,
       });
-      if (error) {
+      if (result.error) {
+        const msg = result.error.message || "Apple sign-in failed. Try again.";
+        setError(msg);
         const { toast } = await import("sonner");
-        toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
-        setMicrosoftLoading(false);
+        toast.error(msg);
+        setAppleLoading(false);
+        return;
       }
-    } catch {
+      if (result.redirected) return;
+      try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+      navigate(resolvePostAuthTarget());
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Apple sign-in failed.";
+      setError(msg);
       const { toast } = await import("sonner");
-      toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
-      setMicrosoftLoading(false);
+      toast.error(msg);
+      setAppleLoading(false);
     }
   };
 
@@ -585,15 +587,15 @@ const AuthPage = () => {
 
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="mx-auto max-w-[380px] px-1 sm:px-2">
+        <div className="mx-auto max-w-[400px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[280px]">
+            <div className="mx-auto max-w-[320px]">
               <div className="mb-5 text-center">
-                <h2 className="font-serif text-xl font-semibold text-foreground">
+                <h2 className="font-serif text-2xl font-semibold text-foreground">
                   {mode === "login" ? "Welcome back" : "Create your account"}
                 </h2>
-                <p className="mt-1 text-xs text-muted-foreground">
+                <p className="mt-1.5 text-sm text-muted-foreground">
                   {mode === "login" ? "Sign in to pick up where you left off." : "Sign up to get started in seconds."}
                 </p>
               </div>
@@ -601,7 +603,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={handleGoogle}
-                  disabled={googleLoading || microsoftLoading}
+                  disabled={googleLoading || appleLoading}
                   className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
@@ -609,12 +611,12 @@ const AuthPage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={handleMicrosoft}
-                  disabled={googleLoading || microsoftLoading}
+                  onClick={handleApple}
+                  disabled={googleLoading || appleLoading}
                   className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
-                  {microsoftLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MicrosoftIcon />}
-                  {mode === "login" ? "Sign in with Microsoft" : "Sign up with Microsoft"}
+                  {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
+                  {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
                 </button>
                 <button
                   type="button"
@@ -646,7 +648,7 @@ const AuthPage = () => {
               <button
                 type="button"
                 onClick={handleGoogle}
-                disabled={googleLoading || microsoftLoading}
+                disabled={googleLoading || appleLoading}
                 className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
@@ -902,7 +904,7 @@ const AuthPage = () => {
               type="submit"
               disabled={loading || googleLoading}
               aria-label={loading ? "Verifying your account" : undefined}
-              className={`mx-auto max-w-[220px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
+              className={`mx-auto max-w-[214px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
 
             >
               {loading ? (
@@ -959,34 +961,64 @@ const AuthPage = () => {
         <div className="absolute -top-32 -right-24 h-[300px] w-[300px] rounded-full bg-primary/8 blur-3xl" />
         <div className="absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-amber-400/[0.06] blur-3xl" />
 
-        {/* Corner tape — clickable easter egg. Each click drops another tape strip
-            somewhere on the notebook panel. Resets on mode change / reload. */}
-        <button
-          type="button"
-          aria-label="Decorative tape"
-          tabIndex={-1}
-          onClick={() => setEasterTapes((n) => Math.min(3, n + 1))}
-          className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
-        />
-        {/* Easter egg tapes */}
-        {easterTapes >= 1 && (
-          <div
-            aria-hidden="true"
-            className="absolute top-[34%] left-16 h-5 w-20 -rotate-[8deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
-          />
-        )}
-        {easterTapes >= 2 && (
-          <div
-            aria-hidden="true"
-            className="absolute bottom-[30%] right-10 h-5 w-24 rotate-[12deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
-          />
-        )}
-        {easterTapes >= 3 && (
-          <div
-            aria-hidden="true"
-            className="absolute bottom-10 left-1/3 h-5 w-24 -rotate-[4deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
-          />
-        )}
+        {/* Corner tape — clickable easter egg. Each click drops another tape
+            strip at a random spot with a random color/rotation. Resets on
+            mode change / reload. */}
+        {(() => {
+          const TAPE_COLORS = [
+            { a: "rgba(251,113,133,0.72)", b: "rgba(244,63,94,0.62)", edge: "rgba(190,18,60,0.55)" },   // rose
+            { a: "rgba(253,224,71,0.72)",  b: "rgba(234,179,8,0.60)",  edge: "rgba(161,98,7,0.5)" },     // amber
+            { a: "rgba(94,234,212,0.70)",  b: "rgba(45,212,191,0.60)", edge: "rgba(15,118,110,0.5)" },   // teal
+            { a: "rgba(186,230,253,0.75)", b: "rgba(125,211,252,0.60)",edge: "rgba(3,105,161,0.5)" },    // sky
+            { a: "rgba(221,214,254,0.75)", b: "rgba(196,181,253,0.60)",edge: "rgba(109,40,217,0.5)" },   // lavender
+            { a: "rgba(187,247,208,0.75)", b: "rgba(134,239,172,0.60)",edge: "rgba(21,128,61,0.5)" },    // mint
+          ];
+          const tapeStyle = (c: { a: string; b: string; edge: string }): React.CSSProperties => ({
+            background: `linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 45%, rgba(0,0,0,0.08) 100%), repeating-linear-gradient(90deg, ${c.a} 0px, ${c.a} 7px, ${c.b} 7px, ${c.b} 14px)`,
+            boxShadow: "0 2px 5px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.25)",
+            borderTop: `1px solid ${c.edge}`,
+            borderBottom: `1px solid ${c.edge}`,
+            clipPath:
+              "polygon(2% 12%, 6% 0%, 14% 8%, 26% 2%, 40% 10%, 55% 0%, 68% 8%, 82% 2%, 94% 10%, 100% 4%, 98% 30%, 100% 60%, 97% 90%, 92% 100%, 78% 94%, 62% 100%, 48% 92%, 32% 100%, 18% 94%, 6% 100%, 0% 88%, 3% 60%, 0% 30%)",
+          });
+          const cornerColor = TAPE_COLORS[0];
+          return (
+            <>
+              <button
+                type="button"
+                aria-label="Decorative tape"
+                tabIndex={-1}
+                onClick={() => {
+                  const color = TAPE_COLORS[Math.floor(Math.random() * TAPE_COLORS.length)];
+                  const top = 8 + Math.random() * 78;   // % within panel
+                  const left = 8 + Math.random() * 74;
+                  const rotate = -20 + Math.random() * 40;
+                  const width = 70 + Math.random() * 60; // px
+                  setTapes((t) => [...t, { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify(color) }]);
+                }}
+                className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+                style={tapeStyle(cornerColor)}
+              />
+              {tapes.map((t) => {
+                const c = JSON.parse(t.color) as { a: string; b: string; edge: string };
+                return (
+                  <div
+                    key={t.id}
+                    aria-hidden="true"
+                    className="absolute h-5 z-20 animate-in fade-in zoom-in-95 duration-200"
+                    style={{
+                      top: `${t.top}%`,
+                      left: `${t.left}%`,
+                      width: `${t.width}px`,
+                      transform: `rotate(${t.rotate}deg)`,
+                      ...tapeStyle(c),
+                    }}
+                  />
+                );
+              })}
+            </>
+          );
+        })()}
 
         <div className="relative z-10 pl-20" />
 
