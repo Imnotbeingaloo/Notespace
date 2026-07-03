@@ -1193,6 +1193,40 @@ const AuthPage = () => {
           );
         })()}
 
+        {/* Decorative scattered tapes — non-interactive, positioned away from the text block */}
+        {(() => {
+          const tapeClip =
+            "polygon(3% 0%, 97% 0%, 100% 35%, 96% 65%, 100% 100%, 3% 100%, 0% 65%, 4% 35%)";
+          const decor: Array<{ top?: string; bottom?: string; left?: string; right?: string; rotate: number; width: number; height: number; cls: string }> = [
+            { top: "14%",    right: "6%",  rotate: -18, width: 78, height: 20, cls: "bg-amber-300/60 border-amber-400/40" },
+            { top: "44%",    right: "4%",  rotate: 24,  width: 62, height: 18, cls: "bg-sky-300/60 border-sky-400/40" },
+            { bottom: "22%", right: "10%", rotate: -8,  width: 90, height: 22, cls: "bg-emerald-300/55 border-emerald-400/40" },
+            { bottom: "8%",  right: "34%", rotate: 14,  width: 70, height: 18, cls: "bg-violet-300/55 border-violet-400/40" },
+            { top: "70%",    right: "24%", rotate: -32, width: 55, height: 16, cls: "bg-rose-300/55 border-rose-400/40" },
+          ];
+          return (
+            <>
+              {decor.map((t, i) => (
+                <div
+                  key={i}
+                  aria-hidden="true"
+                  className={`absolute pointer-events-none border-y shadow-sm z-10 ${t.cls}`}
+                  style={{
+                    top: t.top,
+                    bottom: t.bottom,
+                    left: t.left,
+                    right: t.right,
+                    width: `${t.width}px`,
+                    height: `${t.height}px`,
+                    transform: `rotate(${t.rotate}deg)`,
+                    clipPath: tapeClip,
+                    transformOrigin: "center",
+                  }}
+                />
+              ))}
+            </>
+          );
+        })()}
 
         <div className="relative z-10 pl-20" />
 
