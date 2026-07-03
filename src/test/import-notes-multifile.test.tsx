@@ -101,6 +101,7 @@ describe("ImportNotesButton multi-file persistence", () => {
     ];
     Object.defineProperty(input, "files", { value: files, configurable: true });
     fireEvent.change(input);
+    await chooseRouting();
 
     await waitFor(() => expect(updateNoteMock).toHaveBeenCalledTimes(1));
     const [, , updates] = updateNoteMock.mock.calls[0];
@@ -126,6 +127,7 @@ describe("ImportNotesButton multi-file persistence", () => {
     ];
     Object.defineProperty(input, "files", { value: files, configurable: true });
     fireEvent.change(input);
+    await chooseRouting();
 
     await waitFor(() => expect(onInsert).toHaveBeenCalledTimes(3));
     const merged = onInsert.mock.calls.map((c) => c[0]).join("\n");
@@ -157,6 +159,7 @@ describe("ImportNotesButton multi-file persistence", () => {
     ];
     Object.defineProperty(input, "files", { value: files, configurable: true });
     fireEvent.change(input);
+    await chooseRouting();
 
     // First file (text) → onInsert. PDF is scanned → attachment upload path.
     await waitFor(() => expect(uploadMock).toHaveBeenCalledTimes(1));
