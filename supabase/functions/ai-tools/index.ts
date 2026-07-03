@@ -78,8 +78,8 @@ serve(async (req) => {
     let systemPrompt = systemPrompts[action];
     if (action === "flashcards" && count) {
       systemPrompt = systemPrompt.replace(
-        /For each card:/,
-        `Generate EXACTLY ${count} cards. The user explicitly requested ${count}. For each card:`
+        /PASS 2:/,
+        `The user explicitly requested EXACTLY ${count} cards — cap or trim your extraction accordingly. PASS 2:`
       );
     }
 
