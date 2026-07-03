@@ -23,6 +23,7 @@ import { FindReplace } from "@/components/FindReplace";
 import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { ImportActionDialog } from "@/components/ImportActionDialog";
 import { NewNotePrompt } from "@/components/NewNotePrompt";
+import { AttachmentsFooter } from "@/components/AttachmentsFooter";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -881,6 +882,9 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             placeholder={focusMode ? "Just write..." : "Start writing..."}
           />
         </div>
+
+        {/* Attachments footer (drag-to-reorder, rename, replace, remove) */}
+        {!focusMode && <AttachmentsFooter />}
 
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
