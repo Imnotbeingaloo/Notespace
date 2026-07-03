@@ -61,6 +61,10 @@ function FlashcardsButton() {
       setNotice("Write a little more first - flashcards need about 100 characters of actual notes. Headings do not count.");
       return;
     }
+    if (looksLikeGibberish(source)) {
+      setError("__gibberish__");
+      return;
+    }
     // Auto-detect: skip picker, edge function extracts every concept.
     void run();
   };
