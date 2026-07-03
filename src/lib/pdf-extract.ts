@@ -16,11 +16,47 @@ interface PdfItem {
   height: number;
   y: number;
   hasEOL?: boolean;
+  fontName?: string;
+  bold?: boolean;
+  italic?: boolean;
 }
 
 // Build a structured markdown representation from raw PDF text items.
 // Preserves paragraph breaks, detects likely headings via relative font size,
 // and converts simple bullet/numbered lines into markdown lists.
+// Build a line's markdown from its items, wrapping consecutive bold runs in
+// `**...**` and italic runs in `*...*`. Keeps unstyled runs unchanged.
+function renderLineWithStyles(items: PdfItem[]): string {
+  const raw = items.map((c) => c.str).join("");
+  // If the whole line is bold, don't wrap word-by-word; just bold the joined
+  // text once and return early (avoids `**a** **b** **c**` cruft).
+  const bolds = items.filter((i) => (i.str || "").trim());
+  if (bolds.length && bolds.every((i) => i.bold)) {
+    const t = raw.replace(/\s+/g, " ").trim();
+    return t ? `**${t}**` : "";
+  }
+  let out = "";
+  let buffer = "";
+  let mode: "plain" | "bold" | "italic" = "plain";
+  const flush = () => {
+    if (!buffer) return;
+    if (mode === "bold") out += `**${buffer.trim()}**${buffer.endsWith(" ") ? " " : ""}`;
+    else if (mode === "italic") out += `*${buffer.trim()}*${buffer.endsWith(" ") ? " " : ""}`;
+    else out += buffer;
+    buffer = "";
+  };
+  for (const it of items) {
+    const nextMode: typeof mode = it.bold ? "bold" : it.italic ? "italic" : "plain";
+    if (nextMode !== mode) {
+      flush();
+      mode = nextMode;
+    }
+    buffer += it.str;
+  }
+  flush();
+  return out.replace(/\s+/g, " ").trim();
+}
+
 function buildPageMarkdown(items: PdfItem[]): string {
   if (items.length === 0) return "";
 
@@ -30,25 +66,24 @@ function buildPageMarkdown(items: PdfItem[]): string {
   let currentY: number | null = null;
   const Y_TOLERANCE = 2;
 
+  const flushLine = () => {
+    if (!current.length) return;
+    const text = renderLineWithStyles(current);
+    const maxH = Math.max(...current.map((c) => c.height || 0));
+    if (text) lines.push({ text, height: maxH });
+  };
+
   for (const it of items) {
     if (currentY === null || Math.abs(it.y - currentY) <= Y_TOLERANCE) {
       current.push(it);
       currentY = currentY ?? it.y;
     } else {
-      if (current.length) {
-        const text = current.map((c) => c.str).join("").replace(/\s+/g, " ").trim();
-        const maxH = Math.max(...current.map((c) => c.height || 0));
-        if (text) lines.push({ text, height: maxH });
-      }
+      flushLine();
       current = [it];
       currentY = it.y;
     }
   }
-  if (current.length) {
-    const text = current.map((c) => c.str).join("").replace(/\s+/g, " ").trim();
-    const maxH = Math.max(...current.map((c) => c.height || 0));
-    if (text) lines.push({ text, height: maxH });
-  }
+  flushLine();
 
   if (lines.length === 0) return "";
 
@@ -151,12 +186,19 @@ export async function extractPdfText(file: File, onProgress?: (pct: number) => v
     const tc = await page.getTextContent();
     const items: PdfItem[] = tc.items
       .filter((i: any) => "str" in i)
-      .map((i: any) => ({
-        str: i.str,
-        height: i.height || (i.transform ? Math.abs(i.transform[3]) : 0),
-        y: i.transform ? i.transform[5] : 0,
-        hasEOL: i.hasEOL,
-      }));
+      .map((i: any) => {
+        const fontName: string = (i.fontName || "") + "";
+        const lc = fontName.toLowerCase();
+        return {
+          str: i.str,
+          height: i.height || (i.transform ? Math.abs(i.transform[3]) : 0),
+          y: i.transform ? i.transform[5] : 0,
+          hasEOL: i.hasEOL,
+          fontName,
+          bold: /bold|black|heavy|semibold|demi/.test(lc),
+          italic: /italic|oblique/.test(lc),
+        } as PdfItem;
+      });
     const md = stripPageChrome(buildPageMarkdown(items));
     if (md) pageTexts.push(md);
     totalAlpha += (md.match(/[a-zA-Z]/g) || []).length;
