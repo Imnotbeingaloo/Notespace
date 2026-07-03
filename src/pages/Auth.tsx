@@ -610,7 +610,7 @@ const AuthPage = () => {
           </div>
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[260px] space-y-3">
+            <div className="mx-auto max-w-[220px] space-y-3">
               <button
                 type="button"
                 onClick={handleGoogle}
