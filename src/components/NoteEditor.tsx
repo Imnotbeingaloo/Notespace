@@ -51,7 +51,6 @@ function FlashcardsButton() {
     setResult("");
     setError("");
     setNotice("");
-    setSetup(false);
     const source = getFlashcardSourceText(activeNote.content || "", activeNote.title || "");
     if (!source) {
       setNotice("Please write something in the notes first.");
@@ -69,16 +68,13 @@ function FlashcardsButton() {
     if (!activeNote) return;
     const source = getFlashcardSourceText(activeNote.content || "", activeNote.title || "");
     if (!source) {
-      setSetup(false);
       setNotice("Please write something in the notes first.");
       return;
     }
     if (source.length < MIN_FLASHCARD_BODY_CHARS) {
-      setSetup(false);
       setNotice("Write a little more first - flashcards need about 100 characters of actual notes. Headings do not count.");
       return;
     }
-    setSetup(false);
     setNotice("");
     setLoading(true);
     try {
