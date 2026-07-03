@@ -200,14 +200,31 @@ function FlashcardsButton() {
               </div>
             )}
 
-            {/* Error state */}
-            {error && !loading && (
+            {/* Gibberish / NO_CONCEPTS state */}
+            {!loading && (error === "__gibberish__" ||
+              (result && result.trim().toUpperCase().includes("NO_CONCEPTS"))) && (
+              <div className="flex-1 flex items-center justify-center p-8">
+                <div className="max-w-sm text-center">
+                  <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[hsl(280_60%_55%/0.10)] text-[hsl(280_65%_55%)] dark:text-[hsl(280_75%_78%)]">
+                    <Layers className="h-5 w-5" />
+                  </div>
+                  <p className="text-sm font-semibold text-foreground mb-1">Make it make sense for me 🙃</p>
+                  <p className="text-xs text-muted-foreground">
+                    I can only build flashcards from notes that actually explain something. Add real
+                    sentences (definitions, examples, cause &amp; effect) and try again.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Other errors */}
+            {error && error !== "__gibberish__" && !loading && (
               <div className="flex-1 flex items-center justify-center p-8">
                 <p className="text-sm text-destructive text-center">{error}</p>
               </div>
             )}
 
-            {result && (
+            {result && !result.trim().toUpperCase().includes("NO_CONCEPTS") && (
               <div className="flex-1 overflow-y-auto p-5">
                 <FlashcardDeck markdown={result} streaming={loading} />
               </div>
