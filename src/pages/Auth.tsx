@@ -966,48 +966,15 @@ const AuthPage = () => {
             strip at a random spot with a random color/rotation. Resets on
             mode change / reload. */}
         {(() => {
-          // Translucent "washi / school tape" palette — bright, semi-transparent, playful.
+          // Simple rose semi-transparent rectangle — the version that read as tape best.
           const TAPE_COLORS = [
-            { base: "rgba(244,63,94,0.55)",  dark: "rgba(190,18,60,0.45)" },   // red
-            { base: "rgba(59,130,246,0.55)", dark: "rgba(29,78,216,0.45)" },   // blue
-            { base: "rgba(250,204,21,0.60)", dark: "rgba(202,138,4,0.45)" },   // yellow
-            { base: "rgba(34,197,94,0.55)",  dark: "rgba(21,128,61,0.45)" },   // green
-            { base: "rgba(236,72,153,0.55)", dark: "rgba(190,24,93,0.45)" },   // pink
-            { base: "rgba(168,85,247,0.55)", dark: "rgba(126,34,206,0.45)" },  // purple
-            { base: "rgba(249,115,22,0.55)", dark: "rgba(194,65,12,0.45)" },   // orange
-            { base: "rgba(20,184,166,0.55)", dark: "rgba(15,118,110,0.45)" },  // teal
+            "bg-rose-300/70 border-rose-400/50",
+            "bg-sky-300/70 border-sky-400/50",
+            "bg-amber-300/70 border-amber-400/50",
+            "bg-emerald-300/70 border-emerald-400/50",
+            "bg-violet-300/70 border-violet-400/50",
+            "bg-pink-300/70 border-pink-400/50",
           ];
-          const makeTornClip = (seed: number) => {
-            const rand = (i: number) => {
-              const x = Math.sin(seed * 9301 + i * 49297) * 233280;
-              return x - Math.floor(x);
-            };
-            const steps = 16;
-            const pts: string[] = [];
-            for (let i = 0; i <= steps; i++) {
-              const x = (i / steps) * 100;
-              pts.push(`${x.toFixed(1)}% ${(rand(i) * 20).toFixed(1)}%`);
-            }
-            for (let i = steps; i >= 0; i--) {
-              const x = (i / steps) * 100;
-              pts.push(`${x.toFixed(1)}% ${(100 - rand(i + 50) * 20).toFixed(1)}%`);
-            }
-            return `polygon(${pts.join(", ")})`;
-          };
-          const tapeStyle = (c: { base: string; dark: string }, seed: number): React.CSSProperties => ({
-            background: [
-              // soft top highlight, subtle bottom shadow
-              "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 45%, rgba(0,0,0,0.10) 100%)",
-              // gentle wrinkle diagonal
-              "linear-gradient(115deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 30%, rgba(0,0,0,0.06) 70%, rgba(255,255,255,0.08) 100%)",
-              // faint horizontal stripe pattern (like classic washi tape)
-              `repeating-linear-gradient(90deg, ${c.base} 0px, ${c.base} 8px, ${c.dark} 8px, ${c.dark} 16px)`,
-            ].join(", "),
-            boxShadow: "0 2px 5px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.30)",
-            clipPath: makeTornClip(seed),
-            mixBlendMode: "multiply",
-          });
-          const cornerColor = TAPE_COLORS[0];
           return (
             <>
               <button
@@ -1015,32 +982,32 @@ const AuthPage = () => {
                 aria-label="Decorative tape"
                 tabIndex={-1}
                 onClick={() => {
-                  const color = TAPE_COLORS[Math.floor(Math.random() * TAPE_COLORS.length)];
+                  const cls = TAPE_COLORS[Math.floor(Math.random() * TAPE_COLORS.length)];
                   const top = 5 + Math.random() * 84;
                   const left = 4 + Math.random() * 78;
                   const rotate = -60 + Math.random() * 120;
                   const width = 70 + Math.random() * 90;
-                  const height = 18 + Math.random() * 10;
-                  const seed = Math.floor(Math.random() * 10000);
-                  setTapes((t) => [...t, { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ c: color, h: height, s: seed }) }]);
+                  const height = 18 + Math.random() * 8;
+                  setTapes((t) => [
+                    ...t,
+                    { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ cls, h: height }) },
+                  ]);
                 }}
-                className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
-                style={tapeStyle(cornerColor, 7)}
+                className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
               />
               {tapes.map((t) => {
-                const parsed = JSON.parse(t.color) as { c: { base: string; dark: string }; h: number; s: number };
+                const parsed = JSON.parse(t.color) as { cls: string; h: number };
                 return (
                   <div
                     key={t.id}
                     aria-hidden="true"
-                    className="absolute z-20 animate-in fade-in zoom-in-95 duration-200"
+                    className={`absolute z-20 border-y shadow-sm animate-in fade-in zoom-in-95 duration-200 ${parsed.cls}`}
                     style={{
                       top: `${t.top}%`,
                       left: `${t.left}%`,
                       width: `${t.width}px`,
                       height: `${parsed.h}px`,
                       transform: `rotate(${t.rotate}deg)`,
-                      ...tapeStyle(parsed.c, parsed.s),
                     }}
                   />
                 );
@@ -1048,6 +1015,7 @@ const AuthPage = () => {
             </>
           );
         })()}
+
 
         <div className="relative z-10 pl-20" />
 
