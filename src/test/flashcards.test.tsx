@@ -49,10 +49,9 @@ describe("FlashcardDeck", () => {
 
     fireEvent.click(correctBtn);
     // Position indicator uses "n / total" — verify we moved to card 2.
-    await waitFor(() =>
-      expect(
-        screen.getByText((_, node) => node?.textContent?.replace(/\s+/g, "") === "2/2"),
-      ).toBeInTheDocument(),
-    );
+    await waitFor(() => {
+      const counter = document.querySelector("span.tabular-nums");
+      expect(counter?.textContent?.replace(/\s+/g, "")).toBe("2/2");
+    });
   });
 });
