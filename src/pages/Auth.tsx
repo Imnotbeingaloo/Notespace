@@ -769,9 +769,11 @@ const AuthPage = () => {
             </form>
           ) : (
           <form
+            key={`email-form-${mode}`}
             onSubmit={handleSubmit}
-            className="space-y-4"
+            className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300"
           >
+
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
               <div className="relative">
