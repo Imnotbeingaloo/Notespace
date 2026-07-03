@@ -1133,7 +1133,7 @@ const AuthPage = () => {
                     ];
                   });
                 }}
-                className="absolute top-6 right-8 h-6 w-24 rotate-[10deg] z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
+                className="absolute top-6 right-8 h-6 w-24 rotate-[20deg] z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
                 style={{
                   clipPath: tapeClip,
                   animation: tapeHint ? "tapeHintPop 1.4s ease-in-out infinite" : undefined,
