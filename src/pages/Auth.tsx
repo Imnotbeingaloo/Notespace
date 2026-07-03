@@ -1087,7 +1087,7 @@ const AuthPage = () => {
       <aside
         ref={asideRef}
         aria-hidden="true"
-        className="hidden lg:flex order-2 relative flex-col justify-center gap-10 overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-12"
+        className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-12"
       >
         {/* Ruled paper */}
         <div
@@ -1299,23 +1299,25 @@ const AuthPage = () => {
           );
         })()}
 
-        <div className="relative z-10 max-w-md mx-auto text-center w-full">
+        <div className="relative z-10 w-full" aria-hidden="true" />
+
+        <div className="relative z-10 max-w-lg mx-auto text-center w-full">
           <p className="font-serif text-[1.75rem] xl:text-[2rem] leading-[1.2] text-foreground tracking-tight text-center">
             A calm place to think, write, and remember what mattered.
           </p>
-          <p className="mt-4 text-[13px] xl:text-sm text-muted-foreground leading-relaxed text-center">
+          <p className="mt-4 text-[13px] xl:text-sm text-muted-foreground leading-relaxed text-center mx-auto max-w-[520px]">
             Every note lives in a ruled-paper canvas — with AI that explains,
             summarises, and turns your reading into flashcards when you need it.
           </p>
 
           {/* Handwritten-style annotation card */}
-          <div className="mt-6 relative max-w-sm mx-auto rotate-[-1.2deg] group cursor-default">
-            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 shadow-md transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:rotate-0 group-hover:shadow-xl group-hover:bg-card">
+          <div className="mt-10 relative max-w-sm mx-auto rotate-[-1.2deg] group cursor-default">
+            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-5 py-4 shadow-md transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:rotate-0 group-hover:shadow-xl group-hover:bg-card">
               <p className="font-serif italic text-[13.5px] leading-relaxed text-foreground/90 text-center">
                 "It replaced three apps for me — notes, flashcards, and my study
                 planner. And it actually feels good to open."
               </p>
-              <p className="mt-2 text-[10.5px] uppercase tracking-wider text-muted-foreground text-center">
+              <p className="mt-3 text-[10.5px] uppercase tracking-wider text-muted-foreground text-center">
                 — Maya, medical student
               </p>
             </div>
