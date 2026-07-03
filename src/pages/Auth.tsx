@@ -967,20 +967,42 @@ const AuthPage = () => {
             mode change / reload. */}
         {(() => {
           const TAPE_COLORS = [
-            { a: "rgba(251,113,133,0.72)", b: "rgba(244,63,94,0.62)", edge: "rgba(190,18,60,0.55)" },   // rose
-            { a: "rgba(253,224,71,0.72)",  b: "rgba(234,179,8,0.60)",  edge: "rgba(161,98,7,0.5)" },     // amber
-            { a: "rgba(94,234,212,0.70)",  b: "rgba(45,212,191,0.60)", edge: "rgba(15,118,110,0.5)" },   // teal
-            { a: "rgba(186,230,253,0.75)", b: "rgba(125,211,252,0.60)",edge: "rgba(3,105,161,0.5)" },    // sky
-            { a: "rgba(221,214,254,0.75)", b: "rgba(196,181,253,0.60)",edge: "rgba(109,40,217,0.5)" },   // lavender
-            { a: "rgba(187,247,208,0.75)", b: "rgba(134,239,172,0.60)",edge: "rgba(21,128,61,0.5)" },    // mint
+            { base: "#c9a96e", dark: "#8f7343" },   // classic tan
+            { base: "#8a8f96", dark: "#5b6068" },   // gaffer grey
+            { base: "#3d4a5a", dark: "#22303f" },   // navy
+            { base: "#b04a3d", dark: "#7a2f26" },   // brick red
+            { base: "#4f7a52", dark: "#324f34" },   // olive
+            { base: "#d4b16a", dark: "#a0813f" },   // mustard
+            { base: "#7a6a8a", dark: "#4f4359" },   // dusty purple
+            { base: "#c07a4a", dark: "#8a5230" },   // rust
           ];
-          const tapeStyle = (c: { a: string; b: string; edge: string }): React.CSSProperties => ({
-            background: `linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 45%, rgba(0,0,0,0.08) 100%), repeating-linear-gradient(90deg, ${c.a} 0px, ${c.a} 7px, ${c.b} 7px, ${c.b} 14px)`,
-            boxShadow: "0 2px 5px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.25)",
-            borderTop: `1px solid ${c.edge}`,
-            borderBottom: `1px solid ${c.edge}`,
-            clipPath:
-              "polygon(2% 12%, 6% 0%, 14% 8%, 26% 2%, 40% 10%, 55% 0%, 68% 8%, 82% 2%, 94% 10%, 100% 4%, 98% 30%, 100% 60%, 97% 90%, 92% 100%, 78% 94%, 62% 100%, 48% 92%, 32% 100%, 18% 94%, 6% 100%, 0% 88%, 3% 60%, 0% 30%)",
+          const makeTornClip = (seed: number) => {
+            const rand = (i: number) => {
+              const x = Math.sin(seed * 9301 + i * 49297) * 233280;
+              return x - Math.floor(x);
+            };
+            const steps = 16;
+            const pts: string[] = [];
+            for (let i = 0; i <= steps; i++) {
+              const x = (i / steps) * 100;
+              pts.push(`${x.toFixed(1)}% ${(rand(i) * 20).toFixed(1)}%`);
+            }
+            for (let i = steps; i >= 0; i--) {
+              const x = (i / steps) * 100;
+              pts.push(`${x.toFixed(1)}% ${(100 - rand(i + 50) * 20).toFixed(1)}%`);
+            }
+            return `polygon(${pts.join(", ")})`;
+          };
+          const tapeStyle = (c: { base: string; dark: string }, seed: number): React.CSSProperties => ({
+            background: [
+              "linear-gradient(105deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 22%, rgba(0,0,0,0.08) 55%, rgba(255,255,255,0.05) 80%, rgba(0,0,0,0.10) 100%)",
+              "linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 32%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.24) 100%)",
+              `repeating-linear-gradient(0deg, ${c.dark} 0px, ${c.dark} 1px, ${c.base} 1px, ${c.base} 3px)`,
+              `repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 5px)`,
+            ].join(", "),
+            boxShadow: "0 3px 6px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.22)",
+            clipPath: makeTornClip(seed),
+            filter: "saturate(0.85) contrast(1.05)",
           });
           const cornerColor = TAPE_COLORS[0];
           return (
@@ -991,28 +1013,31 @@ const AuthPage = () => {
                 tabIndex={-1}
                 onClick={() => {
                   const color = TAPE_COLORS[Math.floor(Math.random() * TAPE_COLORS.length)];
-                  const top = 8 + Math.random() * 78;   // % within panel
-                  const left = 8 + Math.random() * 74;
-                  const rotate = -20 + Math.random() * 40;
-                  const width = 70 + Math.random() * 60; // px
-                  setTapes((t) => [...t, { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify(color) }]);
+                  const top = 5 + Math.random() * 84;
+                  const left = 4 + Math.random() * 78;
+                  const rotate = -60 + Math.random() * 120;
+                  const width = 70 + Math.random() * 90;
+                  const height = 18 + Math.random() * 10;
+                  const seed = Math.floor(Math.random() * 10000);
+                  setTapes((t) => [...t, { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ c: color, h: height, s: seed }) }]);
                 }}
                 className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
-                style={tapeStyle(cornerColor)}
+                style={tapeStyle(cornerColor, 7)}
               />
               {tapes.map((t) => {
-                const c = JSON.parse(t.color) as { a: string; b: string; edge: string };
+                const parsed = JSON.parse(t.color) as { c: { base: string; dark: string }; h: number; s: number };
                 return (
                   <div
                     key={t.id}
                     aria-hidden="true"
-                    className="absolute h-5 z-20 animate-in fade-in zoom-in-95 duration-200"
+                    className="absolute z-20 animate-in fade-in zoom-in-95 duration-200"
                     style={{
                       top: `${t.top}%`,
                       left: `${t.left}%`,
                       width: `${t.width}px`,
+                      height: `${parsed.h}px`,
                       transform: `rotate(${t.rotate}deg)`,
-                      ...tapeStyle(c),
+                      ...tapeStyle(parsed.c, parsed.s),
                     }}
                   />
                 );
