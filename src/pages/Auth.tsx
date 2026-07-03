@@ -584,7 +584,7 @@ const AuthPage = () => {
         </div>
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-7 sm:p-8 shadow-xl">
+        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-5 sm:p-6 shadow-xl">
           <div role="tablist" aria-label="Authentication mode" className="relative flex gap-1 bg-muted rounded-lg p-1 mb-6">
             {(["signup", "login"] as const).map((m) => {
               const active = (mode === m) || (mode === "forgot" && m === "login");
