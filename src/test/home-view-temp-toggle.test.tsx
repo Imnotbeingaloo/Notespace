@@ -10,6 +10,12 @@ vi.mock("framer-motion", async () => {
   return {
     motion: new Proxy({}, { get: (_t, key: string) => passthrough(key) }),
     AnimatePresence: ({ children }: any) => children,
+    useReducedMotion: () => false,
+    useAnimation: () => ({ start: () => Promise.resolve(), stop: () => {}, set: () => {} }),
+    useMotionValue: (v: any) => ({ get: () => v, set: () => {}, on: () => () => {} }),
+    useTransform: () => 0,
+    useSpring: (v: any) => v,
+    useScroll: () => ({ scrollY: { get: () => 0, on: () => () => {} }, scrollYProgress: { get: () => 0, on: () => () => {} } }),
   };
 });
 

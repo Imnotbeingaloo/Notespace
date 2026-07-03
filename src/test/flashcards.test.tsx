@@ -30,20 +30,28 @@ Core detail: chlorophyll absorbs light, water is split, and carbon dioxide is fi
 });
 
 describe("FlashcardDeck", () => {
-  it("shows grading buttons only after reveal and labels them correct/wrong", async () => {
+  it("keeps grading buttons disabled until reveal and advances after grading", async () => {
     expect(parseFlashcards(sampleDeck)).toHaveLength(2);
 
     render(<FlashcardDeck markdown={sampleDeck} />);
 
-    expect(screen.queryByRole("button", { name: /correct/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /wrong/i })).not.toBeInTheDocument();
+    const wrongBtn = screen.getByRole("button", { name: /mark wrong/i });
+    const correctBtn = screen.getByRole("button", { name: /mark correct/i });
+
+    // Pre-reveal: rendered but disabled so learners can't grade blindly.
+    expect(wrongBtn).toBeDisabled();
+    expect(correctBtn).toBeDisabled();
 
     fireEvent.click(screen.getByRole("button", { name: /show answer/i }));
 
-    expect(await screen.findByRole("button", { name: /correct/i })).toBeVisible();
-    expect(screen.getByRole("button", { name: /wrong/i })).toBeVisible();
+    await waitFor(() => expect(correctBtn).not.toBeDisabled());
+    expect(wrongBtn).not.toBeDisabled();
 
-    fireEvent.click(screen.getByRole("button", { name: /correct/i }));
-    await waitFor(() => expect(screen.getByText(/Card 2 of 2/i)).toBeInTheDocument());
+    fireEvent.click(correctBtn);
+    // Position indicator uses "n / total" — verify we moved to card 2.
+    await waitFor(() => {
+      const counter = document.querySelector("span.tabular-nums");
+      expect(counter?.textContent?.replace(/\s+/g, "")).toBe("2/2");
+    });
   });
 });

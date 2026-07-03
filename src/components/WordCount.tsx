@@ -56,6 +56,8 @@ export function WordCount({ content }: WordCountProps) {
   const pulseCls = "inline-block transition-transform duration-150 ease-out";
   const bounce = (on: boolean) => (on ? "scale-110" : "scale-100");
 
+  if (stats.words === 0 && stats.chars === 0) return null;
+
   return (
     <div className="flex items-center gap-2 sm:gap-3 px-4 py-1.5 text-[10px] sm:text-[11px] text-muted-foreground select-none whitespace-nowrap tabular-nums">
       <span className="inline-flex items-center gap-1">

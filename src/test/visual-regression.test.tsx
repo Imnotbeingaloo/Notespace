@@ -26,6 +26,12 @@ vi.mock("framer-motion", async () => {
   return {
     motion: new Proxy({}, { get: (_t, key: string) => passthrough(key) }),
     AnimatePresence: ({ children }: any) => children,
+    useReducedMotion: () => false,
+    useAnimation: () => ({ start: () => Promise.resolve(), stop: () => {}, set: () => {} }),
+    useMotionValue: (v: any) => ({ get: () => v, set: () => {}, on: () => () => {} }),
+    useTransform: () => 0,
+    useSpring: (v: any) => v,
+    useScroll: () => ({ scrollY: { get: () => 0, on: () => () => {} }, scrollYProgress: { get: () => 0, on: () => () => {} } }),
   };
 });
 
@@ -42,7 +48,13 @@ vi.mock("@/context/NotebookContext", () => ({
         deleted_at: null,
       },
     ],
+    standaloneNotes: [],
+    trashedNotebooks: [],
+    trashedNotes: [],
     loading: false,
+    refreshData: () => {},
+    deleteNotebook: () => {},
+    deleteNote: () => {},
   }),
 }));
 
@@ -56,6 +68,11 @@ const breakpoints: Array<[string, number]> = [
   ["tablet-820", 820],
   ["desktop-1440", 1440],
 ];
+
+
+vi.mock("@/context/AuthContext", () => ({ useAuth: () => ({ user: null, loading: false, session: null }), AuthProvider: ({ children }: any) => children }));
+vi.mock("@/hooks/use-profile", () => ({ useProfile: () => ({ profile: null, loading: false }) }));
+vi.mock("@/hooks/use-temp-notes-enabled", () => ({ useTempNotesEnabled: () => [true, () => {}] }));
 
 describe("Visual regression - PageHeader markup snapshots", () => {
   beforeEach(() => {
@@ -79,7 +96,7 @@ describe("Visual regression - HomeView markup snapshots", () => {
   for (const [name, w] of breakpoints) {
     it(`HomeView matches snapshot @ ${name}`, () => {
       setViewport(w);
-      const { container } = render(<HomeView onOpenNotebook={() => {}} />);
+      const { container } = render(<MemoryRouter><HomeView onOpenNotebook={() => {}} /></MemoryRouter>);
       expect(container.firstChild).toMatchSnapshot();
     });
   }

@@ -26,6 +26,31 @@ export function AIToolsPanel() {
 
   const flashcardSource = () => getFlashcardSourceText(activeNote?.content || "", activeNote?.title || "");
 
+  const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
+
+  /**
+   * Cheap gibberish heuristic: reject text that is technically long enough but
+   * has almost no vocabulary variety, no vowels, or is mostly one character.
+   * Used to short-circuit flashcard generation before wasting an AI call.
+   */
+  const looksLikeGibberish = (text: string) => {
+    const clean = text.toLowerCase().replace(/\s+/g, " ").trim();
+    if (!clean) return true;
+    const words = clean.split(/\s+/).filter(Boolean);
+    const uniqueWords = new Set(words);
+    if (words.length >= 5 && uniqueWords.size <= 2) return true;
+    const letters = clean.replace(/[^a-z]/g, "");
+    if (letters.length >= 20) {
+      const vowels = (letters.match(/[aeiou]/g) || []).length;
+      if (vowels / letters.length < 0.12) return true;
+      const uniqueChars = new Set(letters);
+      if (uniqueChars.size <= 3) return true;
+    }
+    return false;
+  };
+
+  const WORD_GATE = 100;
+
   const openFlashcardsSetup = () => {
     if (!activeNote) return;
     const source = flashcardSource();
@@ -35,6 +60,20 @@ export function AIToolsPanel() {
     }
     if (source.length < MIN_FLASHCARD_BODY_CHARS) {
       toast.error("Write a bit more first - at least ~100 characters of actual notes (headings don't count).");
+      return;
+    }
+    if (looksLikeGibberish(source)) {
+      setMode("flashcards");
+      setSetupMode(null);
+      setResult("");
+      setError("__gibberish__");
+      setOpen(true);
+      return;
+    }
+    // Only ask for deck size once the learner has enough material (>100 words).
+    // Shorter notes just auto-generate a small deck (5 cards) with no prompt.
+    if (wordCount(source) <= WORD_GATE) {
+      runTool("flashcards", 5);
       return;
     }
     setMode("flashcards");
@@ -211,7 +250,16 @@ export function AIToolsPanel() {
                   Generating {modeLabel.toLowerCase()}…
                 </div>
               )}
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error === "__gibberish__" && (
+                <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-foreground">
+                  <p className="font-semibold mb-1">Make it make sense for me 🙃</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed">
+                    I can only build flashcards from notes that actually explain something. Add real
+                    sentences, definitions, or examples and try again.
+                  </p>
+                </div>
+              )}
+              {error && error !== "__gibberish__" && <p className="text-sm text-destructive">{error}</p>}
               {result && mode === "flashcards" && (
                 <FlashcardDeck markdown={result} streaming={loading} />
               )}
