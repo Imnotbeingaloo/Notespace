@@ -225,13 +225,14 @@ export function AIToolsPanel() {
                   <p className="text-sm">Extracting concepts and building your deck…</p>
                 </div>
               )}
-              {loading && !result && (
+              {loading && !result && mode !== "flashcards" && (
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Generating {modeLabel.toLowerCase()}…
                 </div>
               )}
-              {error === "__gibberish__" && (
+              {(error === "__gibberish__" ||
+                (mode === "flashcards" && !loading && result.trim().toUpperCase().includes("NO_CONCEPTS"))) && (
                 <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-foreground">
                   <p className="font-semibold mb-1">Make it make sense for me 🙃</p>
                   <p className="text-muted-foreground text-xs leading-relaxed">
@@ -241,7 +242,7 @@ export function AIToolsPanel() {
                 </div>
               )}
               {error && error !== "__gibberish__" && <p className="text-sm text-destructive">{error}</p>}
-              {result && mode === "flashcards" && (
+              {result && mode === "flashcards" && !result.trim().toUpperCase().includes("NO_CONCEPTS") && (
                 <FlashcardDeck markdown={result} streaming={loading} />
               )}
               {result && mode === "summarize" && (
