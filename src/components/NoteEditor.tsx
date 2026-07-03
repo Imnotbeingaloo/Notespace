@@ -33,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import { X as XIcon, Sparkles } from "lucide-react";
 import { toolPill } from "@/lib/tool-colors";
 import { getFlashcardSourceText, MIN_FLASHCARD_BODY_CHARS } from "@/lib/note-body";
+import { looksLikeGibberish } from "@/lib/gibberish";
 
 const AI_TOOLS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tools`;
 
