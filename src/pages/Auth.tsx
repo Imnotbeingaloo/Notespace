@@ -575,15 +575,16 @@ const AuthPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="relative z-10 w-full max-w-md sm:max-w-[520px]"
+          className="relative z-10 w-full max-w-md sm:max-w-[440px]"
         >
 
-        <div className="flex items-center justify-center mb-8">
-          <img src="/logo.png" alt="Notebook Archive" className="h-[1.163rem] w-[1.163rem] object-contain" />
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <img src="/logo.png" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
+          <span className="font-serif text-lg font-bold text-foreground tracking-tight">Notebook Archive</span>
         </div>
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-8 sm:p-10 shadow-xl">
+        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-7 sm:p-8 shadow-xl">
           <div role="tablist" aria-label="Authentication mode" className="relative flex gap-1 bg-muted rounded-lg p-1 mb-6">
             {(["signup", "login"] as const).map((m) => {
               const active = (mode === m) || (mode === "forgot" && m === "login");
