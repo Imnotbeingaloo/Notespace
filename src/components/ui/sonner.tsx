@@ -189,7 +189,6 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
 
       {kind !== "loading" && (
         <div
-          key={barKey}
           aria-hidden="true"
           className="absolute bottom-0 left-0 h-1 rounded-br-full"
           style={{
@@ -199,6 +198,7 @@ function NotificationCard({ item, newest }: { item: QueuedToast; newest: boolean
             animationPlayState: hovered ? "paused" : "running",
           }}
         />
+
       )}
     </motion.li>
   );
