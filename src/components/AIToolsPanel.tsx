@@ -107,7 +107,6 @@ export function AIToolsPanel() {
       return;
     }
     setMode(toolMode);
-    setSetupMode(null);
     setOpen(true);
     setResult("");
     setError("");
