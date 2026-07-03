@@ -565,12 +565,12 @@ const AuthPage = () => {
           <div className="absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
           <div className="absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-amber-400/15 blur-3xl" />
         </div>
-        {/* Decorative arrow mark — purely visual, no navigation. */}
+        {/* Decorative brand mark — purely visual, no navigation. */}
         <div
           aria-hidden="true"
-          className="absolute left-6 top-6 z-10 inline-flex items-center justify-center text-muted-foreground/70"
+          className="absolute left-6 top-6 z-10 inline-flex items-center justify-center"
         >
-          <ArrowLeft className="h-5 w-5" strokeWidth={2.25} />
+          <img src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" />
         </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
