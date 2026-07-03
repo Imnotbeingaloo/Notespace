@@ -644,8 +644,8 @@ const AuthPage = () => {
             ))}
           </div>
           {/* Subtle warm wash */}
-          <div className="absolute -top-32 -right-32 h-[420px] w-[420px] rounded-full bg-amber-300/15 blur-3xl" />
-          <div className="absolute -bottom-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute -top-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/[0.06] blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 h-[380px] w-[380px] rounded-full bg-primary/[0.05] blur-3xl" />
 
           {/* Scattered decorative tapes */}
           {(() => {
