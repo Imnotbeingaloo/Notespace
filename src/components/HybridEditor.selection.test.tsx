@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeAll } from "vitest";
 import { createRef } from "react";
 import { render } from "@testing-library/react";
 import { HybridEditor, type HybridEditorHandle } from "@/components/HybridEditor";
@@ -10,6 +10,44 @@ vi.mock("@/hooks/use-paper-style", () => ({
 vi.mock("@/components/FloatingToolbar", () => ({
   FloatingToolbar: () => null,
 }));
+
+// jsdom doesn't implement execCommand. Shim it with the minimum
+// behavior HybridEditor relies on so we can assert cursor semantics
+// without wiring up a full browser.
+beforeAll(() => {
+  (document as any).execCommand = (command: string, _ui: boolean, value?: string) => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return true;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    if (command === "insertText" && value !== undefined) {
+      range.insertNode(document.createTextNode(value));
+    } else if (command === "insertHTML" && value !== undefined) {
+      const tpl = document.createElement("template");
+      tpl.innerHTML = value;
+      const frag = tpl.content;
+      const last = frag.lastChild;
+      range.insertNode(frag);
+      if (last) {
+        range.setStartAfter(last);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    } else if (command === "selectAll") {
+      const editor = document.querySelector('[data-testid="hybrid-editor-content"]');
+      if (editor) {
+        const r = document.createRange();
+        r.selectNodeContents(editor);
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+    }
+    return true;
+  };
+});
+
+
 
 /**
  * These tests lock in the guarantee that ImportNotesButton / attach flows
