@@ -567,9 +567,9 @@ const AuthPage = () => {
         <button
           onClick={() => navigate("/")}
           aria-label="Back to website"
-          className={`absolute left-4 top-4 z-10 inline-flex items-center justify-center h-10 w-10 rounded-full border border-border bg-card/80 backdrop-blur text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
+          className="absolute left-5 top-5 z-10 inline-flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-5 w-5" strokeWidth={2.25} />
         </button>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
