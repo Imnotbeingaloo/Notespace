@@ -966,22 +966,49 @@ const AuthPage = () => {
             strip at a random spot with a random color/rotation. Resets on
             mode change / reload. */}
         {(() => {
-          // Simple rose semi-transparent rectangle — the version that read as tape best.
-          const TAPE_COLORS = [
-            "bg-rose-300/70 border-rose-400/50",
-            "bg-sky-300/70 border-sky-400/50",
-            "bg-amber-300/70 border-amber-400/50",
-            "bg-emerald-300/70 border-emerald-400/50",
-            "bg-violet-300/70 border-violet-400/50",
-            "bg-pink-300/70 border-pink-400/50",
-            "bg-lime-300/70 border-lime-400/50",
-            "bg-orange-300/70 border-orange-400/50",
-            "bg-cyan-300/70 border-cyan-400/50",
-            "bg-fuchsia-300/70 border-fuchsia-400/50",
+          // Three school-tape "styles" — each renders differently but they all
+          // look like tape you'd find in a pencil case.
+          type TapeStyle = "washi" | "translucent" | "gaffer";
+          const STYLES: {
+            style: TapeStyle;
+            base: string;      // tailwind color for main body
+            border: string;    // tailwind color for edges
+            accent?: string;   // for washi stripes
+          }[] = [
+            // Translucent pastels (rose-tape family)
+            { style: "translucent", base: "bg-rose-300/65",     border: "border-rose-400/55" },
+            { style: "translucent", base: "bg-sky-300/65",      border: "border-sky-400/55" },
+            { style: "translucent", base: "bg-amber-300/65",    border: "border-amber-400/55" },
+            { style: "translucent", base: "bg-emerald-300/65",  border: "border-emerald-400/55" },
+            { style: "translucent", base: "bg-violet-300/65",   border: "border-violet-400/55" },
+            { style: "translucent", base: "bg-fuchsia-300/65",  border: "border-fuchsia-400/55" },
+            // Washi — patterned kids' craft tape
+            { style: "washi", base: "bg-pink-200",   border: "border-pink-400/60", accent: "rgba(219,39,119,0.55)" },
+            { style: "washi", base: "bg-sky-200",    border: "border-sky-400/60",  accent: "rgba(2,132,199,0.55)" },
+            { style: "washi", base: "bg-lime-200",   border: "border-lime-400/60", accent: "rgba(101,163,13,0.55)" },
+            { style: "washi", base: "bg-orange-200", border: "border-orange-400/60", accent: "rgba(234,88,12,0.55)" },
+            // Gaffer — matte, opaque, muted
+            { style: "gaffer", base: "bg-slate-700",  border: "border-slate-900/70" },
+            { style: "gaffer", base: "bg-neutral-800", border: "border-black/70" },
+            { style: "gaffer", base: "bg-stone-600",  border: "border-stone-800/70" },
           ];
-          // Slightly jagged/pointed tape ends — sharper corner silhouette.
+          // Sharper triangular tape ends — clean chevron on each short side, no jagged noise.
           const tapeClip =
-            "polygon(3% 0%, 97% 0%, 100% 35%, 96% 65%, 100% 100%, 3% 100%, 0% 65%, 4% 35%)";
+            "polygon(0% 50%, 6% 0%, 94% 0%, 100% 50%, 94% 100%, 6% 100%)";
+          const styleExtras = (t: (typeof STYLES)[number]): React.CSSProperties => {
+            if (t.style === "washi" && t.accent) {
+              return {
+                backgroundImage: `repeating-linear-gradient(45deg, ${t.accent} 0 4px, transparent 4px 10px)`,
+              };
+            }
+            if (t.style === "gaffer") {
+              return {
+                backgroundImage:
+                  "repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 3px), linear-gradient(180deg, rgba(255,255,255,0.10), rgba(0,0,0,0.15))",
+              };
+            }
+            return {};
+          };
           return (
             <>
               <button
@@ -990,20 +1017,28 @@ const AuthPage = () => {
                 tabIndex={-1}
                 onClick={() => {
                   setTapes((t) => {
-                    // Block colors used in the last 5 tapes so repeats don't feel predictable.
-                    const recent = t.slice(-5).map((x) => (JSON.parse(x.color) as { cls: string }).cls);
-                    const pool = TAPE_COLORS.filter((c) => !recent.includes(c));
-                    const source = pool.length ? pool : TAPE_COLORS;
-                    const cls = source[Math.floor(Math.random() * source.length)];
-                    const top = 5 + Math.random() * 84;
-                    const left = 4 + Math.random() * 78;
-                    const rotate = -60 + Math.random() * 120;
-                    const width = 55 + Math.random() * 45; // shorter tapes
-                    const height = 16 + Math.random() * 6;
+                    // Block styles used in the last 5 so repeats don't feel like a pattern.
+                    const recent = t.slice(-5).map((x) => (JSON.parse(x.color) as { key: string }).key);
+                    const keyed = STYLES.map((s, i) => ({ ...s, key: `${s.style}-${i}` }));
+                    const pool = keyed.filter((c) => !recent.includes(c.key));
+                    const source = pool.length ? pool : keyed;
+                    const pick = source[Math.floor(Math.random() * source.length)];
+                    // Full-page randomness with jitter to break any grid feel.
+                    const top = Math.random() * 92 + (Math.random() - 0.5) * 4;
+                    const left = Math.random() * 88 + (Math.random() - 0.5) * 6;
+                    const rotate = Math.random() * 360 - 180;
+                    const width = 50 + Math.random() * 55;
+                    const height = 15 + Math.random() * 7;
                     return [
                       ...t,
-
-                      { id: Date.now() + Math.random(), top, left, rotate, width, color: JSON.stringify({ cls, h: height }) },
+                      {
+                        id: Date.now() + Math.random(),
+                        top: Math.max(2, Math.min(94, top)),
+                        left: Math.max(2, Math.min(90, left)),
+                        rotate,
+                        width,
+                        color: JSON.stringify({ key: pick.key, cls: `${pick.base} ${pick.border}`, style: pick.style, accent: pick.accent, h: height }),
+                      },
                     ];
                   });
                 }}
@@ -1011,7 +1046,7 @@ const AuthPage = () => {
                 style={{ clipPath: tapeClip }}
               />
               {tapes.map((t) => {
-                const parsed = JSON.parse(t.color) as { cls: string; h: number };
+                const parsed = JSON.parse(t.color) as { key: string; cls: string; style: TapeStyle; accent?: string; h: number };
                 return (
                   <div
                     key={t.id}
@@ -1024,6 +1059,7 @@ const AuthPage = () => {
                       height: `${parsed.h}px`,
                       transform: `rotate(${t.rotate}deg)`,
                       clipPath: tapeClip,
+                      ...styleExtras({ style: parsed.style, base: "", border: "", accent: parsed.accent }),
                     }}
                   />
                 );
@@ -1031,6 +1067,7 @@ const AuthPage = () => {
             </>
           );
         })()}
+
 
 
         <div className="relative z-10 pl-20" />
