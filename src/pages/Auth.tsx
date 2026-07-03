@@ -937,8 +937,34 @@ const AuthPage = () => {
         <div className="absolute -top-32 -right-24 h-[300px] w-[300px] rounded-full bg-primary/8 blur-3xl" />
         <div className="absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-amber-400/[0.06] blur-3xl" />
 
-        {/* Corner tape — swapped to a soft rose so it reads as tape, not more amber wash */}
-        <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-200/80 dark:bg-rose-300/30 shadow-sm rounded-[2px] border border-rose-300/50" />
+        {/* Corner tape — clickable easter egg. Each click drops another tape strip
+            somewhere on the notebook panel. Resets on mode change / reload. */}
+        <button
+          type="button"
+          aria-label="Decorative tape"
+          tabIndex={-1}
+          onClick={() => setEasterTapes((n) => Math.min(3, n + 1))}
+          className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+        />
+        {/* Easter egg tapes */}
+        {easterTapes >= 1 && (
+          <div
+            aria-hidden="true"
+            className="absolute top-[34%] left-16 h-5 w-20 -rotate-[8deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
+          />
+        )}
+        {easterTapes >= 2 && (
+          <div
+            aria-hidden="true"
+            className="absolute bottom-[30%] right-10 h-5 w-24 rotate-[12deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
+          />
+        )}
+        {easterTapes >= 3 && (
+          <div
+            aria-hidden="true"
+            className="absolute bottom-10 left-1/3 h-5 w-24 -rotate-[4deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
+          />
+        )}
 
         <div className="relative z-10 pl-20" />
 
