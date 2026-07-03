@@ -544,7 +544,7 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-dvh grid lg:grid-cols-[1fr_1.05fr] bg-background relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[2fr_3fr] bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
 
       {/* Left column — the form card. */}
