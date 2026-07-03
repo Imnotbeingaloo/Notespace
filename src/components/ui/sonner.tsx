@@ -218,9 +218,21 @@ const Toaster = ({ className, ...props }: ToasterProps) => {
         document.querySelector<HTMLButtonElement>('[aria-label="Close notification"]')?.focus();
       }
     };
+    // Freeze every active toast's countdown while the tab is hidden so it
+    // doesn't silently expire (and its progress bar doesn't appear to jump)
+    // when the user returns from another tab.
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") pauseAllToasts();
+      else resumeAllToasts();
+    };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
+
 
   return (
     <div
