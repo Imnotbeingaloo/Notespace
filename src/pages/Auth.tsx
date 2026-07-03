@@ -97,6 +97,11 @@ const AuthPage = () => {
       window.removeEventListener("scroll", measure, true);
     };
   }, []);
+  const [tapeHint, setTapeHint] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setTapeHint(true), 5000);
+    return () => window.clearTimeout(id);
+  }, []);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
