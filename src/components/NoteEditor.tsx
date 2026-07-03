@@ -43,7 +43,7 @@ function FlashcardsButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [setup, setSetup] = useState(false);
+  
 
   const openSetup = () => {
     if (!activeNote) return;
