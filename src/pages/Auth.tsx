@@ -1299,25 +1299,23 @@ const AuthPage = () => {
           );
         })()}
 
-        <div className="relative z-10 pl-20" />
-
-        <div className="relative z-10 max-w-md pl-20">
-          <p className="font-serif text-3xl xl:text-[2.35rem] leading-[1.2] text-foreground tracking-tight">
+        <div className="relative z-10 max-w-lg pl-20 text-left">
+          <p className="font-serif text-[1.75rem] xl:text-[2rem] leading-[1.2] text-foreground tracking-tight text-left">
             A calm place to think, write, and remember what mattered.
           </p>
-          <p className="mt-5 text-sm text-muted-foreground leading-relaxed">
+          <p className="mt-4 text-[13px] xl:text-sm text-muted-foreground leading-relaxed text-left max-w-md">
             Every note lives in a ruled-paper canvas — with AI that explains,
             summarises, and turns your reading into flashcards when you need it.
           </p>
 
           {/* Handwritten-style annotation card */}
-          <div className="mt-8 relative max-w-sm rotate-[-1.2deg] group cursor-default">
-            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-5 py-4 shadow-md transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:rotate-0 group-hover:shadow-xl group-hover:bg-card">
-              <p className="font-serif italic text-[15px] leading-relaxed text-foreground/90">
+          <div className="mt-6 relative max-w-sm rotate-[-1.2deg] group cursor-default">
+            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 shadow-md transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:rotate-0 group-hover:shadow-xl group-hover:bg-card">
+              <p className="font-serif italic text-[13.5px] leading-relaxed text-foreground/90 text-left">
                 "It replaced three apps for me — notes, flashcards, and my study
                 planner. And it actually feels good to open."
               </p>
-              <p className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">
+              <p className="mt-2 text-[10.5px] uppercase tracking-wider text-muted-foreground text-left">
                 — Maya, medical student
               </p>
             </div>
