@@ -544,7 +544,7 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-dvh grid lg:grid-cols-[1fr_1.05fr] bg-background relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[2fr_3fr] bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
 
       {/* Left column — the form card. */}
@@ -575,15 +575,16 @@ const AuthPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="relative z-10 w-full max-w-md sm:max-w-[520px]"
+          className="relative z-10 w-full max-w-md sm:max-w-[440px]"
         >
 
-        <div className="flex items-center justify-center mb-8">
-          <img src="/logo.png" alt="Notebook Archive" className="h-[1.163rem] w-[1.163rem] object-contain" />
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <img src="/logo.png" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
+          <span className="font-serif text-lg font-bold text-foreground tracking-tight">Notebook Archive</span>
         </div>
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-8 sm:p-10 shadow-xl">
+        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-7 sm:p-8 shadow-xl">
           <div role="tablist" aria-label="Authentication mode" className="relative flex gap-1 bg-muted rounded-lg p-1 mb-6">
             {(["signup", "login"] as const).map((m) => {
               const active = (mode === m) || (mode === "forgot" && m === "login");
@@ -612,12 +613,12 @@ const AuthPage = () => {
           </div>
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[340px] space-y-3">
+            <div className="mx-auto max-w-[260px] space-y-3">
               <button
                 type="button"
                 onClick={handleGoogle}
                 disabled={googleLoading || microsoftLoading}
-                className={`w-full flex items-center justify-center gap-3 py-3.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                 Continue with Google
@@ -626,7 +627,7 @@ const AuthPage = () => {
                 type="button"
                 onClick={handleMicrosoft}
                 disabled={googleLoading || microsoftLoading}
-                className={`w-full flex items-center justify-center gap-3 py-3.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {microsoftLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MicrosoftIcon />}
                 Continue with Microsoft
@@ -634,7 +635,7 @@ const AuthPage = () => {
               <button
                 type="button"
                 onClick={() => { setAuthMethod("email"); setError(""); }}
-                className={`w-full flex items-center justify-center gap-3 py-3.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
               >
                 <Mail className="h-4 w-4" />
                 Continue with Email
@@ -958,10 +959,7 @@ const AuthPage = () => {
         {/* Corner tape — swapped to a soft rose so it reads as tape, not more amber wash */}
         <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-200/80 dark:bg-rose-300/30 shadow-sm rounded-[2px] border border-rose-300/50" />
 
-        <div className="relative z-10 flex items-center gap-2 pl-20">
-          <img src="/logo.png" alt="" className="h-7 w-7 object-contain" />
-          <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
-        </div>
+        <div className="relative z-10 pl-20" />
 
         <div className="relative z-10 max-w-md pl-20">
           <p className="font-serif text-3xl xl:text-[2.35rem] leading-[1.2] text-foreground tracking-tight">
@@ -973,8 +971,8 @@ const AuthPage = () => {
           </p>
 
           {/* Handwritten-style annotation card */}
-          <div className="mt-8 relative max-w-sm rotate-[-1.2deg]">
-            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-5 py-4 shadow-md">
+          <div className="mt-8 relative max-w-sm rotate-[-1.2deg] group cursor-default">
+            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-5 py-4 shadow-md transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:rotate-0 group-hover:shadow-xl group-hover:bg-card">
               <p className="font-serif italic text-[15px] leading-relaxed text-foreground/90">
                 "It replaced three apps for me — notes, flashcards, and my study
                 planner. And it actually feels good to open."
