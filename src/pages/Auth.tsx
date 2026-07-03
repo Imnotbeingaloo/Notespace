@@ -610,7 +610,7 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-dvh grid lg:grid-cols-[52fr_48fr] bg-background relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[45fr_55fr] bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
@@ -707,10 +707,10 @@ const AuthPage = () => {
 
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="mx-auto max-w-[397px] px-1 sm:px-2">
+        <div className="mx-auto max-w-[440px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div key={mode} className="mx-auto max-w-[318px] animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div key={mode} className="mx-auto max-w-[400px] animate-in fade-in slide-in-from-bottom-2 duration-300">
 
 
 
@@ -1299,7 +1299,7 @@ const AuthPage = () => {
           );
         })()}
 
-        <div className="relative z-10 max-w-2xl pl-20 text-left">
+        <div className="relative z-10 max-w-md mx-auto text-left w-full">
           <p className="font-serif text-[1.75rem] xl:text-[2rem] leading-[1.2] text-foreground tracking-tight text-left">
             A calm place to think, write, and remember what mattered.
           </p>
@@ -1322,7 +1322,7 @@ const AuthPage = () => {
           </div>
         </div>
 
-        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20 text-left">
+        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground max-w-md mx-auto w-full text-left">
           <div className="flex -space-x-2">
             {[
               { i: "S", bg: "#0d9488" },
