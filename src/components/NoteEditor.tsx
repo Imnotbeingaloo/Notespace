@@ -327,6 +327,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [dragOver, setDragOver] = useState(false);
+  const [dropProgress, setDropProgress] = useState<{ name: string; stage: string; pct: number } | null>(null);
   // Live editor content mirror - updated synchronously on every keystroke so
   // the word/char counter reflects typing/deletion in real time, without
   // waiting for the debounced save to activeNote.content.
@@ -595,13 +596,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
       });
       if (docFile) {
         try {
+          setDropProgress({ name: docFile.name, stage: "Reading file…", pct: 15 });
           const { formatImportedDocument } = await import("@/lib/document-import");
           const { extractPdfText } = await import("@/lib/pdf-extract");
           const ext = docFile.name.slice(docFile.name.lastIndexOf(".")).toLowerCase();
           let raw = "";
           if (ext === ".pdf") {
+            setDropProgress({ name: docFile.name, stage: "Extracting PDF text…", pct: 40 });
             const { text, isScanned } = await extractPdfText(docFile);
             if (isScanned || !text.trim()) {
+              setDropProgress(null);
               toast({ title: "Scanned PDF", description: "This PDF does not contain readable text.", variant: "destructive" });
               return;
             }
@@ -613,16 +617,15 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             raw = await docFile.text();
           }
           if (!raw.trim()) {
+            setDropProgress(null);
             toast({ title: "Empty file", description: "The document appears to be empty.", variant: "destructive" });
             return;
           }
+          setDropProgress({ name: docFile.name, stage: "Formatting…", pct: 80 });
           const { body: formatted, title: importedTitle } = formatImportedDocument(raw, docFile.name);
           const hasContent = !!activeNote.content?.trim();
           if (!hasContent) {
             hybridEditorRef.current?.replaceAllUndoable(formatted);
-            // Auto-fill the note title when it's empty, "Untitled", or looks like
-            // a placeholder id (e.g. "vid3434234902"), so imports don't leave
-            // the header stuck on the default label.
             const current = (activeNote.title || "").trim();
             const looksPlaceholder =
               !current ||
@@ -633,12 +636,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
               if (titleRef.current) titleRef.current.value = importedTitle;
               await updateNote(activeNotebookId, activeNote.id, { title: importedTitle });
             }
+            setDropProgress({ name: docFile.name, stage: "Done", pct: 100 });
+            setTimeout(() => setDropProgress(null), 900);
             toast({ title: "Imported", description: `"${docFile.name}" added to this note.` });
           } else {
+            setDropProgress(null);
             setPendingDocDrop({ content: formatted, fileName: docFile.name });
           }
         } catch (err) {
           console.error("Doc drop failed", err);
+          setDropProgress(null);
           toast({ title: "Import failed", description: "Could not read the document.", variant: "destructive" });
         }
         return;
@@ -740,6 +747,35 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                   <Upload className="h-8 w-8" />
                 </div>
                 <span className="text-sm font-medium">Drop files to add to note</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {dropProgress && (
+            <motion.div
+              key="drop-progress"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.2 }}
+              role="status"
+              aria-live="polite"
+              className="fixed bottom-4 right-4 z-[70] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl bg-card border border-border p-4 shadow-lg"
+            >
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
+                <span className="font-medium text-foreground truncate pr-2" title={dropProgress.name}>{dropProgress.name}</span>
+                <span>{dropProgress.pct}%</span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">{dropProgress.stage}</p>
+              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                <motion.div
+                  className="h-full bg-primary"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${dropProgress.pct}%` }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                />
               </div>
             </motion.div>
           )}

@@ -221,6 +221,9 @@ export function ImportNotesButton({
         const only = files[0];
         const ext = "." + only.name.split(".").pop()?.toLowerCase();
         if (ext === ".pdf" || (only.type || "").startsWith("text/") || [".md", ".markdown", ".txt", ".html", ".htm", ".csv", ".json"].includes(ext)) {
+          // Show the progress card immediately — PDF extraction can take seconds
+          // and previously happened silently before runBatch flipped it on.
+          setProgressCard({ active: true, current: 0, total: 1, currentName: only.name, failed: [], finished: false });
           const extracted = await extractText(only).catch(() => null);
           if (extracted) preExtractedTitle = extracted.title;
         }
