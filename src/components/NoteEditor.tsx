@@ -551,7 +551,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const handleCreateNoteFromImport = useCallback(
     async (text: string, fileName: string) => {
       if (!activeNotebookId) return;
-      const title = fileName.replace(/\.[^.]+$/, "") || "Imported Note";
+      const { extractDocumentTitle } = await import("@/lib/document-import");
+      const title = extractDocumentTitle(text, fileName);
       await createNote(activeNotebookId, title, text);
     },
     [activeNotebookId, createNote]
