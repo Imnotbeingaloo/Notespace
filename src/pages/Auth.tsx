@@ -1260,6 +1260,16 @@ const AuthPage = () => {
               </p>
             </div>
           </div>
+
+          {/* Tape between testimonial card and the audience row - scattered, off to the side */}
+          <div
+            aria-hidden="true"
+            className="relative z-10 mt-6 ml-[38%] h-[18px] w-[72px] rotate-[-14deg] bg-teal-300/55 border-y border-teal-400/40 shadow-sm pointer-events-none"
+            style={{
+              clipPath:
+                "polygon(3% 0%, 97% 0%, 100% 35%, 96% 65%, 100% 100%, 3% 100%, 0% 65%, 4% 35%)",
+            }}
+          />
         </div>
 
         <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20">
