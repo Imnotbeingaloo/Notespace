@@ -614,7 +614,8 @@ const AuthPage = () => {
         <div className="mx-auto max-w-[397px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[318px]">
+            <div key={mode} className="mx-auto max-w-[318px] animate-in fade-in slide-in-from-bottom-2 duration-300">
+
 
 
 
