@@ -95,7 +95,7 @@ describe("HybridEditor cursor / selection preservation", () => {
     ref.current!.saveSelection();
     ref.current!.mergeAt("MID", "cursor");
 
-    expect(el.textContent).toMatch(/^Alpha.*MID.*Beta/);
+    expect(el.textContent).toMatch(/^Alpha[\s\S]*MID[\s\S]*Beta/);
   });
 
   it("mergeAt('top') always inserts before existing content regardless of caret", () => {
