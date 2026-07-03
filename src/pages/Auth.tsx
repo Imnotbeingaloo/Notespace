@@ -1262,26 +1262,6 @@ const AuthPage = () => {
           </div>
         </div>
 
-        {/* Two decorative tapes tucked between the testimonial card and the avatars row */}
-        <div className="relative z-10 h-10 pl-20 max-w-md pointer-events-none" aria-hidden="true">
-          {(() => {
-            const tapeClip =
-              "polygon(3% 0%, 97% 0%, 100% 35%, 96% 65%, 100% 100%, 3% 100%, 0% 65%, 4% 35%)";
-            return (
-              <>
-                <div
-                  className="absolute border-y shadow-sm bg-teal-300/55 border-teal-400/40"
-                  style={{ top: "6px", left: "18%", width: "72px", height: "18px", transform: "rotate(-9deg)", clipPath: tapeClip }}
-                />
-                <div
-                  className="absolute border-y shadow-sm bg-yellow-300/55 border-yellow-400/40"
-                  style={{ top: "14px", left: "56%", width: "60px", height: "16px", transform: "rotate(16deg)", clipPath: tapeClip }}
-                />
-              </>
-            );
-          })()}
-        </div>
-
         <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20">
           <div className="flex -space-x-2">
             {[
