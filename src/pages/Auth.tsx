@@ -610,7 +610,7 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-dvh grid lg:grid-cols-[40fr_60fr] bg-background relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[42fr_58fr] bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
