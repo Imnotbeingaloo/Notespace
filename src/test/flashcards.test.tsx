@@ -42,7 +42,7 @@ describe("FlashcardDeck", () => {
     expect(wrongBtn).toBeDisabled();
     expect(correctBtn).toBeDisabled();
 
-    fireEvent.click(screen.getByRole("button", { name: /show answer/i }));
+    fireEvent.click(screen.getByRole("button", { name: /reveal answer/i }));
 
     await waitFor(() => expect(correctBtn).not.toBeDisabled());
     expect(wrongBtn).not.toBeDisabled();
