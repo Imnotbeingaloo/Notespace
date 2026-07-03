@@ -904,7 +904,7 @@ const AuthPage = () => {
               type="submit"
               disabled={loading || googleLoading}
               aria-label={loading ? "Verifying your account" : undefined}
-              className={`mx-auto max-w-[220px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
+              className={`mx-auto max-w-[214px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
 
             >
               {loading ? (
