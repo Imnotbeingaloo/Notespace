@@ -19,17 +19,11 @@ import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
 
 interface ImportNotesButtonProps {
-  /** Insert at cursor / merge into the current note (fallback if onMergeAt missing). */
   onInsert: (text: string) => void;
-  /** Optional: merge at a specific position (top / cursor / end). */
   onMergeAt?: (text: string, position: MergePosition) => void;
-  /** Optional: replace the entire current note's body. Enables the dialog flow. */
   onReplace?: (text: string) => void;
-  /** Optional: spin up a brand-new note with the imported content. */
   onCreateNew?: (text: string, fileName: string) => void;
-  /** Whether the current note already has content (drives merge/replace availability). */
   hasExistingContent?: boolean;
-  /** Save caret position before the file picker steals focus. */
   onSaveSelection?: () => void;
 }
 
@@ -39,6 +33,12 @@ function humanSize(bytes: number) {
   if (bytes > 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB`;
   return `${Math.round(bytes / 1024 / 1024)} MB`;
 }
+
+type PendingItem = {
+  content: string;
+  fileName: string;
+  resolve: (choice: ImportChoice | null) => void;
+};
 
 export function ImportNotesButton({
   onInsert,
@@ -51,144 +51,25 @@ export function ImportNotesButton({
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number; name: string } | null>(null);
-  const [pending, setPending] = useState<{ content: string; fileName: string } | null>(null);
+  const [pending, setPending] = useState<PendingItem | null>(null);
 
   const { user } = useAuth();
   const { activeNote, activeNotebookId, updateNote } = useNotebooks();
 
   const dialogEnabled = !!onReplace || !!onCreateNew;
 
-  const importText = useCallback(
-    async (file: File): Promise<boolean> => {
-      const ext = "." + file.name.split(".").pop()?.toLowerCase();
-      if (file.size > MAX_PROCESSABLE_SIZE) {
-        toast({
-          title: "File too large to import as text",
-          description: `"${file.name}" is ${humanSize(file.size)}. Text import supports files under 100 MB. Try a smaller file.`,
-          variant: "destructive",
-        });
-        return true;
-      }
-      let content = "";
-      if (ext === ".pdf") {
-        const { text, isScanned, pageCount } = await extractPdfText(file);
-        if (isScanned || !text.trim()) {
-          sonner.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
-          return false; // fall through to binary attach
-        }
-        content = text;
-        if (!content.trim()) {
-          toast({ title: "Empty file", description: "The file appears to be empty.", variant: "destructive" });
-          return true;
-        }
-        const formatted = formatImportedDocument(content, file.name);
-        if (dialogEnabled && hasExistingContent) {
-          setPending({ content: formatted, fileName: file.name });
-        } else {
-          onInsert(`\n${formatted}`);
-          sonner.success(`Imported "${file.name}" (${pageCount} page${pageCount === 1 ? "" : "s"})`);
-        }
-        return true;
-      }
-      content = await file.text();
-      if (!content.trim()) {
-        toast({ title: "Empty file", description: "The file appears to be empty.", variant: "destructive" });
-        return true;
-      }
-      const formatted = formatImportedDocument(content, file.name);
-      if (dialogEnabled && hasExistingContent) {
-        setPending({ content: formatted, fileName: file.name });
-      } else {
-        onInsert(`\n${formatted}`);
-        sonner.success(`Imported "${file.name}"`);
-      }
-      return true;
-    },
-    [dialogEnabled, hasExistingContent, onInsert],
-  );
+  /**
+   * Prompt the user with the import dialog and wait for their choice.
+   * Serializes prompts so multi-file imports don't overwrite each other.
+   */
+  const askForChoice = useCallback((content: string, fileName: string) => {
+    return new Promise<ImportChoice | null>((resolve) => {
+      setPending({ content, fileName, resolve });
+    });
+  }, []);
 
-  const attachBinary = useCallback(
-    async (file: File): Promise<void> => {
-      if (!user || !activeNote) {
-        toast({ title: "Cannot attach", description: "Open a note first, then try again.", variant: "destructive" });
-        return;
-      }
-      try {
-        const path = buildStoragePath(user.id, activeNote.id, file.name);
-        const { error } = await supabase.storage.from("note-attachments").upload(path, file, { upsert: false });
-        if (error) throw error;
-        const { data: signed, error: signErr } = await supabase.storage
-          .from("note-attachments")
-          .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-        if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not generate file URL");
-
-        const fileUrl = signed.signedUrl;
-        const nextAttachments = [
-          ...(activeNote.attachments || []),
-          { name: file.name, url: fileUrl, path, type: file.type, size: file.size },
-        ];
-        if (isImageFile(file)) {
-          onInsert(`\n![${file.name}](${fileUrl})\n`);
-        } else {
-          onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
-        }
-        await updateNote(activeNotebookId, activeNote.id, { attachments: nextAttachments });
-        sonner.success(`Attached "${file.name}"`);
-      } catch (err: any) {
-        sonner.error(`Upload failed for "${file.name}": ${err?.message || "unknown error"}`);
-      }
-    },
-    [user, activeNote, activeNotebookId, onInsert, updateNote],
-  );
-
-  const handleFiles = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files ? Array.from(e.target.files) : [];
-      if (!files.length) return;
-      setLoading(true);
-      try {
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          setProgress({ current: i, total: files.length, name: file.name });
-          if (!validateFile(file)) continue;
-
-          const ext = "." + (file.name.split(".").pop()?.toLowerCase() ?? "");
-
-          // 1) Plain text-ish docs → import as content.
-          if (isTextDocument(file) || TEXT_EXTS.includes(ext)) {
-            await importText(file);
-            continue;
-          }
-
-          // 2) PDFs → try text import; if scanned or fails, fall through to attach.
-          if (isPdfFile(file)) {
-            const handled = await importText(file).catch(() => false);
-            if (handled) continue;
-            await attachBinary(file);
-            continue;
-          }
-
-          // 3) Everything else (images, docx, videos, etc.) → attach binary.
-          await attachBinary(file);
-        }
-      } finally {
-        setLoading(false);
-        setProgress(null);
-        if (inputRef.current) inputRef.current.value = "";
-      }
-    },
-    [importText, attachBinary],
-  );
-
-  const handleChoice = useCallback(
-    (choice: ImportChoice | null) => {
-      if (!pending) {
-        setPending(null);
-        return;
-      }
-      const { content, fileName } = pending;
-      setPending(null);
-      if (!choice) return;
+  const applyChoice = useCallback(
+    (choice: ImportChoice, content: string, fileName: string) => {
       if (choice.action === "create") {
         onCreateNew?.(content, fileName);
         toast({ title: "New note created", description: `"${fileName}" imported into a new note.` });
@@ -206,7 +87,154 @@ export function ImportNotesButton({
         toast({ title: "Note replaced", description: `Content replaced with "${fileName}".` });
       }
     },
-    [pending, onCreateNew, onInsert, onMergeAt, onReplace],
+    [onCreateNew, onInsert, onMergeAt, onReplace],
+  );
+
+  const importText = useCallback(
+    async (file: File, hasContentNow: boolean): Promise<boolean> => {
+      const ext = "." + file.name.split(".").pop()?.toLowerCase();
+      if (file.size > MAX_PROCESSABLE_SIZE) {
+        toast({
+          title: "File too large to import as text",
+          description: `"${file.name}" is ${humanSize(file.size)}. Text import supports files under 100 MB. Try a smaller file.`,
+          variant: "destructive",
+        });
+        return true;
+      }
+      let content = "";
+      if (ext === ".pdf") {
+        const { text, isScanned, pageCount } = await extractPdfText(file);
+        if (isScanned || !text.trim()) {
+          sonner.warning(`"${file.name}" looks scanned. Attaching as a file link instead.`);
+          return false;
+        }
+        content = text;
+        if (!content.trim()) {
+          toast({ title: "Empty file", description: "The file appears to be empty.", variant: "destructive" });
+          return true;
+        }
+        const formatted = formatImportedDocument(content, file.name);
+        if (dialogEnabled && hasContentNow) {
+          const choice = await askForChoice(formatted, file.name);
+          if (choice) applyChoice(choice, formatted, file.name);
+        } else {
+          onInsert(`\n${formatted}`);
+          sonner.success(`Imported "${file.name}" (${pageCount} page${pageCount === 1 ? "" : "s"})`);
+        }
+        return true;
+      }
+      content = await file.text();
+      if (!content.trim()) {
+        toast({ title: "Empty file", description: "The file appears to be empty.", variant: "destructive" });
+        return true;
+      }
+      const formatted = formatImportedDocument(content, file.name);
+      if (dialogEnabled && hasContentNow) {
+        const choice = await askForChoice(formatted, file.name);
+        if (choice) applyChoice(choice, formatted, file.name);
+      } else {
+        onInsert(`\n${formatted}`);
+        sonner.success(`Imported "${file.name}"`);
+      }
+      return true;
+    },
+    [dialogEnabled, onInsert, askForChoice, applyChoice],
+  );
+
+  /**
+   * Upload one file and return the attachment record. The caller is
+   * responsible for accumulating records and persisting them in a single
+   * updateNote call so concurrent uploads don't clobber each other.
+   */
+  const uploadOne = useCallback(
+    async (file: File): Promise<{ name: string; url: string; path: string; type: string; size: number } | null> => {
+      if (!user || !activeNote) {
+        toast({ title: "Cannot attach", description: "Open a note first, then try again.", variant: "destructive" });
+        return null;
+      }
+      try {
+        const path = buildStoragePath(user.id, activeNote.id, file.name);
+        const { error } = await supabase.storage.from("note-attachments").upload(path, file, { upsert: false });
+        if (error) throw error;
+        const { data: signed, error: signErr } = await supabase.storage
+          .from("note-attachments")
+          .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+        if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not generate file URL");
+
+        const fileUrl = signed.signedUrl;
+        if (isImageFile(file)) {
+          onInsert(`\n![${file.name}](${fileUrl})\n`);
+        } else {
+          onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
+        }
+        sonner.success(`Attached "${file.name}"`);
+        return { name: file.name, url: fileUrl, path, type: file.type, size: file.size };
+      } catch (err: any) {
+        sonner.error(`Upload failed for "${file.name}": ${err?.message || "unknown error"}`);
+        return null;
+      }
+    },
+    [user, activeNote, onInsert],
+  );
+
+  const handleFiles = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files ? Array.from(e.target.files) : [];
+      if (!files.length) return;
+      setLoading(true);
+      // Track existing-content-ness locally so mid-loop insertions flip the
+      // dialog branch on for later files.
+      let hasContentNow = hasExistingContent;
+      // Accumulate new attachments so we only issue one updateNote per batch,
+      // avoiding the stale-activeNote overwrite bug on rapid multi-uploads.
+      const newAttachments: Array<{ name: string; url: string; path: string; type: string; size: number }> = [];
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          setProgress({ current: i, total: files.length, name: file.name });
+          if (!validateFile(file)) continue;
+
+          const ext = "." + (file.name.split(".").pop()?.toLowerCase() ?? "");
+
+          if (isTextDocument(file) || TEXT_EXTS.includes(ext)) {
+            await importText(file, hasContentNow);
+            hasContentNow = true;
+            continue;
+          }
+
+          if (isPdfFile(file)) {
+            const handled = await importText(file, hasContentNow).catch(() => false);
+            if (handled) { hasContentNow = true; continue; }
+            const rec = await uploadOne(file);
+            if (rec) newAttachments.push(rec);
+            continue;
+          }
+
+          const rec = await uploadOne(file);
+          if (rec) newAttachments.push(rec);
+        }
+
+        if (newAttachments.length && activeNote) {
+          const merged = [...(activeNote.attachments || []), ...newAttachments];
+          await updateNote(activeNotebookId, activeNote.id, { attachments: merged });
+        }
+      } finally {
+        setLoading(false);
+        setProgress(null);
+        if (inputRef.current) inputRef.current.value = "";
+      }
+    },
+    [importText, uploadOne, hasExistingContent, activeNote, activeNotebookId, updateNote],
+  );
+
+  const handleChoice = useCallback(
+    (choice: ImportChoice | null) => {
+      if (!pending) return;
+      const { resolve } = pending;
+      setPending(null);
+      resolve(choice);
+    },
+    [pending],
   );
 
   const openPicker = () => {
