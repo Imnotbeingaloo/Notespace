@@ -1322,7 +1322,7 @@ const AuthPage = () => {
           </div>
         </div>
 
-        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20">
+        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20 text-left">
           <div className="flex -space-x-2">
             {[
               { i: "S", bg: "#0d9488" },
@@ -1331,7 +1331,7 @@ const AuthPage = () => {
             ].map(({ i, bg }) => (
               <span
                 key={i}
-                className="h-7 w-7 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-semibold text-white font-sans shadow-sm"
+                className="h-6 w-6 rounded-full border-2 border-background flex items-center justify-center text-[9px] font-semibold text-white font-sans shadow-sm"
                 style={{ background: bg }}
                 aria-hidden="true"
               >
