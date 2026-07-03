@@ -203,44 +203,70 @@ export function ImportNotesButton({
       // Accumulate new attachments so we only issue one updateNote per batch,
       // avoiding the stale-activeNote overwrite bug on rapid multi-uploads.
       const newAttachments: Array<{ name: string; url: string; path: string; type: string; size: number }> = [];
+      let importedCount = 0;
+      let failedCount = 0;
+      logImport({ kind: "batch-start", count: files.length, hasExistingContent });
       try {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           setProgress({ current: i, total: files.length, name: file.name });
-          if (!validateFile(file)) continue;
+          if (!validateFile(file)) {
+            failedCount += 1;
+            logImport({ kind: "file-skipped", name: file.name, reason: "validation" });
+            continue;
+          }
 
           const ext = "." + (file.name.split(".").pop()?.toLowerCase() ?? "");
 
           if (isTextDocument(file) || TEXT_EXTS.includes(ext)) {
+            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "text" });
             await importText(file, hasContentNow);
             hasContentNow = true;
+            importedCount += 1;
             continue;
           }
 
           if (isPdfFile(file)) {
+            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "pdf-text" });
             const handled = await importText(file, hasContentNow).catch(() => false);
-            if (handled) { hasContentNow = true; continue; }
+            if (handled) { hasContentNow = true; importedCount += 1; continue; }
+            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "pdf-attach" });
             const rec = await uploadOne(file);
-            if (rec) newAttachments.push(rec);
+            if (rec) newAttachments.push(rec); else failedCount += 1;
             continue;
           }
 
+          logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "attach" });
           const rec = await uploadOne(file);
-          if (rec) newAttachments.push(rec);
+          if (rec) newAttachments.push(rec); else failedCount += 1;
         }
 
         if (newAttachments.length && activeNote) {
           const merged = [...(activeNote.attachments || []), ...newAttachments];
           await updateNote(activeNotebookId, activeNote.id, { attachments: merged });
+          logImport({
+            kind: "attachments-persisted",
+            noteId: activeNote.id,
+            added: newAttachments.length,
+            total: merged.length,
+          });
         }
       } finally {
         setLoading(false);
         setProgress(null);
         if (inputRef.current) inputRef.current.value = "";
+        logImport({
+          kind: "batch-complete",
+          imported: importedCount,
+          attached: newAttachments.length,
+          failed: failedCount,
+        });
       }
     },
     [importText, uploadOne, hasExistingContent, activeNote, activeNotebookId, updateNote],
   );
+
+
 
   const handleChoice = useCallback(
     (choice: ImportChoice | null) => {
