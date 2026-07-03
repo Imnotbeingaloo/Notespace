@@ -41,6 +41,7 @@ type Stage = "choose" | "attaching" | "done" | "error";
 interface PreparedPayload {
   kind: "binary" | "text" | "pdf";
   body: string;
+  title?: string;
   attachments?: { name: string; url: string; path: string; type: string; size: number }[];
   pageCount?: number;
 }
