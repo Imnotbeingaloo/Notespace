@@ -618,6 +618,39 @@
   border-top-color: hsl(var(--foreground) / 0.25);
 }
 
+/* ============= Comma-highlight reading overlay ============= */
+/* Only visible when the user turns the setting ON. Applied via a blur-time
+   DOM wrap in HybridEditor so the caret is never inside the mutation. */
+.comma-highlight-on .comma-mark {
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+.comma-highlight-on.dark .comma-mark,
+.comma-highlight-on .dark .comma-mark {
+  color: hsl(var(--primary));
+}
+
+/* ============= Paragraph spacing tiers ============= */
+/* Adjust the gap *between* block elements without changing line-height, so the
+   ruled-paper grid stays aligned. Notebook paper uses ruled-multiple gaps. */
+.spacing-tight .wysiwyg-editor p,
+.spacing-tight .wysiwyg-editor li { margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
+.spacing-normal .wysiwyg-editor p,
+.spacing-normal .wysiwyg-editor li { margin-top: 0.75rem !important; margin-bottom: 0.75rem !important; }
+.spacing-relaxed .wysiwyg-editor p,
+.spacing-relaxed .wysiwyg-editor li { margin-top: 1.5rem !important; margin-bottom: 1.5rem !important; }
+
+/* When notebook paper is on, snap gaps to a ruled-line multiple so the next
+   paragraph still starts on a rule (paper line-height is 1.75rem). */
+.spacing-tight .notebook-paper p,
+.spacing-tight .notebook-paper li { margin-top: 0 !important; margin-bottom: 0 !important; }
+.spacing-normal .notebook-paper p,
+.spacing-normal .notebook-paper li { margin-top: 0 !important; margin-bottom: 0 !important; }
+.spacing-relaxed .notebook-paper p,
+.spacing-relaxed .notebook-paper li { margin-top: 0 !important; margin-bottom: 1.75rem !important; }
+
+
+
 
 
 
