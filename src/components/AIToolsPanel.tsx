@@ -191,7 +191,7 @@ export function AIToolsPanel() {
           Summarize
         </button>
         <button
-          onClick={openFlashcardsSetup}
+          onClick={openFlashcards}
           className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-[hsl(280_60%_55%/0.35)] bg-[hsl(280_60%_55%/0.08)] text-[hsl(280_65%_55%)] hover:bg-[hsl(280_60%_55%/0.15)] hover:text-[hsl(280_70%_50%)] transition-all duration-200 dark:text-[hsl(280_75%_75%)] dark:hover:text-[hsl(280_80%_82%)]"
           title="Generate Flashcards (Pro)"
         >
