@@ -214,6 +214,8 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     { name: "Orange", value: "#fed7aa" },
   ];
 
+  const [lastHighlightColor, setLastHighlightColor] = useLastHighlightColor();
+
   const actions: FormatAction[] = [
     { icon: Bold, label: "Bold", action: () => exec("bold") },
     { icon: Italic, label: "Italic", action: () => exec("italic") },
