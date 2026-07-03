@@ -673,7 +673,7 @@ const AuthPage = () => {
 
 
           {mode !== "forgot" && authMethod === "email" && (
-            <div className="space-y-3 mb-5">
+            <div key={`email-head-${mode}`} className="space-y-3 mb-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="mb-4 text-center">
                 <h2 className="font-serif text-[29px] leading-tight font-semibold text-foreground">
                   {mode === "login" ? "Welcome back" : "Create your account"}
