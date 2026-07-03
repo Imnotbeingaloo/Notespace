@@ -991,15 +991,16 @@ const AuthPage = () => {
                 tabIndex={-1}
                 onClick={() => {
                   if (tapesFalling) return;
-                  // 11th click: trigger gravity fall, then clear.
-                  if (tapes.length >= 10) {
+                  // 21st click: trigger gravity fall, then clear.
+                  if (tapes.length >= 20) {
                     setTapesFalling(true);
                     window.setTimeout(() => {
                       setTapes([]);
                       setTapesFalling(false);
-                    }, 2200);
+                    }, 2600);
                     return;
                   }
+
                   setTapes((t) => {
                     const FORBIDDEN: Array<[number, number, number, number]> = [
                       [25, 38, 8, 62],   // headline
