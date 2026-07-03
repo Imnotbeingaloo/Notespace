@@ -57,8 +57,15 @@ vi.mock("@/lib/pdf-extract", () => ({
 }));
 
 function makeFile(name: string, type: string, body = "x") {
-  return new File([body], name, { type });
+  const file = new File([body], name, { type });
+  // jsdom doesn't implement File.prototype.text — shim per-instance so the
+  // text-import branch can read the file body.
+  if (typeof (file as any).text !== "function") {
+    (file as any).text = async () => body;
+  }
+  return file;
 }
+
 
 beforeEach(() => {
   uploadMock.mockReset().mockResolvedValue({ error: null });
