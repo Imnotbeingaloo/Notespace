@@ -544,11 +544,12 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-dvh grid lg:grid-cols-[2fr_3fr] bg-background relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[45fr_55fr] bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
 
-      {/* Left column — the form card. */}
-      <div className="flex items-center justify-center px-4 py-8 relative overflow-hidden order-1">
+      {/* Left column — form panel. Padding mirrors the notebook panel so the
+          card sits within the same corner inset instead of stretching to fill. */}
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1">
         {/* Ambient background for mobile / small screens */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden">
           <div
@@ -564,24 +565,20 @@ const AuthPage = () => {
           <div className="absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
           <div className="absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-amber-400/15 blur-3xl" />
         </div>
-        <button
-          onClick={() => navigate("/")}
-          aria-label="Back to website"
-          className="absolute left-5 top-5 z-10 inline-flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+        {/* Decorative arrow mark — purely visual, no navigation. */}
+        <div
+          aria-hidden="true"
+          className="absolute left-6 top-6 z-10 inline-flex items-center justify-center text-muted-foreground/70"
         >
           <ArrowLeft className="h-5 w-5" strokeWidth={2.25} />
-        </button>
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="relative z-10 w-full max-w-md sm:max-w-[440px]"
+          className="relative z-10 w-full"
         >
 
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <img src="/logo.png" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
-          <span className="font-serif text-lg font-bold text-foreground tracking-tight">Notebook Archive</span>
-        </div>
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
         <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-7 sm:p-8 shadow-xl">
