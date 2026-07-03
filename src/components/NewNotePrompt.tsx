@@ -77,12 +77,13 @@ export function NewNotePrompt({ notebookName, notebookEmoji, noteCount, onCreate
       }
 
       setImportStatus("Formatting text…");
-      const formatted = formatImportedDocument(content, file.name);
+      const { body, title } = formatImportedDocument(content, file.name);
       setImportStatus("Adding to notebook…");
 
-      if (formatted.trim()) {
+      if (body.trim()) {
         setUploadDialogOpen(false);
-        onImportAndCreate(formatted, file.name);
+        // Pass the extracted document title so the new note isn't named "Imported Notes".
+        onImportAndCreate(body, title || file.name);
       } else {
         setImportStatus("File appears to be empty.");
         setImporting(false);

@@ -80,41 +80,59 @@ function enrichInline(text: string): string {
   return out;
 }
 
-export function formatImportedDocument(rawText: string, fileName: string) {
-  const ext = extensionOf(fileName);
-  const normalized = rawText.replace(/\r\n?/g, "\n").replace(/[\t ]+$/gm, "").trim();
-  if (!normalized) return "";
+// Extract the actual document title from raw content — first non-empty,
+// non-watermark, heading-like line. Falls back to a filename-derived title.
+export function extractDocumentTitle(rawText: string, fileName: string): string {
+  const fallback = titleFromFile(fileName) || "Imported Note";
+  const normalized = (rawText || "").replace(/\r\n?/g, "\n").trim();
+  if (!normalized) return fallback;
+  const lines = normalized.split("\n").map((l) => l.trim());
+  for (let i = 0; i < Math.min(lines.length, 15); i++) {
+    const raw = lines[i];
+    if (!raw) continue;
+    if (isWatermark(raw)) continue;
+    const clean = raw.replace(/^#{1,6}\s+/, "").replace(/^\*+|\*+$/g, "").trim();
+    if (clean.length < 3 || clean.length > 90) continue;
+    if (/^(page\s+)?\d+$/i.test(clean)) continue;
+    if (/^https?:\/\//i.test(clean)) continue;
+    if (/[.!?]$/.test(clean) && clean.length > 40) continue;
+    return clean.replace(/\s+/g, " ").slice(0, 80);
+  }
+  return fallback;
+}
 
-  // Markdown files: strip watermarks, trust the source, still enrich long
-  // paragraphs with inline highlighting for definition-style leads.
+export function formatImportedDocument(rawText: string, fileName: string): { body: string; title: string } {
+  const ext = extensionOf(fileName);
+  const title = extractDocumentTitle(rawText, fileName);
+  const normalized = rawText.replace(/\r\n?/g, "\n").replace(/[\t ]+$/gm, "").trim();
+  if (!normalized) return { body: "", title };
+
   if (MARKDOWN_EXTENSIONS.has(ext)) {
     const kept = normalized
       .split("\n")
       .filter((line) => !isWatermark(line))
       .join("\n")
       .replace(/\n{3,}/g, "\n\n");
-    return `${kept.trim()}\n\n`;
+    return { body: `${kept.trim()}\n\n`, title };
   }
 
   const sourceLines = normalized.split("\n");
   const output: string[] = [];
-  const title = titleFromFile(fileName);
 
-  // Title goes first as a centered H1. The editor renders `# ` as an <h1>,
-  // and prose-h1:text-center centers it visually.
+  // Title goes first as a centered H1. Use the extracted document title, not
+  // just the filename, so real headings surface at the top of the note.
   if (title && !sourceLines[0]?.trim().startsWith("#")) {
     output.push(`# ${title}`, "", "---", "");
   }
 
-  // Reconstruct paragraphs from hard-wrapped lines. Join contiguous non-empty
-  // body lines with a single space; an empty source line ends the paragraph.
   let buffer: string[] = [];
   const flushParagraph = () => {
     if (buffer.length === 0) return;
     const joined = buffer.join(" ").replace(/\s{2,}/g, " ").trim();
     if (joined) {
       output.push(enrichInline(joined));
-      output.push(""); // paragraph spacing
+      // Blank line between paragraphs to breathe on ruled paper.
+      output.push("");
     }
     buffer = [];
   };
@@ -132,11 +150,18 @@ export function formatImportedDocument(rawText: string, fileName: string) {
 
     if (isWatermark(trimmed)) return;
 
+    // Skip a duplicated title at the top of the source.
+    if (
+      headingsEmitted === 0 &&
+      output.length > 0 &&
+      trimmed.replace(/^#+\s*/, "").toLowerCase() === title.toLowerCase()
+    ) {
+      return;
+    }
+
     if (looksLikeHeading(trimmed, next)) {
       flushParagraph();
-      // Add a divider before every non-first heading so sections read clean.
       if (headingsEmitted > 0) {
-        // Make sure there's a blank line before the divider.
         while (output.length && output[output.length - 1] === "") output.pop();
         output.push("", "---", "");
       }
@@ -145,12 +170,8 @@ export function formatImportedDocument(rawText: string, fileName: string) {
       return;
     }
 
-    // Pre-existing markdown markers (headings, lists, blockquotes, hr, code)
-    // should stand on their own and not be glued into the previous paragraph.
     if (/^(#{1,6}\s|[-*+]\s+|\d+[.)]\s+|>\s|```|---\s*$)/.test(trimmed)) {
       flushParagraph();
-      // List items and blockquotes: run inline enrichment so bold/highlight
-      // still surfaces inside bullets.
       const isListOrQuote = /^([-*+]\s+|\d+[.)]\s+|>\s)/.test(trimmed);
       output.push(isListOrQuote ? trimmed.replace(/^([-*+]\s+|\d+[.)]\s+|>\s)(.*)$/, (_m, prefix, rest) => `${prefix}${enrichInline(rest)}`) : trimmed);
       if (/^(#{1,6}\s|---\s*$|```)/.test(trimmed)) output.push("");
@@ -161,5 +182,6 @@ export function formatImportedDocument(rawText: string, fileName: string) {
   });
   flushParagraph();
 
-  return `${output.join("\n").replace(/\n{3,}/g, "\n\n").trim()}\n\n`;
+  const body = `${output.join("\n").replace(/\n{3,}/g, "\n\n").trim()}\n\n`;
+  return { body, title };
 }

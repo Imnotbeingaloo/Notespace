@@ -134,7 +134,7 @@ export function ImportNotesButton({
     [onCreateNew, onInsert, onMergeAt, onReplace, activeNote],
   );
 
-  const extractText = useCallback(async (file: File): Promise<string | null> => {
+  const extractText = useCallback(async (file: File): Promise<{ body: string; title: string } | null> => {
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
     if (file.size > MAX_PROCESSABLE_SIZE) {
       sonner.warning(`"${file.name}" is ${humanSize(file.size)} — attaching as a file link instead.`);
@@ -213,9 +213,22 @@ export function ImportNotesButton({
       let destNotebookId: string | null = activeNotebookId;
       let createdNewContainer = false;
 
+      // For a single text/PDF file destined for a new note or notebook, pre-extract
+      // its title so the note/notebook is named after the document heading rather
+      // than the raw filename or "Imported files".
+      let preExtractedTitle: string | null = null;
+      if (files.length === 1 && (target === "new-note" || target === "new-notebook")) {
+        const only = files[0];
+        const ext = "." + only.name.split(".").pop()?.toLowerCase();
+        if (ext === ".pdf" || (only.type || "").startsWith("text/") || [".md", ".markdown", ".txt", ".html", ".htm", ".csv", ".json"].includes(ext)) {
+          const extracted = await extractText(only).catch(() => null);
+          if (extracted) preExtractedTitle = extracted.title;
+        }
+      }
+
       if (target === "new-notebook") {
         const nbName = files.length === 1
-          ? files[0].name.replace(/\.[^.]+$/, "").slice(0, 60) || "Imported"
+          ? (preExtractedTitle || files[0].name.replace(/\.[^.]+$/, "")).slice(0, 60) || "Imported"
           : `Imported (${new Date().toLocaleDateString()})`;
         const newNbId = await createNotebook(nbName);
         if (!newNbId) { sonner.error("Could not create notebook."); return; }
@@ -225,7 +238,10 @@ export function ImportNotesButton({
 
       if (target === "new-note" || target === "new-notebook") {
         if (destNotebookId) {
-          const noteId = await createNote(destNotebookId, files.length === 1 ? files[0].name.replace(/\.[^.]+$/, "") : "Imported files");
+          const noteTitle = files.length === 1
+            ? (preExtractedTitle || files[0].name.replace(/\.[^.]+$/, ""))
+            : `Imported (${new Date().toLocaleDateString()})`;
+          const noteId = await createNote(destNotebookId, noteTitle);
           if (!noteId) { sonner.error("Could not create note."); return; }
           destNoteId = noteId;
           setActiveNotebookId(destNotebookId);
@@ -261,8 +277,9 @@ export function ImportNotesButton({
 
           try {
             if (kind === "text" || kind === "pdf") {
-              const content = await extractText(file).catch(() => null);
-              if (content) {
+              const extracted = await extractText(file).catch(() => null);
+              if (extracted) {
+                const content = extracted.body;
                 // For batch imports with a merge choice, apply directly without dialog.
                 if (batchChoice && dialogEnabled && hasContentNow) {
                   applyChoice({ action: "merge", position: batchChoice.position }, content, file.name);

@@ -538,13 +538,50 @@
 }
 .notebook-paper p,
 .notebook-paper li,
-.notebook-paper h1,
-.notebook-paper h2,
-.notebook-paper h3,
 .notebook-paper blockquote {
   line-height: 1.75rem !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  background: transparent !important;
+  min-height: 1.75rem;
+}
+/* Headings snap to a 2-row cell on the ruled grid so bold/large text still
+   sits cleanly on a line and the following paragraph starts on a rule. */
+.notebook-paper h1 {
+  font-size: 1.5rem !important;
+  line-height: 3.5rem !important;
+  margin: 0 0 1.75rem 0 !important;
+  background: transparent !important;
+}
+.notebook-paper h2 {
+  font-size: 1.25rem !important;
+  line-height: 3.5rem !important;
+  margin: 0 0 1.75rem 0 !important;
+  background: transparent !important;
+}
+.notebook-paper h3,
+.notebook-paper h4,
+.notebook-paper h5,
+.notebook-paper h6 {
+  font-size: 1.05rem !important;
+  line-height: 1.75rem !important;
+  margin: 0 0 1.75rem 0 !important;
+  background: transparent !important;
+}
+/* Inline elements must not disturb the ruled line-height. */
+.notebook-paper strong,
+.notebook-paper em,
+.notebook-paper mark,
+.notebook-paper code,
+.notebook-paper a {
+  line-height: inherit !important;
+  vertical-align: baseline;
+}
+/* Horizontal rules take one ruled row so the following line lands on a rule. */
+.notebook-paper hr {
+  margin: 0 0 1.75rem 0 !important;
+  height: 1.75rem !important;
+  border: 0 !important;
   background: transparent !important;
 }
 
