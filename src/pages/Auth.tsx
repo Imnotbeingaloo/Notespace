@@ -575,7 +575,7 @@ const AuthPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="relative z-10 w-full max-w-md sm:max-w-[440px]"
+          className="relative z-10 w-full max-w-[360px]"
         >
 
         <div className="flex items-center justify-center gap-2 mb-8">
