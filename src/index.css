@@ -597,7 +597,8 @@
   padding-left: 0.75rem !important;
   font-style: italic;
 }
-/* Horizontal rules take one ruled row so the following line lands on a rule. */
+/* Horizontal rules take one ruled row so the following line lands on a rule.
+   Rendered as one full-width solid line that adapts to light/dark themes. */
 .notebook-paper hr {
   margin: 0 0 1.75rem 0 !important;
   height: 1.75rem !important;
@@ -608,10 +609,13 @@
 .notebook-paper hr::after {
   content: "";
   position: absolute;
-  left: 25%;
-  right: 25%;
+  left: 0;
+  right: 0;
   top: 50%;
-  border-top: 1px dashed hsl(var(--primary) / 0.35);
+  border-top: 1px solid hsl(var(--foreground) / 0.18);
+}
+.dark .notebook-paper hr::after {
+  border-top-color: hsl(var(--foreground) / 0.25);
 }
 
 

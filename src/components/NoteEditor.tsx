@@ -551,7 +551,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const handleCreateNoteFromImport = useCallback(
     async (text: string, fileName: string) => {
       if (!activeNotebookId) return;
-      const title = fileName.replace(/\.[^.]+$/, "") || "Imported Note";
+      const { extractDocumentTitle } = await import("@/lib/document-import");
+      const title = extractDocumentTitle(text, fileName);
       await createNote(activeNotebookId, title, text);
     },
     [activeNotebookId, createNote]
@@ -615,10 +616,23 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             toast({ title: "Empty file", description: "The document appears to be empty.", variant: "destructive" });
             return;
           }
-          const { body: formatted } = formatImportedDocument(raw, docFile.name);
+          const { body: formatted, title: importedTitle } = formatImportedDocument(raw, docFile.name);
           const hasContent = !!activeNote.content?.trim();
           if (!hasContent) {
             hybridEditorRef.current?.replaceAllUndoable(formatted);
+            // Auto-fill the note title when it's empty, "Untitled", or looks like
+            // a placeholder id (e.g. "vid3434234902"), so imports don't leave
+            // the header stuck on the default label.
+            const current = (activeNote.title || "").trim();
+            const looksPlaceholder =
+              !current ||
+              /^untitled/i.test(current) ||
+              /^new note/i.test(current) ||
+              /^[a-z]{2,4}\d{5,}$/i.test(current);
+            if (looksPlaceholder && importedTitle) {
+              if (titleRef.current) titleRef.current.value = importedTitle;
+              await updateNote(activeNotebookId, activeNote.id, { title: importedTitle });
+            }
             toast({ title: "Imported", description: `"${docFile.name}" added to this note.` });
           } else {
             setPendingDocDrop({ content: formatted, fileName: docFile.name });
