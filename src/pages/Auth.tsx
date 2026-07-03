@@ -606,10 +606,11 @@ const AuthPage = () => {
 
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="mx-auto max-w-[380px] px-1 sm:px-2">
+        <div className="mx-auto max-w-[361px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[304px]">
+            <div className="mx-auto max-w-[289px]">
+
 
               <div className="mb-5 text-center">
                 <h2 className="font-serif text-2xl font-semibold text-foreground">
