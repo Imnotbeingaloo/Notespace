@@ -966,15 +966,16 @@ const AuthPage = () => {
             strip at a random spot with a random color/rotation. Resets on
             mode change / reload. */}
         {(() => {
+          // Translucent "washi / school tape" palette — bright, semi-transparent, playful.
           const TAPE_COLORS = [
-            { base: "#c9a96e", dark: "#8f7343" },   // classic tan
-            { base: "#8a8f96", dark: "#5b6068" },   // gaffer grey
-            { base: "#3d4a5a", dark: "#22303f" },   // navy
-            { base: "#b04a3d", dark: "#7a2f26" },   // brick red
-            { base: "#4f7a52", dark: "#324f34" },   // olive
-            { base: "#d4b16a", dark: "#a0813f" },   // mustard
-            { base: "#7a6a8a", dark: "#4f4359" },   // dusty purple
-            { base: "#c07a4a", dark: "#8a5230" },   // rust
+            { base: "rgba(244,63,94,0.55)",  dark: "rgba(190,18,60,0.45)" },   // red
+            { base: "rgba(59,130,246,0.55)", dark: "rgba(29,78,216,0.45)" },   // blue
+            { base: "rgba(250,204,21,0.60)", dark: "rgba(202,138,4,0.45)" },   // yellow
+            { base: "rgba(34,197,94,0.55)",  dark: "rgba(21,128,61,0.45)" },   // green
+            { base: "rgba(236,72,153,0.55)", dark: "rgba(190,24,93,0.45)" },   // pink
+            { base: "rgba(168,85,247,0.55)", dark: "rgba(126,34,206,0.45)" },  // purple
+            { base: "rgba(249,115,22,0.55)", dark: "rgba(194,65,12,0.45)" },   // orange
+            { base: "rgba(20,184,166,0.55)", dark: "rgba(15,118,110,0.45)" },  // teal
           ];
           const makeTornClip = (seed: number) => {
             const rand = (i: number) => {
@@ -995,14 +996,16 @@ const AuthPage = () => {
           };
           const tapeStyle = (c: { base: string; dark: string }, seed: number): React.CSSProperties => ({
             background: [
-              "linear-gradient(105deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 22%, rgba(0,0,0,0.08) 55%, rgba(255,255,255,0.05) 80%, rgba(0,0,0,0.10) 100%)",
-              "linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 32%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.24) 100%)",
-              `repeating-linear-gradient(0deg, ${c.dark} 0px, ${c.dark} 1px, ${c.base} 1px, ${c.base} 3px)`,
-              `repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 5px)`,
+              // soft top highlight, subtle bottom shadow
+              "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 45%, rgba(0,0,0,0.10) 100%)",
+              // gentle wrinkle diagonal
+              "linear-gradient(115deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 30%, rgba(0,0,0,0.06) 70%, rgba(255,255,255,0.08) 100%)",
+              // faint horizontal stripe pattern (like classic washi tape)
+              `repeating-linear-gradient(90deg, ${c.base} 0px, ${c.base} 8px, ${c.dark} 8px, ${c.dark} 16px)`,
             ].join(", "),
-            boxShadow: "0 3px 6px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.22)",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.30)",
             clipPath: makeTornClip(seed),
-            filter: "saturate(0.85) contrast(1.05)",
+            mixBlendMode: "multiply",
           });
           const cornerColor = TAPE_COLORS[0];
           return (
