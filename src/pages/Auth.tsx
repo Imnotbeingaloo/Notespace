@@ -232,25 +232,30 @@ const AuthPage = () => {
     }
   };
 
-  const handleMicrosoft = async () => {
+  const handleApple = async () => {
     setError("");
-    setMicrosoftLoading(true);
+    setAppleLoading(true);
     try {
-      // Lovable Cloud managed OAuth only supports google/apple natively.
-      // Attempt Microsoft (azure) via Supabase; surface a friendly note if not configured.
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "azure" as any,
-        options: { redirectTo: window.location.origin },
+      const result = await lovable.auth.signInWithOAuth("apple", {
+        redirect_uri: window.location.origin,
       });
-      if (error) {
+      if (result.error) {
+        const msg = result.error.message || "Apple sign-in failed. Try again.";
+        setError(msg);
         const { toast } = await import("sonner");
-        toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
-        setMicrosoftLoading(false);
+        toast.error(msg);
+        setAppleLoading(false);
+        return;
       }
-    } catch {
+      if (result.redirected) return;
+      try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+      navigate(resolvePostAuthTarget());
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Apple sign-in failed.";
+      setError(msg);
       const { toast } = await import("sonner");
-      toast.error("Microsoft sign-in isn't available yet. Try Google or email.");
-      setMicrosoftLoading(false);
+      toast.error(msg);
+      setAppleLoading(false);
     }
   };
 
