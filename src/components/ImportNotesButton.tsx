@@ -134,7 +134,7 @@ export function ImportNotesButton({
     [onCreateNew, onInsert, onMergeAt, onReplace, activeNote],
   );
 
-  const extractText = useCallback(async (file: File): Promise<string | null> => {
+  const extractText = useCallback(async (file: File): Promise<{ body: string; title: string } | null> => {
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
     if (file.size > MAX_PROCESSABLE_SIZE) {
       sonner.warning(`"${file.name}" is ${humanSize(file.size)} — attaching as a file link instead.`);
