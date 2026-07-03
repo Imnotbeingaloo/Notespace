@@ -1322,7 +1322,7 @@ const AuthPage = () => {
           </div>
         </div>
 
-        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20 text-left">
+        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground max-w-xl mx-auto w-full text-left">
           <div className="flex -space-x-2">
             {[
               { i: "S", bg: "#0d9488" },
