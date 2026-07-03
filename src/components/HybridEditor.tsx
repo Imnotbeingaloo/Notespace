@@ -7,6 +7,8 @@ import { usePaperStyle } from "@/hooks/use-paper-style";
 import { toast } from "@/components/ui/sonner";
 import { dismissToast } from "@/lib/toast-queue";
 import { formatTextWithAI } from "@/lib/ai-format";
+import { useCommaHighlight } from "@/hooks/use-comma-highlight";
+import { wrapCommas, unwrapCommas } from "@/lib/comma-highlight";
 
 export interface HybridEditorHandle {
   insertAtCursor: (text: string) => void;
