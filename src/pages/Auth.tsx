@@ -606,10 +606,11 @@ const AuthPage = () => {
 
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="mx-auto max-w-[380px] px-1 sm:px-2">
+        <div className="mx-auto max-w-[361px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[304px]">
+            <div className="mx-auto max-w-[289px]">
+
 
               <div className="mb-5 text-center">
                 <h2 className="font-serif text-2xl font-semibold text-foreground">
@@ -924,7 +925,7 @@ const AuthPage = () => {
               type="submit"
               disabled={loading || googleLoading}
               aria-label={loading ? "Verifying your account" : undefined}
-              className={`mx-auto max-w-[203px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
+              className={`mx-auto max-w-[193px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
 
             >
               {loading ? (
@@ -1016,7 +1017,7 @@ const AuthPage = () => {
                     window.setTimeout(() => {
                       setTapes([]);
                       setTapesFalling(false);
-                    }, 2600);
+                    }, 2800);
                     return;
                   }
 
@@ -1048,9 +1049,6 @@ const AuthPage = () => {
                     const px = asideRect.left + (t.left / 100) * asideRect.width;
                     const py = asideRect.top + (t.top / 100) * asideRect.height;
                     const fallDy = window.innerHeight - py + 400;
-                    const fallTransform = tapesFalling
-                      ? `translate(-50%, calc(-50% + ${fallDy}px)) rotate(${t.rotate + spin}deg)`
-                      : `translate(-50%, -50%) rotate(${t.rotate}deg)`;
                     return (
                       <div
                         key={t.id}
@@ -1061,19 +1059,17 @@ const AuthPage = () => {
                           left: `${px}px`,
                           width: `${t.width}px`,
                           height: `${parsed.h}px`,
-                          transform: fallTransform,
+                          transform: `translate(-50%, -50%) rotate(${t.rotate}deg)`,
                           clipPath: tapeClip,
                           transformOrigin: "center",
                           willChange: "transform",
-                          zIndex: 60,
-                          // Gravity fall — smooth acceleration, no fade.
-                          transition: tapesFalling
-                            ? `transform 2200ms cubic-bezier(0.45, 0, 0.75, 0.6) ${idx * 20}ms`
-                            : undefined,
+                          zIndex: 999,
                           animation: tapesFalling
-                            ? undefined
+                            ? `tapeFall 2200ms cubic-bezier(0.45, 0, 0.75, 0.6) ${idx * 20}ms both`
                             : `tapeAppear 380ms cubic-bezier(0.22, 1, 0.36, 1) both`,
                           ["--tape-rot" as string]: `${t.rotate}deg`,
+                          ["--fall-dy" as string]: `${fallDy}px`,
+                          ["--fall-spin" as string]: `${spin}deg`,
                         }}
                       />
                     );
@@ -1082,6 +1078,10 @@ const AuthPage = () => {
                     @keyframes tapeAppear {
                       0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(0.6); opacity: 0; }
                       100% { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(1);   opacity: 1; }
+                    }
+                    @keyframes tapeFall {
+                      0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)); }
+                      100% { transform: translate(-50%, calc(-50% + var(--fall-dy))) rotate(calc(var(--tape-rot) + var(--fall-spin))); }
                     }
                   `}</style>
                 </>,
