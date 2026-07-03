@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw, Check, X, Eye, EyeOff, ExternalLink } from "lucide-react";
 import { useAuth, hasLikelySession } from "@/context/AuthContext";
@@ -79,6 +80,23 @@ const AuthPage = () => {
   const [checkEmail, setCheckEmail] = useState(false);
   const [tapes, setTapes] = useState<Array<{ id: number; top: number; left: number; rotate: number; width: number; color: string }>>([]);
   const [tapesFalling, setTapesFalling] = useState(false);
+  const asideRef = useRef<HTMLElement>(null);
+  const [asideRect, setAsideRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = asideRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      setAsideRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, true);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure, true);
+    };
+  }, []);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -937,6 +955,7 @@ const AuthPage = () => {
 
       {/* Right column — editorial notebook panel. */}
       <aside
+        ref={asideRef}
         aria-hidden="true"
         className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-14"
       >
@@ -1032,48 +1051,53 @@ const AuthPage = () => {
                 className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
                 style={{ clipPath: tapeClip }}
               />
-              {tapes.map((t, idx) => {
-                const parsed = JSON.parse(t.color) as { cls: string; h: number };
-                const spin = ((t.id * 137) % 540) - 270;
-                const fallTransform = tapesFalling
-                  ? `translate(-50%, calc(-50% + 130vh)) rotate(${t.rotate + spin}deg)`
-                  : `translate(-50%, -50%) rotate(${t.rotate}deg)`;
-                return (
-                  <div
-                    key={t.id}
-                    aria-hidden="true"
-                    className={`absolute z-20 border-y shadow-sm ${parsed.cls}`}
-                    style={{
-                      top: `${t.top}%`,
-                      left: `${t.left}%`,
-                      width: `${t.width}px`,
-                      height: `${parsed.h}px`,
-                      transform: fallTransform,
-                      clipPath: tapeClip,
-                      transformOrigin: "center",
-                      willChange: "transform, opacity",
-                      // Smooth fall: gentle ease-in-out (no jerky end), staggered slightly.
-                      transition: tapesFalling
-                        ? `transform 2200ms cubic-bezier(0.37, 0, 0.63, 1) ${idx * 30}ms, opacity 500ms ease-out ${1900 + idx * 30}ms`
-                        : undefined,
-                      opacity: tapesFalling ? 0 : 1,
-                      // Slap-down spawn: settles smoothly into place.
-                      animation: tapesFalling
-                        ? undefined
-                        : `tapeSlap 520ms cubic-bezier(0.22, 1, 0.36, 1) both`,
-                      // CSS var used by @keyframes tapeSlap to preserve per-tape rotation.
-                      ["--tape-rot" as string]: `${t.rotate}deg`,
-                    }}
-                  />
-                );
-              })}
-              <style>{`
-                @keyframes tapeSlap {
-                  0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(1.55); opacity: 0; filter: blur(3px); }
-                  55%  { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(0.93); opacity: 1; filter: blur(0); }
-                  100% { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(1);    opacity: 1; filter: blur(0); }
-                }
-              `}</style>
+              {asideRect && createPortal(
+                <>
+                  {tapes.map((t, idx) => {
+                    const parsed = JSON.parse(t.color) as { cls: string; h: number };
+                    const spin = ((t.id * 137) % 540) - 270;
+                    const px = asideRect.left + (t.left / 100) * asideRect.width;
+                    const py = asideRect.top + (t.top / 100) * asideRect.height;
+                    const fallDy = window.innerHeight - py + 200;
+                    const fallTransform = tapesFalling
+                      ? `translate(-50%, calc(-50% + ${fallDy}px)) rotate(${t.rotate + spin}deg)`
+                      : `translate(-50%, -50%) rotate(${t.rotate}deg)`;
+                    return (
+                      <div
+                        key={t.id}
+                        aria-hidden="true"
+                        className={`fixed pointer-events-none border-y shadow-sm ${parsed.cls}`}
+                        style={{
+                          top: `${py}px`,
+                          left: `${px}px`,
+                          width: `${t.width}px`,
+                          height: `${parsed.h}px`,
+                          transform: fallTransform,
+                          clipPath: tapeClip,
+                          transformOrigin: "center",
+                          willChange: "transform, opacity",
+                          zIndex: 60,
+                          transition: tapesFalling
+                            ? `transform 2400ms cubic-bezier(0.37, 0, 0.63, 1) ${idx * 25}ms, opacity 400ms ease-out ${2100 + idx * 25}ms`
+                            : undefined,
+                          opacity: tapesFalling ? 0 : 1,
+                          animation: tapesFalling
+                            ? undefined
+                            : `tapeAppear 380ms cubic-bezier(0.22, 1, 0.36, 1) both`,
+                          ["--tape-rot" as string]: `${t.rotate}deg`,
+                        }}
+                      />
+                    );
+                  })}
+                  <style>{`
+                    @keyframes tapeAppear {
+                      0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(0.6); opacity: 0; }
+                      100% { transform: translate(-50%, -50%) rotate(var(--tape-rot)) scale(1);   opacity: 1; }
+                    }
+                  `}</style>
+                </>,
+                document.body
+              )}
             </>
           );
         })()}
