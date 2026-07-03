@@ -119,7 +119,7 @@ const AuthPage = () => {
   }, []);
 
   // Easter egg: reset extra tape stickers when the user switches modes or method.
-  useEffect(() => { setTapes([]); }, [mode, authMethod]);
+  // Tapes persist across mode/authMethod changes; they only clear on full page reload.
 
   useEffect(() => {
     if (!authLoading && user) navigate(resolvePostAuthTarget(), { replace: true });
