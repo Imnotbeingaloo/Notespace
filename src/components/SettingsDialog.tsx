@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, TextCursorInput } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
@@ -11,6 +11,7 @@ import { usePaperStyle } from "@/hooks/use-paper-style";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 import { useWordCountGoalEnabled } from "@/hooks/use-word-count-goal-enabled";
 import { useNotebookArrows } from "@/hooks/use-notebook-arrows";
+import { useCommaHighlight } from "@/hooks/use-comma-highlight";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -35,6 +36,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [tempNotesEnabled, setTempNotesEnabled] = useTempNotesEnabled();
   const [wordCountGoalEnabled, setWordCountGoalEnabled] = useWordCountGoalEnabled();
   const [notebookArrows, setNotebookArrows] = useNotebookArrows();
+  const [commaHighlight, setCommaHighlight] = useCommaHighlight();
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
@@ -329,6 +331,28 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
                       Show the daily word goal tracker and weekly writing chart in the editor footer.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-border p-4 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <TextCursorInput className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <h4 className="text-sm font-semibold text-foreground">Comma highlight overlay</h4>
+                      <Switch
+                        checked={commaHighlight}
+                        onCheckedChange={(v) => {
+                          setCommaHighlight(v);
+                          (v ? toast.success : toast.warning)(v ? "Comma highlight on" : "Comma highlight off");
+                        }}
+                        aria-label="Toggle comma highlight overlay"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      A subtle color tint on every comma when the editor is idle - a reading aid for spotting sentence rhythm. Vanishes while you type.
                     </p>
                   </div>
                 </div>
