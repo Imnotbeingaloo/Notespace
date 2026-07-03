@@ -61,7 +61,7 @@ export function AttachmentsFooter() {
 
   const removeOne = async (idx: number) => {
     const att = attachments[idx];
-    await removeAttachmentObjects([att], "user-remove", activeNote.id);
+    await removeAttachmentObjects([att], "replace", activeNote.id);
     persist(attachments.filter((_, i) => i !== idx));
     toast({ title: "Attachment removed", description: att.name });
   };
@@ -91,7 +91,7 @@ export function AttachmentsFooter() {
         i === idx ? { name: file.name, url, path, type: file.type, size: file.size } : a
       );
       persist(next);
-      if (old) await removeAttachmentObjects([old], "user-replace", activeNote.id);
+      if (old) await removeAttachmentObjects([old], "replace", activeNote.id);
       toast({ title: "Replaced", description: file.name });
     } catch (err) {
       console.error("Replace failed", err);
