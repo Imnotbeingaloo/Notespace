@@ -261,8 +261,9 @@ export function ImportNotesButton({
 
           try {
             if (kind === "text" || kind === "pdf") {
-              const content = await extractText(file).catch(() => null);
-              if (content) {
+              const extracted = await extractText(file).catch(() => null);
+              if (extracted) {
+                const content = extracted.body;
                 // For batch imports with a merge choice, apply directly without dialog.
                 if (batchChoice && dialogEnabled && hasContentNow) {
                   applyChoice({ action: "merge", position: batchChoice.position }, content, file.name);
