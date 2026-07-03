@@ -654,26 +654,27 @@ const AuthPage = () => {
             const tapes: Array<{
               top?: string; bottom?: string; left?: string; right?: string;
               rotate: number; width: number; height: number; cls: string;
+              mobileHidden?: boolean;
             }> = [
-              // Top band
+              // Top band — safely above the form on every viewport
               { top: "3%",  left: "18%", rotate: -14, width: 74, height: 18, cls: "bg-amber-300/60 border-amber-400/40" },
               { top: "5%",  right: "10%", rotate: 22, width: 62, height: 16, cls: "bg-cyan-300/55 border-cyan-400/40" },
               { top: "2%",  left: "62%", rotate: 6,  width: 54, height: 16, cls: "bg-pink-300/55 border-pink-400/40" },
-              // Mid scatter — kept along edges so the form stays readable
-              { top: "26%", left: "4%",  rotate: 20,  width: 68, height: 18, cls: "bg-lime-300/55 border-lime-400/40" },
-              { top: "30%", right: "5%", rotate: -24, width: 72, height: 20, cls: "bg-sky-300/60 border-sky-400/40" },
-              { top: "52%", left: "3%",  rotate: -12, width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40" },
-              { top: "56%", right: "4%", rotate: 16,  width: 78, height: 20, cls: "bg-emerald-300/55 border-emerald-400/40" },
-              // Lower band
-              { bottom: "22%", left: "8%",  rotate: 28,  width: 66, height: 18, cls: "bg-fuchsia-300/55 border-fuchsia-400/40" },
-              { bottom: "18%", right: "7%", rotate: -8,  width: 82, height: 20, cls: "bg-violet-300/55 border-violet-400/40" },
-              { bottom: "5%",  left: "38%", rotate: 10,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
-              { bottom: "8%",  right: "24%", rotate: -18, width: 56, height: 16, cls: "bg-yellow-300/60 border-yellow-400/40" },
+              // Mid scatter — hidden on mobile (form is edge-to-edge), shown from sm+
+              { top: "26%", left: "4%",  rotate: 20,  width: 68, height: 18, cls: "bg-lime-300/55 border-lime-400/40", mobileHidden: true },
+              { top: "30%", right: "5%", rotate: -24, width: 72, height: 20, cls: "bg-sky-300/60 border-sky-400/40", mobileHidden: true },
+              { top: "52%", left: "3%",  rotate: -12, width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40", mobileHidden: true },
+              { top: "56%", right: "4%", rotate: 16,  width: 78, height: 20, cls: "bg-emerald-300/55 border-emerald-400/40", mobileHidden: true },
+              // Lower band — kept far enough from the form's bottom on mobile
+              { bottom: "18%", left: "6%",  rotate: 28,  width: 60, height: 18, cls: "bg-fuchsia-300/55 border-fuchsia-400/40", mobileHidden: true },
+              { bottom: "14%", right: "6%", rotate: -8,  width: 78, height: 20, cls: "bg-violet-300/55 border-violet-400/40", mobileHidden: true },
+              { bottom: "4%",  left: "34%", rotate: 10,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
+              { bottom: "6%",  right: "22%", rotate: -18, width: 56, height: 16, cls: "bg-yellow-300/60 border-yellow-400/40" },
             ];
             return tapes.map((t, i) => (
               <div
                 key={i}
-                className={`absolute border-y shadow-sm ${t.cls}`}
+                className={`absolute border-y shadow-sm ${t.cls} ${t.mobileHidden ? "hidden sm:block" : ""}`}
                 style={{
                   top: t.top,
                   bottom: t.bottom,
