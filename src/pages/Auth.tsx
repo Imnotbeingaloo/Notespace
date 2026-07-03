@@ -1024,7 +1024,7 @@ const AuthPage = () => {
                       left: `${t.left}%`,
                       width: `${t.width}px`,
                       height: `${parsed.h}px`,
-                      transform: `rotate(${t.rotate}deg)`,
+                      transform: `translate(-50%, -50%) rotate(${t.rotate}deg)`,
                       clipPath: tapeClip,
                     }}
                   />
