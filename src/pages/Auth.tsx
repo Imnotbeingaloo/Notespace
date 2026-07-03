@@ -1299,11 +1299,11 @@ const AuthPage = () => {
           );
         })()}
 
-        <div className="relative z-10 max-w-lg pl-20 text-left">
+        <div className="relative z-10 max-w-2xl pl-20 text-left">
           <p className="font-serif text-[1.75rem] xl:text-[2rem] leading-[1.2] text-foreground tracking-tight text-left">
             A calm place to think, write, and remember what mattered.
           </p>
-          <p className="mt-4 text-[13px] xl:text-sm text-muted-foreground leading-relaxed text-left max-w-md">
+          <p className="mt-4 text-[13px] xl:text-sm text-muted-foreground leading-relaxed text-left max-w-lg">
             Every note lives in a ruled-paper canvas — with AI that explains,
             summarises, and turns your reading into flashcards when you need it.
           </p>
