@@ -2,11 +2,13 @@ import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw, Check, X, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { NoindexHead } from "@/components/NoindexHead";
+
 
 const BTN_PRESS = "transition-all duration-150 active:scale-95 hover:-translate-y-0.5 hover:shadow-md";
 
@@ -81,6 +83,8 @@ const AuthPage = () => {
   const [tapes, setTapes] = useState<Array<{ id: number; top: number; left: number; rotate: number; width: number; color: string }>>([]);
   const [tapesFalling, setTapesFalling] = useState(false);
   const asideRef = useRef<HTMLElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+
   const [asideRect, setAsideRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   useLayoutEffect(() => {
     const measure = () => {
@@ -141,6 +145,21 @@ const AuthPage = () => {
   useEffect(() => {
     try { localStorage.setItem("hasVisitedAuth", "1"); } catch {}
   }, []);
+
+  // Smoothly focus the email field when switching into email flow or between modes.
+  useEffect(() => {
+    if (authMethod !== "email") return;
+    const t = window.setTimeout(() => {
+      const el = emailInputRef.current;
+      if (!el) return;
+      el.focus({ preventScroll: true });
+      // Place caret at end so the preserved value stays intact.
+      const len = el.value.length;
+      try { el.setSelectionRange(len, len); } catch { /* noop */ }
+    }, 320); // wait for slide-in animation
+    return () => window.clearTimeout(t);
+  }, [authMethod, mode]);
+
 
   // Easter egg: reset extra tape stickers when the user switches modes or method.
   // Tapes persist across mode/authMethod changes; they only clear on full page reload.
@@ -288,23 +307,32 @@ const AuthPage = () => {
     setError("");
 
     if (!emailValid) {
-      setError("Please enter a valid email address.");
+      const msg = "Please enter a valid email address.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     if (mode === "signup") {
       if (password.length < 8) {
-        setError("Password must be at least 8 characters.");
+        const msg = "Password must be at least 8 characters.";
+        setError(msg);
+        toast.error(msg);
         return;
       }
       if (password !== confirmPassword) {
-        setError("Passwords don't match.");
+        const msg = "Passwords don't match.";
+        setError(msg);
+        toast.error(msg);
         return;
       }
     } else if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      const msg = "Password must be at least 6 characters.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
+
 
     setLoading(true);
 
@@ -339,17 +367,22 @@ const AuthPage = () => {
             setConfirmPassword(password);
             setNotice("");
             setError("Oops - we couldn't find an account with that email. Try creating one below.");
+            toast.error("No account found for that email. Sign up instead.");
             setMode("signup");
             setHighlightEmail(true);
             setTimeout(() => setHighlightEmail(false), 1600);
           } else {
             setError("Incorrect password. Try again or reset it below.");
+            toast.error("Incorrect password.");
           }
           setLoading(false);
           return;
         } else {
-          setError(friendlyError(error.message, "login").message);
+          const msg = friendlyError(error.message, "login").message;
+          setError(msg);
+          toast.error(msg);
         }
+
 
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
@@ -370,7 +403,10 @@ const AuthPage = () => {
       } catch { /* fail open */ }
       const { error } = await signUp(email, password);
       if (error) {
-        setError(friendlyError(error.message, "signup").message);
+        const msg = friendlyError(error.message, "signup").message;
+        setError(msg);
+        toast.error(msg);
+
       } else {
         try {
           localStorage.setItem("pendingNamePrompt", "1");
@@ -779,8 +815,10 @@ const AuthPage = () => {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
+                  ref={emailInputRef}
                   type="email"
                   value={email}
+
                   onChange={(e) => { setEmail(e.target.value); if (notice) setNotice(""); }}
                   className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-all ${
                     highlightEmail ? "border-primary ring-2 ring-primary/40" :
@@ -906,16 +944,22 @@ const AuthPage = () => {
             </div>
 
 
-            {notice && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-foreground"
-                role="status"
-              >
-                <p className="leading-snug">{notice}</p>
-              </motion.div>
-            )}
+            <AnimatePresence initial={false} mode="popLayout">
+              {notice && (
+                <motion.div
+                  key="notice"
+                  layout
+                  initial={{ opacity: 0, y: -6, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -6, height: 0 }}
+                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-foreground"
+                  role="status"
+                >
+                  <p className="leading-snug">{notice}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {mode === "login" && unknownEmail && unknownEmail === email.trim() && (
               <button
@@ -928,16 +972,23 @@ const AuthPage = () => {
               </button>
             )}
 
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive"
-                role="alert"
-              >
-                <p className="leading-snug">{error}</p>
-              </motion.div>
-            )}
+            <AnimatePresence initial={false} mode="popLayout">
+              {error && (
+                <motion.div
+                  key="error"
+                  layout
+                  initial={{ opacity: 0, y: -6, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -6, height: 0 }}
+                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive"
+                  role="alert"
+                >
+                  <p className="leading-snug">{error}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
 
             <button
               type="submit"
