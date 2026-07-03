@@ -536,12 +536,20 @@
     padding-left: 2.25rem !important;
   }
 }
+.notebook-paper,
+.notebook-paper * {
+  /* Lock font-size so 1.75rem line-height (28px) equals a 1.75 ratio at 16px,
+     matching the ruled grid exactly. 17px would drift ~2px per line. */
+  font-size: 16px !important;
+}
 .notebook-paper p,
 .notebook-paper li,
 .notebook-paper blockquote {
   line-height: 1.75rem !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
   background: transparent !important;
   min-height: 1.75rem;
 }
@@ -576,6 +584,18 @@
 .notebook-paper a {
   line-height: inherit !important;
   vertical-align: baseline;
+  font-size: inherit !important;
+}
+.notebook-paper mark {
+  background-color: hsl(48 96% 76% / 0.55) !important;
+  color: inherit !important;
+  padding: 0 0.2em !important;
+  border-radius: 2px;
+}
+.notebook-paper blockquote {
+  border-left: 3px solid hsl(var(--primary) / 0.5) !important;
+  padding-left: 0.75rem !important;
+  font-style: italic;
 }
 /* Horizontal rules take one ruled row so the following line lands on a rule. */
 .notebook-paper hr {
@@ -583,7 +603,17 @@
   height: 1.75rem !important;
   border: 0 !important;
   background: transparent !important;
+  position: relative;
 }
+.notebook-paper hr::after {
+  content: "";
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  top: 50%;
+  border-top: 1px dashed hsl(var(--primary) / 0.35);
+}
+
 
 
 
