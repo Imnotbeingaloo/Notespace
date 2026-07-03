@@ -218,21 +218,23 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     setPicking("new");
     setStage("attaching");
     try {
-      const baseName = uniqueNotebookName(file.name.replace(/\.[^.]+$/, "").slice(0, 80) || "Imported");
-      const newNbId = await createNotebook(baseName);
-      if (!newNbId) throw new Error("Could not create notebook.");
-      const newNoteId = await createNote(newNbId, file.name);
-      if (!newNoteId) throw new Error("Could not create note.");
-      // Wait for prep if user was extra fast.
+      // Wait for prep so we know the real document title before naming the note.
       while (!bgReady && !prepErrorRef.current) {
         await new Promise((r) => setTimeout(r, 100));
       }
       if (prepErrorRef.current) throw prepErrorRef.current;
+      const payload = preparedRef.current;
+      const docTitle = (payload?.title || file.name.replace(/\.[^.]+$/, "")).slice(0, 80) || "Imported";
+      const baseName = uniqueNotebookName(docTitle);
+      const newNbId = await createNotebook(baseName);
+      if (!newNbId) throw new Error("Could not create notebook.");
+      const newNoteId = await createNote(newNbId, docTitle);
+      if (!newNoteId) throw new Error("Could not create note.");
       await attachPreparedTo(newNbId, newNoteId);
       setActiveNotebookId(newNbId);
       setActiveNoteId(newNoteId);
       setStage("done");
-      toast.success(`Added "${file.name}" to a new notebook`);
+      toast.success(`Added "${docTitle}" to a new notebook`);
       setTimeout(onClose, 700);
     } catch (e: any) {
       console.error(e);
@@ -247,17 +249,19 @@ export function SidebarUploadDialog({ open, file, onClose, onProcessingChange }:
     setPicking("existing");
     setStage("attaching");
     try {
-      const newNoteId = await createNote(nbId, file.name);
-      if (!newNoteId) throw new Error("Could not create note.");
       while (!bgReady && !prepErrorRef.current) {
         await new Promise((r) => setTimeout(r, 100));
       }
       if (prepErrorRef.current) throw prepErrorRef.current;
+      const payload = preparedRef.current;
+      const docTitle = (payload?.title || file.name.replace(/\.[^.]+$/, "")).slice(0, 80) || "Imported";
+      const newNoteId = await createNote(nbId, docTitle);
+      if (!newNoteId) throw new Error("Could not create note.");
       await attachPreparedTo(nbId, newNoteId);
       setActiveNotebookId(nbId);
       setActiveNoteId(newNoteId);
       setStage("done");
-      toast.success(`Added "${file.name}" to existing notebook`);
+      toast.success(`Added "${docTitle}" to existing notebook`);
       setTimeout(onClose, 700);
     } catch (e: any) {
       console.error(e);
