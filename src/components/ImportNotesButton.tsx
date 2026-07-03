@@ -17,6 +17,9 @@ import { toolPill } from "@/lib/tool-colors";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
+import { logImport } from "@/lib/import-analytics";
+import { removeAttachmentObjects } from "@/lib/attachment-cleanup";
+
 
 interface ImportNotesButtonProps {
   onInsert: (text: string) => void;
