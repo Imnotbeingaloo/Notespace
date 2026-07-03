@@ -18,6 +18,7 @@ import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { LinkInsertDialog } from "@/components/LinkInsertDialog";
 import { sanitizeUrl, escapeHtmlAttr } from "@/lib/url-sanitize";
+import { useLastHighlightColor } from "@/hooks/use-last-highlight-color";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
