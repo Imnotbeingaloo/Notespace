@@ -1017,7 +1017,7 @@ const AuthPage = () => {
                     window.setTimeout(() => {
                       setTapes([]);
                       setTapesFalling(false);
-                    }, 2600);
+                    }, 2800);
                     return;
                   }
 
