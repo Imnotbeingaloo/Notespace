@@ -119,7 +119,7 @@ const AuthPage = () => {
   }, []);
 
   // Easter egg: reset extra tape stickers when the user switches modes or method.
-  useEffect(() => { setTapes([]); }, [mode, authMethod]);
+  // Tapes persist across mode/authMethod changes; they only clear on full page reload.
 
   useEffect(() => {
     if (!authLoading && user) navigate(resolvePostAuthTarget(), { replace: true });
@@ -998,8 +998,9 @@ const AuthPage = () => {
                     const top = 5 + Math.random() * 84;
                     const left = 4 + Math.random() * 78;
                     const rotate = -60 + Math.random() * 120;
-                    const width = 55 + Math.random() * 45; // shorter tapes
-                    const height = 16 + Math.random() * 6;
+                    const width = 70 + Math.random() * 70; // ~70-140px
+                    const height = 18 + Math.random() * 8;
+
                     return [
                       ...t,
 
