@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import { ImportNotesButton } from "@/components/ImportNotesButton";
 
 /**
@@ -40,10 +40,21 @@ const activeNote = {
 vi.mock("@/context/NotebookContext", () => ({
   useNotebooks: () => ({
     activeNote,
+    activeNotebook: null,
     activeNotebookId: "nb-1",
     updateNote: (...args: unknown[]) => updateNoteMock(...args),
+    createNote: vi.fn(),
+    createNotebook: vi.fn(),
+    setActiveNotebookId: vi.fn(),
+    setActiveNoteId: vi.fn(),
   }),
 }));
+
+async function chooseRouting() {
+  // Multi-file imports open UploadRoutingDialog. Pick "Add to this note".
+  const btn = await screen.findByRole("button", { name: /Add to this note/i });
+  fireEvent.click(btn);
+}
 
 vi.mock("@/hooks/use-toast", () => ({ toast: vi.fn() }));
 vi.mock("@/components/ui/sonner", () => ({
@@ -90,6 +101,7 @@ describe("ImportNotesButton multi-file persistence", () => {
     ];
     Object.defineProperty(input, "files", { value: files, configurable: true });
     fireEvent.change(input);
+    await chooseRouting();
 
     await waitFor(() => expect(updateNoteMock).toHaveBeenCalledTimes(1));
     const [, , updates] = updateNoteMock.mock.calls[0];
@@ -115,6 +127,7 @@ describe("ImportNotesButton multi-file persistence", () => {
     ];
     Object.defineProperty(input, "files", { value: files, configurable: true });
     fireEvent.change(input);
+    await chooseRouting();
 
     await waitFor(() => expect(onInsert).toHaveBeenCalledTimes(3));
     const merged = onInsert.mock.calls.map((c) => c[0]).join("\n");
@@ -146,6 +159,7 @@ describe("ImportNotesButton multi-file persistence", () => {
     ];
     Object.defineProperty(input, "files", { value: files, configurable: true });
     fireEvent.change(input);
+    await chooseRouting();
 
     // First file (text) → onInsert. PDF is scanned → attachment upload path.
     await waitFor(() => expect(uploadMock).toHaveBeenCalledTimes(1));
