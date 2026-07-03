@@ -73,6 +73,7 @@ export function ImportNotesButton({
 
   const applyChoice = useCallback(
     (choice: ImportChoice, content: string, fileName: string) => {
+      logImport({ kind: "import-choice", name: fileName, action: choice.action, position: choice.position });
       if (choice.action === "create") {
         onCreateNew?.(content, fileName);
         toast({ title: "New note created", description: `"${fileName}" imported into a new note.` });
@@ -86,12 +87,19 @@ export function ImportNotesButton({
         const where = pos === "top" ? "at the top" : pos === "end" ? "at the end" : "at your cursor";
         toast({ title: "Merged", description: `"${fileName}" inserted ${where}.` });
       } else if (choice.action === "replace") {
+        // Replacing wipes the previous body, which typically also orphans
+        // every attachment link that used to reference storage objects.
+        // Purge those objects so the bucket doesn't grow unbounded.
+        if (activeNote?.attachments?.length) {
+          void removeAttachmentObjects(activeNote.attachments, "replace", activeNote.id);
+        }
         onReplace?.(content);
         toast({ title: "Note replaced", description: `Content replaced with "${fileName}".` });
       }
     },
-    [onCreateNew, onInsert, onMergeAt, onReplace],
+    [onCreateNew, onInsert, onMergeAt, onReplace, activeNote],
   );
+
 
   const importText = useCallback(
     async (file: File, hasContentNow: boolean): Promise<boolean> => {
