@@ -4,6 +4,8 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/components/ui/sonner";
 import { promptRenameForDuplicate } from "@/components/RenameDuplicateDialog";
 import { isOffline, queueNoteUpdate } from "@/lib/offline-queue";
+import { removeAttachmentObjects } from "@/lib/attachment-cleanup";
+
 
 
 export interface Attachment {
