@@ -1119,8 +1119,8 @@ const AuthPage = () => {
                       0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)); }
                       100% { transform: translate(-50%, calc(-50% + var(--fall-dy))) rotate(calc(var(--tape-rot) + var(--fall-spin))); }
                     @keyframes tapeHintPop {
-                      0%, 100% { transform: rotate(6deg) scale(1); }
-                      50%      { transform: rotate(6deg) scale(1.18); }
+                      0%, 100% { transform: rotate(10deg) scale(1); }
+                      50%      { transform: rotate(10deg) scale(1.18); }
                     }
                   `}</style>
                 </>,
