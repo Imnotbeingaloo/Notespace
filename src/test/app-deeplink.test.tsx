@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 
 // Active selection lives in the mock context module
 const state = {
@@ -28,6 +29,12 @@ vi.mock("framer-motion", async () => {
   return {
     motion: new Proxy({}, { get: (_t, key: string) => passthrough(key) }),
     AnimatePresence: ({ children }: any) => children,
+    useReducedMotion: () => false,
+    useAnimation: () => ({ start: () => Promise.resolve(), stop: () => {}, set: () => {} }),
+    useMotionValue: (v: any) => ({ get: () => v, set: () => {}, on: () => () => {} }),
+    useTransform: () => 0,
+    useSpring: (v: any) => v,
+    useScroll: () => ({ scrollY: { get: () => 0, on: () => () => {} }, scrollYProgress: { get: () => 0, on: () => () => {} } }),
   };
 });
 
@@ -68,11 +75,13 @@ import AppPage from "@/pages/Index";
 
 const renderAt = (url: string) =>
   render(
-    <MemoryRouter initialEntries={[url]}>
-      <Routes>
-        <Route path="/app" element={<AppPage />} />
-      </Routes>
-    </MemoryRouter>
+    <HelmetProvider>
+      <MemoryRouter initialEntries={[url]}>
+        <Routes>
+          <Route path="/app" element={<AppPage />} />
+        </Routes>
+      </MemoryRouter>
+    </HelmetProvider>
   );
 
 describe("Deep linking /app?notebook=&note=", () => {

@@ -1,18 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, RotateCw, Sparkles, Trophy } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, RotateCw, Sparkles, Trophy, X } from "lucide-react";
 
 export type Flashcard = { q: string; a: string };
 
 /**
  * Parses the markdown emitted by the `flashcards` AI tool into a structured
- * deck. The model is instructed to emit blocks separated by `---`, each with:
+ * deck. Blocks are separated by `---`, each with:
  *
- *   **Q:** ...question...
- *   **A:** ...answer...
- *
- * This parser is intentionally forgiving so half-streamed text still renders
- * something usable while the rest arrives.
+ *   **Q:** question
+ *   **A:** answer
  */
 export function parseFlashcards(markdown: string): Flashcard[] {
   if (!markdown) return [];
@@ -30,60 +27,98 @@ export function parseFlashcards(markdown: string): Flashcard[] {
 
 interface FlashcardDeckProps {
   markdown: string;
-  /** True while the upstream stream is still appending content. */
   streaming?: boolean;
 }
 
 /**
- * NotebookLM-inspired flashcard reviewer. Cards flip on click to reveal the
- * answer, then the learner self-grades with Correct / Wrong. Wrong cards
- * cycle back through the deck so the goal is genuine concept mastery, not
- * just clicking through.
+ * NotebookLM-inspired flashcard reviewer.
+ *  - One giant card at a time; tap or press Space to flip (with a real 3D tilt).
+ *  - ← / → arrows to navigate through the deck.
+ *  - Below the card: red "X n" and green "n ✓" pill counters, plus prev/next.
+ *  - Wrong graders get "you'll get it next time"; right graders get "you got it".
  */
 export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
   const parsed = useMemo(() => parseFlashcards(markdown), [markdown]);
-  const palettes = useMemo(() => {
-    const curated = [
-      "268 62% 58%",
-      "204 76% 48%",
-      "162 58% 40%",
-      "38 78% 50%",
-      "344 62% 52%",
-      "186 62% 42%",
-      "225 64% 56%",
-      "20 68% 52%",
-      "142 52% 42%",
-      "312 52% 54%",
-    ];
-    let seed = markdown.length || 1;
-    for (let i = 0; i < markdown.length; i++) seed = (seed * 31 + markdown.charCodeAt(i)) >>> 0;
-    return [...curated].sort((a, b) => {
-      const av = (seed ^ a.charCodeAt(0) ^ a.charCodeAt(a.length - 1)) % 97;
-      const bv = (seed ^ b.charCodeAt(0) ^ b.charCodeAt(b.length - 1)) % 97;
-      return av - bv;
-    });
-  }, [markdown]);
-  // Working queue of indices into `parsed`. Wrong cards get re-queued.
-  const [queue, setQueue] = useState<number[] | null>(null);
+  const total = parsed.length;
+
+  const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [correct, setCorrect] = useState(0);
   const [wrong, setWrong] = useState(0);
-  // -1 = wrong, 1 = right, 0 = neutral. Drives swipe-out animation direction.
+  // -1 = wrong swipe, 1 = correct swipe, 0 = idle
   const [verdict, setVerdict] = useState<-1 | 0 | 1>(0);
+  // Ephemeral encouragement message shown briefly after grading.
+  const [nudge, setNudge] = useState<null | "correct" | "wrong">(null);
+  const [finished, setFinished] = useState(false);
 
-  // Initialize/reset queue when the parsed deck changes (e.g. new generation).
-  const deckKey = parsed.map((card) => `${card.q}\u0000${card.a}`).join("\u0001");
+  const cardKey = parsed.map((c) => `${c.q}\u0000${c.a}`).join("\u0001");
+
   useEffect(() => {
-    setQueue(parsed.length > 0 ? parsed.map((_, i) => i) : null);
+    setIndex(0);
     setFlipped(false);
     setCorrect(0);
     setWrong(0);
     setVerdict(0);
-  }, [deckKey, parsed.length]);
+    setNudge(null);
+    setFinished(false);
+  }, [cardKey]);
 
-  const activeQueue = queue ?? parsed.map((_, i) => i);
+  // Assign a stable hue per card position from the curated palette.
+  const palettes = useMemo(
+    () => [
+      "268 62% 58%", "204 76% 48%", "162 58% 40%", "38 78% 50%", "344 62% 52%",
+      "186 62% 42%", "225 64% 56%", "20 68% 52%", "142 52% 42%", "312 52% 54%",
+    ],
+    []
+  );
 
-  if (parsed.length === 0) {
+  const currentCard = parsed[index];
+
+  const goto = (nextIdx: number) => {
+    if (total === 0) return;
+    const clamped = Math.max(0, Math.min(total - 1, nextIdx));
+    setIndex(clamped);
+    setFlipped(false);
+  };
+
+  const advance = () => {
+    if (index + 1 >= total) {
+      setFinished(true);
+    } else {
+      goto(index + 1);
+    }
+  };
+
+  const grade = (isCorrect: boolean) => {
+    if (verdict !== 0) return;
+    setVerdict(isCorrect ? 1 : -1);
+    setNudge(isCorrect ? "correct" : "wrong");
+    setTimeout(() => {
+      if (isCorrect) setCorrect((c) => c + 1);
+      else setWrong((w) => w + 1);
+      setVerdict(0);
+      advance();
+    }, 320);
+    setTimeout(() => setNudge(null), 1500);
+  };
+
+  // Keyboard: Space flips, arrows navigate. Live only when a card is shown.
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (finished || total === 0) return;
+    const handler = (e: KeyboardEvent) => {
+      // Ignore when typing in an input elsewhere on the page.
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); setFlipped((f) => !f); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); goto(index - 1); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); goto(index + 1); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [index, total, finished]);
+
+  if (total === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
         <Sparkles className="h-5 w-5 mb-2 animate-pulse" />
@@ -92,34 +127,33 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
     );
   }
 
-  const finished = activeQueue.length === 0;
-
   if (finished) {
-    const total = correct + wrong;
-    const pct = total ? Math.round((correct / total) * 100) : 0;
+    const answered = correct + wrong;
+    const pct = answered ? Math.round((correct / answered) * 100) : 0;
     return (
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="flex flex-col items-center text-center py-8"
+        className="flex flex-col items-center text-center py-10"
       >
         <div className="h-14 w-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-3">
           <Trophy className="h-6 w-6" />
         </div>
         <h3 className="font-sans font-bold text-foreground text-lg">Deck complete</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          {correct} got it · {wrong} need review · {pct}% on first pass
+          {correct} got it · {wrong} need review · {pct}% right
         </p>
         <button
           onClick={() => {
-            setQueue(parsed.map((_, i) => i));
+            setIndex(0);
             setCorrect(0);
             setWrong(0);
             setFlipped(false);
             setVerdict(0);
+            setFinished(false);
           }}
-          className="magnetic-btn mt-5 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all"
+          className="mt-5 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all"
         >
           <RotateCw className="h-4 w-4" /> Run deck again
         </button>
@@ -127,74 +161,30 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
     );
   }
 
-  const currentIdx = activeQueue[0];
-  const card = parsed[currentIdx];
-  const total = parsed.length;
-  const masteredCount = correct;
-
-  const grade = (isCorrect: boolean) => {
-    setVerdict(isCorrect ? 1 : -1);
-    // Animate out, then advance state on the next tick so AnimatePresence sees it.
-    setTimeout(() => {
-      setQueue((prev) => {
-        const q = prev ?? parsed.map((_, i) => i);
-        const [head, ...rest] = q;
-        return isCorrect ? rest : [...rest, head];
-      });
-      if (isCorrect) setCorrect((c) => c + 1);
-      else setWrong((w) => w + 1);
-      setFlipped(false);
-      setVerdict(0);
-    }, 260);
-  };
+  const hue = palettes[index % palettes.length];
 
   return (
-    <div className="flex flex-col items-center w-full" key={deckKey}>
-      {/* Progress strip */}
-      <div className="w-full max-w-md mb-3">
-        <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
-          <span className="font-medium">Card {Math.min(masteredCount + 1, total)} of {total}</span>
-          <span className="inline-flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-              <Check className="h-3 w-3" /> {correct}
-            </span>
-            <span className="inline-flex items-center gap-1 text-rose-600 dark:text-rose-400">
-              <X className="h-3 w-3" /> {wrong}
-            </span>
-          </span>
-        </div>
-        <div className="h-1 rounded-full bg-muted overflow-hidden">
-          <motion.div
-            className="h-full bg-primary"
-            initial={false}
-            animate={{ width: `${(masteredCount / total) * 100}%` }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          />
-        </div>
-      </div>
+    <div ref={rootRef} className="flex flex-col items-center w-full select-none">
+      {/* Keyboard hint */}
+      <p className="text-[11px] text-muted-foreground/80 mb-3 tracking-wide">
+        Press <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono">Space</kbd> to flip,{" "}
+        <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono">←</kbd>/
+        <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono">→</kbd> to navigate
+      </p>
 
-      {/* Card stack */}
-      <div className="relative w-full max-w-md h-64 [perspective:1400px]">
-        {/* Peek of next card */}
-        {activeQueue[1] != null && (
-          <div
-            aria-hidden
-            className="absolute inset-0 rounded-2xl bg-card border border-border/60 shadow-sm"
-            style={{ transform: "translateY(10px) scale(0.97)", opacity: 0.65 }}
-          />
-        )}
-
+      {/* Big card */}
+      <div className="relative w-full max-w-md h-72 [perspective:1600px]">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={currentIdx}
-            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            key={index}
+            initial={{ opacity: 0, y: 18, scale: 0.97 }}
             animate={
               verdict === 0
                 ? { opacity: 1, y: 0, scale: 1, x: 0, rotate: 0 }
                 : {
                     opacity: 0,
-                    x: verdict === 1 ? 260 : -260,
-                    rotate: verdict === 1 ? 14 : -14,
+                    x: verdict === 1 ? 300 : -300,
+                    rotate: verdict === 1 ? 12 : -12,
                     transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] },
                   }
             }
@@ -202,77 +192,144 @@ export function FlashcardDeck({ markdown, streaming }: FlashcardDeckProps) {
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className="absolute inset-0"
           >
-            {(() => {
-              const hue = palettes[currentIdx % palettes.length];
-              return (
-                <button
-                  type="button"
-                  onClick={() => setFlipped((f) => !f)}
-                  className="group relative w-full h-full rounded-2xl text-left [transform-style:preserve-3d] transition-transform duration-500"
-                  style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
-                  aria-label={flipped ? "Show question" : "Show answer"}
-                >
-                  <div
-                    className="absolute inset-0 rounded-2xl shadow-md p-6 flex flex-col [backface-visibility:hidden]"
-                    style={{
-                      background: `linear-gradient(135deg, hsl(${hue} / 0.11), hsl(${hue} / 0.025))`,
-                      border: `1px solid hsl(${hue} / 0.34)`,
-                    }}
+            <button
+              type="button"
+              onClick={() => setFlipped((f) => !f)}
+              className="group relative w-full h-full rounded-3xl text-left [transform-style:preserve-3d] transition-transform duration-500"
+              style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
+              aria-label={flipped ? "Show question" : "Show answer"}
+            >
+              {/* Front — question */}
+              <div
+                className="absolute inset-0 rounded-3xl p-6 flex flex-col [backface-visibility:hidden] shadow-lg"
+                style={{
+                  background: `linear-gradient(160deg, hsl(${hue} / 0.10), hsl(${hue} / 0.02))`,
+                  border: `1px solid hsl(${hue} / 0.28)`,
+                }}
+              >
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground/80">
+                  <span className="font-medium tabular-nums">{index + 1} / {total}</span>
+                  <span
+                    className="uppercase tracking-wider font-semibold text-[10px]"
+                    style={{ color: `hsl(${hue})` }}
                   >
-                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${hue})` }}>Question</span>
-                    <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">{card.q}</p>
-                    <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to reveal answer</span>
-                  </div>
-                  <div
-                    className="absolute inset-0 rounded-2xl shadow-md p-6 flex flex-col [backface-visibility:hidden]"
-                    style={{
-                      background: `linear-gradient(135deg, hsl(${hue} / 0.17), hsl(${hue} / 0.055))`,
-                      border: `1px solid hsl(${hue} / 0.46)`,
-                      transform: "rotateY(180deg)",
-                    }}
+                    Question
+                  </span>
+                </div>
+                <div className="flex-1 flex items-center justify-center px-1">
+                  <p className="text-foreground text-lg leading-relaxed text-center font-medium">
+                    {currentCard.q}
+                  </p>
+                </div>
+                <span className="text-center text-[12px] text-muted-foreground">See answer</span>
+              </div>
+
+              {/* Back — answer */}
+              <div
+                className="absolute inset-0 rounded-3xl p-6 flex flex-col [backface-visibility:hidden] shadow-lg"
+                style={{
+                  background: `linear-gradient(160deg, hsl(${hue} / 0.18), hsl(${hue} / 0.05))`,
+                  border: `1px solid hsl(${hue} / 0.42)`,
+                  transform: "rotateY(180deg)",
+                }}
+              >
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground/80">
+                  <span className="font-medium tabular-nums">{index + 1} / {total}</span>
+                  <span
+                    className="uppercase tracking-wider font-semibold text-[10px]"
+                    style={{ color: `hsl(${hue})` }}
                   >
-                    <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: `hsl(${hue})` }}>Answer</span>
-                    <p className="mt-3 flex-1 text-foreground text-[15px] leading-relaxed overflow-y-auto pr-1">{card.a}</p>
-                    <span className="mt-3 text-[11px] text-muted-foreground/80">Tap to flip back</span>
-                  </div>
-                </button>
-              );
-            })()}
+                    Answer
+                  </span>
+                </div>
+                <div className="flex-1 flex items-center justify-center px-1 overflow-y-auto">
+                  <p className="text-foreground text-[15px] leading-relaxed text-center">
+                    {currentCard.a}
+                  </p>
+                </div>
+                <span className="text-center text-[12px] text-muted-foreground">Grade yourself below</span>
+              </div>
+            </button>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Grade buttons only appear after reveal (NotebookLM-style). */}
-      <div className="mt-5 h-[46px] flex items-center justify-center">
-        {flipped ? (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center gap-3"
-          >
-            <button
-              onClick={() => grade(false)}
-              disabled={verdict !== 0}
-              className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+      {/* Encouragement toast */}
+      <div className="h-6 mt-3 flex items-center justify-center">
+        <AnimatePresence>
+          {nudge && (
+            <motion.p
+              key={nudge}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22 }}
+              className={`text-xs font-medium ${
+                nudge === "correct"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-rose-600 dark:text-rose-400"
+              }`}
             >
-              <X className="h-4 w-4 transition-transform group-hover:scale-110" />
-              <span className="text-sm font-medium">Wrong</span>
-            </button>
-            <button
-              onClick={() => grade(true)}
-              disabled={verdict !== 0}
-              className="magnetic-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <Check className="h-4 w-4 transition-transform group-hover:scale-110" />
-              <span className="text-sm font-medium">Correct</span>
-            </button>
-          </motion.div>
-        ) : (
-          <p className="text-[11px] text-muted-foreground">Flip the card to grade your recall.</p>
-        )}
+              {nudge === "correct" ? "You got it ✨" : "You'll get it next time 💪"}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Controls: prev · X wrong · correct ✓ · next */}
+      <div className="mt-3 flex items-center justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => goto(index - 1)}
+          disabled={index === 0 || verdict !== 0}
+          className="h-11 w-11 rounded-full bg-muted/60 hover:bg-muted text-primary flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Previous card"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => grade(false)}
+          disabled={!flipped || verdict !== 0}
+          className="h-11 min-w-[68px] px-4 rounded-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-600 dark:text-rose-400 inline-flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          aria-label="Mark wrong"
+        >
+          <X className="h-4 w-4" />
+          <span className="text-sm font-semibold tabular-nums">{wrong}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => grade(true)}
+          disabled={!flipped || verdict !== 0}
+          className="h-11 min-w-[68px] px-4 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 inline-flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          aria-label="Mark correct"
+        >
+          <span className="text-sm font-semibold tabular-nums">{correct}</span>
+          <Check className="h-4 w-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => (index + 1 >= total ? setFinished(true) : goto(index + 1))}
+          disabled={verdict !== 0}
+          className="h-11 w-11 rounded-full bg-muted/60 hover:bg-muted text-primary flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Next card"
+        >
+          <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Slim progress rail */}
+      <div className="w-full max-w-md mt-4 h-1 rounded-full bg-muted overflow-hidden">
+        <motion.div
+          className="h-full bg-primary"
+          initial={false}
+          animate={{ width: `${((index + (flipped ? 1 : 0)) / total) * 100}%` }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        />
       </div>
     </div>
   );
 }
-

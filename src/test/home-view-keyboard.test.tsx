@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { HomeView } from "@/components/HomeView";
 
 // Mock framer-motion: cache component per tag so identity is stable across renders
@@ -21,6 +22,12 @@ vi.mock("framer-motion", async () => {
   return {
     motion: new Proxy({}, { get: (_t, key: string) => passthrough(String(key)) }),
     AnimatePresence: ({ children }: any) => children,
+    useReducedMotion: () => false,
+    useAnimation: () => ({ start: () => Promise.resolve(), stop: () => {}, set: () => {} }),
+    useMotionValue: (v: any) => ({ get: () => v, set: () => {}, on: () => () => {} }),
+    useTransform: () => 0,
+    useSpring: (v: any) => v,
+    useScroll: () => ({ scrollY: { get: () => 0, on: () => () => {} }, scrollYProgress: { get: () => 0, on: () => () => {} } }),
   };
 });
 
@@ -37,17 +44,22 @@ const makeNotebook = (i: number) => ({
 const fixture = Array.from({ length: 6 }, (_, i) => makeNotebook(i));
 
 vi.mock("@/context/NotebookContext", () => ({
-  useNotebooks: () => ({ notebooks: fixture, loading: false }),
+  useNotebooks: () => ({ notebooks: fixture, standaloneNotes: [], trashedNotebooks: [], trashedNotes: [], loading: false, refreshData: vi.fn(), deleteNotebook: vi.fn(), deleteNote: vi.fn() }),
 }));
+
+
+vi.mock("@/context/AuthContext", () => ({ useAuth: () => ({ user: null, loading: false, session: null }), AuthProvider: ({ children }: any) => children }));
+vi.mock("@/hooks/use-profile", () => ({ useProfile: () => ({ profile: null, loading: false }) }));
+vi.mock("@/hooks/use-temp-notes-enabled", () => ({ useTempNotesEnabled: () => [true, () => {}] }));
 
 describe("HomeView keyboard navigation", () => {
   beforeEach(() => {
-    Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1440 });
+    Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1024 });
   });
 
   it("Enter on focused card calls onOpenNotebook with that id", () => {
     const onOpen = vi.fn();
-    render(<HomeView onOpenNotebook={onOpen} />);
+    render(<MemoryRouter><HomeView onOpenNotebook={onOpen} /></MemoryRouter>);
     const cards = screen.getAllByRole("gridcell");
     expect(cards.length).toBe(6);
     // Newest sort places nb-5 first
@@ -58,7 +70,7 @@ describe("HomeView keyboard navigation", () => {
 
   it("ArrowRight moves focus to next card", () => {
     const onOpen = vi.fn();
-    render(<HomeView onOpenNotebook={onOpen} />);
+    render(<MemoryRouter><HomeView onOpenNotebook={onOpen} /></MemoryRouter>);
     const cards = screen.getAllByRole("gridcell") as HTMLButtonElement[];
     cards[0].focus();
     fireEvent.keyDown(cards[0], { key: "ArrowRight" });
@@ -67,7 +79,7 @@ describe("HomeView keyboard navigation", () => {
 
   it("ArrowDown jumps by row (3 cols on desktop)", () => {
     const onOpen = vi.fn();
-    render(<HomeView onOpenNotebook={onOpen} />);
+    render(<MemoryRouter><HomeView onOpenNotebook={onOpen} /></MemoryRouter>);
     const cards = screen.getAllByRole("gridcell") as HTMLButtonElement[];
     cards[0].focus();
     fireEvent.keyDown(cards[0], { key: "ArrowDown" });
@@ -76,7 +88,7 @@ describe("HomeView keyboard navigation", () => {
 
   it("End key focuses the last card; Home returns to first", () => {
     const onOpen = vi.fn();
-    render(<HomeView onOpenNotebook={onOpen} />);
+    render(<MemoryRouter><HomeView onOpenNotebook={onOpen} /></MemoryRouter>);
     const cards = screen.getAllByRole("gridcell") as HTMLButtonElement[];
     cards[0].focus();
     fireEvent.keyDown(cards[0], { key: "End" });
