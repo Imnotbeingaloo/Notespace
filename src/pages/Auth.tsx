@@ -307,23 +307,32 @@ const AuthPage = () => {
     setError("");
 
     if (!emailValid) {
-      setError("Please enter a valid email address.");
+      const msg = "Please enter a valid email address.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     if (mode === "signup") {
       if (password.length < 8) {
-        setError("Password must be at least 8 characters.");
+        const msg = "Password must be at least 8 characters.";
+        setError(msg);
+        toast.error(msg);
         return;
       }
       if (password !== confirmPassword) {
-        setError("Passwords don't match.");
+        const msg = "Passwords don't match.";
+        setError(msg);
+        toast.error(msg);
         return;
       }
     } else if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      const msg = "Password must be at least 6 characters.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
+
 
     setLoading(true);
 
