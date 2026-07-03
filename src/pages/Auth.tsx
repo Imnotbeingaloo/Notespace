@@ -80,6 +80,7 @@ const AuthPage = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [microsoftLoading, setMicrosoftLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
+  const [easterTapes, setEasterTapes] = useState(0);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -119,6 +120,9 @@ const AuthPage = () => {
   useEffect(() => {
     try { localStorage.setItem("hasVisitedAuth", "1"); } catch {}
   }, []);
+
+  // Easter egg: reset extra tape stickers when the user switches modes or method.
+  useEffect(() => { setEasterTapes(0); }, [mode, authMethod]);
 
   useEffect(() => {
     if (!authLoading && user) navigate(resolvePostAuthTarget(), { replace: true });
@@ -565,12 +569,12 @@ const AuthPage = () => {
           <div className="absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
           <div className="absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-amber-400/15 blur-3xl" />
         </div>
-        {/* Decorative arrow mark — purely visual, no navigation. */}
+        {/* Decorative brand mark — purely visual, no navigation. */}
         <div
           aria-hidden="true"
-          className="absolute left-6 top-6 z-10 inline-flex items-center justify-center text-muted-foreground/70"
+          className="absolute left-6 top-6 z-10 inline-flex items-center justify-center"
         >
-          <ArrowLeft className="h-5 w-5" strokeWidth={2.25} />
+          <img src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" />
         </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -582,32 +586,6 @@ const AuthPage = () => {
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
         <div className="mx-auto max-w-[380px] px-1 sm:px-2">
-          <div role="tablist" aria-label="Authentication mode" className="relative flex gap-1 bg-muted rounded-lg p-1 mb-6">
-            {(["signup", "login"] as const).map((m) => {
-              const active = (mode === m) || (mode === "forgot" && m === "login");
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => { setMode(m); setError(""); setNotice(""); setConfirmPassword(""); setForgotSent(false); }}
-                  className={`relative flex-1 py-2 text-sm font-medium rounded-md border-0 outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-muted ${
-                    active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="auth-tab-pill"
-                      className="absolute inset-0 bg-background rounded-md shadow-sm"
-                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                    />
-                  )}
-                  <span className="relative z-10">{m === "login" ? "Sign In" : "Sign Up"}</span>
-                </button>
-              );
-            })}
-          </div>
 
           {mode !== "forgot" && authMethod === null && (
             <div className="mx-auto max-w-[220px] space-y-3">
@@ -640,6 +618,7 @@ const AuthPage = () => {
             </div>
           )}
 
+
           {mode !== "forgot" && authMethod === "email" && (
             <div className="space-y-3 mb-5">
               <button
@@ -649,7 +628,7 @@ const AuthPage = () => {
                 className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
-                {mode === "signup" ? "Sign up with Google" : "Sign in with Google"}
+                Continue with Google
               </button>
               <div className="relative flex items-center gap-3 py-1">
                 <div className="flex-1 h-px bg-border" />
@@ -728,15 +707,9 @@ const AuthPage = () => {
               )}
             </form>
           ) : (
-          <AnimatePresence mode="wait" initial={false}>
-          <motion.form
-            key={mode}
+          <form
             onSubmit={handleSubmit}
             className="space-y-4"
-            initial={{ opacity: 0, x: mode === "login" ? 24 : -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: mode === "login" ? -24 : 24 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
           >
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
@@ -919,8 +892,18 @@ const AuthPage = () => {
                 </>
               )}
             </button>
-          </motion.form>
-          </AnimatePresence>
+            <p className="text-center text-xs text-muted-foreground pt-1">
+              {mode === "login" ? (
+                <>Don't have an account?{" "}
+                  <button type="button" onClick={() => { setMode("signup"); setError(""); setNotice(""); setConfirmPassword(""); }} className="text-primary hover:underline font-medium">Sign up</button>
+                </>
+              ) : (
+                <>Already have an account?{" "}
+                  <button type="button" onClick={() => { setMode("login"); setError(""); setNotice(""); setConfirmPassword(""); }} className="text-primary hover:underline font-medium">Sign in</button>
+                </>
+              )}
+            </p>
+          </form>
           ))}
         </div>
       </motion.div>
@@ -954,8 +937,34 @@ const AuthPage = () => {
         <div className="absolute -top-32 -right-24 h-[300px] w-[300px] rounded-full bg-primary/8 blur-3xl" />
         <div className="absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-amber-400/[0.06] blur-3xl" />
 
-        {/* Corner tape — swapped to a soft rose so it reads as tape, not more amber wash */}
-        <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-200/80 dark:bg-rose-300/30 shadow-sm rounded-[2px] border border-rose-300/50" />
+        {/* Corner tape — clickable easter egg. Each click drops another tape strip
+            somewhere on the notebook panel. Resets on mode change / reload. */}
+        <button
+          type="button"
+          aria-label="Decorative tape"
+          tabIndex={-1}
+          onClick={() => setEasterTapes((n) => Math.min(3, n + 1))}
+          className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+        />
+        {/* Easter egg tapes */}
+        {easterTapes >= 1 && (
+          <div
+            aria-hidden="true"
+            className="absolute top-[34%] left-16 h-5 w-20 -rotate-[8deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
+          />
+        )}
+        {easterTapes >= 2 && (
+          <div
+            aria-hidden="true"
+            className="absolute bottom-[30%] right-10 h-5 w-24 rotate-[12deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
+          />
+        )}
+        {easterTapes >= 3 && (
+          <div
+            aria-hidden="true"
+            className="absolute bottom-10 left-1/3 h-5 w-24 -rotate-[4deg] bg-rose-300/85 dark:bg-rose-400/40 shadow-sm rounded-[2px] border border-rose-400/60 z-20 animate-in fade-in zoom-in-95 duration-200"
+          />
+        )}
 
         <div className="relative z-10 pl-20" />
 
