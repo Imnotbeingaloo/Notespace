@@ -83,6 +83,8 @@ const AuthPage = () => {
   const [tapes, setTapes] = useState<Array<{ id: number; top: number; left: number; rotate: number; width: number; color: string }>>([]);
   const [tapesFalling, setTapesFalling] = useState(false);
   const asideRef = useRef<HTMLElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+
   const [asideRect, setAsideRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   useLayoutEffect(() => {
     const measure = () => {
