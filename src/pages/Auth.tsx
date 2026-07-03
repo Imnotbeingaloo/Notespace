@@ -1055,12 +1055,12 @@ const AuthPage = () => {
                       if (recentRot.every((r) => Math.abs(((rotate - r + 540) % 360) - 180) > 25)) break;
                       rotate = Math.floor(Math.random() * 360);
                     }
-                    // Wider size range + avoid repeating a similar length to the last 2 tapes.
-                    let width = 55 + Math.random() * 95; // ~55-150px
+                    // Wider size range (max 110px) + avoid similar length to the last 2 tapes.
+                    let width = 55 + Math.random() * 55; // ~55-110px
                     const recentW = t.slice(-2).map((p) => p.width);
                     for (let i = 0; i < 20; i++) {
-                      if (recentW.every((w) => Math.abs(width - w) > 25)) break;
-                      width = 55 + Math.random() * 95;
+                      if (recentW.every((w) => Math.abs(width - w) > 18)) break;
+                      width = 55 + Math.random() * 55;
                     }
                     const height = 16 + Math.random() * 10;
 
@@ -1070,7 +1070,7 @@ const AuthPage = () => {
                     ];
                   });
                 }}
-                className="absolute top-6 right-8 h-6 w-24 rotate-6 z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
+                className="absolute top-6 right-8 h-6 w-24 rotate-[10deg] z-20 cursor-pointer transition-transform hover:scale-105 active:scale-95 bg-rose-300/70 border-y border-rose-400/50 shadow-sm"
                 style={{
                   clipPath: tapeClip,
                   animation: tapeHint ? "tapeHintPop 1.4s ease-in-out infinite" : undefined,
@@ -1119,8 +1119,8 @@ const AuthPage = () => {
                       0%   { transform: translate(-50%, -50%) rotate(var(--tape-rot)); }
                       100% { transform: translate(-50%, calc(-50% + var(--fall-dy))) rotate(calc(var(--tape-rot) + var(--fall-spin))); }
                     @keyframes tapeHintPop {
-                      0%, 100% { transform: rotate(6deg) scale(1); }
-                      50%      { transform: rotate(6deg) scale(1.18); }
+                      0%, 100% { transform: rotate(10deg) scale(1); }
+                      50%      { transform: rotate(10deg) scale(1.18); }
                     }
                   `}</style>
                 </>,
