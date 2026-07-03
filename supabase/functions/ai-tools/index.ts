@@ -13,7 +13,7 @@ const inputSchema = z.object({
   noteTitle: z.string().max(500).optional().default(""),
   noteContent: z.string().max(50000).optional().default(""),
   editInstruction: z.string().max(2000).optional().default(""),
-  count: z.number().int().min(3).max(10).optional(),
+  count: z.number().int().min(1).max(50).optional(),
 });
 
 const systemPrompts: Record<string, string> = {
