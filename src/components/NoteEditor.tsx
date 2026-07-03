@@ -583,7 +583,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             toast({ title: "Empty file", description: "The document appears to be empty.", variant: "destructive" });
             return;
           }
-          const formatted = formatImportedDocument(raw, docFile.name);
+          const { body: formatted } = formatImportedDocument(raw, docFile.name);
           const hasContent = !!activeNote.content?.trim();
           if (!hasContent) {
             hybridEditorRef.current?.replaceAllUndoable(formatted);
