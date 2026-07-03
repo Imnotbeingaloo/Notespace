@@ -288,29 +288,46 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         <div key={a.label} className="contents">
             {a.label === "Highlight" ? (
               <Popover>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
+                <div className="flex items-center flex-shrink-0">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
                       <button
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0"
-                        aria-label="Highlight color"
+                        onClick={(e) => { e.preventDefault(); applyHighlight(lastHighlightColor); }}
+                        className="p-1.5 rounded-l-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 relative"
+                        aria-label="Highlight with last color"
                       >
                         <Highlighter className="h-4 w-4" />
+                        <span
+                          className="absolute bottom-0.5 left-1/2 -translate-x-1/2 h-[3px] w-3.5 rounded-sm border border-border/60"
+                          style={{ backgroundColor: lastHighlightColor }}
+                        />
                       </button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">Highlight color</TooltipContent>
-                </Tooltip>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">Highlight (click swatch for colors)</TooltipContent>
+                  </Tooltip>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      className="px-1 py-1.5 rounded-r-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 text-[9px] leading-none"
+                      aria-label="Choose highlight color"
+                    >
+                      ▾
+                    </button>
+                  </PopoverTrigger>
+                </div>
                 <PopoverContent className="w-auto p-2" align="start" sideOffset={6} onOpenAutoFocus={(e) => e.preventDefault()}>
                   <div className="flex items-center gap-1.5">
                     {HIGHLIGHT_COLORS.map((c) => (
                       <button
                         key={c.value}
                         type="button"
-                        onMouseDown={(e) => { e.preventDefault(); applyHighlight(c.value); }}
-                        className="h-6 w-6 rounded-md border border-border hover:scale-110 transition-transform"
+                        onMouseDown={(e) => { e.preventDefault(); setLastHighlightColor(c.value); applyHighlight(c.value); }}
+                        className={`h-6 w-6 rounded-md border transition-transform hover:scale-110 ${
+                          lastHighlightColor === c.value ? "border-foreground ring-2 ring-primary/40" : "border-border"
+                        }`}
                         style={{ backgroundColor: c.value }}
                         title={c.name}
                         aria-label={`Highlight ${c.name}`}
