@@ -996,14 +996,16 @@ const AuthPage = () => {
           };
           const tapeStyle = (c: { base: string; dark: string }, seed: number): React.CSSProperties => ({
             background: [
-              "linear-gradient(105deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 22%, rgba(0,0,0,0.08) 55%, rgba(255,255,255,0.05) 80%, rgba(0,0,0,0.10) 100%)",
-              "linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 32%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.24) 100%)",
-              `repeating-linear-gradient(0deg, ${c.dark} 0px, ${c.dark} 1px, ${c.base} 1px, ${c.base} 3px)`,
-              `repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 5px)`,
+              // soft top highlight, subtle bottom shadow
+              "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 45%, rgba(0,0,0,0.10) 100%)",
+              // gentle wrinkle diagonal
+              "linear-gradient(115deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 30%, rgba(0,0,0,0.06) 70%, rgba(255,255,255,0.08) 100%)",
+              // faint horizontal stripe pattern (like classic washi tape)
+              `repeating-linear-gradient(90deg, ${c.base} 0px, ${c.base} 8px, ${c.dark} 8px, ${c.dark} 16px)`,
             ].join(", "),
-            boxShadow: "0 3px 6px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.22)",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.30)",
             clipPath: makeTornClip(seed),
-            filter: "saturate(0.85) contrast(1.05)",
+            mixBlendMode: "multiply",
           });
           const cornerColor = TAPE_COLORS[0];
           return (
