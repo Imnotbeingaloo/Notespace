@@ -20,38 +20,55 @@ export function AIToolsPanel() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  // Flashcards setup step: ask the user how many cards before generating.
-  const [setupMode, setSetupMode] = useState<null | "flashcards">(null);
-  const [cardCount, setCardCount] = useState<number>(10);
 
   const flashcardSource = () => getFlashcardSourceText(activeNote?.content || "", activeNote?.title || "");
 
-  const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
-
   /**
-   * Cheap gibberish heuristic: reject text that is technically long enough but
-   * has almost no vocabulary variety, no vowels, or is mostly one character.
-   * Used to short-circuit flashcard generation before wasting an AI call.
+   * Stricter gibberish heuristic. Rejects text that is technically long enough
+   * but is mostly noise: repeated tokens, low vocabulary variety, low ratio of
+   * plausibly-real words (vowel + consonant, no 3+ char runs, no repeated bigrams).
    */
   const looksLikeGibberish = (text: string) => {
     const clean = text.toLowerCase().replace(/\s+/g, " ").trim();
     if (!clean) return true;
-    const words = clean.split(/\s+/).filter(Boolean);
-    const uniqueWords = new Set(words);
-    if (words.length >= 5 && uniqueWords.size <= 2) return true;
-    const letters = clean.replace(/[^a-z]/g, "");
-    if (letters.length >= 20) {
-      const vowels = (letters.match(/[aeiou]/g) || []).length;
-      if (vowels / letters.length < 0.12) return true;
-      const uniqueChars = new Set(letters);
-      if (uniqueChars.size <= 3) return true;
+    const tokens = clean.split(/\s+/).filter((t) => /[a-z]/.test(t));
+    if (tokens.length < 3) return true;
+
+    // Repeated identical tokens run: "the the the the"
+    let maxRun = 1, run = 1;
+    for (let i = 1; i < tokens.length; i++) {
+      if (tokens[i] === tokens[i - 1]) { run++; maxRun = Math.max(maxRun, run); } else run = 1;
     }
+    if (maxRun >= 4) return true;
+
+    // Repeated bigrams: "maka dora maka dora maka dora"
+    const bigrams = new Map<string, number>();
+    for (let i = 0; i < tokens.length - 1; i++) {
+      const bg = tokens[i] + " " + tokens[i + 1];
+      bigrams.set(bg, (bigrams.get(bg) || 0) + 1);
+    }
+    for (const c of bigrams.values()) if (c >= 3) return true;
+
+    // Vocabulary diversity
+    const uniqueWords = new Set(tokens);
+    if (tokens.length >= 8 && uniqueWords.size / tokens.length < 0.35) return true;
+
+    // Plausible-word ratio: has vowel + consonant, no 3+ same-char run
+    const looksLikeWord = (w: string) => {
+      const letters = w.replace(/[^a-z]/g, "");
+      if (letters.length < 2) return false;
+      if (!/[aeiouy]/.test(letters)) return false;
+      if (!/[bcdfghjklmnpqrstvwxz]/.test(letters)) return false;
+      if (/(.)\1{2,}/.test(letters)) return false;
+      return true;
+    };
+    const validRatio = tokens.filter(looksLikeWord).length / tokens.length;
+    if (validRatio < 0.55) return true;
+
     return false;
   };
 
-  const WORD_GATE = 100;
-
-  const openFlashcardsSetup = () => {
+  const openFlashcards = () => {
     if (!activeNote) return;
     const source = flashcardSource();
     if (!source) {
@@ -64,23 +81,14 @@ export function AIToolsPanel() {
     }
     if (looksLikeGibberish(source)) {
       setMode("flashcards");
-      setSetupMode(null);
       setResult("");
       setError("__gibberish__");
       setOpen(true);
       return;
     }
-    // Only ask for deck size once the learner has enough material (>100 words).
-    // Shorter notes just auto-generate a small deck (5 cards) with no prompt.
-    if (wordCount(source) <= WORD_GATE) {
-      runTool("flashcards", 5);
-      return;
-    }
-    setMode("flashcards");
-    setSetupMode("flashcards");
-    setResult("");
-    setError("");
-    setOpen(true);
+    // Auto-detect: no picker. Edge function extracts every atomic concept and
+    // emits exactly one card per concept (capped at 50).
+    runTool("flashcards");
   };
 
   const runTool = async (toolMode: ToolMode, count?: number) => {
@@ -99,7 +107,6 @@ export function AIToolsPanel() {
       return;
     }
     setMode(toolMode);
-    setSetupMode(null);
     setOpen(true);
     setResult("");
     setError("");
@@ -184,7 +191,7 @@ export function AIToolsPanel() {
           Summarize
         </button>
         <button
-          onClick={openFlashcardsSetup}
+          onClick={openFlashcards}
           className="magnetic-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl border border-[hsl(280_60%_55%/0.35)] bg-[hsl(280_60%_55%/0.08)] text-[hsl(280_65%_55%)] hover:bg-[hsl(280_60%_55%/0.15)] hover:text-[hsl(280_70%_50%)] transition-all duration-200 dark:text-[hsl(280_75%_75%)] dark:hover:text-[hsl(280_80%_82%)]"
           title="Generate Flashcards (Pro)"
         >
@@ -212,45 +219,20 @@ export function AIToolsPanel() {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
-              {setupMode === "flashcards" && !loading && !result && (
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm font-medium text-foreground mb-1">How many flashcards?</p>
-                    <p className="text-xs text-muted-foreground">
-                      Pick a deck size. We'll generate concept-focused Q&amp;A from your note.
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[3, 5, 7, 10].map((n) => (
-                      <button
-                        key={n}
-                        onClick={() => setCardCount(n)}
-                        className={`px-2 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                          cardCount === n
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border text-muted-foreground hover:text-foreground hover:bg-muted"
-                        }`}
-                      >
-                        {n}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => runTool("flashcards", cardCount)}
-                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-                  >
-                    <Layers className="h-4 w-4" />
-                    Generate {cardCount} cards
-                  </button>
+              {loading && !result && mode === "flashcards" && (
+                <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
+                  <Loader2 className="h-5 w-5 mb-2 animate-spin" />
+                  <p className="text-sm">Extracting concepts and building your deck…</p>
                 </div>
               )}
-              {loading && !result && (
+              {loading && !result && mode !== "flashcards" && (
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Generating {modeLabel.toLowerCase()}…
                 </div>
               )}
-              {error === "__gibberish__" && (
+              {(error === "__gibberish__" ||
+                (mode === "flashcards" && !loading && result.trim().toUpperCase().includes("NO_CONCEPTS"))) && (
                 <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-foreground">
                   <p className="font-semibold mb-1">Make it make sense for me 🙃</p>
                   <p className="text-muted-foreground text-xs leading-relaxed">
@@ -260,7 +242,7 @@ export function AIToolsPanel() {
                 </div>
               )}
               {error && error !== "__gibberish__" && <p className="text-sm text-destructive">{error}</p>}
-              {result && mode === "flashcards" && (
+              {result && mode === "flashcards" && !result.trim().toUpperCase().includes("NO_CONCEPTS") && (
                 <FlashcardDeck markdown={result} streaming={loading} />
               )}
               {result && mode === "summarize" && (
