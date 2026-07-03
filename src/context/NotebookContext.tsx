@@ -674,14 +674,26 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
-  // Permanently delete notebook
+  // Permanently delete notebook — also purges every attachment blob owned
+  // by its notes so the storage bucket doesn't accumulate orphans.
   const permanentlyDeleteNotebook = useCallback(async (id: string) => {
+    const nb = allNotebooks.find((n) => n.id === id);
+    const orphanAttachments = nb ? nb.notes.flatMap((n) => n.attachments || []) : [];
+    if (orphanAttachments.length) {
+      await removeAttachmentObjects(orphanAttachments, "notebook-delete", null);
+    }
     await supabase.from("notebooks").delete().eq("id", id);
     setAllNotebooks((prev) => prev.filter((nb) => nb.id !== id));
-  }, []);
+  }, [allNotebooks]);
 
-  // Permanently delete note
+  // Permanently delete note — cleans up its storage-backed attachments first.
   const permanentlyDeleteNote = useCallback(async (notebookId: string | null, noteId: string) => {
+    const note = notebookId
+      ? allNotebooks.find((n) => n.id === notebookId)?.notes.find((n) => n.id === noteId)
+      : allStandaloneNotes.find((n) => n.id === noteId);
+    if (note?.attachments?.length) {
+      await removeAttachmentObjects(note.attachments, "note-delete", noteId);
+    }
     await supabase.from("notes").delete().eq("id", noteId);
     if (!notebookId) {
       setAllStandaloneNotes((prev) => prev.filter((n) => n.id !== noteId));
@@ -692,7 +704,8 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
         nb.id === notebookId ? { ...nb, notes: nb.notes.filter((n) => n.id !== noteId) } : nb
       )
     );
-  }, []);
+  }, [allNotebooks, allStandaloneNotes]);
+
 
   return (
     <NotebookContext.Provider
