@@ -624,7 +624,7 @@ const AuthPage = () => {
                 className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
               >
                 {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
-                {mode === "signup" ? "Sign up with Google" : "Sign in with Google"}
+                Continue with Google
               </button>
               <div className="relative flex items-center gap-3 py-1">
                 <div className="flex-1 h-px bg-border" />
