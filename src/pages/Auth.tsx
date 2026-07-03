@@ -620,13 +620,14 @@ const AuthPage = () => {
 
 
               <div className="mb-5 text-center">
-                <h2 className="font-serif text-2xl font-semibold text-foreground">
+                <h2 className="font-serif text-[29px] leading-tight font-semibold text-foreground">
                   {mode === "login" ? "Welcome back" : "Create your account"}
                 </h2>
                 <p className="mt-1.5 text-sm text-muted-foreground">
                   {mode === "login" ? "Sign in to pick up where you left off." : "Sign up to get started in seconds."}
                 </p>
               </div>
+
               <div className="space-y-3">
                 <button
                   type="button"
