@@ -403,7 +403,10 @@ const AuthPage = () => {
       } catch { /* fail open */ }
       const { error } = await signUp(email, password);
       if (error) {
-        setError(friendlyError(error.message, "signup").message);
+        const msg = friendlyError(error.message, "signup").message;
+        setError(msg);
+        toast.error(msg);
+
       } else {
         try {
           localStorage.setItem("pendingNamePrompt", "1");
