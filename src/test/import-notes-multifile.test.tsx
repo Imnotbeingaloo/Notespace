@@ -40,10 +40,21 @@ const activeNote = {
 vi.mock("@/context/NotebookContext", () => ({
   useNotebooks: () => ({
     activeNote,
+    activeNotebook: null,
     activeNotebookId: "nb-1",
     updateNote: (...args: unknown[]) => updateNoteMock(...args),
+    createNote: vi.fn(),
+    createNotebook: vi.fn(),
+    setActiveNotebookId: vi.fn(),
+    setActiveNoteId: vi.fn(),
   }),
 }));
+
+async function chooseRouting() {
+  // Multi-file imports open UploadRoutingDialog. Pick "Add to this note".
+  const btn = await screen.findByRole("button", { name: /Add to this note/i });
+  fireEvent.click(btn);
+}
 
 vi.mock("@/hooks/use-toast", () => ({ toast: vi.fn() }));
 vi.mock("@/components/ui/sonner", () => ({
