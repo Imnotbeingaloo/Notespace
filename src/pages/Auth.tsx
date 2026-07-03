@@ -1027,10 +1027,28 @@ const AuthPage = () => {
                     const pool = TAPE_COLORS.filter((c) => !recent.includes(c));
                     const source = pool.length ? pool : TAPE_COLORS;
                     const cls = source[Math.floor(Math.random() * source.length)];
-                    // Fully random placement anywhere in the panel.
-                    const top = Math.random() * 100;
-                    const left = Math.random() * 100;
-                    const rotate = Math.floor(Math.random() * 360);
+                    // Enforce a minimum spread from every existing tape so they don't cluster
+                    // in one spot. Shrink the min distance if the panel is getting crowded.
+                    const minDist = Math.max(10, 22 - t.length);
+                    let top = Math.random() * 100;
+                    let left = Math.random() * 100;
+                    for (let i = 0; i < 80; i++) {
+                      const tryTop = Math.random() * 100;
+                      const tryLeft = Math.random() * 100;
+                      const far = t.every((p) => {
+                        const dt = tryTop - p.top;
+                        const dl = tryLeft - p.left;
+                        return Math.sqrt(dt * dt + dl * dl) >= minDist;
+                      });
+                      if (far) { top = tryTop; left = tryLeft; break; }
+                    }
+                    // Rotation should also differ from the last few tapes (>= 25°).
+                    let rotate = Math.floor(Math.random() * 360);
+                    const recentRot = t.slice(-3).map((p) => p.rotate);
+                    for (let i = 0; i < 20; i++) {
+                      if (recentRot.every((r) => Math.abs(((rotate - r + 540) % 360) - 180) > 25)) break;
+                      rotate = Math.floor(Math.random() * 360);
+                    }
                     const width = 68 + Math.random() * 68;
                     const height = 18 + Math.random() * 8;
                     return [
