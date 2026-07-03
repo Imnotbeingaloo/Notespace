@@ -606,10 +606,11 @@ const AuthPage = () => {
 
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="mx-auto max-w-[361px] px-1 sm:px-2">
+        <div className="mx-auto max-w-[397px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[289px]">
+            <div className="mx-auto max-w-[318px]">
+
 
 
               <div className="mb-5 text-center">
@@ -625,7 +626,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleGoogle}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
@@ -634,7 +635,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleApple}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
                   {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
@@ -642,7 +643,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={() => { setAuthMethod("email"); setError(""); }}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
                 >
                   <Mail className="h-4 w-4" />
                   {mode === "login" ? "Sign in with Email" : "Sign up with Email"}
@@ -925,7 +926,7 @@ const AuthPage = () => {
               type="submit"
               disabled={loading || googleLoading}
               aria-label={loading ? "Verifying your account" : undefined}
-              className={`mx-auto max-w-[193px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
+              className={`mx-auto max-w-[212px] w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 ${BTN_PRESS}`}
 
             >
               {loading ? (
@@ -1026,10 +1027,28 @@ const AuthPage = () => {
                     const pool = TAPE_COLORS.filter((c) => !recent.includes(c));
                     const source = pool.length ? pool : TAPE_COLORS;
                     const cls = source[Math.floor(Math.random() * source.length)];
-                    // Fully random placement anywhere in the panel.
-                    const top = Math.random() * 100;
-                    const left = Math.random() * 100;
-                    const rotate = Math.floor(Math.random() * 360);
+                    // Enforce a minimum spread from every existing tape so they don't cluster
+                    // in one spot. Shrink the min distance if the panel is getting crowded.
+                    const minDist = Math.max(10, 22 - t.length);
+                    let top = Math.random() * 100;
+                    let left = Math.random() * 100;
+                    for (let i = 0; i < 80; i++) {
+                      const tryTop = Math.random() * 100;
+                      const tryLeft = Math.random() * 100;
+                      const far = t.every((p) => {
+                        const dt = tryTop - p.top;
+                        const dl = tryLeft - p.left;
+                        return Math.sqrt(dt * dt + dl * dl) >= minDist;
+                      });
+                      if (far) { top = tryTop; left = tryLeft; break; }
+                    }
+                    // Rotation should also differ from the last few tapes (>= 25°).
+                    let rotate = Math.floor(Math.random() * 360);
+                    const recentRot = t.slice(-3).map((p) => p.rotate);
+                    for (let i = 0; i < 20; i++) {
+                      if (recentRot.every((r) => Math.abs(((rotate - r + 540) % 360) - 180) > 25)) break;
+                      rotate = Math.floor(Math.random() * 360);
+                    }
                     const width = 68 + Math.random() * 68;
                     const height = 18 + Math.random() * 8;
                     return [
