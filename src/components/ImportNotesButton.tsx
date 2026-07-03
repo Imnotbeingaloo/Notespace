@@ -17,6 +17,9 @@ import { toolPill } from "@/lib/tool-colors";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useNotebooks } from "@/context/NotebookContext";
+import { logImport } from "@/lib/import-analytics";
+import { removeAttachmentObjects } from "@/lib/attachment-cleanup";
+
 
 interface ImportNotesButtonProps {
   onInsert: (text: string) => void;
@@ -70,6 +73,7 @@ export function ImportNotesButton({
 
   const applyChoice = useCallback(
     (choice: ImportChoice, content: string, fileName: string) => {
+      logImport({ kind: "import-choice", name: fileName, action: choice.action, position: choice.position });
       if (choice.action === "create") {
         onCreateNew?.(content, fileName);
         toast({ title: "New note created", description: `"${fileName}" imported into a new note.` });
@@ -83,12 +87,19 @@ export function ImportNotesButton({
         const where = pos === "top" ? "at the top" : pos === "end" ? "at the end" : "at your cursor";
         toast({ title: "Merged", description: `"${fileName}" inserted ${where}.` });
       } else if (choice.action === "replace") {
+        // Replacing wipes the previous body, which typically also orphans
+        // every attachment link that used to reference storage objects.
+        // Purge those objects so the bucket doesn't grow unbounded.
+        if (activeNote?.attachments?.length) {
+          void removeAttachmentObjects(activeNote.attachments, "replace", activeNote.id);
+        }
         onReplace?.(content);
         toast({ title: "Note replaced", description: `Content replaced with "${fileName}".` });
       }
     },
-    [onCreateNew, onInsert, onMergeAt, onReplace],
+    [onCreateNew, onInsert, onMergeAt, onReplace, activeNote],
   );
+
 
   const importText = useCallback(
     async (file: File, hasContentNow: boolean): Promise<boolean> => {
@@ -168,11 +179,15 @@ export function ImportNotesButton({
           onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
         }
         sonner.success(`Attached "${file.name}"`);
+        logImport({ kind: "attach-uploaded", name: file.name, path, size: file.size });
         return { name: file.name, url: fileUrl, path, type: file.type, size: file.size };
       } catch (err: any) {
-        sonner.error(`Upload failed for "${file.name}": ${err?.message || "unknown error"}`);
+        const message = err?.message || "unknown error";
+        sonner.error(`Upload failed for "${file.name}": ${message}`);
+        logImport({ kind: "attach-upload-failed", name: file.name, message });
         return null;
       }
+
     },
     [user, activeNote, onInsert],
   );
@@ -188,44 +203,70 @@ export function ImportNotesButton({
       // Accumulate new attachments so we only issue one updateNote per batch,
       // avoiding the stale-activeNote overwrite bug on rapid multi-uploads.
       const newAttachments: Array<{ name: string; url: string; path: string; type: string; size: number }> = [];
+      let importedCount = 0;
+      let failedCount = 0;
+      logImport({ kind: "batch-start", count: files.length, hasExistingContent });
       try {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           setProgress({ current: i, total: files.length, name: file.name });
-          if (!validateFile(file)) continue;
+          if (!validateFile(file)) {
+            failedCount += 1;
+            logImport({ kind: "file-skipped", name: file.name, reason: "validation" });
+            continue;
+          }
 
           const ext = "." + (file.name.split(".").pop()?.toLowerCase() ?? "");
 
           if (isTextDocument(file) || TEXT_EXTS.includes(ext)) {
+            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "text" });
             await importText(file, hasContentNow);
             hasContentNow = true;
+            importedCount += 1;
             continue;
           }
 
           if (isPdfFile(file)) {
+            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "pdf-text" });
             const handled = await importText(file, hasContentNow).catch(() => false);
-            if (handled) { hasContentNow = true; continue; }
+            if (handled) { hasContentNow = true; importedCount += 1; continue; }
+            logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "pdf-attach" });
             const rec = await uploadOne(file);
-            if (rec) newAttachments.push(rec);
+            if (rec) newAttachments.push(rec); else failedCount += 1;
             continue;
           }
 
+          logImport({ kind: "file-classified", name: file.name, type: file.type, size: file.size, route: "attach" });
           const rec = await uploadOne(file);
-          if (rec) newAttachments.push(rec);
+          if (rec) newAttachments.push(rec); else failedCount += 1;
         }
 
         if (newAttachments.length && activeNote) {
           const merged = [...(activeNote.attachments || []), ...newAttachments];
           await updateNote(activeNotebookId, activeNote.id, { attachments: merged });
+          logImport({
+            kind: "attachments-persisted",
+            noteId: activeNote.id,
+            added: newAttachments.length,
+            total: merged.length,
+          });
         }
       } finally {
         setLoading(false);
         setProgress(null);
         if (inputRef.current) inputRef.current.value = "";
+        logImport({
+          kind: "batch-complete",
+          imported: importedCount,
+          attached: newAttachments.length,
+          failed: failedCount,
+        });
       }
     },
     [importText, uploadOne, hasExistingContent, activeNote, activeNotebookId, updateNote],
   );
+
+
 
   const handleChoice = useCallback(
     (choice: ImportChoice | null) => {
