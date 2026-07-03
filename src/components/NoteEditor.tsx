@@ -327,6 +327,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const hybridEditorRef = useRef<HybridEditorHandle>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [dragOver, setDragOver] = useState(false);
+  const [dropProgress, setDropProgress] = useState<{ name: string; stage: string; pct: number } | null>(null);
   // Live editor content mirror - updated synchronously on every keystroke so
   // the word/char counter reflects typing/deletion in real time, without
   // waiting for the debounced save to activeNote.content.
