@@ -121,6 +121,9 @@ const AuthPage = () => {
     try { localStorage.setItem("hasVisitedAuth", "1"); } catch {}
   }, []);
 
+  // Easter egg: reset extra tape stickers when the user switches modes or method.
+  useEffect(() => { setEasterTapes(0); }, [mode, authMethod]);
+
   useEffect(() => {
     if (!authLoading && user) navigate(resolvePostAuthTarget(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
