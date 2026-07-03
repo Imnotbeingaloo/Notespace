@@ -582,32 +582,6 @@ const AuthPage = () => {
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
         <div className="mx-auto max-w-[380px] px-1 sm:px-2">
-          <div role="tablist" aria-label="Authentication mode" className="relative flex gap-1 bg-muted rounded-lg p-1 mb-6">
-            {(["signup", "login"] as const).map((m) => {
-              const active = (mode === m) || (mode === "forgot" && m === "login");
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => { setMode(m); setError(""); setNotice(""); setConfirmPassword(""); setForgotSent(false); }}
-                  className={`relative flex-1 py-2 text-sm font-medium rounded-md border-0 outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-muted ${
-                    active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="auth-tab-pill"
-                      className="absolute inset-0 bg-background rounded-md shadow-sm"
-                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                    />
-                  )}
-                  <span className="relative z-10">{m === "login" ? "Sign In" : "Sign Up"}</span>
-                </button>
-              );
-            })}
-          </div>
 
           {mode !== "forgot" && authMethod === null && (
             <div className="mx-auto max-w-[220px] space-y-3">
@@ -639,6 +613,7 @@ const AuthPage = () => {
               </button>
             </div>
           )}
+
 
           {mode !== "forgot" && authMethod === "email" && (
             <div className="space-y-3 mb-5">
