@@ -44,7 +44,6 @@ function FlashcardsButton() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [setup, setSetup] = useState(false);
-  const [cardCount, setCardCount] = useState(5);
 
   const openSetup = () => {
     if (!activeNote) return;
@@ -52,18 +51,18 @@ function FlashcardsButton() {
     setResult("");
     setError("");
     setNotice("");
+    setSetup(false);
     const source = getFlashcardSourceText(activeNote.content || "", activeNote.title || "");
     if (!source) {
-      setSetup(false);
       setNotice("Please write something in the notes first.");
       return;
     }
     if (source.length < MIN_FLASHCARD_BODY_CHARS) {
-      setSetup(false);
       setNotice("Write a little more first - flashcards need about 100 characters of actual notes. Headings do not count.");
       return;
     }
-    setSetup(true);
+    // Auto-detect: skip picker, edge function extracts every concept.
+    void run();
   };
 
   const run = async () => {
