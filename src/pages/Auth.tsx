@@ -1147,7 +1147,7 @@ const AuthPage = () => {
             <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-5 py-4 shadow-md transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:rotate-0 group-hover:shadow-xl group-hover:bg-card">
               <p className="font-serif italic text-[15px] leading-relaxed text-foreground/90">
                 "It replaced three apps for me — notes, flashcards, and my study
-                planner. And it actually feels good to open."
+                planner. And it actually feels good to use."
               </p>
               <p className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">
                 — Maya, medical student
