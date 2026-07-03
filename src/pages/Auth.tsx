@@ -553,7 +553,7 @@ const AuthPage = () => {
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
-      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1">
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(45_45%_97%)] dark:bg-background">
         {/* Ambient background for mobile / small screens */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden">
           <div
@@ -588,35 +588,57 @@ const AuthPage = () => {
         <div className="mx-auto max-w-[380px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div className="mx-auto max-w-[220px] space-y-3">
-              <button
-                type="button"
-                onClick={handleGoogle}
-                disabled={googleLoading || microsoftLoading}
-                className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
-              >
-                {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
-                Continue with Google
-              </button>
-              <button
-                type="button"
-                onClick={handleMicrosoft}
-                disabled={googleLoading || microsoftLoading}
-                className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
-              >
-                {microsoftLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MicrosoftIcon />}
-                Continue with Microsoft
-              </button>
-              <button
-                type="button"
-                onClick={() => { setAuthMethod("email"); setError(""); }}
-                className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
-              >
-                <Mail className="h-4 w-4" />
-                Continue with Email
-              </button>
+            <div className="mx-auto max-w-[280px]">
+              <div className="mb-5 text-center">
+                <h2 className="font-serif text-xl font-semibold text-foreground">
+                  {mode === "login" ? "Welcome back" : "Create your account"}
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {mode === "login" ? "Sign in to pick up where you left off." : "Sign up to get started in seconds."}
+                </p>
+              </div>
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={handleGoogle}
+                  disabled={googleLoading || microsoftLoading}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                >
+                  {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
+                  {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleMicrosoft}
+                  disabled={googleLoading || microsoftLoading}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                >
+                  {microsoftLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MicrosoftIcon />}
+                  {mode === "login" ? "Sign in with Microsoft" : "Sign up with Microsoft"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAuthMethod("email"); setError(""); }}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                >
+                  <Mail className="h-4 w-4" />
+                  {mode === "login" ? "Sign in with Email" : "Sign up with Email"}
+                </button>
+              </div>
+              <p className="mt-5 text-center text-xs text-muted-foreground">
+                {mode === "login" ? (
+                  <>Don't have an account?{" "}
+                    <button type="button" onClick={() => { setMode("signup"); setError(""); setNotice(""); }} className="text-primary hover:underline font-medium">Sign up</button>
+                  </>
+                ) : (
+                  <>Already have an account?{" "}
+                    <button type="button" onClick={() => { setMode("login"); setError(""); setNotice(""); }} className="text-primary hover:underline font-medium">Sign in</button>
+                  </>
+                )}
+              </p>
             </div>
           )}
+
 
 
           {mode !== "forgot" && authMethod === "email" && (
