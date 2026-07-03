@@ -1203,6 +1203,11 @@ const AuthPage = () => {
             { bottom: "22%", right: "10%", rotate: -8,  width: 90, height: 22, cls: "bg-emerald-300/55 border-emerald-400/40" },
             { bottom: "8%",  right: "34%", rotate: 14,  width: 70, height: 18, cls: "bg-violet-300/55 border-violet-400/40" },
             { top: "70%",    right: "24%", rotate: -32, width: 55, height: 16, cls: "bg-rose-300/55 border-rose-400/40" },
+            { top: "10%",    left: "5%",   rotate: 18,  width: 72, height: 20, cls: "bg-cyan-300/60 border-cyan-400/40" },
+            { top: "38%",    left: "3%",   rotate: -22, width: 60, height: 18, cls: "bg-pink-300/55 border-pink-400/40" },
+            { top: "62%",    left: "6%",   rotate: 30,  width: 85, height: 20, cls: "bg-lime-300/55 border-lime-400/40" },
+            { bottom: "14%", left: "4%",   rotate: -12, width: 68, height: 18, cls: "bg-orange-300/60 border-orange-400/40" },
+            { bottom: "34%", left: "2%",   rotate: 6,   width: 55, height: 16, cls: "bg-fuchsia-300/55 border-fuchsia-400/40" },
           ];
           return (
             <>
