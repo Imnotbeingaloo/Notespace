@@ -8,15 +8,18 @@ import {
   getCurrentToasts,
   getToastHistory,
   getToastSnapshot,
+  pauseAllToasts,
   pauseToast,
   queuedToast,
   removeToast,
+  resumeAllToasts,
   resumeToast,
   setToastExpanded,
   subscribeToasts,
   updateToast,
   type QueuedToast,
 } from "@/lib/toast-queue";
+
 
 type ToasterProps = React.HTMLAttributes<HTMLDivElement>;
 
