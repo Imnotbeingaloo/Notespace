@@ -959,10 +959,7 @@ const AuthPage = () => {
         {/* Corner tape — swapped to a soft rose so it reads as tape, not more amber wash */}
         <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-200/80 dark:bg-rose-300/30 shadow-sm rounded-[2px] border border-rose-300/50" />
 
-        <div className="relative z-10 flex items-center gap-2 pl-20">
-          <img src="/logo.png" alt="" className="h-7 w-7 object-contain" />
-          <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
-        </div>
+        <div className="relative z-10 pl-20" />
 
         <div className="relative z-10 max-w-md pl-20">
           <p className="font-serif text-3xl xl:text-[2.35rem] leading-[1.2] text-foreground tracking-tight">
