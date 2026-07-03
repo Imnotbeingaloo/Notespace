@@ -707,10 +707,10 @@ const AuthPage = () => {
 
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="mx-auto max-w-[397px] px-1 sm:px-2">
+        <div className="mx-auto max-w-[440px] px-1 sm:px-2">
 
           {mode !== "forgot" && authMethod === null && (
-            <div key={mode} className="mx-auto max-w-[318px] animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div key={mode} className="mx-auto max-w-[400px] animate-in fade-in slide-in-from-bottom-2 duration-300">
 
 
 
