@@ -251,15 +251,21 @@ export function ImportNotesButton({
   return (
     <>
       <button
+        // Save caret on both mouse and touch — iOS/Android don't fire
+        // onMouseDown reliably before onClick, so touchstart guarantees the
+        // selection is captured before the file picker steals focus.
         onMouseDown={() => onSaveSelection?.()}
+        onTouchStart={() => onSaveSelection?.()}
         onClick={openPicker}
         disabled={loading}
         className={toolPill("import")}
         title="Import or attach files (images, PDFs, docs, videos)"
+        aria-label="Import or attach files"
       >
         {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileUp className="h-3.5 w-3.5" />}
         <span className="hidden sm:inline">{label}</span>
       </button>
+
       <input
         ref={inputRef}
         type="file"
