@@ -147,12 +147,38 @@ export function setToastExpanded(id: string | number, expanded: boolean) {
   const toast = activeToasts.find((item) => item.id === id);
   if (!toast) return;
   toast.expanded = expanded;
-  // Expanding reveals description/action buttons (Undo, etc.). Reset the
-  // dismiss timer to full duration so the user has time to read and act
-  // instead of the toast vanishing 1-2s later.
-  if (expanded) startTimer(toast);
+  // Expanding reveals description/action buttons (Undo, etc.). Extend the
+  // remaining time to a minimum reading window so the toast doesn't vanish
+  // 1-2s later, but never HARD-reset — resetting would rewind the visible
+  // progress bar and confuse users who just clicked the chevron.
+  if (expanded) {
+    const meta = timerMeta.get(id);
+    const MIN_READ_MS = 4000;
+    if (meta) {
+      const elapsed = Date.now() - meta.startedAt;
+      const remaining = Math.max(0, meta.remaining - elapsed);
+      if (Number.isFinite(remaining) && remaining < MIN_READ_MS) {
+        startTimer(toast, MIN_READ_MS);
+      }
+      // else: leave the running timer alone, the bar keeps its position.
+    }
+  }
   emit();
 }
+
+/**
+ * Pause every active toast's dismiss timer. Called when the tab becomes
+ * hidden so the countdown doesn't silently run down (or worse, fire while
+ * the user is away) — the toasts remain visible and resume on return.
+ */
+export function pauseAllToasts() {
+  for (const toast of activeToasts) pauseToast(toast.id);
+}
+
+export function resumeAllToasts() {
+  for (const toast of activeToasts) resumeToast(toast.id);
+}
+
 
 export function updateToast(
   id: string | number,
