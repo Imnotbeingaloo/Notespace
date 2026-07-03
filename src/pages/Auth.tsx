@@ -888,8 +888,18 @@ const AuthPage = () => {
                 </>
               )}
             </button>
-          </motion.form>
-          </AnimatePresence>
+            <p className="text-center text-xs text-muted-foreground pt-1">
+              {mode === "login" ? (
+                <>Don't have an account?{" "}
+                  <button type="button" onClick={() => { setMode("signup"); setError(""); setNotice(""); setConfirmPassword(""); }} className="text-primary hover:underline font-medium">Sign up</button>
+                </>
+              ) : (
+                <>Already have an account?{" "}
+                  <button type="button" onClick={() => { setMode("login"); setError(""); setNotice(""); setConfirmPassword(""); }} className="text-primary hover:underline font-medium">Sign in</button>
+                </>
+              )}
+            </p>
+          </form>
           ))}
         </div>
       </motion.div>
