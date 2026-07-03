@@ -23,6 +23,7 @@ import { FindReplace } from "@/components/FindReplace";
 import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { ImportActionDialog } from "@/components/ImportActionDialog";
 import { NewNotePrompt } from "@/components/NewNotePrompt";
+import { AttachmentsFooter } from "@/components/AttachmentsFooter";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
