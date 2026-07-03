@@ -120,6 +120,33 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
     const savedRangeRef = useRef<Range | null>(null);
     const [selectionRect, setSelectionRect] = useState<DOMRect | null>(null);
     const [paperStyle] = usePaperStyle();
+    const [commaHighlightOn] = useCommaHighlight();
+
+    // Wrap/unwrap commas on focus transitions. Keeps the caret out of the
+    // mutation and preserves undo history because the wrap is stripped
+    // immediately when the user re-enters the editor.
+    const handleFocus = useCallback(() => {
+      if (!commaHighlightOn || !editorRef.current) return;
+      unwrapCommas(editorRef.current);
+    }, [commaHighlightOn]);
+
+    const handleBlur = useCallback(() => {
+      if (!commaHighlightOn || !editorRef.current) return;
+      try { wrapCommas(editorRef.current); } catch { /* ignore */ }
+    }, [commaHighlightOn]);
+
+    // If the toggle flips while blurred, apply immediately; if it flips off,
+    // strip any existing marks.
+    useEffect(() => {
+      const el = editorRef.current;
+      if (!el) return;
+      const isFocused = document.activeElement === el;
+      if (commaHighlightOn && !isFocused) {
+        try { wrapCommas(el); } catch { /* ignore */ }
+      } else if (!commaHighlightOn) {
+        unwrapCommas(el);
+      }
+    }, [commaHighlightOn]);
 
     // Set HTML content from markdown
     const setHtmlFromMd = useCallback((md: string) => {
