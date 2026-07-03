@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { NoindexHead } from "@/components/NoindexHead";
 
-const BTN_PRESS = "transition-all duration-100 active:scale-95";
+const BTN_PRESS = "transition-all duration-150 active:scale-95 hover:-translate-y-0.5 hover:shadow-md";
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -544,56 +544,12 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-dvh grid lg:grid-cols-[1.05fr_1fr] bg-background relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[1fr_1.05fr] bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notebook Archive" />
 
-      {/* Editorial left panel — hidden on small screens so the form leads on mobile. */}
-      <aside
-        aria-hidden="true"
-        className="hidden lg:flex relative flex-col justify-between overflow-hidden border-r border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-14"
-      >
-        {/* Ruled-notebook backdrop */}
-        <div
-          className="absolute inset-0 opacity-70 dark:opacity-30"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(to bottom, transparent 0, transparent 27px, hsl(200 45% 55% / 0.18) 27px, hsl(200 45% 55% / 0.18) 28px)",
-          }}
-        />
-        <div
-          className="absolute inset-y-0 left-16 w-px bg-[hsl(0_60%_55%/0.35)]"
-        />
-        <div className="absolute -top-24 -left-16 h-[380px] w-[380px] rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute -bottom-24 -right-12 h-[420px] w-[420px] rounded-full bg-amber-400/15 blur-3xl" />
-
-        <div className="relative z-10 flex items-center gap-2">
-          <img src="/logo.png" alt="" className="h-7 w-7 object-contain" />
-          <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
-        </div>
-
-        <div className="relative z-10 max-w-md">
-          <p className="font-serif text-3xl xl:text-[2.35rem] leading-[1.15] text-foreground tracking-tight">
-            A calm place to think, write, and remember what mattered.
-          </p>
-          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-            Every note lives in a ruled-paper canvas — with AI that explains, summarises,
-            and turns your reading into flashcards when you need it.
-          </p>
-        </div>
-
-        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground">
-          <div className="flex -space-x-1.5">
-            {["#0d9488", "#f59e0b", "#6366f1"].map((c) => (
-              <span key={c} className="h-6 w-6 rounded-full border-2 border-background" style={{ background: c }} />
-            ))}
-          </div>
-          <span>Students, writers, and researchers keep their thinking here.</span>
-        </div>
-      </aside>
-
-      {/* Right column — the original form card, unchanged. */}
-      <div className="flex items-center justify-center px-4 py-8 relative overflow-hidden">
-        {/* Ambient background retained for mobile / small screens */}
+      {/* Left column — the form card. */}
+      <div className="flex items-center justify-center px-4 py-8 relative overflow-hidden order-1">
+        {/* Ambient background for mobile / small screens */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden">
           <div
             className="absolute inset-0 opacity-[0.35] dark:opacity-[0.18]"
@@ -610,26 +566,25 @@ const AuthPage = () => {
         </div>
         <button
           onClick={() => navigate("/")}
-          className={`absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-lg border border-border bg-card/80 backdrop-blur px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
+          aria-label="Back to website"
+          className={`absolute left-4 top-4 z-10 inline-flex items-center justify-center h-10 w-10 rounded-full border border-border bg-card/80 backdrop-blur text-foreground shadow-sm hover:bg-muted ${BTN_PRESS}`}
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to website
         </button>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="relative z-10 w-full max-w-md sm:max-w-[460px]"
+          className="relative z-10 w-full max-w-md sm:max-w-[520px]"
         >
 
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <img src="/logo.png" alt="" aria-hidden="true" className="h-[1.224rem] w-[1.224rem] object-contain" />
-          <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
+        <div className="flex items-center justify-center mb-8">
+          <img src="/logo.png" alt="Notebook Archive" className="h-[1.163rem] w-[1.163rem] object-contain" />
         </div>
         <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
-        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-8 shadow-xl">
-          <div role="tablist" aria-label="Authentication mode" className="flex gap-1 bg-muted rounded-lg p-1 mb-6">
+        <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-8 sm:p-10 shadow-xl">
+          <div role="tablist" aria-label="Authentication mode" className="relative flex gap-1 bg-muted rounded-lg p-1 mb-6">
             {(["signup", "login"] as const).map((m) => {
               const active = (mode === m) || (mode === "forgot" && m === "login");
               return (
@@ -639,11 +594,18 @@ const AuthPage = () => {
                   role="tab"
                   aria-selected={active}
                   onClick={() => { setMode(m); setError(""); setNotice(""); setConfirmPassword(""); setForgotSent(false); }}
-                  className={`flex-1 py-2 text-sm font-medium rounded-md border-0 outline-none transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-muted ${
-                    active ? "bg-background text-foreground shadow-sm" : "bg-transparent text-muted-foreground hover:text-foreground"
+                  className={`relative flex-1 py-2 text-sm font-medium rounded-md border-0 outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-muted ${
+                    active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {m === "login" ? "Sign In" : "Sign Up"}
+                  {active && (
+                    <motion.span
+                      layoutId="auth-tab-pill"
+                      className="absolute inset-0 bg-background rounded-md shadow-sm"
+                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{m === "login" ? "Sign In" : "Sign Up"}</span>
                 </button>
               );
             })}
@@ -681,15 +643,25 @@ const AuthPage = () => {
           )}
 
           {mode !== "forgot" && authMethod === "email" && (
-            <button
-              type="button"
-              onClick={() => { setAuthMethod(null); setError(""); setNotice(""); }}
-              className="mb-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Other sign-in options
-            </button>
+            <div className="space-y-3 mb-5">
+              <button
+                type="button"
+                onClick={handleGoogle}
+                disabled={googleLoading || microsoftLoading}
+                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+              >
+                {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
+                {mode === "signup" ? "Sign up with Google" : "Sign in with Google"}
+              </button>
+              <div className="relative flex items-center gap-3 py-1">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-[11px] uppercase tracking-wider text-muted-foreground">or</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+            </div>
           )}
+
+
 
 
 
@@ -758,7 +730,16 @@ const AuthPage = () => {
               )}
             </form>
           ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <AnimatePresence mode="wait" initial={false}>
+          <motion.form
+            key={mode}
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            initial={{ opacity: 0, x: mode === "login" ? 24 : -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: mode === "login" ? -24 : 24 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+          >
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
               <div className="relative">
@@ -939,12 +920,83 @@ const AuthPage = () => {
                 </>
               )}
             </button>
-          </form>
+          </motion.form>
+          </AnimatePresence>
           ))}
         </div>
       </motion.div>
       </div>
+
+      {/* Right column — editorial notebook panel. */}
+      <aside
+        aria-hidden="true"
+        className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-14"
+      >
+        {/* Ruled paper */}
+        <div
+          className="absolute inset-0 opacity-70 dark:opacity-25"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(to bottom, transparent 0, transparent 27px, hsl(200 45% 55% / 0.18) 27px, hsl(200 45% 55% / 0.18) 28px)",
+          }}
+        />
+        {/* Red margin rule */}
+        <div className="absolute inset-y-0 left-16 w-px bg-[hsl(0_60%_55%/0.4)]" />
+        {/* Paper grain */}
+        <div
+          className="absolute inset-0 opacity-[0.08] mix-blend-multiply"
+          style={{
+            backgroundImage:
+              "radial-gradient(hsl(30 20% 30%) 1px, transparent 1px)",
+            backgroundSize: "3px 3px",
+          }}
+        />
+        {/* Warm glows */}
+        <div className="absolute -top-24 -right-16 h-[380px] w-[380px] rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute -bottom-24 -left-12 h-[420px] w-[420px] rounded-full bg-amber-400/20 blur-3xl" />
+
+        {/* Corner tape */}
+        <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-amber-200/70 dark:bg-amber-300/25 shadow-sm rounded-[2px]" />
+
+        <div className="relative z-10 flex items-center gap-2 pl-20">
+          <img src="/logo.png" alt="" className="h-7 w-7 object-contain" />
+          <span className="font-serif text-lg font-bold text-foreground">Notebook Archive</span>
+        </div>
+
+        <div className="relative z-10 max-w-md pl-20">
+          <p className="font-serif text-3xl xl:text-[2.35rem] leading-[1.2] text-foreground tracking-tight">
+            A calm place to think, write, and remember what mattered.
+          </p>
+          <p className="mt-5 text-sm text-muted-foreground leading-relaxed">
+            Every note lives in a ruled-paper canvas — with AI that explains,
+            summarises, and turns your reading into flashcards when you need it.
+          </p>
+
+          {/* Handwritten-style annotation card */}
+          <div className="mt-8 relative max-w-sm rotate-[-1.2deg]">
+            <div className="rounded-md border border-border/60 bg-card/80 backdrop-blur-sm px-5 py-4 shadow-md">
+              <p className="font-serif italic text-[15px] leading-relaxed text-foreground/90">
+                "It replaced three apps for me — notes, flashcards, and my study
+                planner. And it actually feels good to open."
+              </p>
+              <p className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">
+                — Maya, medical student
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20">
+          <div className="flex -space-x-1.5">
+            {["#0d9488", "#f59e0b", "#6366f1"].map((c) => (
+              <span key={c} className="h-6 w-6 rounded-full border-2 border-background" style={{ background: c }} />
+            ))}
+          </div>
+          <span>Students, writers, and researchers keep their thinking here.</span>
+        </div>
+      </aside>
     </div>
+
 
   );
 };
