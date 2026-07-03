@@ -367,17 +367,22 @@ const AuthPage = () => {
             setConfirmPassword(password);
             setNotice("");
             setError("Oops - we couldn't find an account with that email. Try creating one below.");
+            toast.error("No account found for that email. Sign up instead.");
             setMode("signup");
             setHighlightEmail(true);
             setTimeout(() => setHighlightEmail(false), 1600);
           } else {
             setError("Incorrect password. Try again or reset it below.");
+            toast.error("Incorrect password.");
           }
           setLoading(false);
           return;
         } else {
-          setError(friendlyError(error.message, "login").message);
+          const msg = friendlyError(error.message, "login").message;
+          setError(msg);
+          toast.error(msg);
         }
+
 
       } else {
         try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
