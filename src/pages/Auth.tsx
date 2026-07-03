@@ -1212,6 +1212,9 @@ const AuthPage = () => {
             { top: "48%",    left: "7%",   rotate: -18, width: 60, height: 18, cls: "bg-orange-300/60 border-orange-400/40" },
             { bottom: "24%", left: "3%",   rotate: 32,  width: 84, height: 20, cls: "bg-fuchsia-300/55 border-fuchsia-400/40" },
             { bottom: "6%",  left: "14%",  rotate: -10, width: 56, height: 16, cls: "bg-sky-300/55 border-sky-400/40" },
+            // Under the testimonial card (bottom-center)
+            { bottom: "3%",  left: "42%",  rotate: -16, width: 78, height: 20, cls: "bg-amber-300/55 border-amber-400/40" },
+            { bottom: "8%",  left: "56%",  rotate: 12,  width: 64, height: 18, cls: "bg-emerald-300/55 border-emerald-400/40" },
           ];
           return (
             <>
