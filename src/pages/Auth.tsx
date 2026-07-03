@@ -643,7 +643,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={() => { setAuthMethod("email"); setError(""); }}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
                 >
                   <Mail className="h-4 w-4" />
                   {mode === "login" ? "Sign in with Email" : "Sign up with Email"}
