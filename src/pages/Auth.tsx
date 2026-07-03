@@ -995,11 +995,12 @@ const AuthPage = () => {
                     const pool = TAPE_COLORS.filter((c) => !recent.includes(c));
                     const source = pool.length ? pool : TAPE_COLORS;
                     const cls = source[Math.floor(Math.random() * source.length)];
-                    const top = 5 + Math.random() * 84;
-                    const left = 4 + Math.random() * 78;
+                    const top = 5 + Math.random() * 90;
+                    const left = 5 + Math.random() * 90;
                     const rotate = -60 + Math.random() * 120;
-                    const width = 70 + Math.random() * 70; // ~70-140px
+                    const width = 68 + Math.random() * 68; // ~68-136px
                     const height = 18 + Math.random() * 8;
+
 
                     return [
                       ...t,
