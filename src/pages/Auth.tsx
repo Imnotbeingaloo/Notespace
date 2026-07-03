@@ -730,7 +730,16 @@ const AuthPage = () => {
               )}
             </form>
           ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <AnimatePresence mode="wait" initial={false}>
+          <motion.form
+            key={mode}
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            initial={{ opacity: 0, x: mode === "login" ? 24 : -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: mode === "login" ? -24 : 24 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+          >
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
               <div className="relative">
