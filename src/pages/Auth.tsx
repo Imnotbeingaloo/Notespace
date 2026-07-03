@@ -635,7 +635,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleApple}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
                   {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
