@@ -1092,7 +1092,7 @@ const AuthPage = () => {
                           clipPath: tapeClip,
                           transformOrigin: "center",
                           willChange: "transform",
-                          zIndex: 999,
+                          zIndex: 2147483000,
                           animation: tapesFalling
                             ? `tapeFall 2200ms cubic-bezier(0.45, 0, 0.75, 0.6) ${idx * 20}ms both`
                             : `tapeAppear 380ms cubic-bezier(0.22, 1, 0.36, 1) both`,
