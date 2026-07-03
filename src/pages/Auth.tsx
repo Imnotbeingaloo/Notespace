@@ -934,29 +934,29 @@ const AuthPage = () => {
       >
         {/* Ruled paper */}
         <div
-          className="absolute inset-0 opacity-70 dark:opacity-25"
+          className="absolute inset-0 opacity-90 dark:opacity-30"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(to bottom, transparent 0, transparent 27px, hsl(200 45% 55% / 0.18) 27px, hsl(200 45% 55% / 0.18) 28px)",
+              "repeating-linear-gradient(to bottom, transparent 0, transparent 27px, hsl(200 45% 55% / 0.22) 27px, hsl(200 45% 55% / 0.22) 28px)",
           }}
         />
         {/* Red margin rule */}
-        <div className="absolute inset-y-0 left-16 w-px bg-[hsl(0_60%_55%/0.4)]" />
+        <div className="absolute inset-y-0 left-16 w-px bg-[hsl(0_60%_55%/0.45)]" />
         {/* Paper grain */}
         <div
-          className="absolute inset-0 opacity-[0.08] mix-blend-multiply"
+          className="absolute inset-0 opacity-[0.06] mix-blend-multiply"
           style={{
             backgroundImage:
               "radial-gradient(hsl(30 20% 30%) 1px, transparent 1px)",
             backgroundSize: "3px 3px",
           }}
         />
-        {/* Warm glows */}
-        <div className="absolute -top-24 -right-16 h-[380px] w-[380px] rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute -bottom-24 -left-12 h-[420px] w-[420px] rounded-full bg-amber-400/20 blur-3xl" />
+        {/* Warm glows — dialed way back so the paper reads sharp and the tape sticker doesn't blend */}
+        <div className="absolute -top-32 -right-24 h-[300px] w-[300px] rounded-full bg-primary/8 blur-3xl" />
+        <div className="absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-amber-400/[0.06] blur-3xl" />
 
-        {/* Corner tape */}
-        <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-amber-200/70 dark:bg-amber-300/25 shadow-sm rounded-[2px]" />
+        {/* Corner tape — swapped to a soft rose so it reads as tape, not more amber wash */}
+        <div className="absolute top-6 right-8 h-6 w-24 rotate-6 bg-rose-200/80 dark:bg-rose-300/30 shadow-sm rounded-[2px] border border-rose-300/50" />
 
         <div className="relative z-10 flex items-center gap-2 pl-20">
           <img src="/logo.png" alt="" className="h-7 w-7 object-contain" />
@@ -987,9 +987,20 @@ const AuthPage = () => {
         </div>
 
         <div className="relative z-10 flex items-center gap-3 text-xs text-muted-foreground pl-20">
-          <div className="flex -space-x-1.5">
-            {["#0d9488", "#f59e0b", "#6366f1"].map((c) => (
-              <span key={c} className="h-6 w-6 rounded-full border-2 border-background" style={{ background: c }} />
+          <div className="flex -space-x-2">
+            {[
+              { i: "S", bg: "#0d9488" },
+              { i: "W", bg: "#f59e0b" },
+              { i: "R", bg: "#6366f1" },
+            ].map(({ i, bg }) => (
+              <span
+                key={i}
+                className="h-7 w-7 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-semibold text-white font-sans shadow-sm"
+                style={{ background: bg }}
+                aria-hidden="true"
+              >
+                {i}
+              </span>
             ))}
           </div>
           <span>Students, writers, and researchers keep their thinking here.</span>
