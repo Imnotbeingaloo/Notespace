@@ -17,6 +17,7 @@ import HowItWorksPage from "./pages/HowItWorks";
 import TrashPage from "./pages/Trash";
 import TemporaryWorkspacePage from "./pages/TemporaryWorkspace";
 import NotFound from "./pages/NotFound";
+import OAuthConsent from "./pages/OAuthConsent";
 import { lazy, Suspense } from "react";
 const SharedNotePage = lazy(() => import("./pages/SharedNote"));
 const BlogBestAINoteTakingApps = lazy(() => import("./pages/BlogBestAINoteTakingApps"));
@@ -160,6 +161,7 @@ const App = () => (
                 <Route path="/home" element={<AppPage />} />
                <Route path="/auth" element={<AuthPage />} />
                <Route path="/verified" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><VerifiedPage /></Suspense>} />
+               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/features" element={<FeaturesPage />} />
