@@ -366,6 +366,7 @@ export function ImportNotesButton({
         if (inputRef.current) inputRef.current.value = "";
         return;
       }
+      const target: UploadTarget = routed ?? "current";
 
       // 4. Batch dialog — only when there are 2+ text-mergeable files landing in current note.
       let batchChoice: BatchChoice | null = null;
