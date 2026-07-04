@@ -246,8 +246,11 @@ const AuthPage = () => {
     window.addEventListener("focus", onFocus);
 
     try {
+      const oauthRedirect = fromPath
+        ? `${window.location.origin}${fromPath}`
+        : window.location.origin;
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: oauthRedirect,
       });
       cancelled = true;
       window.removeEventListener("focus", onFocus);
@@ -279,8 +282,11 @@ const AuthPage = () => {
     setError("");
     setAppleLoading(true);
     try {
+      const oauthRedirect = fromPath
+        ? `${window.location.origin}${fromPath}`
+        : window.location.origin;
       const result = await lovable.auth.signInWithOAuth("apple", {
-        redirect_uri: window.location.origin,
+        redirect_uri: oauthRedirect,
       });
       if (result.error) {
         const msg = result.error.message || "Apple sign-in failed. Try again.";
