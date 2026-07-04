@@ -361,8 +361,8 @@ export function ImportNotesButton({
 
       // 3. Routing dialog — always ask when multiple files OR when a notebook is open.
       const needsRouting = unique.length > 1 || !!activeNotebook;
-      const target: UploadTarget = needsRouting ? (await askRouting(unique)) ?? "current" : "current";
-      if (needsRouting && target === null) {
+      const routed = needsRouting ? await askRouting(unique) : "current";
+      if (needsRouting && routed === null) {
         if (inputRef.current) inputRef.current.value = "";
         return;
       }
