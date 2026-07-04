@@ -18,6 +18,7 @@ import TrashPage from "./pages/Trash";
 import TemporaryWorkspacePage from "./pages/TemporaryWorkspace";
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
+import Connect from "./pages/Connect";
 import { lazy, Suspense } from "react";
 const SharedNotePage = lazy(() => import("./pages/SharedNote"));
 const BlogBestAINoteTakingApps = lazy(() => import("./pages/BlogBestAINoteTakingApps"));
