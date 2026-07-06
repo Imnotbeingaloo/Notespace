@@ -766,7 +766,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleGoogle}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-[hsl(35_12%_60%)] bg-[hsl(35_10%_82%)] text-foreground font-medium text-sm shadow-sm hover:bg-[hsl(35_10%_78%)] hover:shadow-md disabled:opacity-50 dark:border-border dark:bg-muted/60 dark:hover:bg-muted transition-all ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
@@ -775,7 +775,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleApple}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-[hsl(35_12%_60%)] bg-[hsl(35_10%_82%)] text-foreground font-medium text-sm shadow-sm hover:bg-[hsl(35_10%_78%)] hover:shadow-md disabled:opacity-50 dark:border-border dark:bg-muted/60 dark:hover:bg-muted transition-all ${BTN_PRESS}`}
                 >
                   {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
                   {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
@@ -783,7 +783,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={() => { setAuthMethod("email"); setError(""); }}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-[hsl(35_12%_60%)] bg-[hsl(35_10%_82%)] text-foreground font-medium text-sm shadow-sm hover:bg-[hsl(35_10%_78%)] hover:shadow-md dark:border-border dark:bg-muted/60 dark:hover:bg-muted transition-all ${BTN_PRESS}`}
                 >
                   <Mail className="h-4 w-4" />
                   {mode === "login" ? "Sign in with Email" : "Sign up with Email"}
