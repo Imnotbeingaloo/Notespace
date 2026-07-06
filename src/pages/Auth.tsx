@@ -1093,7 +1093,7 @@ const AuthPage = () => {
       <aside
         ref={asideRef}
         aria-hidden="true"
-        className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-12"
+        className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_35%_92%)] dark:bg-muted/40 p-10 xl:p-12"
       >
         {/* Ruled paper */}
         <div
