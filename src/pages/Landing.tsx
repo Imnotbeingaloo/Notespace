@@ -580,7 +580,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── How It Works Mini ── */}
-      <section className="py-28">
+      <section className="py-28 border-t border-border/60 section-seam-top">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
