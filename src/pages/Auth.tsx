@@ -93,14 +93,24 @@ const AuthPage = () => {
       const r = el.getBoundingClientRect();
       setAsideRect({ top: r.top, left: r.left, width: r.width, height: r.height });
     };
+    // Retry a few frames because the aside only mounts after the loader gate
+    // (hintGrace/authLoading) resolves, which happens after the first render.
     measure();
+    const raf1 = requestAnimationFrame(measure);
+    const raf2 = requestAnimationFrame(() => requestAnimationFrame(measure));
+    const t1 = window.setTimeout(measure, 300);
+    const t2 = window.setTimeout(measure, 1000);
     window.addEventListener("resize", measure);
     window.addEventListener("scroll", measure, true);
     return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", measure, true);
     };
-  }, []);
+  }, [authLoading, user, hintGrace]);
   const [tapeHint, setTapeHint] = useState(false);
   useEffect(() => {
     const id = window.setTimeout(() => setTapeHint(true), 5000);
