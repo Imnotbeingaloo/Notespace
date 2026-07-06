@@ -1145,6 +1145,7 @@ const AuthPage = () => {
                 aria-label="Decorative tape"
                 tabIndex={-1}
                 onClick={() => {
+                  console.log("TAPE CLICK", { tapesLen: tapes.length, tapesFalling });
                   setTapeHint(false);
                   if (tapesFalling) return;
                   // 21st click: trigger gravity fall, then clear.
