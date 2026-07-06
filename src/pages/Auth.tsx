@@ -1268,14 +1268,14 @@ const AuthPage = () => {
             { top: "4%",     left: "38%",  rotate: -14, width: 82, height: 20, cls: "bg-amber-300/60 border-amber-400/40" },
             { top: "7%",     left: "58%",  rotate: 22,  width: 66, height: 18, cls: "bg-cyan-300/60 border-cyan-400/40" },
             { top: "3%",     left: "18%",  rotate: 8,   width: 58, height: 16, cls: "bg-pink-300/55 border-pink-400/40" },
-            // Right side scatter
-            { top: "26%",    right: "5%",  rotate: -28, width: 74, height: 20, cls: "bg-sky-300/60 border-sky-400/40" },
-            { top: "52%",    right: "8%",  rotate: 16,  width: 88, height: 22, cls: "bg-emerald-300/55 border-emerald-400/40" },
+            // Right side scatter — kept in top band and lower band so nothing lands on the headline
+            { top: "20%",    right: "5%",  rotate: -28, width: 74, height: 20, cls: "bg-sky-300/60 border-sky-400/40" },
+            { top: "82%",    right: "8%",  rotate: 16,  width: 88, height: 22, cls: "bg-emerald-300/55 border-emerald-400/40" },
             { bottom: "18%", right: "6%",  rotate: -6,  width: 62, height: 18, cls: "bg-violet-300/55 border-violet-400/40" },
             { bottom: "4%",  right: "22%", rotate: 26,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
-            // Left side scatter
-            { top: "22%",    left: "4%",   rotate: 20,  width: 76, height: 20, cls: "bg-lime-300/55 border-lime-400/40" },
-            { top: "48%",    left: "7%",   rotate: -18, width: 60, height: 18, cls: "bg-orange-300/60 border-orange-400/40" },
+            // Left side scatter — same rule: stay above ~30% or below ~72% so the main text stays clear
+            { top: "18%",    left: "4%",   rotate: 20,  width: 76, height: 20, cls: "bg-lime-300/55 border-lime-400/40" },
+            { top: "84%",    left: "7%",   rotate: -18, width: 60, height: 18, cls: "bg-orange-300/60 border-orange-400/40" },
             { bottom: "24%", left: "3%",   rotate: 32,  width: 84, height: 20, cls: "bg-fuchsia-300/55 border-fuchsia-400/40" },
             { bottom: "6%",  left: "14%",  rotate: -10, width: 56, height: 16, cls: "bg-sky-300/55 border-sky-400/40" },
             // Between testimonial card and the "Students, writers…" line — centered under card
