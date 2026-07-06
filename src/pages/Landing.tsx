@@ -616,7 +616,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── Testimonials ── */}
-      <section className="relative py-28">
+      <section className="relative py-28 section-warm section-seam-top border-t border-border/60">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.03] to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
