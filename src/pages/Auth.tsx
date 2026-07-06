@@ -632,7 +632,7 @@ const AuthPage = () => {
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
-      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[#EDE8DC] dark:bg-background">
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(43_40%_92%)] dark:bg-background">
         {/* Plain divider line between panels on lg+ */}
         <div
           aria-hidden="true"
