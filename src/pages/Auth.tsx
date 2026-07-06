@@ -687,14 +687,24 @@ const AuthPage = () => {
               { top: "3%",  left: "18%", rotate: -14, width: 74, height: 18, cls: "bg-amber-300/60 border-amber-400/40" },
               { top: "5%",  right: "10%", rotate: 22, width: 62, height: 16, cls: "bg-cyan-300/55 border-cyan-400/40" },
               { top: "2%",  left: "62%", rotate: 6,  width: 54, height: 16, cls: "bg-pink-300/55 border-pink-400/40" },
+              // Small corner accents for mobile — tucked into edges so they don't overlap the form
+              { top: "11%", left: "2%",  rotate: 34,  width: 44, height: 14, cls: "bg-sky-300/55 border-sky-400/40" },
+              { top: "9%",  right: "2%", rotate: -30, width: 46, height: 14, cls: "bg-emerald-300/55 border-emerald-400/40" },
               // Mid scatter — hidden on mobile (form is edge-to-edge), shown from sm+
-              { top: "26%", left: "4%",  rotate: 20,  width: 68, height: 18, cls: "bg-lime-300/55 border-lime-400/40", mobileHidden: true },
-              { top: "30%", right: "5%", rotate: -24, width: 72, height: 20, cls: "bg-sky-300/60 border-sky-400/40", mobileHidden: true },
-              { top: "52%", left: "3%",  rotate: -12, width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40", mobileHidden: true },
-              { top: "56%", right: "4%", rotate: 16,  width: 78, height: 20, cls: "bg-emerald-300/55 border-emerald-400/40", mobileHidden: true },
-              // Lower band — kept far enough from the form's bottom on mobile
+              { top: "22%", left: "3%",  rotate: 20,  width: 68, height: 18, cls: "bg-lime-300/55 border-lime-400/40", mobileHidden: true },
+              { top: "28%", right: "4%", rotate: -24, width: 72, height: 20, cls: "bg-sky-300/60 border-sky-400/40", mobileHidden: true },
+              { top: "38%", left: "6%",  rotate: -8,  width: 58, height: 16, cls: "bg-rose-300/55 border-rose-400/40", mobileHidden: true },
+              { top: "42%", right: "3%", rotate: 14,  width: 82, height: 20, cls: "bg-amber-300/55 border-amber-400/40", mobileHidden: true },
+              { top: "54%", left: "2%",  rotate: -18, width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40", mobileHidden: true },
+              { top: "58%", right: "5%", rotate: 26,  width: 78, height: 20, cls: "bg-emerald-300/55 border-emerald-400/40", mobileHidden: true },
+              { top: "70%", left: "4%",  rotate: 8,   width: 52, height: 16, cls: "bg-cyan-300/55 border-cyan-400/40", mobileHidden: true },
+              { top: "72%", right: "6%", rotate: -12, width: 66, height: 18, cls: "bg-pink-300/60 border-pink-400/40", mobileHidden: true },
+              // Lower band
               { bottom: "18%", left: "6%",  rotate: 28,  width: 60, height: 18, cls: "bg-fuchsia-300/55 border-fuchsia-400/40", mobileHidden: true },
               { bottom: "14%", right: "6%", rotate: -8,  width: 78, height: 20, cls: "bg-violet-300/55 border-violet-400/40", mobileHidden: true },
+              // Bottom accents shown on every viewport
+              { bottom: "9%",  left: "3%",  rotate: -22, width: 46, height: 14, cls: "bg-lime-300/55 border-lime-400/40" },
+              { bottom: "11%", right: "3%", rotate: 24,  width: 48, height: 14, cls: "bg-orange-300/60 border-orange-400/40" },
               { bottom: "4%",  left: "34%", rotate: 10,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
               { bottom: "6%",  right: "22%", rotate: -18, width: 56, height: 16, cls: "bg-yellow-300/60 border-yellow-400/40" },
             ];
@@ -756,7 +766,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleGoogle}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-[hsl(35_12%_60%)] bg-[hsl(35_10%_82%)] text-foreground font-medium text-sm shadow-sm hover:bg-[hsl(35_10%_78%)] hover:shadow-md disabled:opacity-50 dark:border-border dark:bg-muted/60 dark:hover:bg-muted transition-all ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
@@ -765,7 +775,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleApple}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-[hsl(35_12%_60%)] bg-[hsl(35_10%_82%)] text-foreground font-medium text-sm shadow-sm hover:bg-[hsl(35_10%_78%)] hover:shadow-md disabled:opacity-50 dark:border-border dark:bg-muted/60 dark:hover:bg-muted transition-all ${BTN_PRESS}`}
                 >
                   {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
                   {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
@@ -773,7 +783,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={() => { setAuthMethod("email"); setError(""); }}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-border bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-[hsl(35_12%_60%)] bg-[hsl(35_10%_82%)] text-foreground font-medium text-sm shadow-sm hover:bg-[hsl(35_10%_78%)] hover:shadow-md dark:border-border dark:bg-muted/60 dark:hover:bg-muted transition-all ${BTN_PRESS}`}
                 >
                   <Mail className="h-4 w-4" />
                   {mode === "login" ? "Sign in with Email" : "Sign up with Email"}
