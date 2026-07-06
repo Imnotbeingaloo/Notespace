@@ -472,7 +472,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── App Preview ── */}
-      <section className="relative border-t border-border/60 bg-background section-seam-top">
+      <section className="relative border-t border-border/60 bg-background">
         <div className="container mx-auto px-6 pt-20 md:pt-28 pb-32">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -555,7 +555,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── Features ── */}
-      <section id="features" className="relative py-20 section-warm section-seam-top border-t border-border/60">
+      <section id="features" className="relative py-20">
         <div className="absolute inset-0 bg-foreground/[0.04] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <motion.div
@@ -580,7 +580,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── How It Works Mini ── */}
-      <section className="py-28 border-t border-border/60 section-seam-top">
+      <section className="py-28">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
@@ -616,7 +616,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── Testimonials ── */}
-      <section className="relative py-28 section-warm section-seam-top border-t border-border/60">
+      <section className="relative py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.03] to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
@@ -657,7 +657,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── CTA ── */}
-      <section className="bg-foreground/[0.04] py-20 section-seam-top border-t border-border/60">
+      <section className="bg-foreground/[0.04] py-20">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
