@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useMemo, useRef, useLayoutEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, ArrowLeft, RotateCw, Check, X, Eye, EyeOff, ExternalLink } from "lucide-react";
@@ -86,14 +86,25 @@ const AuthPage = () => {
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const [asideRect, setAsideRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
-  useLayoutEffect(() => {
+  // Callback ref: measure the aside as soon as it mounts (survives the
+  // hintGrace/authLoading loader gate that returns early on first render).
+  const setAsideRef = useCallback((el: HTMLElement | null) => {
+    asideRef.current = el;
+    if (!el) return;
+    const measure = () => {
+      const r = el.getBoundingClientRect();
+      setAsideRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+    };
+    measure();
+    requestAnimationFrame(measure);
+  }, []);
+  useEffect(() => {
     const measure = () => {
       const el = asideRef.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
       setAsideRect({ top: r.top, left: r.left, width: r.width, height: r.height });
     };
-    measure();
     window.addEventListener("resize", measure);
     window.addEventListener("scroll", measure, true);
     return () => {
@@ -621,7 +632,17 @@ const AuthPage = () => {
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
-      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(43_40%_92%)] dark:bg-background">
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[#EDE8DC] dark:bg-background">
+        {/* Soft seam between the auth panel and the notebook canvas — only on lg+ where the split is visible. */}
+        <div
+          aria-hidden="true"
+          className="hidden lg:block pointer-events-none absolute inset-y-0 right-0 w-6 z-30"
+          style={{
+            background:
+              "linear-gradient(to right, transparent 0%, hsl(30 20% 20% / 0.05) 55%, hsl(30 20% 20% / 0.12) 100%)",
+            boxShadow: "1px 0 0 hsl(30 15% 55% / 0.35), 6px 0 14px -6px hsl(30 25% 20% / 0.18)",
+          }}
+        />
         {/* Notebook paper background + scattered tapes for mobile & tablet (below lg) */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden overflow-hidden">
           {/* Ruled paper lines */}
@@ -1091,7 +1112,7 @@ const AuthPage = () => {
 
       {/* Right column — editorial notebook panel. */}
       <aside
-        ref={asideRef}
+        ref={setAsideRef}
         aria-hidden="true"
         className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-12"
       >
@@ -1145,6 +1166,7 @@ const AuthPage = () => {
                 aria-label="Decorative tape"
                 tabIndex={-1}
                 onClick={() => {
+                  
                   setTapeHint(false);
                   if (tapesFalling) return;
                   // 21st click: trigger gravity fall, then clear.
