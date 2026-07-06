@@ -360,13 +360,21 @@ export function ImportNotesButton({
       }
 
       // 3. Routing dialog — always ask when multiple files OR when a notebook is open.
+      //    IMPORTANT: Cancel / Escape resolves askRouting to null and MUST abort the
+      //    import entirely. Do NOT fall back to "current" here — that silently
+      //    dumps files into the note the user was trying to protect.
       const needsRouting = unique.length > 1 || !!activeNotebook;
-      const routed = needsRouting ? await askRouting(unique) : "current";
-      if (needsRouting && routed === null) {
-        if (inputRef.current) inputRef.current.value = "";
-        return;
+      let target: UploadTarget;
+      if (needsRouting) {
+        const routed = await askRouting(unique);
+        if (routed === null) {
+          if (inputRef.current) inputRef.current.value = "";
+          return;
+        }
+        target = routed;
+      } else {
+        target = "current";
       }
-      const target: UploadTarget = routed ?? "current";
 
       // 4. Batch dialog — only when there are 2+ text-mergeable files landing in current note.
       let batchChoice: BatchChoice | null = null;
