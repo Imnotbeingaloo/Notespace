@@ -759,7 +759,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleGoogle}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/60 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/50 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
@@ -768,7 +768,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleApple}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/60 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/50 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
                   {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
@@ -776,7 +776,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={() => { setAuthMethod("email"); setError(""); }}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/60 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/50 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
                 >
                   <Mail className="h-4 w-4" />
                   {mode === "login" ? "Sign in with Email" : "Sign up with Email"}

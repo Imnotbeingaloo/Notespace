@@ -472,7 +472,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── App Preview ── */}
-      <section className="relative border-t border-border/60 bg-background">
+      <section className="relative border-t border-border bg-background">
         <div className="container mx-auto px-6 pt-20 md:pt-28 pb-32">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -657,7 +657,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── CTA ── */}
-      <section className="bg-foreground/[0.04] py-20">
+      <section className="border-t border-border bg-foreground/[0.04] py-20">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
