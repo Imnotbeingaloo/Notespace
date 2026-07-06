@@ -678,30 +678,28 @@ const AuthPage = () => {
               rotate: number; width: number; height: number; cls: string;
               mobileHidden?: boolean;
             }> = [
-              // Top band — safely above the form on every viewport
-              { top: "3%",  left: "18%", rotate: -14, width: 74, height: 18, cls: "bg-amber-300/60 border-amber-400/40" },
-              { top: "5%",  right: "10%", rotate: 22, width: 62, height: 16, cls: "bg-cyan-300/55 border-cyan-400/40" },
-              { top: "2%",  left: "62%", rotate: 6,  width: 54, height: 16, cls: "bg-pink-300/55 border-pink-400/40" },
-              // Small corner accents for mobile — tucked into edges so they don't overlap the form
-              { top: "11%", left: "2%",  rotate: 34,  width: 44, height: 14, cls: "bg-sky-300/55 border-sky-400/40" },
-              { top: "9%",  right: "2%", rotate: -30, width: 46, height: 14, cls: "bg-emerald-300/55 border-emerald-400/40" },
-              // Mid scatter — hidden on mobile (form is edge-to-edge), shown from sm+
-              { top: "22%", left: "3%",  rotate: 20,  width: 68, height: 18, cls: "bg-lime-300/55 border-lime-400/40", mobileHidden: true },
-              { top: "28%", right: "4%", rotate: -24, width: 72, height: 20, cls: "bg-sky-300/60 border-sky-400/40", mobileHidden: true },
-              { top: "38%", left: "6%",  rotate: -8,  width: 58, height: 16, cls: "bg-rose-300/55 border-rose-400/40", mobileHidden: true },
-              { top: "42%", right: "3%", rotate: 14,  width: 82, height: 20, cls: "bg-amber-300/55 border-amber-400/40", mobileHidden: true },
-              { top: "54%", left: "2%",  rotate: -18, width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40", mobileHidden: true },
-              { top: "58%", right: "5%", rotate: 26,  width: 78, height: 20, cls: "bg-emerald-300/55 border-emerald-400/40", mobileHidden: true },
-              { top: "70%", left: "4%",  rotate: 8,   width: 52, height: 16, cls: "bg-cyan-300/55 border-cyan-400/40", mobileHidden: true },
-              { top: "72%", right: "6%", rotate: -12, width: 66, height: 18, cls: "bg-pink-300/60 border-pink-400/40", mobileHidden: true },
-              // Lower band
-              { bottom: "18%", left: "6%",  rotate: 28,  width: 60, height: 18, cls: "bg-fuchsia-300/55 border-fuchsia-400/40", mobileHidden: true },
-              { bottom: "14%", right: "6%", rotate: -8,  width: 78, height: 20, cls: "bg-violet-300/55 border-violet-400/40", mobileHidden: true },
-              // Bottom accents shown on every viewport
-              { bottom: "9%",  left: "3%",  rotate: -22, width: 46, height: 14, cls: "bg-lime-300/55 border-lime-400/40" },
-              { bottom: "11%", right: "3%", rotate: 24,  width: 48, height: 14, cls: "bg-orange-300/60 border-orange-400/40" },
-              { bottom: "4%",  left: "34%", rotate: 10,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
-              { bottom: "6%",  right: "22%", rotate: -18, width: 56, height: 16, cls: "bg-yellow-300/60 border-yellow-400/40" },
+              // Mobile-visible tapes — irregular scatter (no rows, no mirrored pairs)
+              { top: "4%",     left: "22%",  rotate: -14, width: 74, height: 18, cls: "bg-amber-300/60 border-amber-400/40" },
+              { top: "7%",     right: "12%", rotate: 26,  width: 58, height: 16, cls: "bg-cyan-300/55 border-cyan-400/40" },
+              { top: "16%",    left: "1%",   rotate: 40,  width: 42, height: 14, cls: "bg-pink-300/55 border-pink-400/40" },
+              { top: "46%",    right: "1%",  rotate: -18, width: 52, height: 16, cls: "bg-sky-300/55 border-sky-400/40" },
+              { bottom: "34%", left: "1%",   rotate: 12,  width: 48, height: 14, cls: "bg-emerald-300/55 border-emerald-400/40" },
+              { bottom: "12%", right: "6%",  rotate: -22, width: 66, height: 18, cls: "bg-lime-300/55 border-lime-400/40" },
+              { bottom: "5%",  left: "30%",  rotate: 8,   width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
+              { bottom: "7%",  right: "24%", rotate: -14, width: 54, height: 16, cls: "bg-yellow-300/60 border-yellow-400/40" },
+              // Tablet-only additions — fill the wider surface with an organic, non-uniform scatter
+              { top: "14%",    left: "42%",  rotate: -8,  width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40", mobileHidden: true },
+              { top: "19%",    left: "4%",   rotate: 24,  width: 78, height: 20, cls: "bg-fuchsia-300/55 border-fuchsia-400/40", mobileHidden: true },
+              { top: "24%",    right: "8%",  rotate: -32, width: 70, height: 18, cls: "bg-violet-300/55 border-violet-400/40", mobileHidden: true },
+              { top: "33%",    left: "12%",  rotate: 14,  width: 54, height: 16, cls: "bg-sky-300/60 border-sky-400/40", mobileHidden: true },
+              { top: "37%",    right: "24%", rotate: -6,  width: 66, height: 18, cls: "bg-amber-300/55 border-amber-400/40", mobileHidden: true },
+              { top: "46%",    left: "3%",   rotate: 30,  width: 72, height: 20, cls: "bg-lime-300/60 border-lime-400/40", mobileHidden: true },
+              { top: "52%",    right: "4%",  rotate: -22, width: 82, height: 20, cls: "bg-emerald-300/60 border-emerald-400/40", mobileHidden: true },
+              { top: "58%",    left: "18%",  rotate: 6,   width: 52, height: 16, cls: "bg-rose-300/60 border-rose-400/40", mobileHidden: true },
+              { top: "65%",    right: "12%", rotate: 16,  width: 74, height: 18, cls: "bg-cyan-300/60 border-cyan-400/40", mobileHidden: true },
+              { top: "73%",    left: "6%",   rotate: -14, width: 62, height: 18, cls: "bg-pink-300/55 border-pink-400/40", mobileHidden: true },
+              { top: "78%",    right: "30%", rotate: 22,  width: 58, height: 16, cls: "bg-orange-300/60 border-orange-400/40", mobileHidden: true },
+              { bottom: "20%", left: "26%",  rotate: -28, width: 70, height: 18, cls: "bg-yellow-300/55 border-yellow-400/40", mobileHidden: true },
             ];
             return tapes.map((t, i) => (
               <div
