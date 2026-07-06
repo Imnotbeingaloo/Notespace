@@ -632,7 +632,17 @@ const AuthPage = () => {
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
-      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(43_40%_92%)] dark:bg-background">
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[#EDE8DC] dark:bg-background">
+        {/* Soft seam between the auth panel and the notebook canvas — only on lg+ where the split is visible. */}
+        <div
+          aria-hidden="true"
+          className="hidden lg:block pointer-events-none absolute inset-y-0 right-0 w-6 z-30"
+          style={{
+            background:
+              "linear-gradient(to right, transparent 0%, hsl(30 20% 20% / 0.05) 55%, hsl(30 20% 20% / 0.12) 100%)",
+            boxShadow: "1px 0 0 hsl(30 15% 55% / 0.35), 6px 0 14px -6px hsl(30 25% 20% / 0.18)",
+          }}
+        />
         {/* Notebook paper background + scattered tapes for mobile & tablet (below lg) */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden overflow-hidden">
           {/* Ruled paper lines */}
