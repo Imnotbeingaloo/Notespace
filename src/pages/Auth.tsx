@@ -759,7 +759,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleGoogle}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/60 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/45 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {googleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
@@ -768,7 +768,7 @@ const AuthPage = () => {
                   type="button"
                   onClick={handleApple}
                   disabled={googleLoading || appleLoading}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/60 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/45 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted disabled:opacity-50 ${BTN_PRESS}`}
                 >
                   {appleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AppleIcon />}
                   {mode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
@@ -776,7 +776,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={() => { setAuthMethod("email"); setError(""); }}
-                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/60 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
+                  className={`w-full flex items-center justify-center gap-3 py-4 rounded-lg border border-foreground/45 bg-muted/60 text-foreground font-medium text-sm hover:bg-muted ${BTN_PRESS}`}
                 >
                   <Mail className="h-4 w-4" />
                   {mode === "login" ? "Sign in with Email" : "Sign up with Email"}
@@ -1289,20 +1289,26 @@ const AuthPage = () => {
           const tapeClip =
             "polygon(3% 0%, 97% 0%, 100% 35%, 96% 65%, 100% 100%, 3% 100%, 0% 65%, 4% 35%)";
           const decor: Array<{ top?: string; bottom?: string; left?: string; right?: string; rotate: number; width: number; height: number; cls: string }> = [
-            // Top band (across the top, including center-top above the text)
+            // Top band across the full width (including center-top over the headline)
             { top: "4%",     left: "38%",  rotate: -14, width: 82, height: 20, cls: "bg-amber-300/60 border-amber-400/40" },
             { top: "7%",     left: "58%",  rotate: 22,  width: 66, height: 18, cls: "bg-cyan-300/60 border-cyan-400/40" },
             { top: "3%",     left: "18%",  rotate: 8,   width: 58, height: 16, cls: "bg-pink-300/55 border-pink-400/40" },
-            // Right side scatter — kept in top band and lower band so nothing lands on the headline
-            { top: "20%",    right: "5%",  rotate: -28, width: 74, height: 20, cls: "bg-sky-300/60 border-sky-400/40" },
-            { top: "82%",    right: "8%",  rotate: 16,  width: 88, height: 22, cls: "bg-emerald-300/55 border-emerald-400/40" },
-            { bottom: "18%", right: "6%",  rotate: -6,  width: 62, height: 18, cls: "bg-violet-300/55 border-violet-400/40" },
-            { bottom: "4%",  right: "22%", rotate: 26,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
-            // Left side scatter — same rule: stay above ~30% or below ~72% so the main text stays clear
-            { top: "18%",    left: "4%",   rotate: 20,  width: 76, height: 20, cls: "bg-lime-300/55 border-lime-400/40" },
-            { top: "84%",    left: "7%",   rotate: -18, width: 60, height: 18, cls: "bg-orange-300/60 border-orange-400/40" },
-            { bottom: "24%", left: "3%",   rotate: 32,  width: 84, height: 20, cls: "bg-fuchsia-300/55 border-fuchsia-400/40" },
-            { bottom: "6%",  left: "14%",  rotate: -10, width: 56, height: 16, cls: "bg-sky-300/55 border-sky-400/40" },
+            { top: "6%",     left: "72%",  rotate: -6,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
+            // Right side scatter — top, mid and lower
+            { top: "22%",    right: "5%",  rotate: -28, width: 74, height: 20, cls: "bg-sky-300/60 border-sky-400/40" },
+            { top: "38%",    right: "12%", rotate: 12,  width: 62, height: 18, cls: "bg-pink-300/60 border-pink-400/40" },
+            { top: "54%",    right: "6%",  rotate: 16,  width: 88, height: 22, cls: "bg-emerald-300/55 border-emerald-400/40" },
+            { bottom: "22%", right: "4%",  rotate: -6,  width: 62, height: 18, cls: "bg-violet-300/55 border-violet-400/40" },
+            { bottom: "6%",  right: "20%", rotate: 26,  width: 70, height: 18, cls: "bg-rose-300/55 border-rose-400/40" },
+            // Left side scatter — top, mid and lower
+            { top: "20%",    left: "4%",   rotate: 20,  width: 76, height: 20, cls: "bg-lime-300/55 border-lime-400/40" },
+            { top: "36%",    left: "10%",  rotate: -14, width: 54, height: 16, cls: "bg-amber-300/55 border-amber-400/40" },
+            { top: "50%",    left: "6%",   rotate: -18, width: 60, height: 18, cls: "bg-orange-300/60 border-orange-400/40" },
+            { bottom: "26%", left: "3%",   rotate: 32,  width: 84, height: 20, cls: "bg-fuchsia-300/55 border-fuchsia-400/40" },
+            { bottom: "8%",  left: "14%",  rotate: -10, width: 56, height: 16, cls: "bg-sky-300/55 border-sky-400/40" },
+            // Center-mid tapes — cross over the paragraph naturally (per reference)
+            { top: "44%",    left: "34%",  rotate: -22, width: 68, height: 18, cls: "bg-purple-300/55 border-purple-400/40" },
+            { top: "42%",    right: "34%", rotate: 18,  width: 60, height: 16, cls: "bg-orange-300/55 border-orange-400/40" },
             // Between testimonial card and the "Students, writers…" line — centered under card
             { bottom: "14%", left: "calc(5rem + 12rem - 40px)", rotate: -4, width: 80, height: 18, cls: "bg-yellow-300/60 border-yellow-400/40" },
           ];

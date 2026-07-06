@@ -794,3 +794,28 @@
   .blog-article h2 { margin-top: 2.75rem; }
 }
 
+
+/* ---------------------------------------------------------------------
+ * Section contrast helpers — used to break up adjacent sections that
+ * share the same base background so the seam actually reads. Warm-neutral
+ * only, no gray/blue tones introduced.
+ * ------------------------------------------------------------------- */
+.section-warm {
+  /* ~6% darker than --background in warm-neutral space */
+  background-color: hsl(43 36% 94%);
+}
+.dark .section-warm {
+  background-color: hsl(30 8% 12%);
+}
+.section-seam-top {
+  /* subtle soft shadow arriving from above the seam */
+  box-shadow: inset 0 10px 16px -14px hsl(30 25% 20% / 0.18);
+}
+.section-seam-bottom {
+  box-shadow: inset 0 -10px 16px -14px hsl(30 25% 20% / 0.18);
+}
+.section-seam-both {
+  box-shadow:
+    inset 0 10px 16px -14px hsl(30 25% 20% / 0.18),
+    inset 0 -10px 16px -14px hsl(30 25% 20% / 0.18);
+}
