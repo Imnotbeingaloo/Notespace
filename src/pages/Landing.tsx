@@ -555,7 +555,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── Features ── */}
-      <section id="features" className="relative py-20">
+      <section id="features" className="relative py-20 section-warm section-seam-top border-t border-border/60">
         <div className="absolute inset-0 bg-foreground/[0.04] pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <motion.div
