@@ -621,7 +621,7 @@ const AuthPage = () => {
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
-      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(41_32%_88%)] dark:bg-background">
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(43_40%_92%)] dark:bg-background">
         {/* Notebook paper background + scattered tapes for mobile & tablet (below lg) */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden overflow-hidden">
           {/* Ruled paper lines */}
