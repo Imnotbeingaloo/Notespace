@@ -621,7 +621,7 @@ const AuthPage = () => {
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
-      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(43_42%_94%)] dark:bg-background">
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[hsl(43_40%_92%)] dark:bg-background">
         {/* Notebook paper background + scattered tapes for mobile & tablet (below lg) */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 lg:hidden overflow-hidden">
           {/* Ruled paper lines */}
@@ -1093,7 +1093,7 @@ const AuthPage = () => {
       <aside
         ref={asideRef}
         aria-hidden="true"
-        className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_35%_92%)] dark:bg-muted/40 p-10 xl:p-12"
+        className="hidden lg:flex order-2 relative flex-col justify-between overflow-hidden border-l border-border bg-[hsl(43_38%_96%)] dark:bg-muted/40 p-10 xl:p-12"
       >
         {/* Ruled paper */}
         <div
