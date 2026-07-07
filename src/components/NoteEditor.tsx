@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye } from "lucide-react";
+import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye, Paperclip } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -23,7 +23,7 @@ import { FindReplace } from "@/components/FindReplace";
 import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { ImportActionDialog } from "@/components/ImportActionDialog";
 import { NewNotePrompt } from "@/components/NewNotePrompt";
-import { AttachmentsFooter } from "@/components/AttachmentsFooter";
+import { AttachmentsDialog } from "@/components/AttachmentsDialog";
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -335,6 +335,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   useEffect(() => { setLiveContent(activeNote?.content || ""); }, [activeNote?.id]);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [attachmentsDialogOpen, setAttachmentsDialogOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -913,6 +914,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <ExportButtons />
                         <PreviewButton />
+                        {import.meta.env.DEV && (
+                          <button
+                            onClick={() => { setMoreOpen(false); setAttachmentsDialogOpen(true); }}
+                            className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                            title="Attachments (dev only)"
+                          >
+                            <Paperclip className="h-3.5 w-3.5" />
+                            Attachments
+                          </button>
+                        )}
                       </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
@@ -928,6 +939,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
+                        {import.meta.env.DEV && (
+                          <button
+                            onClick={() => { setMoreOpen(false); setAttachmentsDialogOpen(true); }}
+                            className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                            title="Attachments (dev only)"
+                          >
+                            <Paperclip className="h-3.5 w-3.5" />
+                            Attachments
+                          </button>
+                        )}
                       </div>
                     </motion.div>
                   )}
@@ -977,8 +998,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
         </div>
 
-        {/* Attachments footer (drag-to-reorder, rename, replace, remove) */}
-        {!focusMode && <AttachmentsFooter />}
+        {/* Attachments management moved into a dev-only dialog launched from the More menu.
+            Inline attachment links inside the note body remain clickable as always. */}
 
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
@@ -998,6 +1019,12 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           defaultMode={askAIMode}
           onApplyEdit={handleAIEdit}
         />
+        {import.meta.env.DEV && (
+          <AttachmentsDialog
+            open={attachmentsDialogOpen}
+            onOpenChange={setAttachmentsDialogOpen}
+          />
+        )}
         {pendingDocDrop && (
           <ImportActionDialog
             open

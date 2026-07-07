@@ -263,7 +263,7 @@ const AuthPage = () => {
     try {
       const oauthRedirect = fromPath
         ? `${window.location.origin}${fromPath}`
-        : window.location.origin;
+        : `${window.location.origin}/home`;
       const result = await lovable.auth.signInWithOAuth("google", {
         redirect_uri: oauthRedirect,
       });
@@ -299,7 +299,7 @@ const AuthPage = () => {
     try {
       const oauthRedirect = fromPath
         ? `${window.location.origin}${fromPath}`
-        : window.location.origin;
+        : `${window.location.origin}/home`;
       const result = await lovable.auth.signInWithOAuth("apple", {
         redirect_uri: oauthRedirect,
       });
@@ -406,7 +406,7 @@ const AuthPage = () => {
 
 
       } else {
-        try { sessionStorage.setItem("welcomeVariant", "returning"); } catch {}
+        // Sign-in: silent transition, no WelcomeBackDialog.
         navigate(resolvePostAuthTarget());
       }
     } else {
