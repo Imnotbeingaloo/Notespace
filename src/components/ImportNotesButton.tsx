@@ -65,6 +65,7 @@ export function ImportNotesButton({
   onMergeAt,
   onReplace,
   onCreateNew,
+  onRollbackInsertions,
   hasExistingContent = false,
   onSaveSelection,
 }: ImportNotesButtonProps) {
@@ -89,6 +90,12 @@ export function ImportNotesButton({
     failed: File[];
     finished: boolean;
   }>({ active: false, current: 0, total: 0, failed: [], finished: false });
+
+  // Cancellation plumbing — a ref (not state) so the running loop can observe
+  // the flip synchronously without waiting for a re-render.
+  const cancelRef = useRef(false);
+  const insertedSnippetsRef = useRef<string[]>([]);
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
   const { user } = useAuth();
   const { activeNote, activeNotebookId, activeNotebook, updateNote, createNotebook, createNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
