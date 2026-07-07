@@ -275,13 +275,20 @@ export function ImportNotesButton({
       setProgressCard({ active: true, current: 0, total: ordered.length, failed: [], finished: false });
       logImport({ kind: "batch-start", count: ordered.length, hasExistingContent });
 
+      // Reset cancellation bookkeeping for this batch. Anything appended to
+      // insertedSnippetsRef during runBatch will be rolled back on cancel.
+      cancelRef.current = false;
+      insertedSnippetsRef.current = [];
+
       const newAttachments: Array<{ name: string; url: string; path: string; type: string; size: number; hash?: string }> = [];
       const failed: File[] = [];
       let hasContentNow = createdNewContainer ? false : hasExistingContent;
       let importedCount = 0;
+      let cancelled = false;
 
       try {
         for (let i = 0; i < ordered.length; i++) {
+          if (cancelRef.current) { cancelled = true; break; }
           const file = ordered[i];
           setProgress({ current: i, total: ordered.length, name: file.name });
           setProgressCard((s) => ({ ...s, current: i + 1, currentName: file.name }));
@@ -301,7 +308,9 @@ export function ImportNotesButton({
                   const choice = await askForChoice(content, file.name);
                   if (choice) applyChoice(choice, content, file.name);
                 } else {
-                  onInsert(`\n${content}`);
+                  const snippet = `\n${content}`;
+                  onInsert(snippet);
+                  insertedSnippetsRef.current.push(snippet);
                   sonner.success(`Imported "${file.name}"`);
                 }
                 hasContentNow = true;
@@ -327,7 +336,25 @@ export function ImportNotesButton({
           }
         }
 
-        if (newAttachments.length && destNoteId) {
+        if (cancelRef.current) cancelled = true;
+
+        if (cancelled) {
+          // Roll back everything we've done so far: delete uploaded storage
+          // objects and strip any inline markdown insertions from the note.
+          const uploadedCount = newAttachments.length;
+          if (uploadedCount > 0) {
+            await removeAttachmentObjects(newAttachments, "cancel", destNoteId ?? null);
+          }
+          const snippets = insertedSnippetsRef.current.slice();
+          if (snippets.length > 0) onRollbackInsertions?.(snippets);
+          insertedSnippetsRef.current = [];
+          logImport({ kind: "batch-cancelled", uploaded: uploadedCount, rolledBack: snippets.length });
+          sonner.info(
+            uploadedCount > 0
+              ? `Upload cancelled. Removed ${uploadedCount} uploaded file${uploadedCount === 1 ? "" : "s"}.`
+              : "Upload cancelled.",
+          );
+        } else if (newAttachments.length && destNoteId) {
           // Read latest attachments from context for the destination note.
           const noteAttachments = destNoteId === activeNote?.id ? (activeNote?.attachments || []) : [];
           const merged = [...noteAttachments, ...newAttachments];
@@ -338,11 +365,15 @@ export function ImportNotesButton({
         setLoading(false);
         setProgress(null);
         if (inputRef.current) inputRef.current.value = "";
-        setProgressCard((s) => ({ ...s, finished: true, failed }));
+        setProgressCard((s) => cancelled
+          ? { ...s, active: false, finished: true, failed: [] }
+          : { ...s, finished: true, failed }
+        );
+        cancelRef.current = false;
         logImport({ kind: "batch-complete", imported: importedCount, attached: newAttachments.length, failed: failed.length });
       }
     },
-    [activeNote, activeNotebookId, hasExistingContent, dialogEnabled, extractText, uploadOne, askForChoice, applyChoice, onInsert, createNotebook, createNote, setActiveNotebookId, setActiveNoteId, updateNote],
+    [activeNote, activeNotebookId, hasExistingContent, dialogEnabled, extractText, uploadOne, askForChoice, applyChoice, onInsert, onRollbackInsertions, createNotebook, createNote, setActiveNotebookId, setActiveNoteId, updateNote],
   );
 
   const handleFiles = useCallback(
