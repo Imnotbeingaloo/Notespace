@@ -19,7 +19,8 @@ export type ImportEvent =
   | { kind: "attach-uploaded"; name: string; path: string; size: number }
   | { kind: "attach-upload-failed"; name: string; message: string }
   | { kind: "attachments-persisted"; noteId: string; added: number; total: number }
-  | { kind: "attachments-cleanup"; noteId: string | null; removed: number; reason: "note-delete" | "notebook-delete" | "replace" }
+  | { kind: "attachments-cleanup"; noteId: string | null; removed: number; reason: "note-delete" | "notebook-delete" | "replace" | "cancel" }
+  | { kind: "batch-cancelled"; uploaded: number; rolledBack: number }
   | { kind: "attachments-cleanup-failed"; message: string }
   | { kind: "batch-complete"; imported: number; attached: number; failed: number };
 
