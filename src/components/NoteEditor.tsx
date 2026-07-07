@@ -896,6 +896,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                           onMergeAt={handleMergeAt}
                           onReplace={handleReplaceFromImport}
                           onCreateNew={handleCreateNoteFromImport}
+                          onRollbackInsertions={handleRollbackInsertions}
                           hasExistingContent={!!activeNote?.content?.trim()}
                           onSaveSelection={() => hybridEditorRef.current?.saveSelection()}
                         />
