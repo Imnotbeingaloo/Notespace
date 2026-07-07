@@ -914,6 +914,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <ExportButtons />
                         <PreviewButton />
+                        {import.meta.env.DEV && (
+                          <button
+                            onClick={() => { setMoreOpen(false); setAttachmentsDialogOpen(true); }}
+                            className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                            title="Attachments (dev only)"
+                          >
+                            <Paperclip className="h-3.5 w-3.5" />
+                            Attachments
+                          </button>
+                        )}
                       </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
@@ -929,6 +939,16 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
+                        {import.meta.env.DEV && (
+                          <button
+                            onClick={() => { setMoreOpen(false); setAttachmentsDialogOpen(true); }}
+                            className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                            title="Attachments (dev only)"
+                          >
+                            <Paperclip className="h-3.5 w-3.5" />
+                            Attachments
+                          </button>
+                        )}
                       </div>
                     </motion.div>
                   )}
