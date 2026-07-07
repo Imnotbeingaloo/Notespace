@@ -30,6 +30,7 @@ interface ImportNotesButtonProps {
   onMergeAt?: (text: string, position: MergePosition) => void;
   onReplace?: (text: string) => void;
   onCreateNew?: (text: string, fileName: string) => void;
+  onRollbackInsertions?: (snippets: string[]) => void;
   hasExistingContent?: boolean;
   onSaveSelection?: () => void;
 }
