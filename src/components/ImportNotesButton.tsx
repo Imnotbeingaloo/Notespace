@@ -550,6 +550,20 @@ export function ImportNotesButton({
         finished={progressCard.finished}
         onRetry={progressCard.failed.length ? retryFailed : undefined}
         onDismiss={() => setProgressCard((s) => ({ ...s, active: false }))}
+        onCancel={loading && !progressCard.finished ? () => setConfirmCancel(true) : undefined}
+      />
+
+      <ConfirmDialog
+        open={confirmCancel}
+        onOpenChange={setConfirmCancel}
+        title="Cancel upload?"
+        description="This will stop the import and delete any files that have already been uploaded. Text or links already inserted into your note will be removed. This can't be undone."
+        confirmLabel="Cancel upload"
+        destructive
+        onConfirm={() => {
+          cancelRef.current = true;
+          setConfirmCancel(false);
+        }}
       />
     </>
   );
