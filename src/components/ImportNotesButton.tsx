@@ -16,6 +16,7 @@ import { ImportActionDialog, type ImportChoice, type MergePosition } from "@/com
 import { UploadRoutingDialog, type UploadTarget } from "@/components/UploadRoutingDialog";
 import { BatchImportDialog, type BatchChoice } from "@/components/BatchImportDialog";
 import { UploadProgressToast } from "@/components/UploadProgressToast";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { hashFile } from "@/lib/file-hash";
 import { toolPill } from "@/lib/tool-colors";
 import { supabase } from "@/integrations/supabase/client";
