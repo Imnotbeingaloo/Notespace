@@ -123,10 +123,7 @@ export function BatchImportDialog({ open, files, hasExistingContent, onChoose }:
           </div>
         )}
 
-        <DialogFooter className="gap-2">
-          <Button variant="ghost" onClick={() => onChoose(null)} className="gap-1.5">
-            <X className="h-4 w-4" /> Cancel
-          </Button>
+        <DialogFooter>
           <Button
             disabled={keptCount === 0}
             onClick={() => onChoose({ position, order, skipped: Array.from(skipped) })}
