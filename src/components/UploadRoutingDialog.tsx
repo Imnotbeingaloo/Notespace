@@ -1,6 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { FileText, BookOpen, FilePlus, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { FileText, BookOpen, FilePlus } from "lucide-react";
 
 export type UploadTarget = "current" | "new-note" | "new-notebook";
 
