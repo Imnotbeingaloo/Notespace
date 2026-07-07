@@ -335,6 +335,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   useEffect(() => { setLiveContent(activeNote?.content || ""); }, [activeNote?.id]);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [attachmentsDialogOpen, setAttachmentsDialogOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -977,8 +978,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
         </div>
 
-        {/* Attachments footer (drag-to-reorder, rename, replace, remove) */}
-        {!focusMode && <AttachmentsFooter />}
+        {/* Attachments management moved into a dev-only dialog launched from the More menu.
+            Inline attachment links inside the note body remain clickable as always. */}
 
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
