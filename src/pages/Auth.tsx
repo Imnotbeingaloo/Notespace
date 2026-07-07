@@ -60,7 +60,11 @@ const emailDomainProvider = (email: string): { name: string; url: string } | nul
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">(() => {
+    // Returning users (either a live session hint OR a prior visit to /auth)
+    // should land on the sign-in form, never the sign-up form. Only true
+    // first-time visitors see sign-up by default.
     try {
+      if (hasLikelySession()) return "login";
       return localStorage.getItem("hasVisitedAuth") ? "login" : "signup";
     } catch {
       return "signup";

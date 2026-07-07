@@ -19,6 +19,9 @@ interface UploadProgressToastProps {
  */
 export function UploadProgressToast({ active, current, total, currentName, failedNames = [], finished, onRetry, onDismiss, onCancel }: UploadProgressToastProps) {
   if (!active) return null;
+  // Success confirmation is intentionally silent — only stay visible while
+  // uploading, or after we finish with failures the user needs to see/retry.
+  if (finished && failedNames.length === 0) return null;
   const pct = total === 0 ? 0 : Math.round((current / total) * 100);
 
   return (
