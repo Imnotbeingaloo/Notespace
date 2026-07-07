@@ -176,8 +176,11 @@ export function ImportNotesButton({
 
         const fileUrl = signed.signedUrl;
         if (!noteId) {
-          if (isImageFile(file)) onInsert(`\n![${file.name}](${fileUrl})\n`);
-          else onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
+          const snippet = isImageFile(file)
+            ? `\n![${file.name}](${fileUrl})\n`
+            : `\n[📎 ${file.name}](${fileUrl})\n`;
+          onInsert(snippet);
+          insertedSnippetsRef.current.push(snippet);
         }
         const hash = await hashFile(file).catch(() => undefined);
         logImport({ kind: "attach-uploaded", name: file.name, path, size: file.size });
