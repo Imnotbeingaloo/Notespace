@@ -83,11 +83,6 @@ export function UploadRoutingDialog({ open, fileCount, contextLabel, contextKind
           </button>
         </div>
 
-        <DialogFooter>
-          <Button variant="ghost" size="sm" onClick={() => onChoose(null)} className="gap-1.5">
-            <X className="h-4 w-4" /> Cancel
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
