@@ -67,6 +67,17 @@ export function UploadProgressToast({ active, current, total, currentName, faile
               style={{ width: `${pct}%` }}
             />
           </div>
+          {!finished && onCancel && (
+            <div className="mt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors"
+              >
+                <X className="h-3 w-3" /> Cancel upload
+              </button>
+            </div>
+          )}
           {finished && failedNames.length > 0 && (
             <div className="mt-2 flex items-center justify-between gap-2">
               <span className="text-xs text-amber-600 dark:text-amber-400">
