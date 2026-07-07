@@ -48,16 +48,7 @@ export function UploadProgressToast({ active, current, total, currentName, faile
                   : `All ${total} files uploaded`
                 : `Uploading ${current} of ${total}`}
             </p>
-            {(!finished && onCancel) ? (
-              <button
-                onClick={onCancel}
-                className="text-muted-foreground hover:text-destructive transition-colors"
-                aria-label="Cancel upload"
-                title="Cancel upload"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            ) : finished && onDismiss ? (
+            {finished && onDismiss && (
               <button
                 onClick={onDismiss}
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -65,7 +56,7 @@ export function UploadProgressToast({ active, current, total, currentName, faile
               >
                 <X className="h-4 w-4" />
               </button>
-            ) : null}
+            )}
           </div>
           {!finished && currentName && (
             <p className="text-xs text-muted-foreground mt-0.5 truncate" title={currentName}>{currentName}</p>
@@ -76,6 +67,17 @@ export function UploadProgressToast({ active, current, total, currentName, faile
               style={{ width: `${pct}%` }}
             />
           </div>
+          {!finished && onCancel && (
+            <div className="mt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors"
+              >
+                <X className="h-3 w-3" /> Cancel upload
+              </button>
+            </div>
+          )}
           {finished && failedNames.length > 0 && (
             <div className="mt-2 flex items-center justify-between gap-2">
               <span className="text-xs text-amber-600 dark:text-amber-400">
