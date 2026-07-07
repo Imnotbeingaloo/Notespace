@@ -13,7 +13,7 @@ type AttachmentLike = { path?: string | null } | null | undefined;
  */
 export async function removeAttachmentObjects(
   attachments: AttachmentLike[] | null | undefined,
-  reason: "note-delete" | "notebook-delete" | "replace",
+  reason: "note-delete" | "notebook-delete" | "replace" | "cancel",
   noteId: string | null = null,
 ): Promise<number> {
   const paths = (attachments ?? [])

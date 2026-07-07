@@ -16,6 +16,7 @@ import { ImportActionDialog, type ImportChoice, type MergePosition } from "@/com
 import { UploadRoutingDialog, type UploadTarget } from "@/components/UploadRoutingDialog";
 import { BatchImportDialog, type BatchChoice } from "@/components/BatchImportDialog";
 import { UploadProgressToast } from "@/components/UploadProgressToast";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { hashFile } from "@/lib/file-hash";
 import { toolPill } from "@/lib/tool-colors";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,6 +31,7 @@ interface ImportNotesButtonProps {
   onMergeAt?: (text: string, position: MergePosition) => void;
   onReplace?: (text: string) => void;
   onCreateNew?: (text: string, fileName: string) => void;
+  onRollbackInsertions?: (snippets: string[]) => void;
   hasExistingContent?: boolean;
   onSaveSelection?: () => void;
 }
@@ -64,6 +66,7 @@ export function ImportNotesButton({
   onMergeAt,
   onReplace,
   onCreateNew,
+  onRollbackInsertions,
   hasExistingContent = false,
   onSaveSelection,
 }: ImportNotesButtonProps) {
@@ -88,6 +91,12 @@ export function ImportNotesButton({
     failed: File[];
     finished: boolean;
   }>({ active: false, current: 0, total: 0, failed: [], finished: false });
+
+  // Cancellation plumbing — a ref (not state) so the running loop can observe
+  // the flip synchronously without waiting for a re-render.
+  const cancelRef = useRef(false);
+  const insertedSnippetsRef = useRef<string[]>([]);
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
   const { user } = useAuth();
   const { activeNote, activeNotebookId, activeNotebook, updateNote, createNotebook, createNote, setActiveNotebookId, setActiveNoteId } = useNotebooks();
@@ -168,8 +177,11 @@ export function ImportNotesButton({
 
         const fileUrl = signed.signedUrl;
         if (!noteId) {
-          if (isImageFile(file)) onInsert(`\n![${file.name}](${fileUrl})\n`);
-          else onInsert(`\n[📎 ${file.name}](${fileUrl})\n`);
+          const snippet = isImageFile(file)
+            ? `\n![${file.name}](${fileUrl})\n`
+            : `\n[📎 ${file.name}](${fileUrl})\n`;
+          onInsert(snippet);
+          insertedSnippetsRef.current.push(snippet);
         }
         const hash = await hashFile(file).catch(() => undefined);
         logImport({ kind: "attach-uploaded", name: file.name, path, size: file.size });
@@ -264,13 +276,20 @@ export function ImportNotesButton({
       setProgressCard({ active: true, current: 0, total: ordered.length, failed: [], finished: false });
       logImport({ kind: "batch-start", count: ordered.length, hasExistingContent });
 
+      // Reset cancellation bookkeeping for this batch. Anything appended to
+      // insertedSnippetsRef during runBatch will be rolled back on cancel.
+      cancelRef.current = false;
+      insertedSnippetsRef.current = [];
+
       const newAttachments: Array<{ name: string; url: string; path: string; type: string; size: number; hash?: string }> = [];
       const failed: File[] = [];
       let hasContentNow = createdNewContainer ? false : hasExistingContent;
       let importedCount = 0;
+      let cancelled = false;
 
       try {
         for (let i = 0; i < ordered.length; i++) {
+          if (cancelRef.current) { cancelled = true; break; }
           const file = ordered[i];
           setProgress({ current: i, total: ordered.length, name: file.name });
           setProgressCard((s) => ({ ...s, current: i + 1, currentName: file.name }));
@@ -290,7 +309,9 @@ export function ImportNotesButton({
                   const choice = await askForChoice(content, file.name);
                   if (choice) applyChoice(choice, content, file.name);
                 } else {
-                  onInsert(`\n${content}`);
+                  const snippet = `\n${content}`;
+                  onInsert(snippet);
+                  insertedSnippetsRef.current.push(snippet);
                   sonner.success(`Imported "${file.name}"`);
                 }
                 hasContentNow = true;
@@ -316,7 +337,25 @@ export function ImportNotesButton({
           }
         }
 
-        if (newAttachments.length && destNoteId) {
+        if (cancelRef.current) cancelled = true;
+
+        if (cancelled) {
+          // Roll back everything we've done so far: delete uploaded storage
+          // objects and strip any inline markdown insertions from the note.
+          const uploadedCount = newAttachments.length;
+          if (uploadedCount > 0) {
+            await removeAttachmentObjects(newAttachments, "cancel", destNoteId ?? null);
+          }
+          const snippets = insertedSnippetsRef.current.slice();
+          if (snippets.length > 0) onRollbackInsertions?.(snippets);
+          insertedSnippetsRef.current = [];
+          logImport({ kind: "batch-cancelled", uploaded: uploadedCount, rolledBack: snippets.length });
+          sonner.info(
+            uploadedCount > 0
+              ? `Upload cancelled. Removed ${uploadedCount} uploaded file${uploadedCount === 1 ? "" : "s"}.`
+              : "Upload cancelled.",
+          );
+        } else if (newAttachments.length && destNoteId) {
           // Read latest attachments from context for the destination note.
           const noteAttachments = destNoteId === activeNote?.id ? (activeNote?.attachments || []) : [];
           const merged = [...noteAttachments, ...newAttachments];
@@ -327,11 +366,15 @@ export function ImportNotesButton({
         setLoading(false);
         setProgress(null);
         if (inputRef.current) inputRef.current.value = "";
-        setProgressCard((s) => ({ ...s, finished: true, failed }));
+        setProgressCard((s) => cancelled
+          ? { ...s, active: false, finished: true, failed: [] }
+          : { ...s, finished: true, failed }
+        );
+        cancelRef.current = false;
         logImport({ kind: "batch-complete", imported: importedCount, attached: newAttachments.length, failed: failed.length });
       }
     },
-    [activeNote, activeNotebookId, hasExistingContent, dialogEnabled, extractText, uploadOne, askForChoice, applyChoice, onInsert, createNotebook, createNote, setActiveNotebookId, setActiveNoteId, updateNote],
+    [activeNote, activeNotebookId, hasExistingContent, dialogEnabled, extractText, uploadOne, askForChoice, applyChoice, onInsert, onRollbackInsertions, createNotebook, createNote, setActiveNotebookId, setActiveNoteId, updateNote],
   );
 
   const handleFiles = useCallback(
@@ -507,6 +550,20 @@ export function ImportNotesButton({
         finished={progressCard.finished}
         onRetry={progressCard.failed.length ? retryFailed : undefined}
         onDismiss={() => setProgressCard((s) => ({ ...s, active: false }))}
+        onCancel={loading && !progressCard.finished ? () => setConfirmCancel(true) : undefined}
+      />
+
+      <ConfirmDialog
+        open={confirmCancel}
+        onOpenChange={setConfirmCancel}
+        title="Cancel upload?"
+        description="This will stop the import and delete any files that have already been uploaded. Text or links already inserted into your note will be removed. This can't be undone."
+        confirmLabel="Cancel upload"
+        destructive
+        onConfirm={() => {
+          cancelRef.current = true;
+          setConfirmCancel(false);
+        }}
       />
     </>
   );

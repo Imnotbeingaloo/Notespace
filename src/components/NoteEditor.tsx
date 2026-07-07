@@ -480,6 +480,28 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     [activeNotebookId, activeNote?.id, updateNote]
   );
 
+  const handleRollbackInsertions = useCallback(
+    (snippets: string[]) => {
+      if (!activeNote || snippets.length === 0) return;
+      let content = hybridEditorRef.current?.getValue() ?? "";
+      let changed = false;
+      // Strip snippets in reverse insertion order so we peel off the most
+      // recent additions first, matching what the user sees on screen.
+      for (let i = snippets.length - 1; i >= 0; i--) {
+        const idx = content.lastIndexOf(snippets[i]);
+        if (idx !== -1) {
+          content = content.slice(0, idx) + content.slice(idx + snippets[i].length);
+          changed = true;
+        }
+      }
+      if (!changed) return;
+      hybridEditorRef.current?.replaceAllUndoable(content);
+      clearTimeout(debounceRef.current);
+      updateNote(activeNotebookId, activeNote.id, { content });
+    },
+    [activeNotebookId, activeNote?.id, updateNote]
+  );
+
 
   const handleToolbarChange = useCallback(
     (content: string) => {
@@ -874,6 +896,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                           onMergeAt={handleMergeAt}
                           onReplace={handleReplaceFromImport}
                           onCreateNew={handleCreateNoteFromImport}
+                          onRollbackInsertions={handleRollbackInsertions}
                           hasExistingContent={!!activeNote?.content?.trim()}
                           onSaveSelection={() => hybridEditorRef.current?.saveSelection()}
                         />
@@ -898,6 +921,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                           onMergeAt={handleMergeAt}
                           onReplace={handleReplaceFromImport}
                           onCreateNew={handleCreateNoteFromImport}
+                          onRollbackInsertions={handleRollbackInsertions}
                           hasExistingContent={!!activeNote?.content?.trim()}
                           onSaveSelection={() => hybridEditorRef.current?.saveSelection()}
                         />
