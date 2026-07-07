@@ -147,12 +147,6 @@ export function ImportActionDialog({ open, fileName, hasExistingContent, onChoos
                   </div>
                 </button>
               </div>
-
-              <DialogFooter>
-                <Button variant="ghost" size="sm" onClick={() => handleOpenChange(false)} className="gap-1.5">
-                  <X className="h-4 w-4" /> Cancel
-                </Button>
-              </DialogFooter>
             </>
           )}
         </DialogContent>
