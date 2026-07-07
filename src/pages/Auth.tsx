@@ -621,7 +621,15 @@ const AuthPage = () => {
     return () => clearTimeout(t);
   }, [hintGrace, user]);
 
-  if (authLoading || user || (hintGrace && !user)) {
+  // Already-authenticated users hitting /auth (via URL bar, back-button, or a
+  // stale bookmark) must never see the sign-in / sign-up form. Return a
+  // synchronous Navigate so we redirect in the same render — the useEffect
+  // fallback below still catches later transitions (e.g. sign-in success).
+  if (!authLoading && user) {
+    return <Navigate to={resolvePostAuthTarget()} replace />;
+  }
+
+  if (authLoading || (hintGrace && !user)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <NoindexHead title="Sign in - Notebook Archive" />
