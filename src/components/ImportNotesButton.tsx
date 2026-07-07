@@ -308,7 +308,6 @@ export function ImportNotesButton({
                   const snippet = `\n${content}`;
                   onInsert(snippet);
                   insertedSnippetsRef.current.push(snippet);
-                  sonner.success(`Imported "${file.name}"`);
                 }
                 hasContentNow = true;
                 importedCount += 1;
