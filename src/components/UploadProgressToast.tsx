@@ -9,6 +9,7 @@ interface UploadProgressToastProps {
   finished?: boolean;
   onRetry?: () => void;
   onDismiss?: () => void;
+  onCancel?: () => void;
 }
 
 /**
@@ -16,7 +17,7 @@ interface UploadProgressToastProps {
  * inline (not in the toast queue) so it can stay pinned while individual
  * success/failure toasts stack above it.
  */
-export function UploadProgressToast({ active, current, total, currentName, failedNames = [], finished, onRetry, onDismiss }: UploadProgressToastProps) {
+export function UploadProgressToast({ active, current, total, currentName, failedNames = [], finished, onRetry, onDismiss, onCancel }: UploadProgressToastProps) {
   if (!active) return null;
   const pct = total === 0 ? 0 : Math.round((current / total) * 100);
 
