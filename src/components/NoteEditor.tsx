@@ -1021,12 +1021,6 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           defaultMode={askAIMode}
           onApplyEdit={handleAIEdit}
         />
-        {import.meta.env.DEV && (
-          <AttachmentsDialog
-            open={attachmentsDialogOpen}
-            onOpenChange={setAttachmentsDialogOpen}
-          />
-        )}
         {pendingDocDrop && (
           <ImportActionDialog
             open
