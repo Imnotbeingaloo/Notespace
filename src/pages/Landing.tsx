@@ -479,7 +479,7 @@ export default function LandingPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="relative rounded-[2rem] border border-border bg-card shadow-2xl shadow-primary/5 overflow-hidden max-w-5xl mx-auto"
+          className="relative rounded-[2rem] border border-border bg-card shadow-2xl shadow-primary/5 overflow-hidden max-w-7xl mx-auto"
         >
           <div className="flex items-center gap-2 px-5 py-3 border-b border-border bg-muted/50">
             <div className="flex gap-1.5">
@@ -489,7 +489,7 @@ export default function LandingPage() {
             </div>
             <span className="text-xs text-muted-foreground ml-2">Notebook Archive</span>
           </div>
-          <div className="flex min-h-[420px]">
+          <div className="flex min-h-[560px]">
             <div className="w-56 border-r border-border bg-sidebar p-4 hidden md:block">
               <div className="flex items-center gap-2 mb-5">
                 <BookOpen className="h-4 w-4 text-primary" />
