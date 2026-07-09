@@ -537,10 +537,14 @@
   }
 }
 .notebook-paper,
-.notebook-paper *:not([style*="font-size"]) {
+.notebook-paper p:not([style*="font-size"]),
+.notebook-paper li:not([style*="font-size"]),
+.notebook-paper blockquote:not([style*="font-size"]),
+.notebook-paper div:not([style*="font-size"]) {
   /* Lock font-size so 1.75rem line-height (28px) equals a 1.75 ratio at 16px,
      matching the ruled grid exactly. 17px would drift ~2px per line.
-     Elements with an inline font-size (from the heading size picker) opt out. */
+     Elements with an inline font-size (from the heading size picker) opt out,
+     and their descendants inherit that size naturally. */
   font-size: 16px !important;
 }
 .notebook-paper p,
