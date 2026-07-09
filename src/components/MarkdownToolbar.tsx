@@ -6,6 +6,8 @@ import {
 "lucide-react";
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
+import { HeadingSizePicker } from "@/components/HeadingSizePicker";
+import { ChevronDown as ChevronDownIcon } from "lucide-react";
 import { TableInsert } from "@/components/TableInsert";
 import { TableEditToolbar } from "@/components/TableEditToolbar";
 import { Search } from "lucide-react";
