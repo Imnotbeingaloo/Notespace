@@ -218,14 +218,46 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
 
   const [lastHighlightColor, setLastHighlightColor] = useLastHighlightColor();
 
+  // Inline text-size apply. If a selection exists, only the selected text is resized
+  // (the line naturally grows to fit). If the caret is collapsed, we drop a zero-width
+  // sized span at the caret so the NEXT typed characters take on the new size,
+  // instead of resizing the whole existing line.
+  const applyInlineSize = useCallback((px: number) => {
+    focusEditor(editorRef.current);
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    const span = document.createElement("span");
+    span.style.fontSize = `${px}px`;
+    span.style.lineHeight = "1.25";
+    if (sel.isCollapsed) {
+      span.appendChild(document.createTextNode("\u200B"));
+      range.insertNode(span);
+      const caret = document.createRange();
+      caret.setStart(span.firstChild!, 1);
+      caret.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(caret);
+    } else {
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      const after = document.createRange();
+      after.setStartAfter(span);
+      after.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(after);
+    }
+    editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+  }, [editorRef]);
+
   const actions: FormatAction[] = [
     { icon: Bold, label: "Bold", action: () => exec("bold") },
     { icon: Italic, label: "Italic", action: () => exec("italic") },
     { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
     { icon: Highlighter, label: "Highlight", action: () => {} },
-    { icon: Heading1, label: "Heading 1", action: () => exec("formatBlock", "<h1>") },
-    { icon: Heading2, label: "Heading 2", action: () => exec("formatBlock", "<h2>") },
-    { icon: Heading3, label: "Heading 3", action: () => exec("formatBlock", "<h3>") },
+    { icon: Heading1, label: "Heading 1", action: () => applyInlineSize(32) },
+    { icon: Heading2, label: "Heading 2", action: () => applyInlineSize(24) },
+    { icon: Heading3, label: "Heading 3", action: () => applyInlineSize(20) },
     { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "<blockquote>") },
     { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
     { icon: Link2, label: "Link", action: insertLink },
