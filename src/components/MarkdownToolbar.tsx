@@ -6,6 +6,8 @@ import {
 "lucide-react";
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
+import { HeadingSizePicker } from "@/components/HeadingSizePicker";
+import { ChevronDown as ChevronDownIcon } from "lucide-react";
 import { TableInsert } from "@/components/TableInsert";
 import { TableEditToolbar } from "@/components/TableEditToolbar";
 import { Search } from "lucide-react";
@@ -311,10 +313,10 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
                     <button
                       type="button"
                       onMouseDown={(e) => e.preventDefault()}
-                      className="px-1 py-1.5 rounded-r-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 text-[9px] leading-none"
+                      className="px-1 py-1.5 rounded-r-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 inline-flex items-center"
                       aria-label="Choose highlight color"
                     >
-                      ▾
+                      <ChevronDownIcon className="h-2.5 w-2.5" />
                     </button>
                   </PopoverTrigger>
                 </div>
@@ -361,6 +363,8 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         {/* List styles dropdown */}
         <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         <ListStylePicker editorRef={editorRef} />
+        {/* Heading size (per-heading, in px) */}
+        <HeadingSizePicker editorRef={editorRef} />
         {/* Alignment dropdown */}
         <AlignmentPicker editorRef={editorRef} />
         {/* Table insertion & editing */}

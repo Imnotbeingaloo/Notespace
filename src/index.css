@@ -537,9 +537,14 @@
   }
 }
 .notebook-paper,
-.notebook-paper * {
+.notebook-paper p:not([style*="font-size"]),
+.notebook-paper li:not([style*="font-size"]),
+.notebook-paper blockquote:not([style*="font-size"]),
+.notebook-paper div:not([style*="font-size"]) {
   /* Lock font-size so 1.75rem line-height (28px) equals a 1.75 ratio at 16px,
-     matching the ruled grid exactly. 17px would drift ~2px per line. */
+     matching the ruled grid exactly. 17px would drift ~2px per line.
+     Elements with an inline font-size (from the heading size picker) opt out,
+     and their descendants inherit that size naturally. */
   font-size: 16px !important;
 }
 .notebook-paper p,
@@ -554,25 +559,36 @@
   min-height: 1.75rem;
 }
 /* Headings snap to a 2-row cell on the ruled grid so bold/large text still
-   sits cleanly on a line and the following paragraph starts on a rule. */
-.notebook-paper h1 {
+   sits cleanly on a line and the following paragraph starts on a rule.
+   The `:not([style*="font-size"])` guard lets the heading size picker
+   override these defaults on a per-heading basis. */
+.notebook-paper h1:not([style*="font-size"]) {
   font-size: 1.5rem !important;
   line-height: 3.5rem !important;
+}
+.notebook-paper h1 {
   margin: 0 0 1.75rem 0 !important;
   background: transparent !important;
 }
-.notebook-paper h2 {
+.notebook-paper h2:not([style*="font-size"]) {
   font-size: 1.25rem !important;
   line-height: 3.5rem !important;
+}
+.notebook-paper h2 {
   margin: 0 0 1.75rem 0 !important;
   background: transparent !important;
 }
-.notebook-paper h3,
+.notebook-paper h3:not([style*="font-size"]),
 .notebook-paper h4,
 .notebook-paper h5,
 .notebook-paper h6 {
   font-size: 1.05rem !important;
   line-height: 1.75rem !important;
+}
+.notebook-paper h3,
+.notebook-paper h4,
+.notebook-paper h5,
+.notebook-paper h6 {
   margin: 0 0 1.75rem 0 !important;
   background: transparent !important;
 }

@@ -158,19 +158,11 @@ export default function FeaturesPage() {
                           style={{ zIndex: 1 }}
                         >
                           <div className="relative shrink-0">
-                            <motion.div
-                              initial={{ backgroundColor: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))", scale: 0.85 }}
-                              whileInView={{
-                                backgroundColor: "hsl(var(--primary))",
-                                color: "hsl(var(--primary-foreground))",
-                                scale: 1,
-                              }}
-                              viewport={{ once: true, amount: 0.3, margin: "-40px" }}
-                              transition={{ duration: 0.7, delay: 0.25 + iIdx * 0.15, ease: [0.16, 1, 0.3, 1] }}
-                              className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10"
+                            <div
+                              className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10 bg-primary text-primary-foreground"
                             >
                               <item.Icon className="h-5 w-5" />
-                            </motion.div>
+                            </div>
                           </div>
                           <div className="min-w-0">
                             <h3 className="font-serif text-lg font-bold text-foreground mb-1.5 leading-tight">
