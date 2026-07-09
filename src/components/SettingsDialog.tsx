@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, TextCursorInput } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, TextCursorInput, Paperclip } from "lucide-react";
+import { GlobalAttachmentsDialog } from "@/components/GlobalAttachmentsDialog";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
