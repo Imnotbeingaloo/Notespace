@@ -487,20 +487,10 @@ export default function LandingPage() {
               <div className="h-[2px] w-12 bg-foreground/25 mb-2 rounded-full" />
               <div className="h-[2px] w-8 bg-foreground/30 rounded-full" />
             </motion.div>
-            <motion.div
-              animate={{ rotate: [4, 6, 4], y: [0, -4, 0] }}
-              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-              className="absolute top-[260px] left-0 w-[74px] h-[74px] bg-[hsl(155_45%_78%)] shadow-[0_14px_28px_-10px_rgba(0,0,0,0.25)] p-2.5"
-              style={{ transformOrigin: "top center" }}
-            >
-              <div className="h-[2px] w-8 bg-foreground/30 mb-2 rounded-full" />
-              <div className="h-[2px] w-10 bg-foreground/25 mb-2 rounded-full" />
-              <div className="h-[2px] w-6 bg-foreground/30 rounded-full" />
-            </motion.div>
           </div>
 
           {/* ── Paper clip on top-left of card ── */}
-          <div className="absolute -top-2 left-8 md:left-14 z-30 pointer-events-none" aria-hidden="true">
+          <div className="absolute -top-2 left-2 md:left-4 z-30 pointer-events-none" aria-hidden="true">
             <motion.svg
               width="34"
               height="52"
@@ -532,7 +522,7 @@ export default function LandingPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="relative rounded-[2rem] border border-border bg-card shadow-2xl shadow-primary/5 overflow-hidden"
+          className="relative rounded-[2rem] border-2 border-border/80 ring-1 ring-foreground/5 bg-card shadow-2xl shadow-primary/5 overflow-hidden"
         >
           <div className="flex items-center gap-2 px-5 py-3 border-b border-border bg-muted/50">
             <div className="flex gap-1.5">
