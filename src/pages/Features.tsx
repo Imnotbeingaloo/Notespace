@@ -115,7 +115,7 @@ export default function FeaturesPage() {
                   <motion.div
                     initial={{ opacity: 0, x: reverse ? 30 : -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: false, amount: 0.2, margin: "-80px" }}
+                    viewport={{ once: true, amount: 0.2, margin: "-80px" }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                     className="md:col-span-5"
                   >
@@ -136,7 +136,7 @@ export default function FeaturesPage() {
                   <motion.div
                     initial="hidden"
                     whileInView="show"
-                    viewport={{ once: false, amount: 0.15, margin: "-60px" }}
+                    viewport={{ once: true, amount: 0.15, margin: "-60px" }}
                     variants={{ hidden: {}, show: { transition: { staggerChildren: 0.18, delayChildren: 0.1 } } }}
                     className="md:col-span-7 relative"
                   >
@@ -165,7 +165,7 @@ export default function FeaturesPage() {
                                 color: "hsl(var(--primary-foreground))",
                                 scale: 1,
                               }}
-                              viewport={{ once: false, amount: 0.3, margin: "-40px" }}
+                              viewport={{ once: true, amount: 0.3, margin: "-40px" }}
                               transition={{ duration: 0.7, delay: 0.25 + iIdx * 0.15, ease: [0.16, 1, 0.3, 1] }}
                               className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10"
                             >
