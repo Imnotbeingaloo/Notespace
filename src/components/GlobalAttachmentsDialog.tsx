@@ -34,7 +34,7 @@ export function GlobalAttachmentsDialog({ open, onOpenChange }: GlobalAttachment
             att,
             noteId: n.id,
             noteTitle: n.title || "Untitled",
-            notebookTitle: nb.title || "Notebook",
+            notebookTitle: nb.name || "Notebook",
           });
         }
       }
