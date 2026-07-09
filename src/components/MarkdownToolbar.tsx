@@ -360,6 +360,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
                 <TooltipTrigger asChild>
                   <button
                     type="button"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={(e) => {
                       e.preventDefault();
                       a.action();
