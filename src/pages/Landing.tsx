@@ -476,7 +476,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 pt-20 md:pt-28 pb-32">
         <div className="relative max-w-7xl mx-auto">
           {/* ── Left gutter: stacked polaroids + coffee ring ── */}
-          <div className="hidden xl:block absolute -left-32 top-16 pointer-events-none select-none z-10" aria-hidden="true">
+          <div className="hidden lg:block absolute -left-20 xl:-left-24 top-16 pointer-events-none select-none z-10" aria-hidden="true">
             <motion.div
               animate={{ y: [0, -6, 0], rotate: [-9, -7, -9] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
@@ -503,7 +503,7 @@ export default function LandingPage() {
           </div>
 
           {/* ── Right gutter: pencil + highlighter + sticky tab ── */}
-          <div className="hidden xl:block absolute -right-32 top-10 pointer-events-none select-none z-10" aria-hidden="true">
+          <div className="hidden lg:block absolute -right-20 xl:-right-28 top-10 pointer-events-none select-none z-10" aria-hidden="true">
             {/* Pencil */}
             <motion.div
               animate={{ y: [0, -3, 0], rotate: [22, 24, 22] }}
