@@ -357,7 +357,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   useEffect(() => { setLiveContent(activeNote?.content || ""); }, [activeNote?.id]);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [attachmentsDialogOpen, setAttachmentsDialogOpen] = useState(false);
+  
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
