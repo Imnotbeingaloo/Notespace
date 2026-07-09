@@ -85,6 +85,23 @@ function createTurndown() {
     replacement: () => `\n\n${BLANK_LINE_TOKEN}\n\n`,
   });
 
+  // Preserve user-chosen inline styles (text alignment, per-heading font sizes)
+  // by emitting the block as raw HTML. Markdown has no syntax for these, so
+  // without this rule they would silently vanish on every save.
+  const STYLE_RE = /(text-align\s*:\s*(?:center|right|justify))|(font-size\s*:)/i;
+  td.addRule("preserve-styled-block", {
+    filter: (node) => {
+      if (!(node instanceof HTMLElement)) return false;
+      if (!/^(P|DIV|H[1-6]|BLOCKQUOTE|LI)$/.test(node.nodeName)) return false;
+      const style = node.getAttribute("style") || "";
+      return STYLE_RE.test(style);
+    },
+    replacement: (_content, node) => {
+      const el = node as HTMLElement;
+      return `\n\n${el.outerHTML}\n\n`;
+    },
+  });
+
   return td;
 }
 
