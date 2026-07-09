@@ -475,86 +475,26 @@ export default function LandingPage() {
       <section className="relative border-t border-border bg-background">
         <div className="container mx-auto px-6 pt-20 md:pt-28 pb-32">
         <div className="relative max-w-7xl mx-auto">
-          {/* ── Left gutter: stacked polaroids + coffee ring ── */}
-          <div className="hidden lg:block absolute -left-20 xl:-left-24 top-16 pointer-events-none select-none z-10" aria-hidden="true">
+          {/* ── Sticky notes scattered on right gutter ── */}
+          <div className="hidden lg:block absolute -right-4 xl:-right-16 top-0 bottom-0 w-40 pointer-events-none select-none z-10" aria-hidden="true">
             <motion.div
-              animate={{ y: [0, -6, 0], rotate: [-9, -7, -9] }}
+              animate={{ rotate: [-5, -3, -5], y: [0, -3, 0] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-8 left-4 w-28 rounded-sm bg-[hsl(43_42%_96%)] p-2 pb-6 shadow-[0_18px_40px_-15px_rgba(0,0,0,0.35),0_4px_10px_-4px_rgba(0,0,0,0.15)]"
-              style={{ transformOrigin: "center" }}
-            >
-              <div className="h-20 w-full rounded-[2px] bg-gradient-to-br from-primary/30 via-primary/15 to-accent/25" />
-              <p className="mt-2 text-[9px] font-serif text-foreground/60 text-center italic">field notes</p>
-            </motion.div>
-            <motion.div
-              animate={{ y: [0, -4, 0], rotate: [6, 8, 6] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-              className="relative w-28 rounded-sm bg-[hsl(43_42%_97%)] p-2 pb-6 shadow-[0_22px_45px_-15px_rgba(0,0,0,0.4),0_6px_12px_-4px_rgba(0,0,0,0.18)]"
-              style={{ transformOrigin: "center" }}
-            >
-              <div className="h-20 w-full rounded-[2px] bg-gradient-to-tr from-accent/40 via-primary/20 to-primary/10" />
-              <p className="mt-2 text-[9px] font-serif text-foreground/70 text-center italic">physics · Jan 15</p>
-            </motion.div>
-            {/* coffee ring stain */}
-            <svg width="90" height="90" viewBox="0 0 90 90" className="absolute -bottom-24 left-6 opacity-[0.12]">
-              <ellipse cx="45" cy="45" rx="34" ry="32" fill="none" stroke="hsl(25 45% 30%)" strokeWidth="3" />
-              <ellipse cx="45" cy="45" rx="34" ry="32" fill="none" stroke="hsl(25 45% 30%)" strokeWidth="1.5" strokeDasharray="4 8" />
-            </svg>
-          </div>
-
-          {/* ── Right gutter: pencil + highlighter + sticky tab ── */}
-          <div className="hidden lg:block absolute -right-20 xl:-right-28 top-10 pointer-events-none select-none z-10" aria-hidden="true">
-            {/* Pencil */}
-            <motion.div
-              animate={{ y: [0, -3, 0], rotate: [22, 24, 22] }}
-              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-              className="relative"
-              style={{ transformOrigin: "center" }}
-            >
-              <div className="relative w-[130px] h-[14px] drop-shadow-[0_8px_10px_rgba(0,0,0,0.25)]">
-                {/* eraser */}
-                <div className="absolute left-0 top-0 h-full w-4 rounded-l-[3px] bg-[hsl(2_65%_62%)]" />
-                {/* ferrule */}
-                <div className="absolute left-4 top-0 h-full w-3 bg-gradient-to-b from-[hsl(45_20%_65%)] via-[hsl(45_15%_45%)] to-[hsl(45_20%_55%)]" />
-                {/* body */}
-                <div className="absolute left-7 top-0 h-full w-[95px] bg-gradient-to-b from-[hsl(45_75%_65%)] via-[hsl(42_80%_55%)] to-[hsl(40_60%_45%)]" />
-                {/* wood tip */}
-                <div className="absolute left-[102px] top-0 h-full w-4" style={{ clipPath: "polygon(0 0, 100% 50%, 0 100%)", background: "linear-gradient(180deg, hsl(30 45% 78%), hsl(28 40% 60%))" }} />
-                {/* graphite */}
-                <div className="absolute left-[116px] top-[3px] h-[8px] w-[10px]" style={{ clipPath: "polygon(0 0, 100% 50%, 0 100%)", background: "linear-gradient(180deg, hsl(0 0% 35%), hsl(0 0% 15%))" }} />
-              </div>
-            </motion.div>
-
-            {/* Highlighter */}
-            <motion.div
-              animate={{ y: [0, -4, 0], rotate: [-18, -16, -18] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-              className="relative mt-16 ml-2"
-              style={{ transformOrigin: "center" }}
-            >
-              <div className="relative w-[120px] h-[22px] drop-shadow-[0_10px_12px_rgba(0,0,0,0.22)]">
-                {/* cap end */}
-                <div className="absolute left-0 top-[3px] h-[16px] w-4 rounded-l-[4px] bg-gradient-to-b from-[hsl(170_50%_35%)] to-[hsl(170_55%_25%)]" />
-                {/* body */}
-                <div className="absolute left-4 top-0 h-full w-[80px] rounded-[3px] bg-gradient-to-b from-[hsl(170_60%_55%)] via-[hsl(170_55%_45%)] to-[hsl(170_50%_35%)]" />
-                {/* neck */}
-                <div className="absolute left-[84px] top-[4px] h-[14px] w-3 bg-[hsl(45_25%_88%)]" />
-                {/* chisel tip */}
-                <div className="absolute left-[96px] top-[3px] h-[16px] w-6" style={{ clipPath: "polygon(0 0, 100% 30%, 100% 70%, 0 100%)", background: "linear-gradient(180deg, hsl(52 95% 72%), hsl(48 90% 60%))" }} />
-                {/* body highlight */}
-                <div className="absolute left-4 top-[3px] h-[3px] w-[78px] bg-white/40 rounded-full" />
-              </div>
-            </motion.div>
-
-            {/* sticky note tag */}
-            <motion.div
-              animate={{ rotate: [-4, -2, -4] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-[220px] -left-4 w-16 h-16 bg-[hsl(52_85%_78%)] shadow-[0_10px_20px_-6px_rgba(0,0,0,0.25)] p-2"
+              className="absolute top-16 left-6 w-20 h-20 bg-[hsl(52_85%_78%)] shadow-[0_14px_28px_-10px_rgba(0,0,0,0.28)] p-2.5"
               style={{ transformOrigin: "top center" }}
             >
-              <div className="h-[2px] w-8 bg-foreground/30 mb-1.5 rounded-full" />
-              <div className="h-[2px] w-10 bg-foreground/25 mb-1.5 rounded-full" />
+              <div className="h-[2px] w-10 bg-foreground/30 mb-2 rounded-full" />
+              <div className="h-[2px] w-12 bg-foreground/25 mb-2 rounded-full" />
+              <div className="h-[2px] w-8 bg-foreground/30 rounded-full" />
+            </motion.div>
+            <motion.div
+              animate={{ rotate: [4, 6, 4], y: [0, -4, 0] }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+              className="absolute top-[260px] left-0 w-[74px] h-[74px] bg-[hsl(155_45%_78%)] shadow-[0_14px_28px_-10px_rgba(0,0,0,0.25)] p-2.5"
+              style={{ transformOrigin: "top center" }}
+            >
+              <div className="h-[2px] w-8 bg-foreground/30 mb-2 rounded-full" />
+              <div className="h-[2px] w-10 bg-foreground/25 mb-2 rounded-full" />
               <div className="h-[2px] w-6 bg-foreground/30 rounded-full" />
             </motion.div>
           </div>
@@ -586,21 +526,6 @@ export default function LandingPage() {
             </motion.svg>
           </div>
 
-          {/* ── Bookmark ribbon on top-right of card ── */}
-          <div className="absolute -top-1 right-16 md:right-28 z-30 pointer-events-none" aria-hidden="true">
-            <motion.div
-              animate={{ rotate: [-1.5, 1.5, -1.5] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              style={{ transformOrigin: "top center" }}
-              className="relative"
-            >
-              <div
-                className="w-6 h-20 bg-gradient-to-b from-primary via-primary to-primary/85 shadow-[0_8px_14px_-4px_rgba(0,0,0,0.35)]"
-                style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%)" }}
-              />
-              <div className="absolute top-0 left-[7px] w-[3px] h-16 bg-white/25 rounded-full" />
-            </motion.div>
-          </div>
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
