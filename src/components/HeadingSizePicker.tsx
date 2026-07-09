@@ -63,7 +63,7 @@ export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
               aria-label="Heading size"
             >
               <Type className="h-4 w-4" />
-              <ChevronDown className="h-2.5 w-2.5" />
+              <ChevronDown className="h-3 w-3" />
             </button>
           </PopoverTrigger>
         </TooltipTrigger>
