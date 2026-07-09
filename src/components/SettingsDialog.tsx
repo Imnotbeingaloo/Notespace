@@ -38,6 +38,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [wordCountGoalEnabled, setWordCountGoalEnabled] = useWordCountGoalEnabled();
   const [notebookArrows, setNotebookArrows] = useNotebookArrows();
   const [commaHighlight, setCommaHighlight] = useCommaHighlight();
+  const [attachmentsOpen, setAttachmentsOpen] = useState(false);
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
