@@ -490,7 +490,7 @@ export default function LandingPage() {
           </div>
 
           {/* ── Paper clip on top-left of card ── */}
-          <div className="absolute -top-2 left-8 md:left-14 z-30 pointer-events-none" aria-hidden="true">
+          <div className="absolute -top-2 left-2 md:left-4 z-30 pointer-events-none" aria-hidden="true">
             <motion.svg
               width="34"
               height="52"
