@@ -316,7 +316,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
                       className="px-1 py-1.5 rounded-r-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 inline-flex items-center"
                       aria-label="Choose highlight color"
                     >
-                      <ChevronDownIcon className="h-2.5 w-2.5" />
+                      <ChevronDownIcon className="h-3 w-3" />
                     </button>
                   </PopoverTrigger>
                 </div>
