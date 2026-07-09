@@ -23,7 +23,7 @@ interface Row {
 }
 
 export function GlobalAttachmentsDialog({ open, onOpenChange }: GlobalAttachmentsDialogProps) {
-  const { notebooks } = useNotebooks();
+  const { notebooks, standaloneNotes } = useNotebooks();
 
   const rows: Row[] = useMemo(() => {
     const out: Row[] = [];
@@ -39,8 +39,18 @@ export function GlobalAttachmentsDialog({ open, onOpenChange }: GlobalAttachment
         }
       }
     }
+    for (const n of standaloneNotes || []) {
+      for (const att of n.attachments || []) {
+        out.push({
+          att,
+          noteId: n.id,
+          noteTitle: n.title || "Untitled",
+          notebookTitle: "Standalone",
+        });
+      }
+    }
     return out;
-  }, [notebooks]);
+  }, [notebooks, standaloneNotes]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
