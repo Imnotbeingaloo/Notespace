@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Type, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -11,6 +11,24 @@ interface HeadingSizePickerProps {
 export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<string>("20");
+  const savedRangeRef = useRef<Range | null>(null);
+
+  // Snapshot the editor selection BEFORE the popover steals focus.
+  const saveSelection = useCallback(() => {
+    const editor = editorRef.current;
+    const sel = window.getSelection();
+    if (!editor || !sel || sel.rangeCount === 0) {
+      savedRangeRef.current = null;
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    // Only save if the range is inside the editor.
+    if (editor.contains(range.commonAncestorContainer)) {
+      savedRangeRef.current = range.cloneRange();
+    } else {
+      savedRangeRef.current = null;
+    }
+  }, [editorRef]);
 
   const apply = useCallback(() => {
     const editor = editorRef.current;
@@ -18,49 +36,49 @@ export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
     const px = Math.max(8, Math.min(200, Math.round(Number(value) || 0)));
     if (!px) return;
 
-    editor.focus();
-    const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) {
-      toast({ title: "Click inside the editor first" });
+    const saved = savedRangeRef.current;
+    if (!saved || saved.collapsed) {
+      toast({
+        title: "Select some text first",
+        description: "Text size only applies to a selection.",
+      });
       return;
     }
-    const range = sel.getRangeAt(0);
-    const span = document.createElement("span");
-    span.style.fontSize = `${px}px`;
-    span.style.lineHeight = "1.25";
 
-    if (sel.isCollapsed) {
-      // No selection → next-typed characters take the new size.
-      span.appendChild(document.createTextNode("\u200B"));
-      range.insertNode(span);
-      const caret = document.createRange();
-      caret.setStart(span.firstChild!, 1);
-      caret.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(caret);
-    } else {
-      // Selection → resize only the selected text (line grows to fit).
-      span.appendChild(range.extractContents());
-      range.insertNode(span);
-      const after = document.createRange();
-      after.setStartAfter(span);
-      after.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(after);
-    }
+    // Restore the saved selection so execCommand acts on the right range.
+    editor.focus();
+    const sel = window.getSelection();
+    if (!sel) return;
+    sel.removeAllRanges();
+    sel.addRange(saved);
+
+    const container = document.createElement("div");
+    container.appendChild(saved.cloneContents());
+    const html = `<span style="font-size:${px}px;line-height:1.25">${container.innerHTML}</span>`;
+    document.execCommand("insertHTML", false, html);
 
     editor.dispatchEvent(new Event("input", { bubbles: true }));
+    savedRangeRef.current = null;
     setOpen(false);
   }, [editorRef, value]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        if (next) saveSelection();
+        setOpen(next);
+      }}
+    >
       <Tooltip>
         <TooltipTrigger asChild>
           <PopoverTrigger asChild>
             <button
               type="button"
-              onMouseDown={(e) => e.preventDefault()}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                saveSelection();
+              }}
               className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0 inline-flex items-center gap-0.5"
               aria-label="Text size"
             >
@@ -105,7 +123,7 @@ export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
           </button>
         </div>
         <p className="mt-2 text-[11px] leading-snug text-muted-foreground">
-          Select text to resize it, or place your cursor to size the next characters you type.
+          Select text in the editor first, then choose a size.
         </p>
       </PopoverContent>
     </Popover>
