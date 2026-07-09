@@ -218,35 +218,20 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
 
   const [lastHighlightColor, setLastHighlightColor] = useLastHighlightColor();
 
-  // Inline text-size apply. If a selection exists, only the selected text is resized
-  // (the line naturally grows to fit). If the caret is collapsed, we drop a zero-width
-  // sized span at the caret so the NEXT typed characters take on the new size,
-  // instead of resizing the whole existing line.
+  // Inline text-size apply. ONLY works on a real selection; the line grows to
+  // fit naturally. Uses execCommand so the change stays on the browser undo stack.
   const applyInlineSize = useCallback((px: number) => {
     focusEditor(editorRef.current);
     const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return;
-    const range = sel.getRangeAt(0);
-    const span = document.createElement("span");
-    span.style.fontSize = `${px}px`;
-    span.style.lineHeight = "1.25";
-    if (sel.isCollapsed) {
-      span.appendChild(document.createTextNode("\u200B"));
-      range.insertNode(span);
-      const caret = document.createRange();
-      caret.setStart(span.firstChild!, 1);
-      caret.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(caret);
-    } else {
-      span.appendChild(range.extractContents());
-      range.insertNode(span);
-      const after = document.createRange();
-      after.setStartAfter(span);
-      after.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(after);
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+      toast({ title: "Select some text first", description: "Text size only applies to a selection." });
+      return;
     }
+    const range = sel.getRangeAt(0);
+    const container = document.createElement("div");
+    container.appendChild(range.cloneContents());
+    const html = `<span style="font-size:${px}px;line-height:1.25">${container.innerHTML}</span>`;
+    document.execCommand("insertHTML", false, html);
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
@@ -375,6 +360,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
                 <TooltipTrigger asChild>
                   <button
                     type="button"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={(e) => {
                       e.preventDefault();
                       a.action();
