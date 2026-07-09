@@ -495,6 +495,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </section>
         </div>
       </DialogContent>
+      <GlobalAttachmentsDialog open={attachmentsOpen} onOpenChange={setAttachmentsOpen} />
     </Dialog>
   );
 }
