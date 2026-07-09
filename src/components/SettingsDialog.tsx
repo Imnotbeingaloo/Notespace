@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, TextCursorInput } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, TextCursorInput, Paperclip } from "lucide-react";
+import { GlobalAttachmentsDialog } from "@/components/GlobalAttachmentsDialog";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
 import { useTheme } from "next-themes";
@@ -37,6 +38,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [wordCountGoalEnabled, setWordCountGoalEnabled] = useWordCountGoalEnabled();
   const [notebookArrows, setNotebookArrows] = useNotebookArrows();
   const [commaHighlight, setCommaHighlight] = useCommaHighlight();
+  const [attachmentsOpen, setAttachmentsOpen] = useState(false);
 
   // Personal
   const [name, setName] = useState(profile?.display_name ?? "");
@@ -383,6 +385,29 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     </div>
                   </div>
                 )}
+
+                {import.meta.env.DEV && (
+                  <button
+                    onClick={() => setAttachmentsOpen(true)}
+                    className="w-full text-left rounded-xl border border-dashed border-border p-4 flex items-start gap-3 hover:bg-muted/40 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                      <Paperclip className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-3">
+                        <h4 className="text-sm font-semibold text-foreground">
+                          Attachments
+                          <span className="ml-2 text-[10px] uppercase tracking-wider font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">Dev</span>
+                        </h4>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Browse every file you've uploaded across notebooks and notes.
+                      </p>
+                    </div>
+                  </button>
+                )}
               </div>
             )}
 
@@ -470,6 +495,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </section>
         </div>
       </DialogContent>
+      <GlobalAttachmentsDialog open={attachmentsOpen} onOpenChange={setAttachmentsOpen} />
     </Dialog>
   );
 }

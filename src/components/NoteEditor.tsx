@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye, Paperclip } from "lucide-react";
+import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -23,7 +23,7 @@ import { FindReplace } from "@/components/FindReplace";
 import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { ImportActionDialog } from "@/components/ImportActionDialog";
 import { NewNotePrompt } from "@/components/NewNotePrompt";
-import { AttachmentsDialog } from "@/components/AttachmentsDialog";
+
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -272,6 +272,21 @@ function PreviewButton() {
   const { activeNote } = useNotebooks();
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    // Lock body scroll while fullscreen preview is up.
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
+
   if (!activeNote) return null;
 
   return (
@@ -287,27 +302,34 @@ function PreviewButton() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed right-0 top-0 h-full w-96 max-w-[90vw] bg-card border-l border-border shadow-xl z-50 flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[100] bg-background overflow-y-auto"
+            role="dialog"
+            aria-label="Note preview"
           >
-            <div className="flex items-center justify-between p-4 border-b border-border">
-              <div className="flex items-center gap-2">
-                <Eye className="h-4 w-4 text-primary" />
-                <span className="font-sans font-bold text-foreground">Preview</span>
-              </div>
-              <button onClick={() => setOpen(false)} className="p-1 rounded hover:bg-muted transition-colors">
-                <XIcon className="h-4 w-4 text-muted-foreground" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
-              <div className="prose prose-sm max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground">
+            <button
+              onClick={() => setOpen(false)}
+              className="fixed top-4 right-4 z-[110] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card/95 backdrop-blur text-sm font-medium text-foreground hover:bg-muted transition-colors shadow-sm"
+              title="Exit preview (Esc)"
+            >
+              <XIcon className="h-4 w-4" />
+              Exit preview
+              <span className="ml-1 text-[10px] font-mono uppercase text-muted-foreground border border-border rounded px-1 py-0.5">Esc</span>
+            </button>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: 0.05 }}
+              className="mx-auto max-w-3xl px-6 sm:px-10 py-16 sm:py-24"
+            >
+              <div className="prose prose-lg max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground">
                 <h1>{activeNote.title}</h1>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{activeNote.content || "*No content yet*"}</ReactMarkdown>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -335,7 +357,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   useEffect(() => { setLiveContent(activeNote?.content || ""); }, [activeNote?.id]);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [attachmentsDialogOpen, setAttachmentsDialogOpen] = useState(false);
+  
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -914,16 +936,6 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <ExportButtons />
                         <PreviewButton />
-                        {import.meta.env.DEV && (
-                          <button
-                            onClick={() => { setMoreOpen(false); setAttachmentsDialogOpen(true); }}
-                            className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
-                            title="Attachments (dev only)"
-                          >
-                            <Paperclip className="h-3.5 w-3.5" />
-                            Attachments
-                          </button>
-                        )}
                       </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
@@ -939,16 +951,6 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
-                        {import.meta.env.DEV && (
-                          <button
-                            onClick={() => { setMoreOpen(false); setAttachmentsDialogOpen(true); }}
-                            className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
-                            title="Attachments (dev only)"
-                          >
-                            <Paperclip className="h-3.5 w-3.5" />
-                            Attachments
-                          </button>
-                        )}
                       </div>
                     </motion.div>
                   )}
@@ -1019,12 +1021,6 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           defaultMode={askAIMode}
           onApplyEdit={handleAIEdit}
         />
-        {import.meta.env.DEV && (
-          <AttachmentsDialog
-            open={attachmentsDialogOpen}
-            onOpenChange={setAttachmentsDialogOpen}
-          />
-        )}
         {pendingDocDrop && (
           <ImportActionDialog
             open
