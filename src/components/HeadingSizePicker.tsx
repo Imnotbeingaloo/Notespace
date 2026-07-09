@@ -8,44 +8,46 @@ interface HeadingSizePickerProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
 }
 
-// Ruled paper line grid = 1.75rem = 28px at 16px root.
-// Round line-height up to a multiple so surrounding notebook rules stay aligned.
-const RULE_PX = 28;
-
-function findHeadingBlock(node: Node | null, editor: HTMLElement): HTMLElement | null {
-  let el: Node | null = node;
-  while (el && el !== editor) {
-    if (el instanceof HTMLElement && /^H[1-6]$/.test(el.tagName)) return el;
-    el = el.parentNode;
-  }
-  return null;
-}
-
 export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string>("32");
+  const [value, setValue] = useState<string>("20");
 
   const apply = useCallback(() => {
     const editor = editorRef.current;
     if (!editor) return;
-    const px = Math.max(10, Math.min(96, Math.round(Number(value) || 0)));
+    const px = Math.max(8, Math.min(200, Math.round(Number(value) || 0)));
     if (!px) return;
 
+    editor.focus();
     const sel = window.getSelection();
-    const anchor = sel?.anchorNode ?? null;
-    const heading = findHeadingBlock(anchor, editor);
-    if (!heading) {
-      toast({
-        title: "Place your cursor in a heading first",
-        description: "Click inside an H1, H2, or H3, then pick a size.",
-      });
+    if (!sel || sel.rangeCount === 0) {
+      toast({ title: "Click inside the editor first" });
       return;
     }
+    const range = sel.getRangeAt(0);
+    const span = document.createElement("span");
+    span.style.fontSize = `${px}px`;
+    span.style.lineHeight = "1.25";
 
-    const rows = Math.max(1, Math.ceil(px / RULE_PX));
-    const lh = rows * RULE_PX;
-    heading.style.fontSize = `${px}px`;
-    heading.style.lineHeight = `${lh}px`;
+    if (sel.isCollapsed) {
+      // No selection → next-typed characters take the new size.
+      span.appendChild(document.createTextNode("\u200B"));
+      range.insertNode(span);
+      const caret = document.createRange();
+      caret.setStart(span.firstChild!, 1);
+      caret.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(caret);
+    } else {
+      // Selection → resize only the selected text (line grows to fit).
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      const after = document.createRange();
+      after.setStartAfter(span);
+      after.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(after);
+    }
 
     editor.dispatchEvent(new Event("input", { bubbles: true }));
     setOpen(false);
@@ -60,29 +62,29 @@ export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 flex-shrink-0 inline-flex items-center gap-0.5"
-              aria-label="Heading size"
+              aria-label="Text size"
             >
               <Type className="h-4 w-4" />
-              <ChevronDown className="h-3 w-3" />
+              <ChevronDown className="h-2.5 w-2.5" />
             </button>
           </PopoverTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Heading size (px)</TooltipContent>
+        <TooltipContent side="bottom">Text size (px)</TooltipContent>
       </Tooltip>
       <PopoverContent
-        className="w-48 p-3"
+        className="w-52 p-3"
         align="start"
         sideOffset={8}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <label className="block text-xs font-medium text-muted-foreground mb-2">
-          Size in px (10–96)
+          Size in px (8–200)
         </label>
         <div className="flex items-center gap-2">
           <input
             type="number"
-            min={10}
-            max={96}
+            min={8}
+            max={200}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => {
@@ -103,7 +105,7 @@ export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
           </button>
         </div>
         <p className="mt-2 text-[11px] leading-snug text-muted-foreground">
-          Applies only to the heading your cursor is in.
+          Select text to resize it, or place your cursor to size the next characters you type.
         </p>
       </PopoverContent>
     </Popover>
