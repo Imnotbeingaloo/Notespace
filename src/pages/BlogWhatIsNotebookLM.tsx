@@ -82,7 +82,7 @@ const faq = [
   },
   {
     q: "What's the best alternative if I need a real notebook too?",
-    a: "Notebook Archive is the closest fit if you wanted NotebookLM's AI plus a notebook you actually write in - markdown, per-course organization, free tier sized for a semester. We compared six alternatives in detail in our NotebookLM alternatives guide.",
+    a: "Notespace is the closest fit if you wanted NotebookLM's AI plus a notebook you actually write in - markdown, per-course organization, free tier sized for a semester. We compared six alternatives in detail in our NotebookLM alternatives guide.",
   },
 ];
 
@@ -95,8 +95,8 @@ const jsonLd = [
       "What NotebookLM is, what it's actually good at, and what it can't do. Six honest use cases, FAQ, and the alternative if you needed a real notebook too.",
     datePublished: "2026-06-30",
     dateModified: "2026-06-30",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/what-is-notebook-lm-used-for",
   },
   {
@@ -232,7 +232,7 @@ export default function BlogWhatIsNotebookLM() {
             <ul className="space-y-3 text-muted-foreground mb-6">
               <li>• <strong>You have a stack of PDFs and need to understand them fast:</strong> NotebookLM.</li>
               <li>• <strong>You want to listen to a summary on a commute:</strong> NotebookLM's audio overview, full stop.</li>
-              <li>• <strong>You want a real notebook you also write in:</strong> Notebook Archive, Notion, or Obsidian.</li>
+              <li>• <strong>You want a real notebook you also write in:</strong> Notespace, Notion, or Obsidian.</li>
               <li>• <strong>You want NotebookLM-style behavior in your own app:</strong>{" "}
                 <Link to="/blog/notebook-lm-api" className="text-primary underline underline-offset-4">
                   there is no API
@@ -270,7 +270,7 @@ export default function BlogWhatIsNotebookLM() {
 
           <BlogFinalCTA
             title="NotebookLM's AI. A notebook you actually own."
-            body="Notebook Archive pairs a real markdown notebook with an AI explain panel - free to start, no audio podcast, no Google-account lock-in."
+            body="Notespace pairs a real markdown notebook with an AI explain panel - free to start, no audio podcast, no Google-account lock-in."
             to={CTA}
           />
         </article>

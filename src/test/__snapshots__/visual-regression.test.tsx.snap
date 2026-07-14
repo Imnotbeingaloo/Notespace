@@ -20,14 +20,14 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
           type="button"
         >
           <img
-            alt="Notebook Archive"
+            alt="Notespace"
             class="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
             src="/logo.png"
           />
           <span
             class="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors"
           >
-            Notebook Archive
+            Notespace
           </span>
         </button>
       </div>
@@ -387,14 +387,14 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
           type="button"
         >
           <img
-            alt="Notebook Archive"
+            alt="Notespace"
             class="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
             src="/logo.png"
           />
           <span
             class="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors"
           >
-            Notebook Archive
+            Notespace
           </span>
         </button>
       </div>
@@ -754,14 +754,14 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
           type="button"
         >
           <img
-            alt="Notebook Archive"
+            alt="Notespace"
             class="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
             src="/logo.png"
           />
           <span
             class="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors"
           >
-            Notebook Archive
+            Notespace
           </span>
         </button>
       </div>
@@ -1116,7 +1116,7 @@ exports[`Visual regression - PageHeader markup snapshots > PageHeader matches sn
       href="/"
     >
       <img
-        alt="Notebook Archive"
+        alt="Notespace"
         class="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
         decoding="sync"
         fetchpriority="high"
@@ -1128,7 +1128,7 @@ exports[`Visual regression - PageHeader markup snapshots > PageHeader matches sn
       <span
         class="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap"
       >
-        Notebook Archive
+        Notespace
       </span>
     </a>
     <nav
@@ -1246,7 +1246,7 @@ exports[`Visual regression - PageHeader markup snapshots > PageHeader matches sn
       href="/"
     >
       <img
-        alt="Notebook Archive"
+        alt="Notespace"
         class="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
         decoding="sync"
         fetchpriority="high"
@@ -1258,7 +1258,7 @@ exports[`Visual regression - PageHeader markup snapshots > PageHeader matches sn
       <span
         class="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap"
       >
-        Notebook Archive
+        Notespace
       </span>
     </a>
     <nav
@@ -1376,7 +1376,7 @@ exports[`Visual regression - PageHeader markup snapshots > PageHeader matches sn
       href="/"
     >
       <img
-        alt="Notebook Archive"
+        alt="Notespace"
         class="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
         decoding="sync"
         fetchpriority="high"
@@ -1388,7 +1388,7 @@ exports[`Visual regression - PageHeader markup snapshots > PageHeader matches sn
       <span
         class="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap"
       >
-        Notebook Archive
+        Notespace
       </span>
     </a>
     <nav

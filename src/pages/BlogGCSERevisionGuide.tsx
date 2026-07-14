@@ -48,8 +48,8 @@ const jsonLd = [
       "A practical GCSE revision guide for 2026 - subject-by-subject techniques, how many hours to do, and a free revision timetable you can copy.",
     datePublished: "2026-06-28",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/gcse-revision-guide-2026",
     image: `https://notebookarchive.lovable.app${heroAsset.url}`,
   },
@@ -273,7 +273,7 @@ export default function BlogGCSERevisionGuide() {
 
           <BlogFinalCTA
             title="Start with the timetable"
-            body="Notebook Archive's revision planner is free. Pick a GCSE starter, drop in your exam dates, and you're done in five minutes."
+            body="Notespace's revision planner is free. Pick a GCSE starter, drop in your exam dates, and you're done in five minutes."
             to={CTA}
             cta="Open my GCSE timetable"
           />

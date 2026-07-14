@@ -34,7 +34,7 @@ const faq = [
   },
   {
     q: "Is there a free revision timetable template?",
-    a: "Yes - copy the weekly template lower down on this page into any document, or open it as a ready-made note inside Notebook Archive's study planner template.",
+    a: "Yes - copy the weekly template lower down on this page into any document, or open it as a ready-made note inside Notespace's study planner template.",
   },
   {
     q: "What's the best way to stick to a revision timetable?",
@@ -65,8 +65,8 @@ const jsonLd = [
       "A practical guide to building a GCSE or A-level revision timetable that survives until exams - includes a free weekly template.",
     datePublished: "2026-06-28",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/how-to-make-a-revision-timetable",
   },
   {
@@ -241,7 +241,7 @@ export default function BlogHowToMakeRevisionTimetable() {
                 The template below is the simplest version that still does the
                 job - subjects, slots, and a Sunday review. Copy it into any
                 document, or open it as a ready-made note in
-                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
+                Notespace's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
                 edit the slots to match your real week.
               </p>
               <pre className="bg-muted rounded-lg p-5 text-sm leading-relaxed overflow-x-auto whitespace-pre">{`# Revision Timetable - Week of [date]
@@ -308,10 +308,10 @@ Sun  10:00-10:30  Weekly review
           </section>
 
           <BlogFinalCTA
-            title="Build your revision timetable inside Notebook Archive"
+            title="Build your revision timetable inside Notespace"
             body="Open the study planner template, edit the slots to match your week, and tick sessions off as you finish them. Free to start."
             to={CTA}
-            cta="Start using Notebook Archive"
+            cta="Start using Notespace"
             secondaryTo="/templates/study-planner"
             secondaryCta="Open the study planner template"
           />

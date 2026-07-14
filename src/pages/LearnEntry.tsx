@@ -54,7 +54,7 @@ export default function LearnEntry() {
   return (
     <>
       <SeoHead
-        title={`${entry.term} - definition & how it works | Notebook Archive`}
+        title={`${entry.term} - definition & how it works | Notespace`}
         description={entry.short}
         path={path}
         jsonLd={jsonLd}
@@ -135,7 +135,7 @@ export default function LearnEntry() {
 
             <div className="mt-14 rounded-2xl bg-primary/10 border border-primary/20 p-6 md:p-8 text-center">
               <h3 className="font-serif text-xl md:text-2xl font-bold mb-2">
-                Try {entry.term} in Notebook Archive
+                Try {entry.term} in Notespace
               </h3>
               <p className="text-muted-foreground mb-5 max-w-md mx-auto">
                 A calm note-taking app with global search, tags, and Markdown export. Free to start.
