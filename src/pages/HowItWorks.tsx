@@ -309,8 +309,8 @@ export default function HowItWorksPage() {
   return (
     <>
       <SeoHead
-        title="How it works - Notebook Archive"
-        description="From first note to a full knowledge base: a step-by-step walk-through of how Notebook Archive turns scattered thoughts into organized understanding."
+        title="How it works - Notespace"
+        description="From first note to a full knowledge base: a step-by-step walk-through of how Notespace turns scattered thoughts into organized understanding."
         path="/how-it-works"
       />
       <main className="min-h-screen bg-background">
@@ -334,7 +334,7 @@ export default function HowItWorksPage() {
               <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">How It Works</span>
             </motion.div>
             <motion.h1 style={{ y: headingY }} className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] tracking-normal pb-2 max-w-4xl mx-auto">
-              How Notebook Archive <span className="text-primary">works</span>
+              How Notespace <span className="text-primary">works</span>
             </motion.h1>
             <motion.p style={{ y: subtitleY }} className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               From a blank page to a note you will revisit - six deliberate steps, with no setup overhead.
@@ -365,7 +365,7 @@ export default function HowItWorksPage() {
             <span className="text-[10px] font-mono font-bold text-primary/50 tracking-[0.2em] uppercase">Why this exists</span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mt-2 mb-3">The problem</h2>
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Most notes are written once and never revisited. They accumulate in folders that no one opens. We built Notebook Archive to change that.
+              Most notes are written once and never revisited. They accumulate in folders that no one opens. We built Notespace to change that.
             </p>
           </motion.div>
 

@@ -26,10 +26,10 @@ const CTA = "/auth?ref=blog-writers&utm_source=blog&utm_medium=organic&utm_campa
 
 const picks = [
   {
-    name: "Notebook Archive",
+    name: "Notespace",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notebook Archive landing page - a quiet markdown editor with AI explain panel",
+    imageAlt: "Notespace landing page - a quiet markdown editor with AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "For writers who want their notes to feel like a notebook, not a database.",
     description:
@@ -68,7 +68,7 @@ const picks = [
     ],
     bestFor: "Novelists and screenwriters mid-manuscript.",
     ourTake:
-      "Scrivener is unbeatable for restructuring a 90,000-word novel. It's the wrong tool for daily research notes, blog drafts, or anything where you'd want AI to explain a source. Many writers run Scrivener for the manuscript and Notebook Archive for everything around it.",
+      "Scrivener is unbeatable for restructuring a 90,000-word novel. It's the wrong tool for daily research notes, blog drafts, or anything where you'd want AI to explain a source. Many writers run Scrivener for the manuscript and Notespace for everything around it.",
   },
   {
     name: "Obsidian",
@@ -91,7 +91,7 @@ const picks = [
     ],
     bestFor: "Writers who want notes that outlive any single app and don't mind tinkering.",
     ourTake:
-      "Obsidian is the right answer if you enjoy assembling tools. Notebook Archive gives you the markdown-and-export portability Obsidian is loved for, with AI working out of the box.",
+      "Obsidian is the right answer if you enjoy assembling tools. Notespace gives you the markdown-and-export portability Obsidian is loved for, with AI working out of the box.",
   },
   {
     name: "Ulysses",
@@ -114,14 +114,14 @@ const picks = [
     ],
     bestFor: "Mac/iPad writers who want one polished tool for everything.",
     ourTake:
-      "Ulysses is a near-perfect writing surface - for Apple-only writers, in 2018. In 2026, the absence of any AI assistance feels like a gap, and lock-in to the Apple ecosystem is a hard line for cross-platform users. Notebook Archive runs in any browser and adds the AI Ulysses doesn't.",
+      "Ulysses is a near-perfect writing surface - for Apple-only writers, in 2018. In 2026, the absence of any AI assistance feels like a gap, and lock-in to the Apple ecosystem is a hard line for cross-platform users. Notespace runs in any browser and adds the AI Ulysses doesn't.",
   },
 ];
 
 const faq = [
   {
     q: "What is the best note taking app for writers in 2026?",
-    a: "It depends on the project. For long-form manuscript work, Scrivener still wins. For everyday writing with research notes, AI help, and plain-text portability, Notebook Archive or Obsidian are the strongest picks. For Apple-only writers who want one polished tool, Ulysses.",
+    a: "It depends on the project. For long-form manuscript work, Scrivener still wins. For everyday writing with research notes, AI help, and plain-text portability, Notespace or Obsidian are the strongest picks. For Apple-only writers who want one polished tool, Ulysses.",
   },
   {
     q: "Do I need an AI note taking app as a writer?",
@@ -129,11 +129,11 @@ const faq = [
   },
   {
     q: "Is there a free note taking app for writers?",
-    a: "Yes. Notebook Archive and Obsidian both have free tiers that cover real long-form writing. Free tiers usually cap AI usage per month - that cap is the thing to compare, not the headline price.",
+    a: "Yes. Notespace and Obsidian both have free tiers that cover real long-form writing. Free tiers usually cap AI usage per month - that cap is the thing to compare, not the headline price.",
   },
   {
     q: "Can I export my notes if I switch apps later?",
-    a: "Only some apps make this easy. Notebook Archive, Obsidian, and Ulysses all export to plain markdown. Scrivener exports to most word-processor formats. Apps that lock you into a proprietary database are worth avoiding for that reason alone.",
+    a: "Only some apps make this easy. Notespace, Obsidian, and Ulysses all export to plain markdown. Scrivener exports to most word-processor formats. Apps that lock you into a proprietary database are worth avoiding for that reason alone.",
   },
 ];
 
@@ -143,11 +143,11 @@ const jsonLd = [
     "@type": "Article",
     headline: "Best Note Taking App for Writers in 2026",
     description:
-      "An honest comparison of the four note taking apps that actually fit how writers work - Notebook Archive, Scrivener, Obsidian, and Ulysses.",
+      "An honest comparison of the four note taking apps that actually fit how writers work - Notespace, Scrivener, Obsidian, and Ulysses.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/best-note-taking-app-for-writers",
   },
   {
@@ -176,7 +176,7 @@ export default function BlogBestNoteTakingAppForWriters() {
       <SeoHead
         type="article"
         title="Best Note Taking App for Writers (2026) - Honest Comparison"
-        description="The four note taking apps that actually fit how writers work - Scrivener, Obsidian, Ulysses, and Notebook Archive. Screenshots, pros and cons, and who each one is for."
+        description="The four note taking apps that actually fit how writers work - Scrivener, Obsidian, Ulysses, and Notespace. Screenshots, pros and cons, and who each one is for."
         path="/blog/best-note-taking-app-for-writers" image="/og/og-best-note-taking-app-for-writers.jpg"
         jsonLd={jsonLd}
       />
@@ -243,15 +243,15 @@ export default function BlogBestNoteTakingAppForWriters() {
             <BlogDivider />
 
             <BlogCallout title="Most writers end up running two apps">
-              One for the manuscript, one for everything around it. Scrivener + Notebook Archive
+              One for the manuscript, one for everything around it. Scrivener + Notespace
               is the most common combination we see; Obsidian + Ulysses is the runner-up. Pick
               the manuscript tool for the project at hand, and the notes tool for the next decade.
             </BlogCallout>
 
             <h2 className="font-serif text-3xl font-bold mt-10 mb-4">How to pick the right one</h2>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You're drafting a book:</strong> Scrivener, with Notebook Archive for the research notes.</li>
-              <li>• <strong>You write essays, articles, or research notes daily:</strong> Notebook Archive.</li>
+              <li>• <strong>You're drafting a book:</strong> Scrivener, with Notespace for the research notes.</li>
+              <li>• <strong>You write essays, articles, or research notes daily:</strong> Notespace.</li>
               <li>• <strong>You want files you can read in twenty years without a subscription:</strong> Obsidian.</li>
               <li>• <strong>You're all-in on Apple and want one polished tool:</strong> Ulysses.</li>
             </ul>
@@ -276,7 +276,7 @@ export default function BlogBestNoteTakingAppForWriters() {
 
           <BlogFinalCTA
             title="Try the one built for writers"
-            body="Notebook Archive is free to start. No credit card."
+            body="Notespace is free to start. No credit card."
             to={CTA}
           />
         </article>
