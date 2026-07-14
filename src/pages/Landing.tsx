@@ -489,32 +489,6 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* ── Paper clip on top-left of card ── */}
-          <div className="absolute -top-2 left-2 md:left-4 z-30 pointer-events-none" aria-hidden="true">
-            <motion.svg
-              width="34"
-              height="52"
-              viewBox="0 0 34 52"
-              animate={{ rotate: [-6, -4, -6] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              style={{ transformOrigin: "center 6px", filter: "drop-shadow(0 6px 6px rgba(0,0,0,0.25))" }}
-            >
-              <path
-                d="M17 4 Q28 4 28 15 L28 40 Q28 48 20 48 Q12 48 12 40 L12 18 Q12 11 18 11 Q24 11 24 18 L24 36"
-                stroke="url(#clipGrad)"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-              />
-              <defs>
-                <linearGradient id="clipGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="hsl(210 15% 78%)" />
-                  <stop offset="50%" stopColor="hsl(210 12% 55%)" />
-                  <stop offset="100%" stopColor="hsl(210 15% 70%)" />
-                </linearGradient>
-              </defs>
-            </motion.svg>
-          </div>
 
 
         <motion.div
