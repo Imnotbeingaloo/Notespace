@@ -7,7 +7,7 @@ export default function UseCaseWriters() {
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "Notespace for Writers",
+      name: "Notebook Archive for Writers",
       description:
         "A quiet, structured note-taking app for writers. Draft long-form work with focus mode, word count goals, and frictionless export.",
       url: "https://notebookarchive.lovable.app/use-cases/writers",
@@ -21,7 +21,7 @@ export default function UseCaseWriters() {
   return (
     <>
       <SeoHead
-        title="Note-Taking App for Writers - Notespace"
+        title="Note-Taking App for Writers - Notebook Archive"
         description="A calm Markdown editor with focus mode, word-count goals, and tags that organize ideas across drafts."
         path="/use-cases/writers"
         jsonLd={jsonLd}
@@ -34,7 +34,7 @@ export default function UseCaseWriters() {
         primaryCta={{ label: "Open the editor", to: "/auth" }}
         overview={[
           "Writing tools tend to come in two flavors: bloated suites that interrupt you with comments and version histories, or minimalist editors that look beautiful but can't hold a 90,000-word manuscript without falling apart.",
-          "Notespace sits between them. It treats writing as the primary act - focus mode, fast keyboard shortcuts, a Markdown editor that doesn't fight you - while still giving you the structure a long project needs: nested notebooks for chapters, tags for characters and themes, and a research notebook that stays one click away from the draft.",
+          "Notebook Archive sits between them. It treats writing as the primary act - focus mode, fast keyboard shortcuts, a Markdown editor that doesn't fight you - while still giving you the structure a long project needs: nested notebooks for chapters, tags for characters and themes, and a research notebook that stays one click away from the draft.",
           "It's not pretending to be Scrivener. It's not trying to replace your word processor on the day you ship to an editor. It's the app you live in while the work is being made.",
         ]}
         sections={[
@@ -90,7 +90,7 @@ export default function UseCaseWriters() {
           {
             situation: "You're drafting a long essay with twelve cited sources.",
             problem: "You can't remember which source had the statistic you want to use.",
-            solution: "Drop all twelve PDFs in a research notebook. Search the statistic - Notespace finds it across the extracted text. Drag the quote into the draft, keep the source link in the margin.",
+            solution: "Drop all twelve PDFs in a research notebook. Search the statistic - Notebook Archive finds it across the extracted text. Drag the quote into the draft, keep the source link in the margin.",
           },
           {
             situation: "You wrote 3,000 words on a flight in airplane mode.",
@@ -118,11 +118,11 @@ export default function UseCaseWriters() {
           },
           {
             problem: "I want AI to write for me.",
-            answer: "That's not what this is. Notespace's AI explains a term, summarizes a source, or clarifies an idea you wrote. It does not generate prose for your manuscript. If generated text is what you want, this is the wrong tool.",
+            answer: "That's not what this is. Notebook Archive's AI explains a term, summarizes a source, or clarifies an idea you wrote. It does not generate prose for your manuscript. If generated text is what you want, this is the wrong tool.",
           },
           {
             problem: "I publish to Substack / WordPress.",
-            answer: "Both accept Markdown. Export from Notespace, paste into the editor on the other end. Formatting carries cleanly because Markdown is a universal interchange format.",
+            answer: "Both accept Markdown. Export from Notebook Archive, paste into the editor on the other end. Formatting carries cleanly because Markdown is a universal interchange format.",
           },
         ]}
         comparison={{
@@ -156,13 +156,13 @@ export default function UseCaseWriters() {
           { title: "Export to Markdown often", body: "Even if you never need the backup, it forces you to feel the manuscript as a whole rather than a list of scenes." },
         ]}
         faqs={[
-          { q: "Does it replace Scrivener?", a: "For many writers, yes - especially if you live in Markdown and want something cross-platform. Scrivener has a deeper manuscript binder and a more powerful Compile feature. Notespace is faster, browser-based, and easier to share from." },
+          { q: "Does it replace Scrivener?", a: "For many writers, yes - especially if you live in Markdown and want something cross-platform. Scrivener has a deeper manuscript binder and a more powerful Compile feature. Notebook Archive is faster, browser-based, and easier to share from." },
           { q: "Can I write offline?", a: "Edits queue locally when you go offline and sync automatically when you reconnect. You won't lose work to a flight or a dropped connection." },
           { q: "Will AI write my book?", a: "No, and that's intentional. AI is for explaining a term or summarizing source material - not for generating prose." },
           { q: "Are my drafts backed up?", a: "Every save is persisted to the cloud. You can also export to Markdown or PDF for a local copy." },
           { q: "Can I write in non-English languages?", a: "Yes. The editor is Unicode and works in any language. AI features support most major languages." },
           { q: "Does it integrate with my publishing workflow?", a: "Markdown export plus pandoc covers most publishing pipelines. Direct integrations with Substack, Medium, and WordPress are on the roadmap." },
-          { q: "Can collaborators leave comments?", a: "Not yet - Notespace is single-author focused today. Public share links give read-only access to drafts; back-and-forth happens elsewhere." },
+          { q: "Can collaborators leave comments?", a: "Not yet - Notebook Archive is single-author focused today. Public share links give read-only access to drafts; back-and-forth happens elsewhere." },
         ]}
       />
     </>

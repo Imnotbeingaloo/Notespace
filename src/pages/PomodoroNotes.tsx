@@ -31,7 +31,7 @@ const faq = [
   },
   {
     q: "Is this a good note-taking app for students?",
-    a: "Yes. Notespace is built for students: subject notebooks, AI explanations of tricky topics, a study planner, revision timetable, past-paper tracker, and the Pomodoro timer - all on the free plan.",
+    a: "Yes. Notebook Archive is built for students: subject notebooks, AI explanations of tricky topics, a study planner, revision timetable, past-paper tracker, and the Pomodoro timer - all on the free plan.",
   },
   {
     q: "Can I customize the Pomodoro intervals?",
@@ -43,7 +43,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Notespace - Pomodoro Timer + Notes",
+    name: "Notebook Archive - Pomodoro Timer + Notes",
     operatingSystem: "Web, iOS, Android",
     applicationCategory: "EducationalApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -159,7 +159,7 @@ export default function PomodoroNotes() {
           <section className="mb-16">
             <h2 className="font-serif text-2xl md:text-3xl font-bold mb-6">The best note taking app for students who use Pomodoro</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Pomodoro on its own is a timer. What students actually need is a timer <strong className="text-foreground">plus</strong> the notebook, the planner, the past-paper tracker, and somewhere to ask "what does this mean?" without leaving the page. That's the whole point of Notespace.
+              Pomodoro on its own is a timer. What students actually need is a timer <strong className="text-foreground">plus</strong> the notebook, the planner, the past-paper tracker, and somewhere to ask "what does this mean?" without leaving the page. That's the whole point of Notebook Archive.
             </p>
             <ol className="space-y-3 text-muted-foreground">
               <li><strong className="text-foreground">1. Open the subject you're revising.</strong> Biology, Maths, History - one notebook each.</li>

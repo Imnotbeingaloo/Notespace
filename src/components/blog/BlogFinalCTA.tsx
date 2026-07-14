@@ -11,7 +11,7 @@ export function BlogFinalCTA({
   title,
   body,
   to,
-  cta = "Open Notespace",
+  cta = "Open Notebook Archive",
   secondaryTo,
   secondaryCta,
 }: {

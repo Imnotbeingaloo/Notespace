@@ -28,10 +28,10 @@ export default function Compare() {
       "@type": "Article",
       headline: data.metaTitle,
       description: data.metaDescription,
-      author: { "@type": "Organization", name: "Notespace" },
+      author: { "@type": "Organization", name: "Notebook Archive" },
       publisher: {
         "@type": "Organization",
-        name: "Notespace",
+        name: "Notebook Archive",
         logo: { "@type": "ImageObject", url: "https://notebookarchive.lovable.app/logo.png" },
       },
       mainEntityOfPage: { "@type": "WebPage", "@id": `https://notebookarchive.lovable.app${path}` },
@@ -45,7 +45,7 @@ export default function Compare() {
         {
           "@type": "ListItem",
           position: 3,
-          name: `Notespace vs ${data.competitor}`,
+          name: `Notebook Archive vs ${data.competitor}`,
           item: `https://notebookarchive.lovable.app${path}`,
         },
       ],
@@ -81,12 +81,12 @@ export default function Compare() {
               <div className="flex items-center justify-center gap-3 mb-6">
                 <span className="h-px w-8 bg-accent" />
                 <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">
-                  Notespace vs {data.competitor}
+                  Notebook Archive vs {data.competitor}
                 </span>
                 <span className="h-px w-8 bg-accent" />
               </div>
               <h1 className="font-serif text-[2rem] md:text-[2.5rem] lg:text-[3.1rem] font-bold text-foreground leading-[1.18] max-w-4xl mx-auto">
-                Notespace vs <span className="text-primary">{data.competitor}</span>
+                Notebook Archive vs <span className="text-primary">{data.competitor}</span>
               </h1>
               <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 {data.tagline}
@@ -94,7 +94,7 @@ export default function Compare() {
               <div className="mt-8 flex items-center justify-center gap-4">
                 <Button asChild size="lg" className="rounded-full">
                   <Link to="/auth">
-                    Try Notespace free <ArrowRight className="ml-2 h-4 w-4" />
+                    Try Notebook Archive free <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </div>
@@ -142,7 +142,7 @@ export default function Compare() {
                   Capability
                 </div>
                 <div className="p-4 text-xs font-mono uppercase tracking-wider text-primary">
-                  Notespace
+                  Notebook Archive
                 </div>
                 <div className="p-4 text-xs font-mono uppercase tracking-wider text-muted-foreground">
                   {data.competitor}
@@ -192,7 +192,7 @@ export default function Compare() {
               </div>
               <div className="rounded-2xl border-2 border-primary/40 bg-primary/[0.04] p-6">
                 <h3 className="font-serif text-xl font-bold text-foreground mb-4">
-                  Pick Notespace if...
+                  Pick Notebook Archive if...
                 </h3>
                 <ul className="space-y-3">
                   {data.pickUs.map((p) => (

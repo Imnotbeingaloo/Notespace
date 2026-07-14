@@ -66,7 +66,7 @@ const ResetPasswordPage = () => {
       >
         <div className="flex items-center justify-center gap-2 mb-8">
           <img src="/logo.png" alt="" aria-hidden="true" className="h-[1.224rem] w-[1.224rem] object-contain" />
-          <span className="font-serif text-2xl font-bold text-foreground">Notespace</span>
+          <span className="font-serif text-2xl font-bold text-foreground">Notebook Archive</span>
         </div>
 
         <div className="bg-card rounded-xl border border-border p-8 shadow-sm">

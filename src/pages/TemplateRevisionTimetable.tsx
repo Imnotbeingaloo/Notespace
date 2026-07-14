@@ -23,7 +23,7 @@ const jsonLd = [
     "@type": "CreativeWork",
     name: "Free Revision Timetable Template",
     description:
-      "Free weekly revision timetable template for GCSE and A-level students. Markdown, PDF, and one-click open in Notespace.",
+      "Free weekly revision timetable template for GCSE and A-level students. Markdown, PDF, and one-click open in Notebook Archive.",
     learningResourceType: "Template",
     educationalUse: "Revision planning",
     isAccessibleForFree: true,
@@ -44,7 +44,7 @@ export default function TemplateRevisionTimetable() {
     <>
       <SeoHead
         title="Free Revision Timetable Template (GCSE & A-Level)"
-        description="A free revision timetable template for GCSE and A-level - weekly, fortnightly, and exam-week variants. Copy, print, or open in Notespace in one click."
+        description="A free revision timetable template for GCSE and A-level - weekly, fortnightly, and exam-week variants. Copy, print, or open in Notebook Archive in one click."
         path="/templates/revision-timetable-template"
         jsonLd={jsonLd}
         alternateLocales={["en-GB", "en-AU", "en-US"]}
@@ -79,7 +79,7 @@ export default function TemplateRevisionTimetable() {
               className="mt-4 inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition"
             >
               <Download className="h-4 w-4" />
-              Open this template in Notespace
+              Open this template in Notebook Archive
             </Link>
           </section>
 
@@ -107,7 +107,7 @@ export default function TemplateRevisionTimetable() {
 
           <div className="border-t border-border pt-10 text-center">
             <p className="font-serif text-2xl font-bold mb-4">Skip the spreadsheet</p>
-            <p className="text-muted-foreground mb-6">Open the template in Notespace and start ticking off sessions today.</p>
+            <p className="text-muted-foreground mb-6">Open the template in Notebook Archive and start ticking off sessions today.</p>
             <Link to={CTA} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
               Use the template free
               <ArrowRight className="h-4 w-4" />

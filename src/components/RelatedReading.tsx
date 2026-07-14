@@ -61,6 +61,6 @@ export const STUDY_PLANNER_RELATED: RelatedItem[] = [
   {
     to: "/templates/study-planner",
     title: "Study planner template",
-    blurb: "Open the ready-made template in Notespace.",
+    blurb: "Open the ready-made template in Notebook Archive.",
   },
 ];

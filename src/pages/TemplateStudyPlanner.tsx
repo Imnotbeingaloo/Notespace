@@ -48,7 +48,7 @@ Exam date: [date]   |   Weeks remaining: 6
 const faq = [
   {
     q: "Is there a free study planner app?",
-    a: "Yes - Notespace includes a free study planner. Open the template above, edit the slots to match your week, and tick sessions off as you finish them. No paywall on the planner itself.",
+    a: "Yes - Notebook Archive includes a free study planner. Open the template above, edit the slots to match your week, and tick sessions off as you finish them. No paywall on the planner itself.",
   },
   {
     q: "What's the best study planner for exams?",
@@ -56,11 +56,11 @@ const faq = [
   },
   {
     q: "How is this different from Google Calendar or Notion?",
-    a: "Google Calendar is a calendar - it doesn't know about your notes. Notion needs you to build the structure first. Notespace ships with the study planner template pre-built, plus your notes, tags, and AI explanations in the same app.",
+    a: "Google Calendar is a calendar - it doesn't know about your notes. Notion needs you to build the structure first. Notebook Archive ships with the study planner template pre-built, plus your notes, tags, and AI explanations in the same app.",
   },
   {
     q: "Does the study planner work on mobile?",
-    a: "Yes. Notespace is web-based and responsive - open it on phone or tablet to check today's schedule and tick sessions off on the go.",
+    a: "Yes. Notebook Archive is web-based and responsive - open it on phone or tablet to check today's schedule and tick sessions off on the go.",
   },
   {
     q: "Can I use the planner for non-exam goals?",
@@ -72,7 +72,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Notespace - Study Planner",
+    name: "Notebook Archive - Study Planner",
     applicationCategory: "EducationalApplication",
     operatingSystem: "Web",
     url: "https://notebookarchive.lovable.app/templates/study-planner",
@@ -104,7 +104,7 @@ export default function TemplateStudyPlanner() {
   return (
     <>
       <SeoHead
-        title="Free Study Planner App & Exam Study Planner Template - Notespace"
+        title="Free Study Planner App & Exam Study Planner Template - Notebook Archive"
         description="A free study planner app with ready-made weekly and exam study planner templates. Build a study schedule, plan exam revision, and tick sessions off as you go."
         path="/templates/study-planner" image="/og/og-templates-study-planner.jpg"
         jsonLd={jsonLd}
@@ -143,7 +143,7 @@ export default function TemplateStudyPlanner() {
                   to={CTA}
                   className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
                 >
-                  Open template in Notespace <ArrowRight className="h-4 w-4" />
+                  Open template in Notebook Archive <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   to="/templates"
@@ -239,7 +239,7 @@ export default function TemplateStudyPlanner() {
         <section className="py-20 bg-muted/20 border-t border-border">
           <div className="container mx-auto px-6 max-w-2xl text-center">
             <h2 className="font-serif text-3xl font-bold mb-3">
-              Open the study planner in Notespace
+              Open the study planner in Notebook Archive
             </h2>
             <p className="text-muted-foreground mb-6">
               Sign up free, click "New note", pick the study planner template.

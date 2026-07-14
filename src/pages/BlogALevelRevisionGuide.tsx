@@ -48,8 +48,8 @@ const jsonLd = [
       "A practical A-level revision guide for 2026 - subject-by-subject techniques, hours to do, and a free A-level revision timetable.",
     datePublished: "2026-06-28",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/a-level-revision-guide-2026",
     image: `https://notebookarchive.lovable.app${heroAsset.url}`,
   },
@@ -247,7 +247,7 @@ export default function BlogALevelRevisionGuide() {
 
           <BlogFinalCTA
             title="Build the timetable first"
-            body="Notespace ships A-level starter timetables free. Five minutes to set up, and the schedule does the remembering for you."
+            body="Notebook Archive ships A-level starter timetables free. Five minutes to set up, and the schedule does the remembering for you."
             to={CTA}
             cta="Open my A-level timetable"
           />

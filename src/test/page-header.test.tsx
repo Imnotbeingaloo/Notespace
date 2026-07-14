@@ -39,7 +39,7 @@ describe("PageHeader responsive", () => {
     renderHeader();
 
     // Brand text visible (sm+)
-    expect(screen.getByText(/Notespace/i)).toBeInTheDocument();
+    expect(screen.getByText(/Notebook Archive/i)).toBeInTheDocument();
 
     // All nav links present
     ["Features", "Pricing", "About", "How It Works"].forEach((label) => {
@@ -69,7 +69,7 @@ describe("PageHeader responsive", () => {
     const buttons = screen.getAllByRole("button");
     expect(buttons.length).toBeGreaterThanOrEqual(1);
     // Brand text is always shown
-    const brand = screen.getByText(/Notespace/i);
+    const brand = screen.getByText(/Notebook Archive/i);
     expect(brand).toBeInTheDocument();
   });
 });

@@ -632,7 +632,7 @@ const AuthPage = () => {
   if (authLoading || (hintGrace && !user)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <NoindexHead title="Sign in - Notespace" />
+        <NoindexHead title="Sign in - Notebook Archive" />
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
@@ -640,7 +640,7 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-dvh grid lg:grid-cols-[42fr_58fr] bg-background relative overflow-hidden">
-      <NoindexHead title="Sign in - Notespace" />
+      <NoindexHead title="Sign in - Notebook Archive" />
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
@@ -747,7 +747,7 @@ const AuthPage = () => {
           className="relative z-10 w-full"
         >
 
-        <h1 className="sr-only">{mode === "login" ? "Sign in to Notespace" : "Create your Notespace account"}</h1>
+        <h1 className="sr-only">{mode === "login" ? "Sign in to Notebook Archive" : "Create your Notebook Archive account"}</h1>
 
         <div className="mx-auto max-w-[440px] px-1 sm:px-2">
 

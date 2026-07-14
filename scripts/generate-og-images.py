@@ -17,7 +17,7 @@ POSTS = [
     ("how-to-make-a-revision-timetable", "GCSE & A-level", "Revision timetable",
      "Plan smart. Revise effectively. Stay in control."),
     ("templates-study-planner", "Template", "Study planner",
-     "Open the ready-made study planner in Notespace."),
+     "Open the ready-made study planner in Notebook Archive."),
     ("ai-literature-review-guide", "Research", "AI literature reviews",
      "A practical workflow for researchers in 2026."),
     ("ai-note-taking-app-for-students", "For Students", "AI notes for students",
@@ -72,7 +72,7 @@ TPL = """<!doctype html><html><head><meta charset="utf-8" />
       <div class="accent"></div>
       <p>{subtitle}</p>
     </div>
-    <div class="foot"><span class="dot">N</span> Notespace</div>
+    <div class="foot"><span class="dot">N</span> Notebook Archive</div>
   </div>
 </body></html>"""
 

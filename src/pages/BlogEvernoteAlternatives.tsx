@@ -28,10 +28,10 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ev
 
 const picks = [
   {
-    name: "Notespace",
+    name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notespace - a quiet markdown notebook with an AI explain panel",
+    imageAlt: "Notebook Archive - a quiet markdown notebook with an AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "Evernote's organization - without the bloat or the price hikes.",
     description:
@@ -162,19 +162,19 @@ const faq = [
   },
   {
     q: "Which Evernote alternative has the best free tier?",
-    a: "Notespace and OneNote. Notespace's free tier covers daily writing including sync and AI explain. OneNote is genuinely free with a Microsoft account and has no real caps. Notion's free plan is fine for one person. Reflect and Mem don't have meaningful free tiers.",
+    a: "Notebook Archive and OneNote. Notebook Archive's free tier covers daily writing including sync and AI explain. OneNote is genuinely free with a Microsoft account and has no real caps. Notion's free plan is fine for one person. Reflect and Mem don't have meaningful free tiers.",
   },
   {
     q: "Can I import my Evernote notebooks into one of these?",
-    a: "Yes. Notion, Obsidian, and Notespace all accept Evernote's .enex exports. Notion's importer keeps the most structure intact. Obsidian flattens to markdown files. Notespace converts notebooks and tags directly. OneNote has an official Evernote importer too.",
+    a: "Yes. Notion, Obsidian, and Notebook Archive all accept Evernote's .enex exports. Notion's importer keeps the most structure intact. Obsidian flattens to markdown files. Notebook Archive converts notebooks and tags directly. OneNote has an official Evernote importer too.",
   },
   {
     q: "Which Evernote alternative is best for capture?",
-    a: "Mem, hands down - its mobile capture and AI filing are the closest to what Evernote pioneered. OneNote is a close second if you use a stylus. For text-first writers, Notespace's quick-capture flow plus tags covers most Evernote workflows.",
+    a: "Mem, hands down - its mobile capture and AI filing are the closest to what Evernote pioneered. OneNote is a close second if you use a stylus. For text-first writers, Notebook Archive's quick-capture flow plus tags covers most Evernote workflows.",
   },
   {
     q: "Is there an Evernote alternative that keeps notes in plain text?",
-    a: "Notespace and Obsidian. Both let you export real markdown so your notes outlive whichever app you use. Notion, Mem, OneNote, and Reflect all store notes in proprietary formats - their exports are lossy.",
+    a: "Notebook Archive and Obsidian. Both let you export real markdown so your notes outlive whichever app you use. Notion, Mem, OneNote, and Reflect all store notes in proprietary formats - their exports are lossy.",
   },
 ];
 
@@ -184,11 +184,11 @@ const jsonLd = [
     "@type": "Article",
     headline: "Evernote Alternatives in 2026 - Honest Comparison",
     description:
-      "Six Evernote alternatives compared honestly: Notespace, Notion, Obsidian, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
+      "Six Evernote alternatives compared honestly: Notebook Archive, Notion, Obsidian, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/evernote-alternatives-2026",
   },
   {
@@ -217,7 +217,7 @@ export default function BlogEvernoteAlternatives() {
       <SeoHead
         type="article"
         title="Evernote Alternatives in 2026 - 6 Honest Picks Compared"
-        description="Six Evernote alternatives compared with screenshots, pros and cons, and pricing - Notion, Obsidian, OneNote, Reflect, Mem, and Notespace."
+        description="Six Evernote alternatives compared with screenshots, pros and cons, and pricing - Notion, Obsidian, OneNote, Reflect, Mem, and Notebook Archive."
         path="/blog/evernote-alternatives-2026" image="/og/og-evernote-alternatives-2026.jpg"
         jsonLd={jsonLd}
       />
@@ -292,7 +292,7 @@ export default function BlogEvernoteAlternatives() {
               capture matters most. If it was the offline-first calm, ownership matters most.
             </p>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You want Evernote's organization without the bloat:</strong> Notespace.</li>
+              <li>• <strong>You want Evernote's organization without the bloat:</strong> Notebook Archive.</li>
               <li>• <strong>You need wikis and docs alongside notes:</strong> Notion.</li>
               <li>• <strong>You want local-first markdown you own:</strong> Obsidian.</li>
               <li>• <strong>You're already in Microsoft 365:</strong> OneNote.</li>
@@ -327,7 +327,7 @@ export default function BlogEvernoteAlternatives() {
 
           <BlogFinalCTA
             title="The calm alternative"
-            body="Notespace is free to start. Real markdown export. Sync that works. No price hikes."
+            body="Notebook Archive is free to start. Real markdown export. Sync that works. No price hikes."
             to={CTA}
           />
         </article>

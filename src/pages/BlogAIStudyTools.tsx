@@ -36,7 +36,7 @@ type Tool = {
 
 const tools: Tool[] = [
   {
-    name: "Notespace",
+    name: "Notebook Archive",
     oneLine: "A real markdown notebook with an AI explain panel - the closest thing to NotebookLM that you actually own.",
     bestFor: "Students who need to write notes and ask AI about them in the same place.",
     pricing: "Free tier sized for a semester; Pro $19/mo.",
@@ -145,7 +145,7 @@ const useCases = [
   {
     job: "I record every lecture and want clean notes I can search",
     answer:
-      "Turbo.ai for capture; Notespace or Notion AI for the long-term home where you'll actually revise from.",
+      "Turbo.ai for capture; Notebook Archive or Notion AI for the long-term home where you'll actually revise from.",
   },
   {
     job: "I'm studying vocab, a language, or pure recall facts",
@@ -155,7 +155,7 @@ const useCases = [
   {
     job: "I want to write notes and have AI explain things as I go",
     answer:
-      "Notespace. The whole point is the AI panel sits next to your writing instead of replacing it.",
+      "Notebook Archive. The whole point is the AI panel sits next to your writing instead of replacing it.",
   },
   {
     job: "I'm in middle or high school and need a tutor, not just answers",
@@ -165,14 +165,14 @@ const useCases = [
   {
     job: "I'm a researcher juggling 30 papers on a literature review",
     answer:
-      "NotebookLM for the synthesis questions; a real reference manager (Zotero) for the bibliography; Notespace or Obsidian for the writeup. No single AI tool does this job alone.",
+      "NotebookLM for the synthesis questions; a real reference manager (Zotero) for the bibliography; Notebook Archive or Obsidian for the writeup. No single AI tool does this job alone.",
   },
 ];
 
 const faq = [
   {
     q: "What is the best AI study tool overall?",
-    a: "There isn't one. The honest answer: NotebookLM for reading, Notespace or Notion AI for writing, Quizlet for flashcards, Khanmigo for tutoring. A student who picks one tool for everything is usually under-served on three of those jobs.",
+    a: "There isn't one. The honest answer: NotebookLM for reading, Notebook Archive or Notion AI for writing, Quizlet for flashcards, Khanmigo for tutoring. A student who picks one tool for everything is usually under-served on three of those jobs.",
   },
   {
     q: "What is the best free AI study tool?",
@@ -192,7 +192,7 @@ const faq = [
   },
   {
     q: "Which AI study tool has the best flashcard generation?",
-    a: "StudyFetch and Studley both generate cards from a PDF in one click. Quizlet's AI generation is solid if you're already in the Quizlet ecosystem. Notespace generates cards directly from your written notes, which we think is the right input - cards from notes you understand stick better than cards from documents you haven't read yet.",
+    a: "StudyFetch and Studley both generate cards from a PDF in one click. Quizlet's AI generation is solid if you're already in the Quizlet ecosystem. Notebook Archive generates cards directly from your written notes, which we think is the right input - cards from notes you understand stick better than cards from documents you haven't read yet.",
   },
   {
     q: "Are AI study tools safe to upload my notes to?",
@@ -213,8 +213,8 @@ const jsonLd = [
       "An honest comparison of the 11 AI study tools that actually earn the label in 2026 - what each one is good at, what it isn't, and which to pick by use case.",
     datePublished: "2026-06-30",
     dateModified: "2026-06-30",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/ai-study-tools",
   },
   {
@@ -282,7 +282,7 @@ export default function BlogAIStudyTools() {
           <BlogKeyTakeaways
             points={[
               "There is no single best AI study tool. Pick by job: reading, writing, flashcards, tutoring, or planning.",
-              "NotebookLM wins on grounded reading. Notespace wins on writing notes alongside AI.",
+              "NotebookLM wins on grounded reading. Notebook Archive wins on writing notes alongside AI.",
               "Flashcard generation is a commodity now - StudyFetch, Studley, and Quizlet are all fine.",
               "Avoid tools that lock your study material into their UI. Owning your notes matters when finals end.",
               "Free tiers are real - you don't need to pay for any of this in your first semester of trying things out.",
@@ -421,7 +421,7 @@ export default function BlogAIStudyTools() {
               If we were back in school in 2026, knowing what's out there:
             </p>
             <ul className="space-y-3 text-muted-foreground mb-6">
-              <li>• <strong>Daily driver for notes and AI questions:</strong> Notespace.</li>
+              <li>• <strong>Daily driver for notes and AI questions:</strong> Notebook Archive.</li>
               <li>• <strong>For the dense PDFs we don't have time for:</strong> NotebookLM.</li>
               <li>• <strong>For flashcards in language or pure recall classes:</strong> Quizlet.</li>
               <li>• <strong>For the 2am "I don't understand this at all" moments:</strong> ChatGPT or Claude, free tier.</li>
@@ -482,9 +482,9 @@ export default function BlogAIStudyTools() {
 
           <BlogFinalCTA
             title="A study notebook with the AI built in."
-            body="Notespace pairs markdown notes, AI explanations, and auto-generated flashcards in one place - free to start, no lecture-recording gimmicks, your notes stay yours."
+            body="Notebook Archive pairs markdown notes, AI explanations, and auto-generated flashcards in one place - free to start, no lecture-recording gimmicks, your notes stay yours."
             to={CTA}
-            cta="Try Notespace free"
+            cta="Try Notebook Archive free"
           />
         </article>
 

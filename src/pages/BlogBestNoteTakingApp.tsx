@@ -29,14 +29,14 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=be
 
 const picks = [
   {
-    name: "Notespace",
+    name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notespace - a quiet markdown notebook with an AI explain panel",
+    imageAlt: "Notebook Archive - a quiet markdown notebook with an AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "A calm, serif markdown notebook with AI that explains instead of writing for you.",
     description:
-      "Notespace is the note app for people who actually write. Notebooks, nesting, global tags, and an AI explain panel that summarizes your sources without rewriting your notes. Real markdown export so your work outlives the app.",
+      "Notebook Archive is the note app for people who actually write. Notebooks, nesting, global tags, and an AI explain panel that summarizes your sources without rewriting your notes. Real markdown export so your work outlives the app.",
     pros: [
       "Serif editor that's pleasant for long-form writing",
       "AI explain panel - no autowriting your essay for you",
@@ -180,23 +180,23 @@ const picks = [
 const faq = [
   {
     q: "What's the best note taking app overall in 2026?",
-    a: "There isn't one - there's a best one for how you work. For writers and students who want quiet structure and honest AI, Notespace. For teams who need wikis, Notion. For tinkerers who want full ownership, Obsidian. For stylus users in Microsoft 365, OneNote. The picks above each list who they're actually best for.",
+    a: "There isn't one - there's a best one for how you work. For writers and students who want quiet structure and honest AI, Notebook Archive. For teams who need wikis, Notion. For tinkerers who want full ownership, Obsidian. For stylus users in Microsoft 365, OneNote. The picks above each list who they're actually best for.",
   },
   {
     q: "What's the best free note taking app?",
-    a: "OneNote is the most generous free plan if you're on Windows. Notespace's free tier is the best for typing - it includes sync, tags, and AI explain. Notion's free plan is fine for one person. Evernote, Reflect, and Mem don't have meaningful free tiers anymore.",
+    a: "OneNote is the most generous free plan if you're on Windows. Notebook Archive's free tier is the best for typing - it includes sync, tags, and AI explain. Notion's free plan is fine for one person. Evernote, Reflect, and Mem don't have meaningful free tiers anymore.",
   },
   {
     q: "What's the best note taking app for students?",
-    a: "Notespace for typed notes plus AI that explains rather than autowrites. OneNote if you take handwritten notes on an iPad or Surface. Notion if you want to keep class notes, assignments, and group docs together. Full breakdown on our students post.",
+    a: "Notebook Archive for typed notes plus AI that explains rather than autowrites. OneNote if you take handwritten notes on an iPad or Surface. Notion if you want to keep class notes, assignments, and group docs together. Full breakdown on our students post.",
   },
   {
     q: "What's the best AI note taking app?",
-    a: "It depends on what 'AI' means to you. Notespace's AI explains your sources without rewriting your notes. Notion AI generates content. Reflect summarizes and questions across your library. Mem auto-organizes. We compared all of them in detail on the AI note taking apps post.",
+    a: "It depends on what 'AI' means to you. Notebook Archive's AI explains your sources without rewriting your notes. Notion AI generates content. Reflect summarizes and questions across your library. Mem auto-organizes. We compared all of them in detail on the AI note taking apps post.",
   },
   {
     q: "Which note taking app lets me actually own my notes?",
-    a: "Notespace and Obsidian. Both export real markdown, so your notes outlive whichever app you use. Notion, Mem, OneNote, Reflect, and Evernote all store notes in proprietary formats - their exports are lossy.",
+    a: "Notebook Archive and Obsidian. Both export real markdown, so your notes outlive whichever app you use. Notion, Mem, OneNote, Reflect, and Evernote all store notes in proprietary formats - their exports are lossy.",
   },
 ];
 
@@ -206,11 +206,11 @@ const jsonLd = [
     "@type": "Article",
     headline: "The Best Note Taking Apps in 2026 - Honest Comparison",
     description:
-      "Seven note taking apps compared honestly: Notespace, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
+      "Seven note taking apps compared honestly: Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/best-note-taking-app-2026",
   },
   {
@@ -249,7 +249,7 @@ export default function BlogBestNoteTakingApp() {
       <SeoHead
         type="article"
         title="The Best Note Taking App in 2026 - 7 Honest Picks Compared"
-        description="The seven best note taking apps in 2026, compared honestly - Notespace, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, pricing."
+        description="The seven best note taking apps in 2026, compared honestly - Notebook Archive, Notion, Obsidian, Evernote, OneNote, Reflect, and Mem. Screenshots, pros and cons, pricing."
         path="/blog/best-note-taking-app-2026" image="/og/og-best-note-taking-app-2026.jpg"
         jsonLd={jsonLd}
       />
@@ -311,7 +311,7 @@ export default function BlogBestNoteTakingApp() {
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">How to pick the right one</h2>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You write long-form and want AI that respects your voice:</strong> Notespace.</li>
+              <li>• <strong>You write long-form and want AI that respects your voice:</strong> Notebook Archive.</li>
               <li>• <strong>You need wikis and team docs alongside notes:</strong> Notion.</li>
               <li>• <strong>You want local-first markdown you own:</strong> Obsidian.</li>
               <li>• <strong>You clip the web constantly:</strong> Evernote.</li>
@@ -363,7 +363,7 @@ export default function BlogBestNoteTakingApp() {
 
           <BlogFinalCTA
             title="The calm pick"
-            body="Notespace is free to start. Real markdown export. Sync that works. AI that explains, not autowrites."
+            body="Notebook Archive is free to start. Real markdown export. Sync that works. AI that explains, not autowrites."
             to={CTA}
           />
         </article>

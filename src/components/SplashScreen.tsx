@@ -51,7 +51,7 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
 
           <motion.img
             src="/logo.png"
-            alt="Notespace"
+            alt="Notebook Archive"
             className="relative z-10 h-[3rem] w-[3rem] object-contain"
             initial={{ scale: 0.3, opacity: 0, rotate: fast ? 0 : -15 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
@@ -67,7 +67,7 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
                 animate={phase !== "logo" ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                Notespace
+                Notebook Archive
               </motion.span>
 
               <div className="flex gap-1.5 mt-6 relative z-10">

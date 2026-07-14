@@ -91,7 +91,7 @@ function AppContent() {
 
   // Dynamic browser tab title - reflects the current note / notebook / view
   useEffect(() => {
-    const base = "Notespace";
+    const base = "Notebook Archive";
     let title = base;
     if (showHome) {
       title = `Home · ${base}`;
@@ -500,7 +500,7 @@ const AppPage = () => {
 
   return (
     <NotebookProvider>
-      <NoindexHead title="Notespace" />
+      <NoindexHead title="Notebook Archive" />
       {!splashDone && <SplashScreen onComplete={handleSplashComplete} />}
       <AppContent />
     </NotebookProvider>

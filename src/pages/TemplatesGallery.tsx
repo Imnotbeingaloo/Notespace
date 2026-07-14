@@ -59,7 +59,7 @@ export default function TemplatesGallery() {
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Twelve well-built templates for studying, meetings, research, and personal reflection.
-              Open with one click in Notespace, or copy the markdown to use anywhere.
+              Open with one click in Notebook Archive, or copy the markdown to use anywhere.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link

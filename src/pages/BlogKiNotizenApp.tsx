@@ -14,7 +14,7 @@ const CTA = "/auth?ref=blog-de&utm_source=blog&utm_medium=organic&utm_campaign=k
 
 const picks = [
   {
-    name: "Notespace",
+    name: "Notebook Archive",
     tagline: "Die KI-Notizen-App für Menschen, die wirklich schreiben.",
     why: "Sauberer Markdown-Editor mit Serifenschrift, Fokus-Modus, tägliches Wortziel und KI, die Konzepte erklärt und Quellen zusammenfasst - ohne deinen Text neu zu schreiben. Notizbücher lassen sich verschachteln, Tags sind global, und alles lässt sich als Markdown exportieren.",
     pricing: "Kostenlos; Pro 19 $/Monat",
@@ -51,19 +51,19 @@ const picks = [
 const faq = [
   {
     q: "Was ist die beste KI-Notizen-App im Jahr 2026?",
-    a: "Es kommt darauf an, wie du arbeitest. Wenn du täglich schreibst und KI als zweites Paar Augen willst - nicht als Ghostwriter - passt Notespace am besten. Wenn du ein vollständiges Team-Wiki brauchst, ist Notion die solidere Wahl. Wenn dir Datenschutz und lokale Dateien wichtig sind, nimm Obsidian.",
+    a: "Es kommt darauf an, wie du arbeitest. Wenn du täglich schreibst und KI als zweites Paar Augen willst - nicht als Ghostwriter - passt Notebook Archive am besten. Wenn du ein vollständiges Team-Wiki brauchst, ist Notion die solidere Wahl. Wenn dir Datenschutz und lokale Dateien wichtig sind, nimm Obsidian.",
   },
   {
     q: "Gibt es eine kostenlose KI-Notizen-App auf Deutsch?",
-    a: "Ja. Notespace, Notion und Obsidian funktionieren alle auf Deutsch und haben kostenlose Tarife, die für den echten Alltag reichen. Kostenlose Tarife begrenzen meist die monatliche KI-Nutzung - genau das solltest du vergleichen, nicht den Headline-Preis.",
+    a: "Ja. Notebook Archive, Notion und Obsidian funktionieren alle auf Deutsch und haben kostenlose Tarife, die für den echten Alltag reichen. Kostenlose Tarife begrenzen meist die monatliche KI-Nutzung - genau das solltest du vergleichen, nicht den Headline-Preis.",
   },
   {
     q: "Sind meine Notizen sicher in einer KI-Notizen-App?",
-    a: "Bei seriösen Anbietern (Notespace, Notion, Obsidian) werden Notizen während der Übertragung verschlüsselt und in der Datenbank pro Nutzer isoliert. Die wichtige Frage: Werden deine Notizen zum Training der KI-Modelle verwendet? Lies die Datenschutzerklärung jedes Anbieters und wähle im Zweifel jene, die das ausdrücklich ausschließen.",
+    a: "Bei seriösen Anbietern (Notebook Archive, Notion, Obsidian) werden Notizen während der Übertragung verschlüsselt und in der Datenbank pro Nutzer isoliert. Die wichtige Frage: Werden deine Notizen zum Training der KI-Modelle verwendet? Lies die Datenschutzerklärung jedes Anbieters und wähle im Zweifel jene, die das ausdrücklich ausschließen.",
   },
   {
     q: "Kann ich eine KI-Notizen-App offline nutzen?",
-    a: "Obsidian und Notespace funktionieren offline zum Schreiben und Lesen. KI-Funktionen brauchen eine Internetverbindung, weil das Modell auf einem Server läuft. Notion braucht für fast alles eine Verbindung.",
+    a: "Obsidian und Notebook Archive funktionieren offline zum Schreiben und Lesen. KI-Funktionen brauchen eine Internetverbindung, weil das Modell auf einem Server läuft. Notion braucht für fast alles eine Verbindung.",
   },
 ];
 
@@ -74,11 +74,11 @@ const jsonLd = [
     inLanguage: "de",
     headline: "Die beste KI-Notizen-App 2026 - ehrlicher Vergleich",
     description:
-      "Ein ehrlicher Vergleich der besten KI-Notizen-Apps für Autoren, Studierende und Forschende - Notespace, Notion, Obsidian und Mem.",
+      "Ein ehrlicher Vergleich der besten KI-Notizen-Apps für Autoren, Studierende und Forschende - Notebook Archive, Notion, Obsidian und Mem.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/ki-notizen-app",
   },
   {
@@ -111,7 +111,7 @@ export default function BlogKiNotizenApp() {
       <SeoHead
         type="article"
         title="Die beste KI-Notizen-App 2026 - ehrlicher Vergleich"
-        description="Die KI-Notizen-Apps, die wirklich funktionieren - Notespace, Notion, Obsidian und Mem im ehrlichen Vergleich. Preise, Funktionen, für wen jede App geeignet ist."
+        description="Die KI-Notizen-Apps, die wirklich funktionieren - Notebook Archive, Notion, Obsidian und Mem im ehrlichen Vergleich. Preise, Funktionen, für wen jede App geeignet ist."
         path="/blog/ki-notizen-app" image="/og/og-ki-notizen-app.jpg"
         jsonLd={jsonLd}
       />
@@ -150,7 +150,7 @@ export default function BlogKiNotizenApp() {
               "Eine echte KI-Notizen-App denkt über deine eigenen Notizen nach - nicht nur ein Chat-Fenster mit GPT.",
               "Meeting-Transkribierer und Notizen-Apps sind verschiedene Werkzeuge. Verwechsle sie nicht.",
               "Lokale Dateien (Markdown) bedeuten: deine Notizen überleben jede App.",
-              "Notespace, Notion, Obsidian und Mem - vier sehr unterschiedliche Antworten auf dieselbe Frage.",
+              "Notebook Archive, Notion, Obsidian und Mem - vier sehr unterschiedliche Antworten auf dieselbe Frage.",
             ]}
           />
 
@@ -206,7 +206,7 @@ export default function BlogKiNotizenApp() {
 
             <h2 className="font-serif text-2xl font-bold mt-16 mb-4">Welche solltest du wählen?</h2>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>Du schreibst täglich und willst KI als Denkhilfe, nicht als Ghostwriter:</strong> Notespace.</li>
+              <li>• <strong>Du schreibst täglich und willst KI als Denkhilfe, nicht als Ghostwriter:</strong> Notebook Archive.</li>
               <li>• <strong>Du brauchst ein Team-Wiki und Notizen in einem:</strong> Notion.</li>
               <li>• <strong>Du willst lokale Dateien und volle Kontrolle:</strong> Obsidian.</li>
               <li>• <strong>Du hasst Ordner und willst, dass die App sortiert:</strong> Mem.</li>
@@ -228,9 +228,9 @@ export default function BlogKiNotizenApp() {
 
           <BlogFinalCTA
             title="Probier die App, die wir gebaut haben"
-            body="Notespace ist kostenlos zum Starten. Keine Kreditkarte nötig."
+            body="Notebook Archive ist kostenlos zum Starten. Keine Kreditkarte nötig."
             to={CTA}
-            cta="Notespace öffnen"
+            cta="Notebook Archive öffnen"
           />
         </article>
 

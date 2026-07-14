@@ -67,7 +67,7 @@ export default function SharedNote() {
         <BookOpen className="h-12 w-12 text-muted-foreground/30" />
         <p className="text-muted-foreground">{error}</p>
         <Link to="/" className="text-sm text-primary hover:underline flex items-center gap-1">
-          <ArrowLeft className="h-3 w-3" /> Go to Notespace
+          <ArrowLeft className="h-3 w-3" /> Go to Notebook Archive
         </Link>
       </div>
     );
@@ -77,8 +77,8 @@ export default function SharedNote() {
     <>
       {note && (
         <SeoHead
-          title={`${note.title} - Notespace`}
-          description={(note.content || "").slice(0, 160).replace(/\s+/g, " ").trim() || "A shared note from Notespace."}
+          title={`${note.title} - Notebook Archive`}
+          description={(note.content || "").slice(0, 160).replace(/\s+/g, " ").trim() || "A shared note from Notebook Archive."}
           path={`/shared/${token ?? ""}`}
           noindex={!note.is_discoverable}
           type="article"
@@ -86,7 +86,7 @@ export default function SharedNote() {
             "@context": "https://schema.org",
             "@type": "Article",
             headline: note.title,
-            publisher: { "@type": "Organization", name: "Notespace" },
+            publisher: { "@type": "Organization", name: "Notebook Archive" },
           }}
         />
       )}
@@ -94,8 +94,8 @@ export default function SharedNote() {
         <header className="border-b border-border bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto flex items-center justify-between py-4 px-6">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Notespace" className="h-7 w-7 object-contain" />
-            <span className="font-serif text-base font-bold text-foreground whitespace-nowrap">Notespace</span>
+            <img src="/favicon.png" alt="Notebook Archive" className="h-7 w-7 object-contain" />
+            <span className="font-serif text-base font-bold text-foreground whitespace-nowrap">Notebook Archive</span>
           </Link>
           <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Shared Note</span>
         </div>

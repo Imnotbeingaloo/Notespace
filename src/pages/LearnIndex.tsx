@@ -20,7 +20,7 @@ export default function LearnIndex() {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "The Notespace Learn hub",
+      name: "The Notebook Archive Learn hub",
       description:
         "Plain-English definitions of the note-taking, PKM, and study terms people actually search for.",
       url: "https://notebookarchive.lovable.app/learn",

@@ -506,7 +506,7 @@ function TrashPageContent() {
 export default function TrashPage() {
   return (
     <NotebookProvider>
-      <NoindexHead title="Trash - Notespace" />
+      <NoindexHead title="Trash - Notebook Archive" />
       <TrashPageContent />
     </NotebookProvider>
   );

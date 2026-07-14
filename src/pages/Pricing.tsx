@@ -108,16 +108,16 @@ export default function PricingPage() {
   return (
     <>
       <SeoHead
-        title="Pricing - Notespace"
+        title="Pricing - Notebook Archive"
         description="Free, Pro ($19/mo), and Team ($29/mo) - pick the plan that matches how you think. Unlimited notes on every tier."
         path="/pricing"
         jsonLd={[
           ...tiers.map((t) => ({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: `Notespace ${t.name}`,
+            name: `Notebook Archive ${t.name}`,
             description: t.description,
-            brand: { "@type": "Brand", name: "Notespace" },
+            brand: { "@type": "Brand", name: "Notebook Archive" },
             offers: {
               "@type": "Offer",
               price: t.price.replace(/[^0-9.]/g, "") || "0",

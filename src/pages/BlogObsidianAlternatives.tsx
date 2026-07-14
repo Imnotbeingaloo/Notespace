@@ -28,10 +28,10 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=ob
 
 const picks = [
   {
-    name: "Notespace",
+    name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     imageUrl: naShot.url,
-    imageAlt: "Notespace - a quiet markdown notebook with an AI explain panel",
+    imageAlt: "Notebook Archive - a quiet markdown notebook with an AI explain panel",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "Obsidian's markdown calm - without the plugin homework.",
     description:
@@ -165,19 +165,19 @@ const faq = [
   },
   {
     q: "Which Obsidian alternative keeps my notes in markdown?",
-    a: "Notespace exports clean markdown on demand. Reflect exports markdown but loses some structure. Notion, OneNote, Evernote, and Mem all use proprietary formats - their 'markdown export' is lossy. If owning your files in markdown is non-negotiable, stay close to Obsidian or Notespace.",
+    a: "Notebook Archive exports clean markdown on demand. Reflect exports markdown but loses some structure. Notion, OneNote, Evernote, and Mem all use proprietary formats - their 'markdown export' is lossy. If owning your files in markdown is non-negotiable, stay close to Obsidian or Notebook Archive.",
   },
   {
     q: "Which Obsidian alternative has the best AI?",
-    a: "Reflect and Notespace both treat AI as a first-class feature without plugins. Reflect leans toward summarizing your own journaling; Notespace leans toward explaining sources and pasted material. Mem is the most aggressive about letting AI organize your library for you.",
+    a: "Reflect and Notebook Archive both treat AI as a first-class feature without plugins. Reflect leans toward summarizing your own journaling; Notebook Archive leans toward explaining sources and pasted material. Mem is the most aggressive about letting AI organize your library for you.",
   },
   {
     q: "Is there a free Obsidian alternative?",
-    a: "Notespace's free tier covers daily writing including sync. OneNote is genuinely free with a Microsoft account. Notion's free plan works for one person. Evernote's free tier is too restricted to recommend in 2026.",
+    a: "Notebook Archive's free tier covers daily writing including sync. OneNote is genuinely free with a Microsoft account. Notion's free plan works for one person. Evernote's free tier is too restricted to recommend in 2026.",
   },
   {
     q: "Can I move my Obsidian vault into one of these?",
-    a: "Yes - Obsidian's notes are plain markdown files. Notespace imports markdown directly. Reflect supports markdown import. Notion has a Markdown & CSV importer with some block conversion. OneNote and Evernote will accept the content but flatten the structure.",
+    a: "Yes - Obsidian's notes are plain markdown files. Notebook Archive imports markdown directly. Reflect supports markdown import. Notion has a Markdown & CSV importer with some block conversion. OneNote and Evernote will accept the content but flatten the structure.",
   },
 ];
 
@@ -187,11 +187,11 @@ const jsonLd = [
     "@type": "Article",
     headline: "Obsidian Alternatives in 2026 - Honest Comparison",
     description:
-      "Six Obsidian alternatives compared honestly: Notespace, Notion, Reflect, Mem, OneNote, and Evernote. Screenshots, pros and cons, and who each one is for.",
+      "Six Obsidian alternatives compared honestly: Notebook Archive, Notion, Reflect, Mem, OneNote, and Evernote. Screenshots, pros and cons, and who each one is for.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notespace" },
-    publisher: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
+    publisher: { "@type": "Organization", name: "Notebook Archive" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/obsidian-alternatives-2026",
   },
   {
@@ -220,7 +220,7 @@ export default function BlogObsidianAlternatives() {
       <SeoHead
         type="article"
         title="Obsidian Alternatives in 2026 - 6 Honest Picks Compared"
-        description="Six Obsidian alternatives compared with screenshots, pros and cons, and pricing - Notion, Reflect, Mem, OneNote, Evernote, and Notespace."
+        description="Six Obsidian alternatives compared with screenshots, pros and cons, and pricing - Notion, Reflect, Mem, OneNote, Evernote, and Notebook Archive."
         path="/blog/obsidian-alternatives-2026" image="/og/og-obsidian-alternatives-2026.jpg"
         jsonLd={jsonLd}
       />
@@ -296,7 +296,7 @@ export default function BlogObsidianAlternatives() {
               fastest while still letting you keep your markdown intact.
             </p>
             <ul className="space-y-3 text-muted-foreground">
-              <li>• <strong>You want Obsidian's calm without the setup:</strong> Notespace.</li>
+              <li>• <strong>You want Obsidian's calm without the setup:</strong> Notebook Archive.</li>
               <li>• <strong>You need real collaboration:</strong> Notion.</li>
               <li>• <strong>You loved backlinks and daily notes:</strong> Reflect.</li>
               <li>• <strong>You want the AI to do the filing:</strong> Mem.</li>
@@ -331,7 +331,7 @@ export default function BlogObsidianAlternatives() {
 
           <BlogFinalCTA
             title="The calm alternative"
-            body="Notespace is free to start. Markdown you own. Sync that works. No plugins."
+            body="Notebook Archive is free to start. Markdown you own. Sync that works. No plugins."
             to={CTA}
           />
         </article>

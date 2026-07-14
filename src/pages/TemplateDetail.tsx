@@ -64,7 +64,7 @@ export default function TemplateDetail() {
     <>
       <SeoHead
         title={`${template.name} template - free note-taking template`}
-        description={`Free ${template.name.toLowerCase()} template - ${template.description}. Open in Notespace or copy the markdown to use anywhere.`}
+        description={`Free ${template.name.toLowerCase()} template - ${template.description}. Open in Notebook Archive or copy the markdown to use anywhere.`}
         path={path}
         jsonLd={jsonLd}
       />

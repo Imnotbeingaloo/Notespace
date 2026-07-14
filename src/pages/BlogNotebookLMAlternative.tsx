@@ -33,15 +33,15 @@ const CTA = `/auth?ref=${REF}&utm_source=blog&utm_medium=organic&utm_campaign=no
 
 const picks = [
   {
-    name: "Notespace",
+    name: "Notebook Archive",
     pricing: "Free; Pro $19/mo",
     pricingTone: "amber" as const,
     imageUrl: naShot.url,
-    imageAlt: "Notespace - markdown notebook with an AI explain side panel",
+    imageAlt: "Notebook Archive - markdown notebook with an AI explain side panel",
     siteUrl: "https://notebookarchive.lovable.app",
     tagline: "A study notebook with the AI panel one click away.",
     description:
-      "NotebookLM is brilliant at one trick: drop sources in, get a grounded answer back. The trick stops there. There are no real notes, no per-course organization, no markdown export, and your work lives inside a Google product that has been deprecated before. Notespace is the inverse: a notebook you actually write in, with an AI panel that explains, summarizes, and questions what you've written - and a free tier built for a semester, not a demo.",
+      "NotebookLM is brilliant at one trick: drop sources in, get a grounded answer back. The trick stops there. There are no real notes, no per-course organization, no markdown export, and your work lives inside a Google product that has been deprecated before. Notebook Archive is the inverse: a notebook you actually write in, with an AI panel that explains, summarizes, and questions what you've written - and a free tier built for a semester, not a demo.",
     pros: [
       "Markdown notes you own and can export",
       "Per-course notebooks beat NotebookLM's flat source list",
@@ -181,19 +181,19 @@ const faq = [
   },
   {
     q: "Which alternative has the closest 'chat with my docs' feel?",
-    a: "Mem is closest out of the box - paste sources, chat across them, no setup. Obsidian with Smart Connections or Copilot gets you closer to NotebookLM's source-grounded behavior if you're willing to manage API keys. Notespace takes a different approach: the AI is a panel that explains and summarizes the notes you write, which is what most students settle into after a few weeks.",
+    a: "Mem is closest out of the box - paste sources, chat across them, no setup. Obsidian with Smart Connections or Copilot gets you closer to NotebookLM's source-grounded behavior if you're willing to manage API keys. Notebook Archive takes a different approach: the AI is a panel that explains and summarizes the notes you write, which is what most students settle into after a few weeks.",
   },
   {
     q: "Is NotebookLM free forever?",
     a: "The base product is free today. NotebookLM Plus is paid and bundled into AI Premium subscriptions. Google's track record with free research products (Inbox, Google Notebook, the original Bard, etc.) is mixed, so 'free forever' is a planning assumption you may not want to make for a four-year degree.",
   },
   {
-    q: "Does Notespace do source-grounded answers like NotebookLM?",
-    a: "Differently. NotebookLM's bet is that the AI should only answer from your sources. Notespace's bet is that you should write the notes and the AI should help you understand and revise them. You can paste source material in and ask the AI panel to summarize or explain it, but the shape of the product is a notebook you study from.",
+    q: "Does Notebook Archive do source-grounded answers like NotebookLM?",
+    a: "Differently. NotebookLM's bet is that the AI should only answer from your sources. Notebook Archive's bet is that you should write the notes and the AI should help you understand and revise them. You can paste source material in and ask the AI panel to summarize or explain it, but the shape of the product is a notebook you study from.",
   },
   {
     q: "What about privacy?",
-    a: "NotebookLM processes your sources on Google's infrastructure under standard Google terms. Obsidian keeps files local. Reflect is end-to-end encrypted. Notespace stores notes encrypted in transit and at rest on a managed backend, with private buckets and row-level access control - your notes are not used to train any model.",
+    a: "NotebookLM processes your sources on Google's infrastructure under standard Google terms. Obsidian keeps files local. Reflect is end-to-end encrypted. Notebook Archive stores notes encrypted in transit and at rest on a managed backend, with private buckets and row-level access control - your notes are not used to train any model.",
   },
 ];
 
@@ -203,13 +203,13 @@ const jsonLd = [
     "@type": "Article",
     headline: "NotebookLM Alternatives 2026: 6 Apps People Actually Move To",
     description:
-      "Six NotebookLM alternatives compared for students, researchers, and writers - Notespace, Notion AI, Obsidian, Mem, Reflect, and OneNote.",
+      "Six NotebookLM alternatives compared for students, researchers, and writers - Notebook Archive, Notion AI, Obsidian, Mem, Reflect, and OneNote.",
     datePublished: "2026-06-30",
     dateModified: "2026-06-30",
-    author: { "@type": "Organization", name: "Notespace" },
+    author: { "@type": "Organization", name: "Notebook Archive" },
     publisher: {
       "@type": "Organization",
-      name: "Notespace",
+      name: "Notebook Archive",
       logo: {
         "@type": "ImageObject",
         url: "https://notebookarchive.lovable.app/favicon.ico",
@@ -325,7 +325,7 @@ export default function BlogNotebookLMAlternative() {
                 "Free tier for a semester",
               ]}
               rows={[
-                ["Notespace", "Yes", "Yes", "Yes", "No", "Yes (AI credits capped)"],
+                ["Notebook Archive", "Yes", "Yes", "Yes", "No", "Yes (AI credits capped)"],
                 ["NotebookLM", "No - chat only", "No - flat sources", "No", "Yes (best-in-class)", "Yes (today)"],
                 ["Notion AI", "Yes", "Databases", "Lossy", "No", "AI add-on $10/mo"],
                 ["Obsidian + plugin", "Yes", "Folders", "Yes", "No", "Yes (BYO key)"],
@@ -383,7 +383,7 @@ export default function BlogNotebookLMAlternative() {
             <ul className="space-y-3 text-muted-foreground">
               <li>
                 • <strong>You want a notebook with the AI panel built in:</strong>{" "}
-                Notespace.
+                Notebook Archive.
               </li>
               <li>
                 • <strong>You only ever need to chat with sources, never to write:</strong>{" "}
@@ -427,7 +427,7 @@ export default function BlogNotebookLMAlternative() {
 
           <BlogFinalCTA
             title="A notebook, not a chatbot."
-            body="Notespace is free to start. Per-course notebooks, an AI explain panel, and a markdown export that outlives the app."
+            body="Notebook Archive is free to start. Per-course notebooks, an AI explain panel, and a markdown export that outlives the app."
             to={CTA}
           />
         </article>

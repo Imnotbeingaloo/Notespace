@@ -23,7 +23,7 @@ const faq = [
   },
   {
     q: "Is your revision timetable maker free?",
-    a: "Yes. The revision timetable maker is part of the free Notespace plan. No credit card needed.",
+    a: "Yes. The revision timetable maker is part of the free Notebook Archive plan. No credit card needed.",
   },
   {
     q: "Does it work for GCSE and A-level?",
@@ -43,7 +43,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Notespace Revision Timetable Maker",
+    name: "Notebook Archive Revision Timetable Maker",
     operatingSystem: "Web, iOS, Android",
     applicationCategory: "EducationalApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "GBP" },
