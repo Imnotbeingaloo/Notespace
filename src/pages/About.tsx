@@ -140,7 +140,7 @@ function PhilosophySection() {
             </span>
             <span className={`text-[10px] font-mono uppercase tracking-wider transition-colors duration-500 ${phase === "new" ? "text-primary font-semibold" : "text-muted-foreground"}`}>
 
-              Notebook Archive
+              Notespace
             </span>
           </div>
         </div>
@@ -242,7 +242,7 @@ function PhilosophySection() {
                   className="text-3xl"
                 >🧠</motion.span>
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest font-mono text-primary">The Notebook Archive Way</p>
+                  <p className="text-[10px] uppercase tracking-widest font-mono text-primary">The Notespace Way</p>
                   <p className="font-serif text-lg font-bold text-foreground">Understanding <span className="text-primary">information</span></p>
                 </div>
               </div>
@@ -280,8 +280,8 @@ export default function AboutPage() {
   return (
     <>
       <SeoHead
-        title="About - Notebook Archive"
-        description="The mission and philosophy behind Notebook Archive: a focused, AI-augmented home for your thinking that respects your time and your privacy."
+        title="About - Notespace"
+        description="The mission and philosophy behind Notespace: a focused, AI-augmented home for your thinking that respects your time and your privacy."
         path="/about"
       />
       <main className="min-h-screen bg-background">
@@ -308,7 +308,7 @@ export default function AboutPage() {
               The <span className="text-primary">notebook</span> we always wanted to use
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Notebook Archive was built because no existing tool handled the fundamentals well. We are a small team building it for people who treat their notes as serious work.
+              Notespace was built because no existing tool handled the fundamentals well. We are a small team building it for people who treat their notes as serious work.
             </p>
           </motion.div>
         </div>

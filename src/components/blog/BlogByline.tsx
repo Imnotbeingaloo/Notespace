@@ -1,7 +1,7 @@
 // Author byline block — small, editorial, makes posts feel human-edited
 // rather than machine-spit. Drop above the article body.
 export function BlogByline({
-  author = "The Notebook Archive editors",
+  author = "The Notespace editors",
   role = "Written and edited by humans who use this stuff",
   readingTime,
   date,

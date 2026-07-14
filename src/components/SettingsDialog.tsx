@@ -415,7 +415,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               <div className="space-y-5">
                 <div>
                   <h3 className="font-serif text-lg font-bold text-foreground">Appearance</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Choose how Notebook Archive looks to you.</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Choose how Notespace looks to you.</p>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {([
