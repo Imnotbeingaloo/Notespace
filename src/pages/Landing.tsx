@@ -262,19 +262,21 @@ export default function LandingPage() {
         }`}
       >
         <div className="flex items-center justify-between gap-3 md:gap-6 px-3 sm:px-5 py-3">
+          <div className="flex items-center gap-4 lg:gap-6 min-w-0">
             <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0 group">
                <img src="/logo.png" alt="Notespace" width={32} height={32} loading="eager" decoding="sync" {...({ fetchpriority: "high" } as any)} className="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
-               <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notespace</span>
+               <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap leading-none">Notespace</span>
             </Link>
-          <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0">
-            {navLinks.map((link) =>
-              link.isAnchor ? (
-                <a key={link.label} href={link.href} className="px-2.5 lg:px-3 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</a>
-              ) : (
-                <Link key={link.label} to={link.href} className="px-2.5 lg:px-3 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</Link>
-              )
-            )}
-          </nav>
+            <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0">
+              {navLinks.map((link) =>
+                link.isAnchor ? (
+                  <a key={link.label} href={link.href} className="px-2.5 lg:px-3.5 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</a>
+                ) : (
+                  <Link key={link.label} to={link.href} className="px-2.5 lg:px-3.5 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 whitespace-nowrap">{link.label}</Link>
+                )
+              )}
+            </nav>
+          </div>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {user ? (
               <Link to="/home" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
