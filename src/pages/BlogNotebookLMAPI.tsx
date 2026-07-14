@@ -41,7 +41,7 @@ const faq = [
   },
   {
     q: "If I don't want to build it myself, what are my options?",
-    a: "Two paths. If you need NotebookLM specifically, you have to use the web app - there's no integration. If you need a notebook with AI you can actually trust to study from, tools like Notebook Archive give you a real notebook with an AI explain panel, markdown export, and a free tier - no API needed because the workflow lives inside the app.",
+    a: "Two paths. If you need NotebookLM specifically, you have to use the web app - there's no integration. If you need a notebook with AI you can actually trust to study from, tools like Notespace give you a real notebook with an AI explain panel, markdown export, and a free tier - no API needed because the workflow lives inside the app.",
   },
   {
     q: "Will NotebookLM ever get an API?",
@@ -58,8 +58,8 @@ const jsonLd = [
       "There is no public NotebookLM API as of 2026. Here's what that means for developers, what the alternatives are, and how to build NotebookLM-style behavior yourself.",
     datePublished: "2026-06-30",
     dateModified: "2026-06-30",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/notebook-lm-api",
   },
   {
@@ -207,7 +207,7 @@ const answer = await gemini.generate({ model: "gemini-2.5-pro", prompt });`}</co
               <Link to="/blog/notebooklm-alternative" className="text-primary underline underline-offset-4">
                 We wrote a longer comparison of six honest alternatives
               </Link>{" "}
-              - the short version: Notebook Archive is built around the workflow NotebookLM hints at but
+              - the short version: Notespace is built around the workflow NotebookLM hints at but
               doesn't deliver. Real markdown notes you own. A per-notebook AI explain panel. Free tier
               sized for a semester. No API required, because the workflow lives inside the app.
             </p>
@@ -240,7 +240,7 @@ const answer = await gemini.generate({ model: "gemini-2.5-pro", prompt });`}</co
 
           <BlogFinalCTA
             title="Want a notebook that thinks with you - today?"
-            body="Notebook Archive gives you real markdown notes with an AI explain panel built in. Free to start. No API required."
+            body="Notespace gives you real markdown notes with an AI explain panel built in. Free to start. No API required."
             to={CTA}
           />
         </article>

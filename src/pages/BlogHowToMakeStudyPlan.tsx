@@ -30,7 +30,7 @@ const faq = [
   },
   {
     q: "Is there a free study plan template?",
-    a: "Yes - copy the weekly template lower down on this page into any document, or open it as a ready-made note inside Notebook Archive's study planner template.",
+    a: "Yes - copy the weekly template lower down on this page into any document, or open it as a ready-made note inside Notespace's study planner template.",
   },
   {
     q: "How do I stick to a study plan?",
@@ -65,8 +65,8 @@ const jsonLd = [
       "A practical, no-fluff guide to building a study plan that survives the semester - including a copy-pasteable weekly template and a study schedule example.",
     datePublished: "2026-06-27",
     dateModified: "2026-06-28",
-    author: { "@type": "Organization", name: "Notebook Archive" },
-    publisher: { "@type": "Organization", name: "Notebook Archive" },
+    author: { "@type": "Organization", name: "Notespace" },
+    publisher: { "@type": "Organization", name: "Notespace" },
     mainEntityOfPage: "https://notebookarchive.lovable.app/blog/how-to-make-a-study-plan",
   },
   {
@@ -243,7 +243,7 @@ export default function BlogHowToMakeStudyPlan() {
                 The template below is the simplest version that still works -
                 subjects, recurring slots, a weekly review. Copy it into any
                 document, or open it as a ready-made note in
-                Notebook Archive's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
+                Notespace's <Link to="/templates/study-planner" className="text-primary underline underline-offset-2">study planner template</Link> and
                 edit the slots until they match your real week.
               </p>
               <pre className="bg-muted rounded-lg p-5 text-sm leading-relaxed overflow-x-auto whitespace-pre">{`# Weekly Study Plan - Week of [date]
@@ -310,10 +310,10 @@ Sun  10:00-10:30  Weekly review
           </section>
 
           <BlogFinalCTA
-            title="Build your study schedule inside Notebook Archive"
+            title="Build your study schedule inside Notespace"
             body="Open the study planner template, edit the slots to match your week, and tick sessions off as you finish them. Free to start."
             to={CTA}
-            cta="Start using Notebook Archive"
+            cta="Start using Notespace"
             secondaryTo="/templates/study-planner"
             secondaryCta="Open the study planner template"
           />

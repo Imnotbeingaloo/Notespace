@@ -207,14 +207,14 @@ export default function LandingPage() {
   return (
     <>
       <SeoHead
-        title="Notebook Archive - AI Study Planner & Notes App"
+        title="Notespace - AI Study Planner & Notes App"
         description="AI study planner and note taking app for students, writers, and researchers. Plan sessions, organize notebooks, and get AI help where it matters."
         path="/"
         jsonLd={[
           {
             "@context": "https://schema.org",
             "@type": "WebSite",
-            name: "Notebook Archive",
+            name: "Notespace",
             url: "https://notebookarchive.lovable.app/",
             potentialAction: {
               "@type": "SearchAction",
@@ -225,7 +225,7 @@ export default function LandingPage() {
           {
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "Notebook Archive",
+            name: "Notespace",
             url: "https://notebookarchive.lovable.app/",
             logo: "https://notebookarchive.lovable.app/logo.png",
             sameAs: [
@@ -235,11 +235,11 @@ export default function LandingPage() {
           {
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "Notebook Archive",
+            name: "Notespace",
             applicationCategory: "ProductivityApplication",
             operatingSystem: "Web",
             url: "https://notebookarchive.lovable.app/",
-            description: "Notebook Archive is an AI study planner and note taking app: build a study schedule per notebook, organize lecture and research notes, search across everything, and export to Markdown.",
+            description: "Notespace is an AI study planner and note taking app: build a study schedule per notebook, organize lecture and research notes, search across everything, and export to Markdown.",
             offers: {
               "@type": "Offer",
               price: "0",
@@ -263,8 +263,8 @@ export default function LandingPage() {
       >
         <div className="flex items-center justify-between gap-3 md:gap-6 px-3 sm:px-5 py-3">
             <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0 group">
-               <img src="/logo.png" alt="Notebook Archive" width={32} height={32} loading="eager" decoding="sync" {...({ fetchpriority: "high" } as any)} className="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
-               <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notebook Archive</span>
+               <img src="/logo.png" alt="Notespace" width={32} height={32} loading="eager" decoding="sync" {...({ fetchpriority: "high" } as any)} className="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
+               <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap">Notespace</span>
             </Link>
           <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0">
             {navLinks.map((link) =>
@@ -489,32 +489,8 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* ── Paper clip on top-left of card ── */}
-          <div className="absolute -top-2 left-2 md:left-4 z-30 pointer-events-none" aria-hidden="true">
-            <motion.svg
-              width="34"
-              height="52"
-              viewBox="0 0 34 52"
-              animate={{ rotate: [-6, -4, -6] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              style={{ transformOrigin: "center 6px", filter: "drop-shadow(0 6px 6px rgba(0,0,0,0.25))" }}
-            >
-              <path
-                d="M17 4 Q28 4 28 15 L28 40 Q28 48 20 48 Q12 48 12 40 L12 18 Q12 11 18 11 Q24 11 24 18 L24 36"
-                stroke="url(#clipGrad)"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-              />
-              <defs>
-                <linearGradient id="clipGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="hsl(210 15% 78%)" />
-                  <stop offset="50%" stopColor="hsl(210 12% 55%)" />
-                  <stop offset="100%" stopColor="hsl(210 15% 70%)" />
-                </linearGradient>
-              </defs>
-            </motion.svg>
-          </div>
+
+
 
 
         <motion.div
@@ -530,7 +506,7 @@ export default function LandingPage() {
               <div className="w-3 h-3 rounded-full bg-accent/60" />
               <div className="w-3 h-3 rounded-full bg-primary/60" />
             </div>
-            <span className="text-xs text-muted-foreground ml-2">Notebook Archive</span>
+            <span className="text-xs text-muted-foreground ml-2">Notespace</span>
           </div>
           <div className="flex min-h-[560px]">
             <div className="w-56 border-r border-border bg-sidebar p-4 hidden md:block">
