@@ -36,9 +36,10 @@ export default function Footer() {
                 height={32}
                 loading="lazy"
                 decoding="async"
-                className="h-[1.224rem] w-[1.224rem] object-contain shrink-0"
+                className="h-5 w-5 object-contain shrink-0"
               />
               <span className="font-serif text-xl font-bold text-foreground whitespace-nowrap leading-none">Notespace</span>
+
             </motion.div>
 
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 lg:max-w-[260px]">
