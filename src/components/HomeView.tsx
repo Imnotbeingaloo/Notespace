@@ -260,8 +260,8 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                 className="flex items-center gap-2 min-w-0 group"
                 title="Back to website"
               >
-              <img src="/logo.png" alt="Notespace" className="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
-                <span className="font-serif font-bold text-foreground text-sm sm:text-base whitespace-nowrap group-hover:text-primary transition-colors">
+              <img src="/logo.png" alt="Notespace" className="h-7 w-7 sm:h-8 sm:w-8 object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" />
+                <span className="font-serif font-bold text-foreground text-base sm:text-lg whitespace-nowrap group-hover:text-primary transition-colors">
                   Notespace
                 </span>
               </button>
