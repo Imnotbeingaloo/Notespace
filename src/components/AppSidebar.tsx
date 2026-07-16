@@ -324,7 +324,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                 alt="Notespace"
                 className="h-[1.05rem] w-[1.05rem] sm:h-[1.2rem] sm:w-[1.2rem] object-contain flex-shrink-0"
               />
-              <span className="font-serif font-bold text-foreground text-base whitespace-nowrap">Notespace</span>
+              <span className="font-serif font-bold text-foreground text-lg whitespace-nowrap">Notespace</span>
               <button
                 type="button"
                 onClick={() => onOpenHome?.()}
