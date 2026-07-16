@@ -532,7 +532,7 @@ export default function LandingPage() {
                     { day: "Wed", topic: "History Essay Draft" },
                   ].map((s) => (
                     <div key={s.day} className="flex items-center gap-2 text-[10px]">
-                      <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
                       <span className="text-muted-foreground">{s.day}:</span>
                       <span className="text-foreground truncate">{s.topic}</span>
                     </div>
