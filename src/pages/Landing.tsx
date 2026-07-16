@@ -649,13 +649,7 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── Testimonials — Infinite Marquee ── */}
-      <section className="relative py-28 overflow-hidden bg-foreground/[0.035] border-y border-border/60">
-        {/* Center ornament on the top rule */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-4 bg-background">
-          <span className="h-px w-6 bg-border" />
-          <span className="w-1.5 h-1.5 rounded-full bg-accent/60" />
-          <span className="h-px w-6 bg-border" />
-        </div>
+      <section className="relative py-28 overflow-hidden bg-background border-y border-border/60">
         <div className="container mx-auto px-6 relative">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
