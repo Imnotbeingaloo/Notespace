@@ -8,6 +8,7 @@ import { useNavigate, useLocation, useSearchParams, Navigate } from "react-route
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { NoindexHead } from "@/components/NoindexHead";
+import { isDisposableEmail, getDisposableDomain } from "@/lib/disposable-email";
 
 
 const BTN_PRESS = "transition-all duration-150 shadow-sm active:scale-95 hover:-translate-y-0.5 hover:shadow-md";
