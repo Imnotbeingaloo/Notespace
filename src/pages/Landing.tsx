@@ -532,7 +532,7 @@ export default function LandingPage() {
                     { day: "Wed", topic: "History Essay Draft" },
                   ].map((s) => (
                     <div key={s.day} className="flex items-center gap-2 text-[10px]">
-                      <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
                       <span className="text-muted-foreground">{s.day}:</span>
                       <span className="text-foreground truncate">{s.topic}</span>
                     </div>
@@ -593,7 +593,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 max-w-6xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-2xl mx-auto text-center mb-20 md:mb-24">
             <div className="inline-block mb-6">
-              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-accent bg-accent/5 px-3 py-1 border border-accent/20 rounded-full">
+              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground bg-muted/40 px-3 py-1 border border-border rounded-full">
                 Functional Excellence
               </span>
             </div>
