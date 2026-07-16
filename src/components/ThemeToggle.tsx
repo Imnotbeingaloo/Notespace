@@ -8,8 +8,8 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ asSidebarButton = false }: ThemeToggleProps) {
-  const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const toggle = () => {
     const next = isDark ? "light" : "dark";
