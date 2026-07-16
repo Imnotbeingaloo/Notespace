@@ -649,12 +649,18 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── Testimonials — Infinite Marquee ── */}
-      <section className="relative py-28 overflow-hidden bg-foreground/[0.035] border-y border-border/60">
+      <section className="relative py-28 overflow-hidden bg-[hsl(var(--accent)/0.06)] border-y border-accent/20">
         {/* Center ornament on the top rule */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-4 bg-background">
-          <span className="h-px w-6 bg-border" />
-          <span className="w-1.5 h-1.5 rounded-full bg-accent/60" />
-          <span className="h-px w-6 bg-border" />
+          <span className="h-px w-6 bg-accent/40" />
+          <span className="w-1.5 h-1.5 rounded-full bg-accent/70" />
+          <span className="h-px w-6 bg-accent/40" />
+        </div>
+        {/* Center ornament on the bottom rule */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 flex items-center gap-2 px-4 bg-foreground/[0.04]">
+          <span className="h-px w-6 bg-accent/40" />
+          <span className="w-1.5 h-1.5 rounded-full bg-accent/70" />
+          <span className="h-px w-6 bg-accent/40" />
         </div>
         <div className="container mx-auto px-6 relative">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
@@ -669,9 +675,10 @@ export default function LandingPage() {
 
         {/* Marquee track */}
         <div className="relative group">
-          {/* edge fades */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-40 z-10 bg-gradient-to-r from-[hsl(var(--background))] via-[hsl(var(--background)/0.6)] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-40 z-10 bg-gradient-to-l from-[hsl(var(--background))] via-[hsl(var(--background)/0.6)] to-transparent" />
+          {/* edge fades — tinted to match the warm section bg */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-40 z-10 bg-gradient-to-r from-[hsl(var(--accent)/0.14)] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-40 z-10 bg-gradient-to-l from-[hsl(var(--accent)/0.14)] to-transparent" />
+
 
 
           <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] gap-6 px-6">
