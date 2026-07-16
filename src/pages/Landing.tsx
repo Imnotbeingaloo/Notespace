@@ -599,68 +599,107 @@ export default function LandingPage() {
 
       <AnimatedDivider />
 
-      {/* ── How It Works Mini ── */}
+      {/* ── How It Works — Notebook Index ── */}
       <section className="py-28">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+        <div className="container mx-auto px-6 max-w-3xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-3">— Index —</p>
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Simple to start. <span className="text-primary">Powerful</span> when you need it.
+              Simple to start. <span className="text-primary italic">Powerful</span> when you need it.
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Begin writing in under a minute. No configuration, no learning curve - open the app and start.
+              Begin writing in under a minute. No configuration, no learning curve — open the app and start.
             </p>
           </motion.div>
-          <div className="grid md:grid-cols-3 gap-10">
-            {[
-              { step: "1", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly." },
-              { step: "2", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews - then adapt it to your workflow." },
-              { step: "3", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress." },
-            ].map((item, i) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center"
-              >
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold text-sm mb-4">{item.step}</div>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-3">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="relative rounded-[1.5rem] border border-border bg-card p-8 md:p-12 shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.15)]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(to bottom, transparent 0, transparent 39px, hsl(var(--border)/0.4) 39px, hsl(var(--border)/0.4) 40px)",
+              backgroundPosition: "0 12px",
+            }}
+          >
+            {/* red margin line */}
+            <div className="absolute left-16 md:left-24 top-6 bottom-6 w-px bg-red-400/40 pointer-events-none" />
+
+            <ul className="relative space-y-1">
+              {[
+                { step: "01", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly.", page: "p. 12" },
+                { step: "02", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews — then adapt it to your workflow.", page: "p. 27" },
+                { step: "03", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress.", page: "p. 41" },
+              ].map((item, i) => (
+                <motion.li
+                  key={item.step}
+                  initial={{ opacity: 0, x: -12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 + 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="group grid grid-cols-[3rem_1fr_auto] md:grid-cols-[5rem_1fr_auto] items-baseline gap-4 py-4 border-b border-dashed border-border/60 last:border-0"
+                >
+                  <span className="font-mono text-xs md:text-sm text-muted-foreground tabular-nums pl-1 md:pl-2">
+                    {item.step}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-serif text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 inline-block relative">
+                      {item.title}
+                      <span className="absolute left-0 -bottom-0.5 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-1 max-w-xl">{item.desc}</p>
+                  </div>
+                  <span className="font-mono text-[10px] md:text-xs text-muted-foreground/70 tabular-nums whitespace-nowrap">
+                    {item.page}
+                  </span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
       </section>
 
       <AnimatedDivider />
 
-      {/* ── Testimonials ── */}
-      <section className="relative py-28">
+      {/* ── Testimonials — Infinite Marquee ── */}
+      <section className="relative py-28 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.03] to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 relative">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              What the&nbsp;<span className="text-accent">Users</span>&nbsp;are saying&nbsp;&nbsp;
+              What the&nbsp;<span className="text-accent">Users</span>&nbsp;are saying
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
               Notes from researchers, students, and small teams who made the switch.
             </p>
           </motion.div>
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12">
+        </div>
+
+        {/* Marquee track */}
+        <div className="relative group">
+          {/* edge fades */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-40 z-10 bg-gradient-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-40 z-10 bg-gradient-to-l from-background to-transparent" />
+
+          <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] gap-6 px-6">
             {[
               { quote: "The first note-taking tool that genuinely engages with what I write. The Explain panel adds real value to my research workflow.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
               { quote: "Indispensable during finals. Highlighting a concept and receiving a clear explanation is far more efficient than searching elsewhere.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
-              { quote: "We migrated our team documentation from another platform. The search alone justified the move - I find information in seconds.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
-            ].map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 30, rotate: -1 }}
-                whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.12, type: "spring", stiffness: 150 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="rounded-[1.5rem] md:rounded-[2rem] border border-border bg-card p-5 md:p-8 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
+              { quote: "We migrated our team documentation from another platform. The search alone justified the move — I find information in seconds.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+              { quote: "I've tried every note app on the market. Notespace is the only one that feels like a tool built for thinking, not for shipping features.", name: "Daniel R.", role: "Independent Writer", emoji: "✍️" },
+              { quote: "My lab notebook, meeting notes, and paper drafts all live here now. The tag filter alone replaced three other subscriptions.", name: "Amara O.", role: "Neuroscience Postdoc", emoji: "🧠" },
+            ].concat([
+              { quote: "The first note-taking tool that genuinely engages with what I write. The Explain panel adds real value to my research workflow.", name: "Sarah K.", role: "PhD Researcher", emoji: "🔬" },
+              { quote: "Indispensable during finals. Highlighting a concept and receiving a clear explanation is far more efficient than searching elsewhere.", name: "Marcus L.", role: "Computer Science Student", emoji: "🎓" },
+              { quote: "We migrated our team documentation from another platform. The search alone justified the move — I find information in seconds.", name: "Priya T.", role: "Product Manager", emoji: "💼" },
+              { quote: "I've tried every note app on the market. Notespace is the only one that feels like a tool built for thinking, not for shipping features.", name: "Daniel R.", role: "Independent Writer", emoji: "✍️" },
+              { quote: "My lab notebook, meeting notes, and paper drafts all live here now. The tag filter alone replaced three other subscriptions.", name: "Amara O.", role: "Neuroscience Postdoc", emoji: "🧠" },
+            ]).map((t, i) => (
+              <div
+                key={i}
+                className="shrink-0 w-[300px] md:w-[360px] rounded-[1.5rem] md:rounded-[2rem] border border-border bg-card p-6 md:p-8 hover:shadow-lg hover:shadow-primary/5 transition-shadow duration-300"
               >
                 <span className="text-2xl mb-4 block">{t.emoji}</span>
                 <p className="text-sm text-foreground leading-relaxed mb-5 italic">"{t.quote}"</p>
@@ -668,11 +707,12 @@ export default function LandingPage() {
                   <p className="text-sm font-semibold text-foreground">{t.name}</p>
                   <p className="text-xs text-muted-foreground">{t.role}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </section>
+
 
       <AnimatedDivider />
 
