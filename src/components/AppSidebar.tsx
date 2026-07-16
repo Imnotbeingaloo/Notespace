@@ -34,6 +34,12 @@ interface AppSidebarProps {
   onRequestNewNote?: () => void;
 }
 
+const SIDEBAR_WIDTH_KEY = "na:sidebar-width";
+const DEFAULT_WIDTH = 280;
+const MIN_WIDTH = 220;
+const MAX_WIDTH = 420;
+const COLLAPSE_SNAP = 180;
+
 export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, onOpenHome, onRequestNewNote }: AppSidebarProps) {
   const { signOut, user } = useAuth();
   const { profile } = useProfile();
@@ -41,6 +47,43 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [tempNotesEnabled] = useTempNotesEnabled();
   const [notebookArrows] = useNotebookArrows();
   const navigate = useNavigate();
+
+  // Desktop-only resizable width. Persisted in localStorage.
+  const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
+    if (typeof window === "undefined") return DEFAULT_WIDTH;
+    const stored = Number(window.localStorage.getItem(SIDEBAR_WIDTH_KEY));
+    return Number.isFinite(stored) && stored >= MIN_WIDTH && stored <= MAX_WIDTH ? stored : DEFAULT_WIDTH;
+  });
+  const [isResizing, setIsResizing] = useState(false);
+  useEffect(() => {
+    if (!isResizing) return;
+    const onMove = (e: MouseEvent) => {
+      const next = e.clientX;
+      if (next < COLLAPSE_SNAP && !collapsed) {
+        onToggle();
+        setIsResizing(false);
+        return;
+      }
+      setSidebarWidth(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, next)));
+    };
+    const onUp = () => setIsResizing(false);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizing, collapsed, onToggle]);
+  useEffect(() => {
+    if (!isResizing) {
+      try { window.localStorage.setItem(SIDEBAR_WIDTH_KEY, String(sidebarWidth)); } catch {}
+    }
+  }, [isResizing, sidebarWidth]);
+
   const {
     notebooks,
     standaloneNotes,
@@ -294,12 +337,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const trashCount = trashedNotebooks.length + trashedNotes.length;
 
   return (
+    <div className="relative flex-shrink-0 h-screen">
     <motion.aside
       initial={false}
-      animate={{ width: collapsed ? 64 : 280 }}
-      transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
+      animate={{ width: collapsed ? 64 : sidebarWidth }}
+      transition={isResizing ? { duration: 0 } : { duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden max-w-[85vw] scrollbar-thin"
+      style={{ width: collapsed ? 64 : sidebarWidth }}
     >
+
       {/* Header - collapsed state matches the editor topbar height (48px + 1px border)
           so the horizontal divider continues flush across the entire app width. */}
       <div
@@ -1248,5 +1294,18 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         }}
       />
     </motion.aside>
+    {!collapsed && (
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize sidebar"
+        onMouseDown={(e) => { e.preventDefault(); setIsResizing(true); }}
+        onDoubleClick={() => setSidebarWidth(DEFAULT_WIDTH)}
+        className={`hidden md:block absolute top-0 right-0 h-full w-1.5 -mr-[3px] cursor-col-resize z-20 group ${isResizing ? "bg-primary/40" : "hover:bg-primary/30"} transition-colors`}
+        title="Drag to resize · Double-click to reset"
+      />
+    )}
+    </div>
   );
 }
+
