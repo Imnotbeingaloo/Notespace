@@ -8,6 +8,7 @@ import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
 import { ExitBookFlash } from "@/components/ExitBookFlash";
 import { SeoHead } from "@/components/SeoHead";
+import { PageHeader } from "@/components/PageHeader";
 
 // Typing animation lines for the preview
 const editorLines = [
