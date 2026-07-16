@@ -8,6 +8,7 @@ import { useNavigate, useLocation, useSearchParams, Navigate } from "react-route
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { NoindexHead } from "@/components/NoindexHead";
+import { isDisposableEmail, getDisposableDomain } from "@/lib/disposable-email";
 
 
 const BTN_PRESS = "transition-all duration-150 shadow-sm active:scale-95 hover:-translate-y-0.5 hover:shadow-md";
@@ -335,6 +336,15 @@ const AuthPage = () => {
     }
 
     if (mode === "signup") {
+      if (isDisposableEmail(email)) {
+        const domain = getDisposableDomain(email);
+        const msg = domain
+          ? `Temporary email addresses (${domain}) aren't allowed. Please use a permanent email.`
+          : "Temporary email addresses aren't allowed. Please use a permanent email.";
+        setError(msg);
+        toast.error(msg);
+        return;
+      }
       if (password.length < 8) {
         const msg = "Password must be at least 8 characters.";
         setError(msg);
