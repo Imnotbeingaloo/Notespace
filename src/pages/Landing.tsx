@@ -591,15 +591,15 @@ export default function LandingPage() {
       {/* ── How It Works — Heritage Editorial Deck ── */}
       <section className="py-28">
         <div className="container mx-auto px-6 max-w-6xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-2xl mb-20 md:mb-24">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-2xl mx-auto text-center mb-20 md:mb-24">
             <div className="inline-block mb-6">
-              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-primary bg-primary/5 px-3 py-1 border border-primary/10 rounded-full">
+              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-accent bg-accent/5 px-3 py-1 border border-accent/20 rounded-full">
                 Functional Excellence
               </span>
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl text-foreground leading-[1.15] italic font-bold">
+            <h2 className="font-serif text-4xl md:text-5xl text-foreground leading-[1.15] font-bold">
               Simple to start.
-              <span className="block font-normal not-italic opacity-60">Powerful when you need it.</span>
+              <span className="block font-normal text-muted-foreground">Powerful when you need it.</span>
             </h2>
           </motion.div>
 
