@@ -169,7 +169,7 @@ export default function LandingPage() {
     if (currentCharIndex < currentLine.text.length) {
       let rafId: number;
       let lastTime = 0;
-      const charDelay = 40; // ms per character
+      const charDelay = 75; // ms per character
 
       const step = (timestamp: number) => {
         if (!lastTime) lastTime = timestamp;
