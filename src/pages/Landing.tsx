@@ -605,9 +605,9 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
             {[
-              { step: "01", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly.", tape: "left-8 -rotate-2 bg-primary/5 border-primary/10", offset: "" },
-              { step: "02", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews — then adapt it to your workflow.", tape: "left-1/2 -translate-x-1/2 rotate-1 bg-accent/5 border-accent/10", offset: "md:mt-8" },
-              { step: "03", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress.", tape: "right-8 -rotate-1 bg-primary/5 border-primary/10", offset: "" },
+              { step: "01", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly.", tape: "left-8 -rotate-2 bg-amber-300/55 border-amber-500/40", offset: "", num: "text-amber-700", rule: "bg-amber-600/50" },
+              { step: "02", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews — then adapt it to your workflow.", tape: "left-1/2 -translate-x-1/2 rotate-1 bg-emerald-300/45 border-emerald-600/40", offset: "md:mt-8", num: "text-emerald-800", rule: "bg-emerald-700/45" },
+              { step: "03", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress.", tape: "right-8 -rotate-1 bg-slate-400/40 border-slate-500/40", offset: "", num: "text-slate-600", rule: "bg-slate-500/50" },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -618,12 +618,12 @@ export default function LandingPage() {
                 className={`group relative ${item.offset}`}
               >
                 {/* Tape detail */}
-                <div className={`absolute -top-4 w-20 h-8 border backdrop-blur-[1px] z-10 hidden md:block ${item.tape}`} />
+                <div className={`absolute -top-4 w-20 h-8 border shadow-[0_2px_6px_-2px_hsl(var(--foreground)/0.15)] backdrop-blur-[1px] z-10 hidden md:block ${item.tape}`} />
 
                 <div className="relative bg-card border border-border/60 p-10 pt-12 shadow-[0_15px_40px_-15px_hsl(var(--foreground)/0.08)] transition-all duration-500 group-hover:shadow-[0_25px_50px_-12px_hsl(var(--foreground)/0.12)] group-hover:-translate-y-1">
-                  {/* Number with amber accent */}
-                  <div className="font-mono text-accent text-sm mb-8 flex items-center gap-3">
-                    <span className="w-8 h-px bg-accent/40" />
+                  {/* Number with per-card accent */}
+                  <div className={`font-mono ${item.num} text-sm mb-8 flex items-center gap-3`}>
+                    <span className={`w-8 h-px ${item.rule}`} />
                     {item.step}
                   </div>
 
