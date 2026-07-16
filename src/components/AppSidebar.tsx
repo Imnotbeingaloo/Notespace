@@ -337,12 +337,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const trashCount = trashedNotebooks.length + trashedNotes.length;
 
   return (
+    <div className="relative flex-shrink-0 h-screen">
     <motion.aside
       initial={false}
-      animate={{ width: collapsed ? 64 : 280 }}
-      transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
+      animate={{ width: collapsed ? 64 : sidebarWidth }}
+      transition={isResizing ? { duration: 0 } : { duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden max-w-[85vw] scrollbar-thin"
+      style={{ width: collapsed ? 64 : sidebarWidth }}
     >
+
       {/* Header - collapsed state matches the editor topbar height (48px + 1px border)
           so the horizontal divider continues flush across the entire app width. */}
       <div
