@@ -588,67 +588,63 @@ export default function LandingPage() {
 
       <AnimatedDivider />
 
-      {/* ── How It Works — Notebook Index ── */}
+      {/* ── How It Works — Heritage Editorial Deck ── */}
       <section className="py-28">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-3">— Index —</p>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Simple to start. <span className="text-primary italic">Powerful</span> when you need it.
+        <div className="container mx-auto px-6 max-w-6xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-2xl mb-20 md:mb-24">
+            <div className="inline-block mb-6">
+              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-primary bg-primary/5 px-3 py-1 border border-primary/10 rounded-full">
+                Functional Excellence
+              </span>
+            </div>
+            <h2 className="font-serif text-4xl md:text-5xl text-foreground leading-[1.15] italic font-bold">
+              Simple to start.
+              <span className="block font-normal not-italic opacity-60">Powerful when you need it.</span>
             </h2>
-            <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Begin writing in under a minute. No configuration, no learning curve — open the app and start.
-            </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="relative rounded-[1.5rem] border border-border bg-card p-8 md:p-12 shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.15)]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(to bottom, transparent 0, transparent 39px, hsl(var(--border)/0.4) 39px, hsl(var(--border)/0.4) 40px)",
-              backgroundPosition: "0 12px",
-            }}
-          >
-            {/* red margin line */}
-            <div className="absolute left-16 md:left-24 top-6 bottom-6 w-px bg-red-400/40 pointer-events-none" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+            {[
+              { step: "01", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly.", tape: "left-8 -rotate-2 bg-primary/5 border-primary/10", offset: "" },
+              { step: "02", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews — then adapt it to your workflow.", tape: "left-1/2 -translate-x-1/2 rotate-1 bg-accent/5 border-accent/10", offset: "md:mt-8" },
+              { step: "03", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress.", tape: "right-8 -rotate-1 bg-primary/5 border-primary/10", offset: "" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className={`group relative ${item.offset}`}
+              >
+                {/* Tape detail */}
+                <div className={`absolute -top-4 w-20 h-8 border backdrop-blur-[1px] z-10 hidden md:block ${item.tape}`} />
 
-            <ul className="relative space-y-1">
-              {[
-                { step: "01", title: "Tag filtering", desc: "Add a #tag anywhere in a note and it surfaces in the sidebar. Click it to retrieve every related note instantly.", page: "p. 12" },
-                { step: "02", title: "Note templates", desc: "Start from a structured layout for lectures, meetings, or reviews — then adapt it to your workflow.", page: "p. 27" },
-                { step: "03", title: "Pomodoro timer", desc: "A focused 25/5 timer lives in the corner. Begin a session, take the break, and track your progress.", page: "p. 41" },
-              ].map((item, i) => (
-                <motion.li
-                  key={item.step}
-                  initial={{ opacity: 0, x: -12 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 + 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="group grid grid-cols-[3rem_1fr_auto] md:grid-cols-[5rem_1fr_auto] items-baseline gap-4 py-4 border-b border-dashed border-border/60 last:border-0"
-                >
-                  <span className="font-mono text-xs md:text-sm text-muted-foreground tabular-nums pl-1 md:pl-2">
+                <div className="relative bg-card border border-border/60 p-10 pt-12 shadow-[0_15px_40px_-15px_hsl(var(--foreground)/0.08)] transition-all duration-500 group-hover:shadow-[0_25px_50px_-12px_hsl(var(--foreground)/0.12)] group-hover:-translate-y-1">
+                  {/* Number with amber accent */}
+                  <div className="font-mono text-accent text-sm mb-8 flex items-center gap-3">
+                    <span className="w-8 h-px bg-accent/40" />
                     {item.step}
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="font-serif text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 inline-block relative">
-                      {item.title}
-                      <span className="absolute left-0 -bottom-0.5 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mt-1 max-w-xl">{item.desc}</p>
                   </div>
-                  <span className="font-mono text-[10px] md:text-xs text-muted-foreground/70 tabular-nums whitespace-nowrap">
-                    {item.page}
-                  </span>
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
+
+                  <h3 className="font-serif text-2xl text-foreground mb-4">{item.title}</h3>
+
+                  <p className="font-sans text-muted-foreground leading-relaxed text-[15px]">
+                    {item.desc}
+                  </p>
+
+                  {/* Ruled line decoration */}
+                  <div className="mt-8 space-y-3">
+                    <div className="h-px w-full bg-border/60" />
+                    <div className="h-px w-3/4 bg-border/60" />
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
+
 
       <AnimatedDivider />
 
