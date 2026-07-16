@@ -317,7 +317,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              className="flex items-center gap-2 min-w-0"
+              className="flex items-center gap-2 min-w-0 w-full"
             >
               <img
                 src="/logo.png"
@@ -328,7 +328,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
               <button
                 type="button"
                 onClick={() => onOpenHome?.()}
-                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-[10%]"
+                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-auto"
                 title="Home - All documents"
                 aria-label="Home"
               >
