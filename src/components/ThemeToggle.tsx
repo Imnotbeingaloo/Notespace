@@ -13,8 +13,11 @@ export function ThemeToggle({ asSidebarButton = false }: ThemeToggleProps) {
 
   const toggle = () => {
     const next = isDark ? "light" : "dark";
+    const root = document.documentElement;
+    root.classList.add("theme-transition");
     setTheme(next);
     localStorage.setItem("app-theme", next);
+    window.setTimeout(() => root.classList.remove("theme-transition"), 350);
   };
 
   if (asSidebarButton) {
