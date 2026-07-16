@@ -13,10 +13,13 @@ const navLinks = [
   { to: "/pricing", label: "Pricing", key: "pricing" },
   { to: "/about", label: "About", key: "about" },
   { to: "/how-it-works", label: "How It Works", key: "how-it-works" },
+  
 ];
 
 export function PageHeader({ activePage }: PageHeaderProps) {
   const { user, loading } = useAuth();
+  // Render the authenticated CTA on first paint when a prior session existed,
+  // so the button doesn't flip from "Get Started" → "Open App" after hydrate.
   const showAuthed = !!user || (loading && hasLikelySession());
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -37,28 +40,31 @@ export function PageHeader({ activePage }: PageHeaderProps) {
       }`}
     >
       <div className="flex items-center justify-between gap-3 md:gap-6 px-3 sm:px-5 py-3">
-        <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0 group">
-          <img
-            src="/logo.png"
-            alt="Notespace"
-            width={32}
-            height={32}
-            loading="eager"
-            decoding="sync"
-            {...({ fetchpriority: "high" } as any)}
-            className="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
-          />
-          <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap leading-none">
-            Notespace
-          </span>
-        </Link>
+        <div className="flex items-center gap-4 lg:gap-6 min-w-0">
+          <Link to="/" className="flex items-center gap-2 pb-1 min-w-0 shrink-0 group">
+            <img
+              src="/logo.png"
+              alt="Notespace"
+              width={32}
+              height={32}
+              loading="eager"
+              decoding="sync"
+              {...({ fetchpriority: "high" } as any)}
+              className="h-[1.224rem] w-[1.224rem] object-contain shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+            />
+            <span className="font-serif text-sm sm:text-base md:text-lg font-bold text-foreground translate-y-[1px] whitespace-nowrap leading-none">
+              Notespace
+            </span>
+          </Link>
 
-        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0">
+          {/* Desktop/Tablet nav */}
+          <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0">
+
           {navLinks.map((link) => (
             <Link
               key={link.key}
               to={link.to}
-              className={`px-2.5 lg:px-3 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+              className={`px-2.5 lg:px-3.5 py-1.5 rounded-xl text-[13px] lg:text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                 activePage === link.key
                   ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -67,33 +73,19 @@ export function PageHeader({ activePage }: PageHeaderProps) {
               {link.label}
             </Link>
           ))}
-        </nav>
+          </nav>
+        </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {showAuthed ? (
-            <Link
-              to="/home"
-              className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
-            >
-              Open App <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
-            </Link>
-          ) : (
-            <>
-              <Link
-                to="/auth"
-                className="hidden lg:inline-flex text-xs lg:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2 lg:px-3 py-1.5 whitespace-nowrap"
-              >
-                Sign In
-              </Link>
-              <Link
-                to="/auth"
-                className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
-              >
-                Get Started <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
-              </Link>
-            </>
-          )}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
+          <Link
+            to={showAuthed ? "/home" : "/auth"}
+            className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 sm:px-4 py-1.5 sm:py-2 text-[13px] sm:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap"
+          >
+            {showAuthed ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
+          </Link>
+
+          {/* Mobile hamburger */}
           <button
             onClick={() => setMenuOpen((p) => !p)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -105,6 +97,7 @@ export function PageHeader({ activePage }: PageHeaderProps) {
         </div>
       </div>
 
+      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
