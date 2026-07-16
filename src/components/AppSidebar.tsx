@@ -1294,5 +1294,18 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
         }}
       />
     </motion.aside>
+    {!collapsed && (
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize sidebar"
+        onMouseDown={(e) => { e.preventDefault(); setIsResizing(true); }}
+        onDoubleClick={() => setSidebarWidth(DEFAULT_WIDTH)}
+        className={`hidden md:block absolute top-0 right-0 h-full w-1.5 -mr-[3px] cursor-col-resize z-20 group ${isResizing ? "bg-primary/40" : "hover:bg-primary/30"} transition-colors`}
+        title="Drag to resize · Double-click to reset"
+      />
+    )}
+    </div>
   );
 }
+
