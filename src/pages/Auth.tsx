@@ -639,12 +639,12 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-dvh grid lg:grid-cols-[42fr_58fr] bg-background relative overflow-hidden">
+    <div className="min-h-dvh grid lg:grid-cols-[42fr_58fr] bg-[#fdf7ef] dark:bg-background relative overflow-hidden">
       <NoindexHead title="Sign in - Notespace" />
 
       {/* Left column — form panel. Padding mirrors the notebook panel so the
           card sits within the same corner inset instead of stretching to fill. */}
-      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-background">
+      <div className="flex items-center justify-center px-4 py-8 lg:p-10 xl:p-14 relative overflow-hidden order-1 bg-[#fdf7ef] dark:bg-background">
         {/* Plain divider line between panels on lg+ */}
         <div
           aria-hidden="true"
