@@ -589,10 +589,10 @@ export default function LandingPage() {
       <AnimatedDivider />
 
       {/* ── How It Works — Heritage Editorial Deck ── */}
-      <section className="pt-16 pb-28">
+      <section className="pt-12 pb-28">
         <div className="container mx-auto px-6 max-w-6xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-2xl mx-auto text-center mb-16 md:mb-20">
-            <h2 className="font-serif text-4xl md:text-5xl text-foreground leading-[1.15] font-bold">
+            <h2 className="font-serif text-3xl md:text-4xl text-foreground leading-[1.15] font-bold">
               Simple to start.
               <span className="block font-normal text-muted-foreground">Powerful when you need it.</span>
             </h2>
