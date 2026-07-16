@@ -670,8 +670,9 @@ export default function LandingPage() {
         {/* Marquee track */}
         <div className="relative group">
           {/* edge fades */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-40 z-10 bg-gradient-to-r from-background to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-40 z-10 bg-gradient-to-l from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-40 z-10 bg-gradient-to-r from-[hsl(var(--background))] via-[hsl(var(--background)/0.6)] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-40 z-10 bg-gradient-to-l from-[hsl(var(--background))] via-[hsl(var(--background)/0.6)] to-transparent" />
+
 
           <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] gap-6 px-6">
             {[
