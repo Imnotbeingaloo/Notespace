@@ -475,19 +475,8 @@ export default function LandingPage() {
       <section className="relative border-t border-border bg-background">
         <div className="container mx-auto px-6 pt-20 md:pt-28 pb-32">
         <div className="relative max-w-7xl mx-auto">
-          {/* ── Sticky notes scattered on right gutter ── */}
-          <div className="hidden lg:block absolute -right-4 xl:-right-16 top-0 bottom-0 w-40 pointer-events-none select-none z-10" aria-hidden="true">
-            <motion.div
-              animate={{ rotate: [-5, -3, -5], y: [0, -3, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-16 left-6 w-20 h-20 bg-[hsl(52_85%_78%)] shadow-[0_14px_28px_-10px_rgba(0,0,0,0.28)] p-2.5"
-              style={{ transformOrigin: "top center" }}
-            >
-              <div className="h-[2px] w-10 bg-foreground/30 mb-2 rounded-full" />
-              <div className="h-[2px] w-12 bg-foreground/25 mb-2 rounded-full" />
-              <div className="h-[2px] w-8 bg-foreground/30 rounded-full" />
-            </motion.div>
-          </div>
+
+
 
 
 
