@@ -518,6 +518,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                 </div>
               </div>
             )}
+            </div>
           </section>
         </div>
       </DialogContent>
