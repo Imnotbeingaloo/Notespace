@@ -167,61 +167,50 @@ export function OnboardingHelp() {
 
   return (
     <>
-      <div className="relative hidden md:flex items-center">
+      <div className="relative flex items-center">
         <AnimatePresence>
           {hintOpen && (
-            <motion.button
-              type="button"
-              key="hint-desktop"
-              onClick={dismissForever}
-              initial={{ opacity: 0, x: 8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 8 }}
-              transition={{ duration: 0.25 }}
-              className="absolute right-full mr-2 flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-foreground/80 cursor-pointer"
-              aria-label="Hide hint"
-            >
-              <span>Confused? Click here</span>
-              <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }} className="inline-flex text-primary">
-                <ArrowRight className="h-3.5 w-3.5" />
-              </motion.span>
-            </motion.button>
+            <>
+              {/* Desktop: hint to the left of the button */}
+              <motion.button
+                type="button"
+                key="hint-desktop"
+                onClick={dismissForever}
+                initial={{ opacity: 0, x: 8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 8 }}
+                transition={{ duration: 0.25 }}
+                className="hidden md:flex absolute right-full mr-2 items-center gap-1.5 whitespace-nowrap text-xs font-medium text-foreground/80 cursor-pointer"
+                aria-label="Hide hint"
+              >
+                <span>Confused? Click here</span>
+                <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }} className="inline-flex text-primary">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </motion.span>
+              </motion.button>
+              {/* Mobile: hint below the button */}
+              <motion.button
+                type="button"
+                key="hint-mobile"
+                onClick={dismissForever}
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="md:hidden absolute top-full right-0 mt-1 whitespace-nowrap text-[11px] font-medium text-foreground/80 bg-background/85 backdrop-blur px-2 py-0.5 rounded-md shadow-sm"
+                aria-label="Hide hint"
+              >
+                Confused? Tap here
+              </motion.button>
+            </>
           )}
         </AnimatePresence>
-        <Button onClick={handleHelpClick} variant="ghost" size="icon" className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground" aria-label="Help">
+        <Button onClick={handleHelpClick} variant="ghost" size="icon" className="h-8 w-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground" aria-label="Help" data-testid="onboarding-help-mobile">
           <HelpCircle className="h-5 w-5" />
         </Button>
       </div>
 
-      <div className="md:hidden">
-        {/* Top-right floating help. Sits above the editor chrome but offset so
-            it never overlaps the back button, AI buttons, or attach controls. */}
-        <div
-          className="fixed z-40 right-3 flex flex-col items-end pointer-events-none"
-          style={{ top: "calc(env(safe-area-inset-top, 0px) + 0.625rem)" }}
-        >
-          <Button
-            onClick={handleHelpClick}
-            variant="default"
-            size="icon"
-            className="h-10 w-10 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 pointer-events-auto"
-            aria-label="Help"
-            data-testid="onboarding-help-mobile"
-          >
-            <HelpCircle className="h-[18px] w-[18px]" />
-          </Button>
-          <AnimatePresence>
-            {hintOpen && (
-              <motion.button type="button" key="hint-mobile" onClick={dismissForever}
-                initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.25 }}
-                className="mt-1.5 text-[11px] font-medium text-foreground/80 whitespace-nowrap pointer-events-auto bg-background/80 backdrop-blur px-2 py-0.5 rounded-md">
-                Confused? Tap here
-              </motion.button>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+
 
 
 
