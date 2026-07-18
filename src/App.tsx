@@ -62,6 +62,8 @@ const BlogGCSERevisionGuide = lazy(() => import("./pages/BlogGCSERevisionGuide")
 const BlogALevelRevisionGuide = lazy(() => import("./pages/BlogALevelRevisionGuide"));
 const BlogHSCVCEStudyNotes = lazy(() => import("./pages/BlogHSCVCEStudyNotes"));
 const PomodoroNotes = lazy(() => import("./pages/PomodoroNotes"));
+const AppPomodoro = lazy(() => import("./pages/AppPomodoro"));
+const AppStudyPlanner = lazy(() => import("./pages/AppStudyPlanner"));
 
 
 
