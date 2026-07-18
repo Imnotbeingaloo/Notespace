@@ -41,6 +41,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tempNotesEnabled] = useTempNotesEnabled();
   const [notebookArrows] = useNotebookArrows();
+  const isMobile = useIsMobile();
+  const showNotebookArrows = notebookArrows || isMobile;
   const navigate = useNavigate();
   const {
     notebooks,
