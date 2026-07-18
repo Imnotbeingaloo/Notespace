@@ -23,6 +23,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { SidebarUploadDialog } from "@/components/SidebarUploadDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
 import { useNotebookArrows } from "@/hooks/use-notebook-arrows";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AppSidebarProps {
   collapsed: boolean;
