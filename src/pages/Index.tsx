@@ -301,6 +301,7 @@ function AppContent() {
               )}
             </div>
             <div className="flex items-center gap-1">
+              <PomodoroPill variant="inline" />
               <OnboardingHelp />
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -321,32 +322,36 @@ function AppContent() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => setPomodoroOpen((p) => !p)}
-                    variant={pomodoroOpen ? "default" : "ghost"}
+                    onClick={() => {
+                      if (isNarrow) navigate("/app/pomodoro");
+                      else setPomodoroOpen((p) => !p);
+                    }}
+                    variant={pomodoroOpen && !isNarrow ? "default" : "ghost"}
                     size="icon"
                     className="h-8 w-8 rounded-xl shrink-0"
-                    aria-label={pomodoroOpen ? "Hide Pomodoro Timer" : "Show Pomodoro Timer"}
+                    aria-label="Pomodoro Timer"
                   >
                     <Timer className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>{pomodoroOpen ? "Hide Pomodoro" : "Pomodoro Timer"}</p>
+                  <p>Pomodoro Timer</p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => setPlannerOpen((p) => !p)}
-                    variant={plannerOpen ? "default" : "ghost"}
+                    onClick={() => navigate("/app/study-planner")}
+                    variant="ghost"
                     size="icon"
                     className="h-8 w-8 rounded-xl shrink-0"
+                    aria-label="Open Study Planner"
                   >
                     <CalendarDays className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
+                  <p>Open Study Planner</p>
                 </TooltipContent>
               </Tooltip>
             </div>
