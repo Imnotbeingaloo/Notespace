@@ -305,7 +305,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                 <DropdownMenuTrigger asChild>
                   <button
                     data-testid="home-create"
-                    className="inline-flex w-44 items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                    className="inline-flex w-auto sm:w-44 items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
                   >
                     <Plus className="h-4 w-4" />
                     Create
@@ -385,7 +385,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             <div
               role="tablist"
               aria-label="Sort notebooks"
-              className="inline-flex items-center gap-1 p-1 rounded-xl border border-border bg-card/80 backdrop-blur"
+              className="flex w-full sm:inline-flex sm:w-auto items-center gap-1 p-1 rounded-xl border border-border bg-card/80 backdrop-blur"
             >
               {(
                 [
@@ -399,7 +399,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                   role="tab"
                   aria-selected={sort === key}
                   onClick={() => setSort(key)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     sort === key
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
