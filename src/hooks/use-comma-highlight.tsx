@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-const STORAGE_KEY = "comma_highlight_on";
+
 
 /**
  * Persistent toggle for the reading-aid comma highlight overlay.
