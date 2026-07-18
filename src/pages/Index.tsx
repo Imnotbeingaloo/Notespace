@@ -274,7 +274,7 @@ function AppContent() {
               collapsed={!isMobile && sidebarCollapsed}
               onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
-              onOpenPlanner={() => setPlannerOpen(true)}
+              onOpenPlanner={() => navigate("/app/study-planner")}
               onOpenHome={() => { if (showHome) { handleExitToWebsite(); } else { openHome(); } }}
               onRequestNewNote={() => { setHomeCreateKind("note"); if (isMobile) setSidebarOpen(false); }}
             />
