@@ -37,7 +37,8 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [tempNotesEnabled, setTempNotesEnabled] = useTempNotesEnabled();
   const [wordCountGoalEnabled, setWordCountGoalEnabled] = useWordCountGoalEnabled();
   const [notebookArrows, setNotebookArrows] = useNotebookArrows();
-  const [commaHighlight, setCommaHighlight] = useCommaHighlight();
+  // Comma highlight overlay is always-on now; the toggle was removed from Settings.
+  useCommaHighlight();
   const [attachmentsOpen, setAttachmentsOpen] = useState(false);
 
   // Personal
