@@ -8,9 +8,9 @@ import { NoindexHead } from "@/components/NoindexHead";
 function StudyPlannerContent() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
       <NoindexHead title="Study Planner · Notespace" />
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-border shrink-0">
         <button
           onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/home"))}
           className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"

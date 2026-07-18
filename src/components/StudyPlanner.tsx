@@ -263,14 +263,16 @@ export function StudyPlanner({ onClose, showClose = true }: { onClose: () => voi
       </div>
 
       {/* Day sessions */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
-        <div className="flex items-center justify-between mb-2">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-2 flex flex-col">
+        <div className="flex items-center justify-between mb-2 shrink-0">
           <p className="text-xs font-medium text-muted-foreground">
             {isToday(selectedDate) ? "Today" : format(selectedDate, "EEEE, MMM d")}
           </p>
-          <Button variant="ghost" size="sm" className="h-6 text-xs gap-1" onClick={() => setShowAdd(true)}>
-            <Plus className="h-3 w-3" /> Add
-          </Button>
+          {(dayPlans.length > 0 || showAdd) && (
+            <Button variant="ghost" size="sm" className="h-6 text-xs gap-1" onClick={() => setShowAdd(true)}>
+              <Plus className="h-3 w-3" /> Add
+            </Button>
+          )}
         </div>
 
         <AnimatePresence mode="popLayout">
@@ -369,13 +371,22 @@ export function StudyPlanner({ onClose, showClose = true }: { onClose: () => voi
             </motion.div>
           )}
 
-          {/* Session list */}
+          {/* Empty state — prominent centered Add */}
           {dayPlans.length === 0 && !showAdd && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
-              <CalendarDays className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-              <p className="text-xs text-muted-foreground">No sessions planned</p>
-              <Button variant="ghost" size="sm" className="mt-2 text-xs gap-1" onClick={() => setShowAdd(true)}>
-                <Plus className="h-3 w-3" /> Plan a session
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex-1 flex flex-col items-center justify-center text-center py-10"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+                <CalendarDays className="h-7 w-7 text-primary" />
+              </div>
+              <p className="text-sm font-medium text-foreground">No sessions planned</p>
+              <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-[220px]">
+                Plan your first study session for {isToday(selectedDate) ? "today" : format(selectedDate, "MMM d")}.
+              </p>
+              <Button size="sm" className="gap-1.5" onClick={() => setShowAdd(true)}>
+                <Plus className="h-4 w-4" /> Add study session
               </Button>
             </motion.div>
           )}
