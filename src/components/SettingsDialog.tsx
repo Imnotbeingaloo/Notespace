@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, TextCursorInput, Paperclip } from "lucide-react";
+import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, Paperclip } from "lucide-react";
 import { GlobalAttachmentsDialog } from "@/components/GlobalAttachmentsDialog";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/use-profile";
@@ -37,7 +37,8 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [tempNotesEnabled, setTempNotesEnabled] = useTempNotesEnabled();
   const [wordCountGoalEnabled, setWordCountGoalEnabled] = useWordCountGoalEnabled();
   const [notebookArrows, setNotebookArrows] = useNotebookArrows();
-  const [commaHighlight, setCommaHighlight] = useCommaHighlight();
+  // Comma highlight overlay is always-on now; the toggle was removed from Settings.
+  useCommaHighlight();
   const [attachmentsOpen, setAttachmentsOpen] = useState(false);
 
   // Personal
@@ -126,16 +127,16 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl w-[95vw] max-w-[95vw] p-0 overflow-hidden gap-0">
-        <div className="flex flex-col sm:flex-row sm:min-h-[480px]">
+        <div className="flex flex-col sm:flex-row sm:min-h-[480px] min-w-0 w-full">
           {/* Sidebar tabs */}
-          <aside className="sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3">
+          <aside className="sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3 min-w-0">
             <h2 className="px-2 py-2 text-xs uppercase tracking-wider font-mono text-muted-foreground">Settings</h2>
-            <nav className="flex sm:flex-col gap-1 overflow-x-auto sm:overflow-visible">
+            <nav className="flex sm:flex-col gap-1 overflow-x-auto sm:overflow-visible scrollbar-none">
               {TABS.map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   onClick={() => setTab(id)}
-                  className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors whitespace-nowrap text-left ${
+                  className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors whitespace-nowrap text-left shrink-0 ${
                     tab === id
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:bg-background/50 hover:text-foreground"
@@ -149,7 +150,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </aside>
 
           {/* Content */}
-          <section className="flex-1 p-4 sm:p-8 overflow-y-auto max-h-[80vh] sm:max-h-none">
+          <section className="flex-1 min-w-0 p-4 sm:p-8 overflow-y-auto max-h-[80vh] sm:max-h-none">
             {tab === "personal" && (
               <div className="space-y-6">
                 <div>
@@ -337,27 +338,8 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border p-4 flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <TextCursorInput className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-3">
-                      <h4 className="text-sm font-semibold text-foreground">Comma highlight overlay</h4>
-                      <Switch
-                        checked={commaHighlight}
-                        onCheckedChange={(v) => {
-                          setCommaHighlight(v);
-                          (v ? toast.success : toast.warning)(v ? "Comma highlight on" : "Comma highlight off");
-                        }}
-                        aria-label="Toggle comma highlight overlay"
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      A subtle color tint on every comma when the editor is idle - a reading aid for spotting sentence rhythm. Vanishes while you type.
-                    </p>
-                  </div>
-                </div>
+
+
 
                 {import.meta.env.DEV && (
                   <div className="rounded-xl border border-dashed border-border p-4 flex items-start gap-3">
