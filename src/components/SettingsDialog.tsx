@@ -125,8 +125,8 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl p-0 overflow-hidden gap-0">
-        <div className="flex flex-col sm:flex-row min-h-[480px]">
+      <DialogContent className="sm:max-w-3xl w-[95vw] max-w-[95vw] p-0 overflow-hidden gap-0">
+        <div className="flex flex-col sm:flex-row sm:min-h-[480px]">
           {/* Sidebar tabs */}
           <aside className="sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3">
             <h2 className="px-2 py-2 text-xs uppercase tracking-wider font-mono text-muted-foreground">Settings</h2>
