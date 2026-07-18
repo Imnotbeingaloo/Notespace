@@ -59,7 +59,7 @@ export function WordCount({ content }: WordCountProps) {
   if (stats.words === 0 && stats.chars === 0) return null;
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3 px-4 py-1.5 text-[10px] sm:text-[11px] text-muted-foreground select-none whitespace-nowrap tabular-nums">
+    <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 text-[10px] sm:text-[11px] text-muted-foreground select-none whitespace-nowrap tabular-nums overflow-x-auto max-w-full [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <span className="inline-flex items-center gap-1">
         <FileText className="h-3 w-3" />
         <span className={`${pulseCls} ${bounce(wordsPulse)}`}>{stats.words.toLocaleString()}</span>

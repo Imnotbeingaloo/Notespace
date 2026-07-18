@@ -2,8 +2,8 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { NotebookProvider } from "@/context/NotebookContext";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
-import { StudyPlanner } from "@/components/StudyPlanner";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
+import { PomodoroPill } from "@/components/PomodoroPill";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
@@ -32,9 +32,17 @@ function AppContent() {
     return window.innerWidth >= 768;
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [plannerOpen, setPlannerOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
+  // Tablet + mobile route Pomodoro/Planner to their own pages instead of overlays.
+  const [isNarrow, setIsNarrow] = useState(() =>
+    typeof window === "undefined" ? false : window.innerWidth < 1024
+  );
+  useEffect(() => {
+    const onResize = () => setIsNarrow(window.innerWidth < 1024);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -266,7 +274,7 @@ function AppContent() {
               collapsed={!isMobile && sidebarCollapsed}
               onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
-              onOpenPlanner={() => setPlannerOpen(true)}
+              onOpenPlanner={() => navigate("/app/study-planner")}
               onOpenHome={() => { if (showHome) { handleExitToWebsite(); } else { openHome(); } }}
               onRequestNewNote={() => { setHomeCreateKind("note"); if (isMobile) setSidebarOpen(false); }}
             />
@@ -293,6 +301,7 @@ function AppContent() {
               )}
             </div>
             <div className="flex items-center gap-1">
+              <PomodoroPill variant="inline" />
               <OnboardingHelp />
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -313,38 +322,43 @@ function AppContent() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => setPomodoroOpen((p) => !p)}
-                    variant={pomodoroOpen ? "default" : "ghost"}
+                    onClick={() => {
+                      if (isNarrow) navigate("/app/pomodoro");
+                      else setPomodoroOpen((p) => !p);
+                    }}
+                    variant={pomodoroOpen && !isNarrow ? "default" : "ghost"}
                     size="icon"
                     className="h-8 w-8 rounded-xl shrink-0"
-                    aria-label={pomodoroOpen ? "Hide Pomodoro Timer" : "Show Pomodoro Timer"}
+                    aria-label="Pomodoro Timer"
                   >
                     <Timer className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>{pomodoroOpen ? "Hide Pomodoro" : "Pomodoro Timer"}</p>
+                  <p>Pomodoro Timer</p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => setPlannerOpen((p) => !p)}
-                    variant={plannerOpen ? "default" : "ghost"}
+                    onClick={() => navigate("/app/study-planner")}
+                    variant="ghost"
                     size="icon"
                     className="h-8 w-8 rounded-xl shrink-0"
+                    aria-label="Open Study Planner"
                   >
                     <CalendarDays className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>{plannerOpen ? "Close Study Planner" : "Open Study Planner"}</p>
+                  <p>Open Study Planner</p>
                 </TooltipContent>
               </Tooltip>
             </div>
           </div>
         </TooltipProvider>
         )}
+        {isMobile && <PomodoroPill variant="strip" />}
         <div className="flex-1 flex min-h-0 relative">
           <div className="flex-1 min-w-0 flex flex-col">
             {hydratingDeepLink || retryingDeepLink ? (
@@ -379,16 +393,7 @@ function AppContent() {
 
           </div>
           <AnimatePresence>
-            {plannerOpen && (
-              <div className="fixed inset-0 z-50 flex justify-end max-lg:bg-card lg:pointer-events-none">
-                <div className="w-full lg:w-auto lg:pointer-events-auto">
-                  <StudyPlanner onClose={() => setPlannerOpen(false)} />
-                </div>
-              </div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {pomodoroOpen && (
+            {pomodoroOpen && !isNarrow && (
               <PomodoroTimer onClose={() => setPomodoroOpen(false)} />
             )}
           </AnimatePresence>

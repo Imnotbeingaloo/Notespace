@@ -62,6 +62,8 @@ const BlogGCSERevisionGuide = lazy(() => import("./pages/BlogGCSERevisionGuide")
 const BlogALevelRevisionGuide = lazy(() => import("./pages/BlogALevelRevisionGuide"));
 const BlogHSCVCEStudyNotes = lazy(() => import("./pages/BlogHSCVCEStudyNotes"));
 const PomodoroNotes = lazy(() => import("./pages/PomodoroNotes"));
+const AppPomodoro = lazy(() => import("./pages/AppPomodoro"));
+const AppStudyPlanner = lazy(() => import("./pages/AppStudyPlanner"));
 
 
 
@@ -167,6 +169,8 @@ const App = () => (
                 <Route path="/how-it-works" element={<HowItWorksPage />} />
                 <Route path="/trash" element={<TrashPage />} />
                 <Route path="/app/temporary" element={<TemporaryWorkspacePage />} />
+                <Route path="/app/pomodoro" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><AppPomodoro /></Suspense>} />
+                <Route path="/app/study-planner" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><AppStudyPlanner /></Suspense>} />
                 <Route path="/shared/:token" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>}><SharedNotePage /></Suspense>} />
                 <Route path="/blog/best-ai-note-taking-apps-2026" element={<Suspense fallback={<BlogSkeleton />}><BlogBestAINoteTakingApps /></Suspense>} />
                 <Route path="/blog/best-note-taking-app-for-writers" element={<Suspense fallback={<BlogSkeleton />}><BlogBestNoteTakingAppForWriters /></Suspense>} />
