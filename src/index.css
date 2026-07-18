@@ -528,17 +528,17 @@
     background-image:
       linear-gradient(to right,
         transparent 0,
-        transparent 1.75rem,
-        var(--paper-margin) 1.75rem,
-        var(--paper-margin) calc(1.75rem + 1.5px),
-        transparent calc(1.75rem + 1.5px)),
+        transparent 1rem,
+        var(--paper-margin) 1rem,
+        var(--paper-margin) calc(1rem + 1.5px),
+        transparent calc(1rem + 1.5px)),
       repeating-linear-gradient(
         to bottom,
         transparent 0,
         transparent calc(1.75rem - 1px),
         var(--paper-rule) calc(1.75rem - 1px),
         var(--paper-rule) 1.75rem);
-    padding-left: 2.25rem !important;
+    padding-left: 1.5rem !important;
   }
 }
 .notebook-paper,
