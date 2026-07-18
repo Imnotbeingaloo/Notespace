@@ -25,7 +25,7 @@ interface StudyPlan {
   created_at: string;
 }
 
-export function StudyPlanner({ onClose }: { onClose: () => void }) {
+export function StudyPlanner({ onClose, showClose = true }: { onClose: () => void; showClose?: boolean }) {
   const { user } = useAuth();
   const { notebooks } = useNotebooks();
   const [plans, setPlans] = useState<StudyPlan[]>([]);
@@ -194,9 +194,11 @@ export function StudyPlanner({ onClose }: { onClose: () => void }) {
           <CalendarDays className="h-4 w-4 text-primary" />
           <h2 className="font-serif text-sm font-bold text-foreground">Study Planner</h2>
         </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
-          <X className="h-4 w-4" />
-        </Button>
+        {showClose && (
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       {/* Stats bar */}

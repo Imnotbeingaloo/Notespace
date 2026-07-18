@@ -199,18 +199,19 @@ function TrashPageContent() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-10"
         >
-          <div className="flex items-center gap-4 mb-6">
+          <div className="mb-6">
             <Button
               variant="ghost"
-              size="icon"
+              size="sm"
               onClick={goBackToApp}
-              className="shrink-0 rounded-xl hover:bg-muted"
+              className="mb-4 -ml-2 gap-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted"
               title="Back to your last notebook"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm">Back</span>
             </Button>
 
-            <div className="flex-1">
+            <div>
               <h1 className="text-3xl font-sans font-bold text-foreground flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-destructive/10 flex items-center justify-center">
                   <Trash2 className="h-5 w-5 text-destructive" />

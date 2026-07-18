@@ -22,6 +22,7 @@ function StudyPlannerContent() {
       </div>
       <div className="flex-1 flex min-h-0">
         <StudyPlanner
+          showClose={false}
           onClose={() => (window.history.length > 1 ? navigate(-1) : navigate("/home"))}
         />
       </div>
