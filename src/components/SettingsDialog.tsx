@@ -127,16 +127,16 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl w-[95vw] max-w-[95vw] p-0 overflow-hidden gap-0">
-        <div className="flex flex-col sm:flex-row sm:min-h-[480px]">
+        <div className="flex flex-col sm:flex-row sm:min-h-[480px] min-w-0 w-full">
           {/* Sidebar tabs */}
-          <aside className="sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3">
+          <aside className="sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3 min-w-0">
             <h2 className="px-2 py-2 text-xs uppercase tracking-wider font-mono text-muted-foreground">Settings</h2>
-            <nav className="flex sm:flex-col gap-1 overflow-x-auto sm:overflow-visible">
+            <nav className="flex sm:flex-col gap-1 overflow-x-auto sm:overflow-visible scrollbar-none">
               {TABS.map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   onClick={() => setTab(id)}
-                  className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors whitespace-nowrap text-left ${
+                  className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors whitespace-nowrap text-left shrink-0 ${
                     tab === id
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:bg-background/50 hover:text-foreground"
@@ -150,7 +150,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </aside>
 
           {/* Content */}
-          <section className="flex-1 p-4 sm:p-8 overflow-y-auto max-h-[80vh] sm:max-h-none">
+          <section className="flex-1 min-w-0 p-4 sm:p-8 overflow-y-auto max-h-[80vh] sm:max-h-none">
             {tab === "personal" && (
               <div className="space-y-6">
                 <div>
