@@ -385,7 +385,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             <div
               role="tablist"
               aria-label="Sort notebooks"
-              className="inline-flex items-center gap-1 p-1 rounded-xl border border-border bg-card/80 backdrop-blur"
+              className="flex w-full sm:inline-flex sm:w-auto items-center gap-1 p-1 rounded-xl border border-border bg-card/80 backdrop-blur"
             >
               {(
                 [
@@ -399,7 +399,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                   role="tab"
                   aria-selected={sort === key}
                   onClick={() => setSort(key)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     sort === key
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
