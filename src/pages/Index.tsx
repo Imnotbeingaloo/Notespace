@@ -392,16 +392,7 @@ function AppContent() {
 
           </div>
           <AnimatePresence>
-            {plannerOpen && (
-              <div className="fixed inset-0 z-50 flex justify-end max-lg:bg-card lg:pointer-events-none">
-                <div className="w-full lg:w-auto lg:pointer-events-auto">
-                  <StudyPlanner onClose={() => setPlannerOpen(false)} />
-                </div>
-              </div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {pomodoroOpen && (
+            {pomodoroOpen && !isNarrow && (
               <PomodoroTimer onClose={() => setPomodoroOpen(false)} />
             )}
           </AnimatePresence>
