@@ -263,14 +263,16 @@ export function StudyPlanner({ onClose, showClose = true }: { onClose: () => voi
       </div>
 
       {/* Day sessions */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
-        <div className="flex items-center justify-between mb-2">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-2 flex flex-col">
+        <div className="flex items-center justify-between mb-2 shrink-0">
           <p className="text-xs font-medium text-muted-foreground">
             {isToday(selectedDate) ? "Today" : format(selectedDate, "EEEE, MMM d")}
           </p>
-          <Button variant="ghost" size="sm" className="h-6 text-xs gap-1" onClick={() => setShowAdd(true)}>
-            <Plus className="h-3 w-3" /> Add
-          </Button>
+          {(dayPlans.length > 0 || showAdd) && (
+            <Button variant="ghost" size="sm" className="h-6 text-xs gap-1" onClick={() => setShowAdd(true)}>
+              <Plus className="h-3 w-3" /> Add
+            </Button>
+          )}
         </div>
 
         <AnimatePresence mode="popLayout">
