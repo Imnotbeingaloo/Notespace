@@ -581,7 +581,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     }}
                   >
                     <span className="flex items-center gap-1.5 flex-1 min-w-0">
-                      {notebookArrows && (
+                      {showNotebookArrows && (
                         <button
                           type="button"
                           onClick={(e) => {
