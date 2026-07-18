@@ -25,7 +25,7 @@ interface StudyPlan {
   created_at: string;
 }
 
-export function StudyPlanner({ onClose }: { onClose: () => void }) {
+export function StudyPlanner({ onClose, showClose = true }: { onClose: () => void; showClose?: boolean }) {
   const { user } = useAuth();
   const { notebooks } = useNotebooks();
   const [plans, setPlans] = useState<StudyPlan[]>([]);
