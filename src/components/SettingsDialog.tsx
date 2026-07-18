@@ -149,7 +149,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </aside>
 
           {/* Content */}
-          <section className="flex-1 p-6 sm:p-8 overflow-y-auto">
+          <section className="flex-1 p-4 sm:p-8 overflow-y-auto max-h-[80vh] sm:max-h-none">
             {tab === "personal" && (
               <div className="space-y-6">
                 <div>
