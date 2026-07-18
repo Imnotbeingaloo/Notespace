@@ -30,6 +30,9 @@ const TABS: { id: Tab; label: string; Icon: typeof UserIcon }[] = [
 
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [tab, setTab] = useState<Tab>("personal");
+  // On mobile, `mobileTab` = null shows the master list; a Tab value shows that page.
+  const [mobileTab, setMobileTab] = useState<Tab | null>(null);
+  useEffect(() => { if (!open) setMobileTab(null); }, [open]);
   const { user } = useAuth();
   const { profile, updateDisplayName, markPasswordChanged, daysSincePasswordChange, refresh } = useProfile();
   const { theme, setTheme } = useTheme();
