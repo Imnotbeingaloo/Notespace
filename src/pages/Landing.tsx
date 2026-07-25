@@ -714,8 +714,8 @@ export default function LandingPage() {
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
               The free plan is the full product - no credit card, no trial timer, no upsell wall. Open it and start writing.
             </p>
-            <Link to={user ? "/home" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
+            <Link to={showAppCta ? "/home" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+              {showAppCta ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
