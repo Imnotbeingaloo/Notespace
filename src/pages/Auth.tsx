@@ -280,7 +280,7 @@ const AuthPage = () => {
         return;
       }
       if (result.redirected) return;
-      try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+      try { localStorage.setItem("pendingNamePrompt", "1"); sessionStorage.setItem("playSplash", "1"); } catch {}
       navigate(resolvePostAuthTarget());
     } catch (e) {
       cancelled = true;
