@@ -88,7 +88,10 @@ const navLinks = [
 
 
 export default function LandingPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  // Optimistically treat returning visitors as signed-in so the CTA doesn't
+  // flip from "Get Started" → "Open App" once auth resolves.
+  const showAppCta = !!user || (authLoading && hasLikelySession());
   const location = useLocation();
   const navigate = useNavigate();
   const fromApp = (location.state as { fromApp?: boolean } | null)?.fromApp === true;
