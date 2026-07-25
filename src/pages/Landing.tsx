@@ -2,7 +2,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
@@ -88,7 +88,10 @@ const navLinks = [
 
 
 export default function LandingPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  // Optimistically treat returning visitors as signed-in so the CTA doesn't
+  // flip from "Get Started" → "Open App" once auth resolves.
+  const showAppCta = !!user || (authLoading && hasLikelySession());
   const location = useLocation();
   const navigate = useNavigate();
   const fromApp = (location.state as { fromApp?: boolean } | null)?.fromApp === true;
@@ -276,7 +279,7 @@ export default function LandingPage() {
             )}
           </nav>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {user ? (
+            {showAppCta ? (
               <Link to="/home" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
                 Open App <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
               </Link>
@@ -364,8 +367,8 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4"
               >
-                <Link to={user ? "/home" : "/auth"} className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-                  {user ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5" />
+                <Link to={showAppCta ? "/home" : "/auth"} className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+                  {showAppCta ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5" />
                 </Link>
                 <Link to="/features" className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl border border-foreground/20 bg-muted px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-foreground hover:bg-muted/70 transition-colors">
                   See what it does
@@ -711,8 +714,8 @@ export default function LandingPage() {
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
               The free plan is the full product - no credit card, no trial timer, no upsell wall. Open it and start writing.
             </p>
-            <Link to={user ? "/home" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-              {user ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
+            <Link to={showAppCta ? "/home" : "/auth"} className="magnetic-btn inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+              {showAppCta ? "Open App" : "Get Started"} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>

@@ -490,7 +490,14 @@ const AppPage = () => {
     setSplashDone(true);
   }, []);
 
+  // If splash is armed (fresh sign-in) show it instead of the bare spinner
+  // while auth resolves — no more "spinner → static logo → animation" flash.
+  const splashArmed = !splashDone;
+
   if (authLoading) {
+    if (splashArmed) {
+      return <SplashScreen onComplete={handleSplashComplete} />;
+    }
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
