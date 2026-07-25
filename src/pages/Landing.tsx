@@ -2,7 +2,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, hasLikelySession } from "@/context/AuthContext";
 import { ShufflerCard, TypewriterCard, SchedulerCard } from "@/components/AnimatedFeatureCards";
 import AnimatedDivider from "@/components/AnimatedDivider";
 import Footer from "@/components/Footer";
