@@ -40,15 +40,8 @@
   font-display: swap;
   src: url('/fonts/merriweather-v33-latin-italic.woff2') format('woff2');
 }
-/* No dedicated italic 700 file exists — map bold italic to the 400 italic
-   face so the browser doesn't synthesize an oblique from the roman bold. */
-@font-face {
-  font-family: 'Merriweather';
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/merriweather-v33-latin-italic.woff2') format('woff2');
-}
+/* Intentionally no italic-700 face: h1 is font-bold, so the browser
+   synthesizes bold from the 400 italic face — that's the original look. */
 
 
 @tailwind base;
