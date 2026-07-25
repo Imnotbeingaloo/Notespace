@@ -313,7 +313,7 @@ const AuthPage = () => {
         return;
       }
       if (result.redirected) return;
-      try { localStorage.setItem("pendingNamePrompt", "1"); } catch {}
+      try { localStorage.setItem("pendingNamePrompt", "1"); sessionStorage.setItem("playSplash", "1"); } catch {}
       navigate(resolvePostAuthTarget());
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Apple sign-in failed.";
@@ -416,7 +416,8 @@ const AuthPage = () => {
 
 
       } else {
-        // Sign-in: silent transition, no WelcomeBackDialog.
+        // Sign-in: play the splash animation over the app on arrival.
+        try { sessionStorage.setItem("playSplash", "1"); } catch {}
         navigate(resolvePostAuthTarget());
       }
     } else {
@@ -446,6 +447,7 @@ const AuthPage = () => {
         // If a session was created immediately (email confirmation disabled), go straight to the target
         const { data: { session: newSession } } = await supabase.auth.getSession();
         if (newSession) {
+          try { sessionStorage.setItem("playSplash", "1"); } catch {}
           navigate(resolvePostAuthTarget());
         } else {
           setCheckEmail(true);
