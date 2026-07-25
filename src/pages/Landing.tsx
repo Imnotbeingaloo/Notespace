@@ -279,7 +279,7 @@ export default function LandingPage() {
             )}
           </nav>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {user ? (
+            {showAppCta ? (
               <Link to="/home" className="magnetic-btn inline-flex items-center gap-1.5 rounded-xl bg-primary px-2.5 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 whitespace-nowrap">
                 Open App <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
               </Link>
