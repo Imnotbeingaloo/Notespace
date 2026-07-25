@@ -265,6 +265,10 @@ const AuthPage = () => {
       const oauthRedirect = fromPath
         ? `${window.location.origin}${fromPath}`
         : `${window.location.origin}/home`;
+      // Arm the splash BEFORE calling OAuth — full-page redirect flows never
+      // reach the code after `signInWithOAuth`, so arming afterwards means
+      // the splash animation is skipped on return.
+      try { sessionStorage.setItem("playSplash", "1"); } catch {}
       const result = await lovable.auth.signInWithOAuth("google", {
         redirect_uri: oauthRedirect,
       });
@@ -301,6 +305,7 @@ const AuthPage = () => {
       const oauthRedirect = fromPath
         ? `${window.location.origin}${fromPath}`
         : `${window.location.origin}/home`;
+      try { sessionStorage.setItem("playSplash", "1"); } catch {}
       const result = await lovable.auth.signInWithOAuth("apple", {
         redirect_uri: oauthRedirect,
       });

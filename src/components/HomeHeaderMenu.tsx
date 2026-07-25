@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LogOut, Moon, Sun, Settings, Trash2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
@@ -18,6 +18,7 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
   const isDark = theme === "dark";
   const [open, setOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const initial = (profile?.display_name?.[0] || user?.email?.[0] || "U").toUpperCase();
 
@@ -28,9 +29,12 @@ export function HomeHeaderMenu({ trashCount }: HomeHeaderMenuProps) {
     setOpen(false);
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setOpen(false);
-    signOut();
+    // Route to landing with fromApp so the ExitBookFlash animation plays,
+    // then sign out once the splash is on screen.
+    navigate("/", { state: { fromApp: true } });
+    await signOut();
   };
 
   const openSettings = () => {
