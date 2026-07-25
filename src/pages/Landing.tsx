@@ -367,8 +367,8 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4"
               >
-                <Link to={user ? "/home" : "/auth"} className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
-                  {user ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5" />
+                <Link to={showAppCta ? "/home" : "/auth"} className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25">
+                  {showAppCta ? "Open App" : "Start writing"} <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5" />
                 </Link>
                 <Link to="/features" className="magnetic-btn w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-2xl border border-foreground/20 bg-muted px-5 py-2.5 text-sm md:px-6 md:py-3 md:text-[15px] lg:px-8 lg:py-3.5 lg:text-base font-semibold text-foreground hover:bg-muted/70 transition-colors">
                   See what it does
