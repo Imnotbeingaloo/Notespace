@@ -35,6 +35,7 @@ function AppContent() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
+  const [studyPlannerOpen, setStudyPlannerOpen] = useState(false);
   // Tablet + mobile route Pomodoro/Planner to their own pages instead of overlays.
   const [isNarrow, setIsNarrow] = useState(() =>
     typeof window === "undefined" ? false : window.innerWidth < 1024
