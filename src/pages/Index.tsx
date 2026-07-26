@@ -343,8 +343,11 @@ function AppContent() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => navigate("/app/study-planner")}
-                    variant="ghost"
+                    onClick={() => {
+                      if (isNarrow) navigate("/app/study-planner");
+                      else setStudyPlannerOpen((p) => !p);
+                    }}
+                    variant={studyPlannerOpen && !isNarrow ? "default" : "ghost"}
                     size="icon"
                     className="h-8 w-8 rounded-xl shrink-0"
                     aria-label="Open Study Planner"
