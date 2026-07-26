@@ -20,11 +20,13 @@ function StudyPlannerContent() {
           <span>Back</span>
         </button>
       </div>
-      <div className="flex-1 flex min-h-0">
-        <StudyPlanner
-          showClose={false}
-          onClose={() => (window.history.length > 1 ? navigate(-1) : navigate("/home"))}
-        />
+      <div className="flex-1 flex min-h-0 justify-center overflow-y-auto">
+        <div className="w-full max-w-md lg:max-w-lg mx-auto">
+          <StudyPlanner
+            showClose={false}
+            onClose={() => (window.history.length > 1 ? navigate(-1) : navigate("/home"))}
+          />
+        </div>
       </div>
     </div>
   );
