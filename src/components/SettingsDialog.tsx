@@ -129,8 +129,8 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl w-[95vw] max-w-[95vw] p-0 overflow-hidden gap-0">
-        <div className="flex flex-col sm:flex-row sm:min-h-[480px] min-w-0 w-full">
+      <DialogContent className="sm:max-w-3xl w-screen h-screen max-w-none sm:w-[95vw] sm:max-w-3xl sm:h-auto sm:rounded-lg rounded-none p-0 overflow-hidden gap-0 border-0 sm:border translate-x-0 translate-y-0 left-0 top-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%]">
+        <div className="flex flex-col sm:flex-row sm:min-h-[480px] min-w-0 w-full h-full sm:h-auto">
           {/* Desktop sidebar tabs (hidden on mobile) */}
           <aside className="hidden sm:block sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3 min-w-0">
             <h2 className="px-2 py-2 text-xs uppercase tracking-wider font-mono text-muted-foreground">Settings</h2>
@@ -154,10 +154,19 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
           {/* Mobile master list (hidden on desktop) */}
           {mobileTab === null && (
-            <div className="sm:hidden flex flex-col min-w-0 w-full max-h-[85vh] overflow-y-auto">
-              <div className="px-4 pt-5 pb-3 border-b border-border">
-                <h2 className="font-serif text-xl font-bold text-foreground">Settings</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Manage your account and preferences.</p>
+            <div className="sm:hidden flex flex-col min-w-0 w-full flex-1 overflow-y-auto">
+              <div className="px-4 pt-5 pb-3 border-b border-border flex items-center justify-between">
+                <div>
+                  <h2 className="font-serif text-xl font-bold text-foreground">Settings</h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">Manage your account and preferences.</p>
+                </div>
+                <button
+                  onClick={() => onOpenChange(false)}
+                  className="px-2 py-1 text-sm text-muted-foreground hover:text-foreground"
+                  aria-label="Close settings"
+                >
+                  Done
+                </button>
               </div>
               <nav className="flex flex-col p-2">
                 {TABS.map(({ id, label, Icon }) => (
@@ -179,7 +188,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
           {/* Content — desktop always; mobile only when a section is selected */}
           <section
-            className={`flex-1 min-w-0 overflow-y-auto max-h-[85vh] sm:max-h-none ${
+            className={`flex-1 min-w-0 overflow-y-auto max-h-none sm:max-h-none ${
               mobileTab === null ? "hidden sm:block" : "block"
             } sm:p-8`}
           >
