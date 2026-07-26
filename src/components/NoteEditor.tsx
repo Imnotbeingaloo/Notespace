@@ -1016,8 +1016,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
         </div>
 
-        {/* Attachments management moved into a dev-only dialog launched from the More menu.
-            Inline attachment links inside the note body remain clickable as always. */}
+        {/* Per-note attachments manager (remove / replace / download) */}
+        <AttachmentsDialog open={attachmentsOpen} onOpenChange={setAttachmentsOpen} />
 
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
