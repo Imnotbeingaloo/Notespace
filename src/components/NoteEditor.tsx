@@ -945,6 +945,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                           <Paperclip className="h-3.5 w-3.5" />
                           Attachments{activeNote?.attachments?.length ? ` (${activeNote.attachments.length})` : ""}
                         </button>
+                      </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
                         <ImportNotesButton
@@ -959,6 +960,13 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
+                        <button
+                          onClick={() => { setMoreOpen(false); setAttachmentsOpen(true); }}
+                          className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                        >
+                          <Paperclip className="h-3.5 w-3.5" />
+                          Attachments{activeNote?.attachments?.length ? ` (${activeNote.attachments.length})` : ""}
+                        </button>
                       </div>
                     </motion.div>
                   )}
