@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { PomodoroPill } from "@/components/PomodoroPill";
+import { StudyPlanner } from "@/components/StudyPlanner";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
