@@ -36,10 +36,8 @@ export default function AppPomodoroPage() {
         </button>
         <h1 className="ml-2 font-serif text-sm font-bold text-foreground">Pomodoro</h1>
       </div>
-      <div className="flex-1 flex items-start justify-center px-4 py-6 sm:py-10 lg:py-16">
-        <div className="w-full max-w-md lg:max-w-lg">
-          <PomodoroTimer variant="inline" />
-        </div>
+      <div className="flex-1 flex items-start justify-center px-4 py-6 sm:py-10">
+        <PomodoroTimer variant="inline" />
       </div>
     </div>
   );

@@ -44,25 +44,19 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
         >
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: [0, 1.2, 1], opacity: [0, 0.25, 0.15] }}
+            animate={{ scale: 1, opacity: 0.15 }}
             transition={{ duration: fast ? 0.4 : 1.5, ease: "easeOut" }}
             className="absolute w-80 h-80 rounded-full bg-primary blur-3xl"
           />
 
-          <motion.div
-            className="relative z-10"
+          <motion.img
+            src="/logo.png"
+            alt="Notespace"
+            className="relative z-10 h-[3rem] w-[3rem] object-contain"
             initial={{ scale: 0.3, opacity: 0, rotate: fast ? 0 : -15 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            transition={{ duration: fast ? 0.3 : 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <motion.img
-              src="/logo.png"
-              alt="Notespace"
-              className="h-[3rem] w-[3rem] object-contain"
-              animate={fast ? undefined : { y: [0, -6, 0] }}
-              transition={fast ? undefined : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div>
+            transition={{ duration: fast ? 0.3 : 0.7, ease: [0.16, 1, 0.3, 1] }}
+          />
 
           {!fast && (
             <>
