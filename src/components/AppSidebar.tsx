@@ -540,8 +540,10 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     onDragStart={(e) => {
                       setDraggedNotebookId(nb.id);
                       e.dataTransfer.effectAllowed = "move";
+                      // Collapse the picked-up notebook while it's being repositioned
+                      if (expandedNotebook === nb.id) setExpandedNotebook(null);
                     }}
-                    onDragEnd={() => { setDraggedNotebookId(null); setDragOverNotebookId(null); }}
+                    onDragEnd={() => { setDraggedNotebookId(null); setDragOverNotebookId(null); setNotebookDropZone(null); }}
                     onDragOver={(e) => {
                       const canAcceptNotebook = draggedNotebookId && draggedNotebookId !== nb.id && !nb.parent_id;
                       const canAcceptNote = dragNoteId && dragNoteFromNb !== nb.id;
@@ -549,9 +551,15 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         e.preventDefault();
                         e.dataTransfer.dropEffect = "move";
                         setDragOverNotebookId(nb.id);
+                        if (canAcceptNotebook) {
+                          const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                          const y = e.clientY - rect.top;
+                          const zone: "before" | "after" | "center" =
+                            y < rect.height * 0.3 ? "before" : y > rect.height * 0.7 ? "after" : "center";
+                          setNotebookDropZone(zone);
+                        }
                         if (canAcceptNote) {
                           setNoteDropTargetNb(nb.id);
-                          // Auto-expand the notebook so user can choose a position
                           if (expandedNotebook !== nb.id) setExpandedNotebook(nb.id);
                         }
                       }
@@ -559,11 +567,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                     onDragLeave={() => {
                       setDragOverNotebookId(null);
                       setNoteDropTargetNb(null);
+                      setNotebookDropZone(null);
                     }}
                     onDrop={(e) => {
                       e.preventDefault();
+                      const zone = notebookDropZone;
                       setDragOverNotebookId(null);
                       setNoteDropTargetNb(null);
+                      setNotebookDropZone(null);
 
                       // Cross-notebook note move
                       if (dragNoteId && dragNoteFromNb !== nb.id) {
@@ -581,17 +592,26 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         setDragNoteId(null); setDragNoteFromNb(null);
                         return;
                       }
-                      // Nest notebook
+                      // Notebook drop: reorder (top/bottom edge) or nest (center)
                       if (draggedNotebookId && draggedNotebookId !== nb.id) {
-                        setPendingNestChild({ childId: draggedNotebookId, parentId: nb.id });
+                        if (zone === "before" || zone === "after") {
+                          const currentOrder = topLevelNotebooks.map((n) => n.id);
+                          const fromIdx = currentOrder.indexOf(draggedNotebookId);
+                          if (fromIdx !== -1) currentOrder.splice(fromIdx, 1);
+                          const insertAt = currentOrder.indexOf(nb.id) + (zone === "after" ? 1 : 0);
+                          currentOrder.splice(insertAt, 0, draggedNotebookId);
+                          persistOrder(currentOrder);
+                        } else {
+                          setPendingNestChild({ childId: draggedNotebookId, parentId: nb.id });
+                        }
                         setDraggedNotebookId(null);
                       }
                     }}
-                    className={`group magnetic-btn flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
+                    className={`group magnetic-btn relative flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab text-sm transition-all duration-200 border-l-2 ${
                       activeNotebookId === nb.id
                         ? "bg-primary/20 border-primary text-foreground font-medium"
                         : "border-transparent text-sidebar-foreground hover:bg-primary/15 hover:border-primary/60"
-                    } ${dragOverNotebookId === nb.id ? "ring-2 ring-primary/50 bg-primary/10" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""}`}
+                    } ${dragOverNotebookId === nb.id && notebookDropZone === "center" ? "ring-2 ring-primary/50 bg-primary/10" : ""} ${draggedNotebookId === nb.id ? "opacity-40" : ""} ${dragOverNotebookId === nb.id && notebookDropZone === "before" ? "before:content-[''] before:absolute before:left-2 before:right-2 before:-top-[2px] before:h-[2px] before:bg-primary before:rounded" : ""} ${dragOverNotebookId === nb.id && notebookDropZone === "after" ? "after:content-[''] after:absolute after:left-2 after:right-2 after:-bottom-[2px] after:h-[2px] after:bg-primary after:rounded" : ""}`}
                     onClick={() => {
                       setActiveNotebookId(nb.id);
                       setExpandedNotebook(nb.id);
