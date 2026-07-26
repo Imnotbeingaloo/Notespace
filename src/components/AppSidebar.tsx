@@ -73,7 +73,26 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   } = useNotebooks();
 
   // Top-level vs nested notebooks
-  const topLevelNotebooks = useMemo(() => notebooks.filter((nb) => !nb.parent_id), [notebooks]);
+  const topLevelNotebooksRaw = useMemo(() => notebooks.filter((nb) => !nb.parent_id), [notebooks]);
+
+  // Persisted user-configured order of top-level notebooks (drag to reorder).
+  const ORDER_KEY = "notebook-order-v1";
+  const [orderIds, setOrderIds] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem(ORDER_KEY) || "[]"); } catch { return []; }
+  });
+  const persistOrder = useCallback((ids: string[]) => {
+    setOrderIds(ids);
+    try { localStorage.setItem(ORDER_KEY, JSON.stringify(ids)); } catch {}
+  }, []);
+  const topLevelNotebooks = useMemo(() => {
+    const byId = new Map(topLevelNotebooksRaw.map((n) => [n.id, n] as const));
+    const ordered: typeof topLevelNotebooksRaw = [];
+    for (const id of orderIds) { const n = byId.get(id); if (n) { ordered.push(n); byId.delete(id); } }
+    for (const n of topLevelNotebooksRaw) { if (byId.has(n.id)) ordered.push(n); }
+    return ordered;
+  }, [topLevelNotebooksRaw, orderIds]);
+
   const childrenByParent = useMemo(() => {
     const map = new Map<string, typeof notebooks>();
     notebooks.forEach((nb) => {
@@ -91,6 +110,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [pendingNestChild, setPendingNestChild] = useState<{ childId: string; parentId: string } | null>(null);
   const [draggedNotebookId, setDraggedNotebookId] = useState<string | null>(null);
   const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(null);
+  const [notebookDropZone, setNotebookDropZone] = useState<"before" | "after" | "center" | null>(null);
   const [expandedNotebook, setExpandedNotebook] = useState<string | null>(activeNotebookId);
 
   // Auto-collapse any previously open notebook when the active selection
