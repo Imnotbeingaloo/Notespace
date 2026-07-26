@@ -401,6 +401,9 @@ function AppContent() {
             {pomodoroOpen && !isNarrow && (
               <PomodoroTimer onClose={() => setPomodoroOpen(false)} />
             )}
+            {studyPlannerOpen && !isNarrow && (
+              <StudyPlanner onClose={() => setStudyPlannerOpen(false)} />
+            )}
           </AnimatePresence>
         </div>
       </div>
