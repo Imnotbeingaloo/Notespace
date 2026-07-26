@@ -502,14 +502,22 @@ const AppPage = () => {
   // while auth resolves — no more "spinner → static logo → animation" flash.
   const splashArmed = !splashDone;
 
+  // Render splash ONCE while armed — outside conditional trees so it doesn't
+  // remount when auth resolves (that caused the "static logo" flash).
+  const splash = splashArmed ? (
+    <SplashScreen onComplete={handleSplashComplete} />
+  ) : null;
+
   if (authLoading) {
-    if (splashArmed) {
-      return <SplashScreen onComplete={handleSplashComplete} />;
-    }
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-      </div>
+      <>
+        {splash}
+        {!splashArmed && (
+          <div className="min-h-screen flex items-center justify-center bg-background">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
+      </>
     );
   }
 
@@ -521,7 +529,7 @@ const AppPage = () => {
   return (
     <NotebookProvider>
       <NoindexHead title="Notespace" />
-      {!splashDone && <SplashScreen onComplete={handleSplashComplete} />}
+      {splash}
       <AppContent />
     </NotebookProvider>
   );
