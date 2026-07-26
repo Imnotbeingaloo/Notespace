@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { NoteEditor } from "@/components/NoteEditor";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { PomodoroPill } from "@/components/PomodoroPill";
+import { StudyPlanner } from "@/components/StudyPlanner";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { CalendarDays, Loader2, Maximize2, Minimize2, Timer } from "lucide-react";
@@ -34,6 +35,7 @@ function AppContent() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
+  const [studyPlannerOpen, setStudyPlannerOpen] = useState(false);
   // Tablet + mobile route Pomodoro/Planner to their own pages instead of overlays.
   const [isNarrow, setIsNarrow] = useState(() =>
     typeof window === "undefined" ? false : window.innerWidth < 1024
@@ -274,7 +276,7 @@ function AppContent() {
               collapsed={!isMobile && sidebarCollapsed}
               onToggle={() => isMobile ? setSidebarOpen((p) => !p) : setSidebarCollapsed((p) => !p)}
               onSelectNote={() => { setShowHome(false); if (isMobile) setSidebarOpen(false); }}
-              onOpenPlanner={() => navigate("/app/study-planner")}
+              onOpenPlanner={() => { if (isNarrow) navigate("/app/study-planner"); else setStudyPlannerOpen((p) => !p); }}
               onOpenHome={() => { if (showHome) { handleExitToWebsite(); } else { openHome(); } }}
               onRequestNewNote={() => { setHomeCreateKind("note"); if (isMobile) setSidebarOpen(false); }}
             />
@@ -341,8 +343,11 @@ function AppContent() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => navigate("/app/study-planner")}
-                    variant="ghost"
+                    onClick={() => {
+                      if (isNarrow) navigate("/app/study-planner");
+                      else setStudyPlannerOpen((p) => !p);
+                    }}
+                    variant={studyPlannerOpen && !isNarrow ? "default" : "ghost"}
                     size="icon"
                     className="h-8 w-8 rounded-xl shrink-0"
                     aria-label="Open Study Planner"
@@ -395,6 +400,9 @@ function AppContent() {
           <AnimatePresence>
             {pomodoroOpen && !isNarrow && (
               <PomodoroTimer onClose={() => setPomodoroOpen(false)} />
+            )}
+            {studyPlannerOpen && !isNarrow && (
+              <StudyPlanner onClose={() => setStudyPlannerOpen(false)} />
             )}
           </AnimatePresence>
         </div>
@@ -494,14 +502,22 @@ const AppPage = () => {
   // while auth resolves — no more "spinner → static logo → animation" flash.
   const splashArmed = !splashDone;
 
+  // Render splash ONCE while armed — outside conditional trees so it doesn't
+  // remount when auth resolves (that caused the "static logo" flash).
+  const splash = splashArmed ? (
+    <SplashScreen onComplete={handleSplashComplete} />
+  ) : null;
+
   if (authLoading) {
-    if (splashArmed) {
-      return <SplashScreen onComplete={handleSplashComplete} />;
-    }
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-      </div>
+      <>
+        {splash}
+        {!splashArmed && (
+          <div className="min-h-screen flex items-center justify-center bg-background">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
+      </>
     );
   }
 
@@ -513,7 +529,7 @@ const AppPage = () => {
   return (
     <NotebookProvider>
       <NoindexHead title="Notespace" />
-      {!splashDone && <SplashScreen onComplete={handleSplashComplete} />}
+      {splash}
       <AppContent />
     </NotebookProvider>
   );
