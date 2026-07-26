@@ -86,7 +86,7 @@ const DISPOSABLE_DOMAINS = new Set<string>([
   "obobbo.com", "odaymail.com", "onewaymail.com", "onlatedotcom.info",
   "online.ms", "oopi.org", "ordinaryamerican.net", "otherinbox.com",
   "ovpn.to", "owlpic.com", "pancakemail.com", "pcusers.otherinbox.com",
-  "pjjkp.com", "plexolan.de", "poczta.onet.pl", "politikerclub.de", "poofy.org",
+  "pjjkp.com", "plexolan.de", "politikerclub.de", "poofy.org",
   "pookmail.com", "privacy.net", "privatdemail.net", "proxymail.eu",
   "prtnx.com", "punkass.com", "putthisinyourspamdatabase.com", "quickinbox.com",
   "rcpt.at", "reallymymail.com", "recode.me", "recursor.net", "regbypass.com",
