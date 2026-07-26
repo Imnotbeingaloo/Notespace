@@ -321,7 +321,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
       initial={false}
       animate={{ width: collapsed ? 64 : 280 }}
       transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] max-w-[85vw] scrollbar-thin"
+      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden flex-shrink-0 w-[280px] md:w-[200px] lg:w-[280px] max-w-[85vw] scrollbar-thin"
     >
       {/* Header - collapsed state matches the editor topbar height (48px + 1px border)
           so the horizontal divider continues flush across the entire app width. */}
