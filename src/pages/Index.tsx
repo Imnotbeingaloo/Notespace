@@ -481,11 +481,19 @@ const AppPage = () => {
   // Direct deep links to /home, internal SPA nav, and reloads do NOT trigger it.
   const [splashDone, setSplashDone] = useState(() => {
     try {
-      const armed = sessionStorage.getItem("playSplash") === "1";
-      if (armed) sessionStorage.removeItem("playSplash");
-      return !armed;
+      // Peek only — do NOT consume the flag in the initializer, otherwise a
+      // double render (StrictMode, Suspense, remount) removes it before the
+      // splash mounts and the animation is skipped.
+      return sessionStorage.getItem("playSplash") !== "1";
     } catch { return true; }
   });
+  useEffect(() => {
+    if (!splashDone) {
+      try { sessionStorage.removeItem("playSplash"); } catch {}
+    }
+    // Only clear once on first mount when splash is armed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const handleSplashComplete = useCallback(() => {
     setSplashDone(true);
   }, []);
