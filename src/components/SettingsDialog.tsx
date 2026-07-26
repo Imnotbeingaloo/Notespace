@@ -129,81 +129,44 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl w-screen h-screen max-w-none sm:w-[95vw] sm:max-w-3xl sm:h-auto sm:rounded-lg rounded-none p-0 overflow-hidden gap-0 border-0 sm:border translate-x-0 translate-y-0 left-0 top-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%]">
-        <div className="flex flex-col sm:flex-row sm:min-h-[480px] min-w-0 w-full h-full sm:h-auto">
-          {/* Desktop sidebar tabs (hidden on mobile) */}
-          <aside className="hidden sm:block sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3 min-w-0">
-            <h2 className="px-2 py-2 text-xs uppercase tracking-wider font-mono text-muted-foreground">Settings</h2>
+      <DialogContent className="sm:max-w-3xl w-screen h-[100dvh] max-w-none sm:w-[95vw] sm:h-auto sm:rounded-lg rounded-none p-0 overflow-hidden gap-0 border-0 sm:border translate-x-0 translate-y-0 left-0 top-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom sm:data-[state=closed]:slide-out-to-bottom-0 data-[state=open]:slide-in-from-bottom sm:data-[state=open]:slide-in-from-bottom-0 sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95">
+        {/* Mobile top bar with Done */}
+        <div className="sm:hidden flex items-center justify-between px-4 h-12 border-b border-border shrink-0">
+          <h2 className="font-serif text-base font-bold text-foreground">Settings</h2>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="text-sm font-medium text-primary hover:opacity-80 transition-opacity"
+            aria-label="Close settings"
+          >
+            Done
+          </button>
+        </div>
+
+        <div className="flex flex-row sm:min-h-[480px] min-w-0 w-full flex-1 min-h-0 sm:flex-none">
+          {/* Side tabs — compact on mobile, full on desktop */}
+          <aside className="w-[96px] sm:w-52 shrink-0 bg-muted/30 border-r border-border p-2 sm:p-3 min-w-0 overflow-y-auto">
+            <h2 className="hidden sm:block px-2 py-2 text-xs uppercase tracking-wider font-mono text-muted-foreground">Settings</h2>
             <nav className="flex flex-col gap-1">
               {TABS.map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   onClick={() => setTab(id)}
-                  className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors whitespace-nowrap text-left ${
+                  className={`flex flex-col sm:flex-row items-center sm:gap-2 gap-1 px-2 sm:px-3 py-2.5 sm:py-2 text-[11px] sm:text-sm rounded-lg transition-all whitespace-nowrap text-center sm:text-left ${
                     tab === id
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:bg-background/50 hover:text-foreground"
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
-                  {label}
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="leading-tight">{label}</span>
                 </button>
               ))}
             </nav>
           </aside>
 
-          {/* Mobile master list (hidden on desktop) */}
-          {mobileTab === null && (
-            <div className="sm:hidden flex flex-col min-w-0 w-full flex-1 overflow-y-auto">
-              <div className="px-4 pt-5 pb-3 border-b border-border flex items-center justify-between">
-                <div>
-                  <h2 className="font-serif text-xl font-bold text-foreground">Settings</h2>
-                  <p className="text-xs text-muted-foreground mt-0.5">Manage your account and preferences.</p>
-                </div>
-                <button
-                  onClick={() => onOpenChange(false)}
-                  className="px-2 py-1 text-sm text-muted-foreground hover:text-foreground"
-                  aria-label="Close settings"
-                >
-                  Done
-                </button>
-              </div>
-              <nav className="flex flex-col p-2">
-                {TABS.map(({ id, label, Icon }) => (
-                  <button
-                    key={id}
-                    onClick={() => { setTab(id); setMobileTab(id); }}
-                    className="flex items-center gap-3 px-3 py-3.5 rounded-lg text-left hover:bg-muted/60 transition-colors"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                      <Icon className="h-4 w-4 text-foreground" />
-                    </div>
-                    <span className="flex-1 text-sm font-medium text-foreground">{label}</span>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                ))}
-              </nav>
-            </div>
-          )}
-
-          {/* Content — desktop always; mobile only when a section is selected */}
-          <section
-            className={`flex-1 min-w-0 overflow-y-auto max-h-none sm:max-h-none ${
-              mobileTab === null ? "hidden sm:block" : "block"
-            } sm:p-8`}
-          >
-            {/* Mobile back header */}
-            <div className="sm:hidden sticky top-0 z-10 flex items-center gap-2 px-3 py-2.5 bg-background/95 backdrop-blur border-b border-border">
-              <button
-                onClick={() => setMobileTab(null)}
-                className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                aria-label="Back to settings"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                <span>Settings</span>
-              </button>
-            </div>
-            <div className="p-4 sm:p-0">
+          {/* Content */}
+          <section className="flex-1 min-w-0 overflow-y-auto sm:max-h-none sm:p-8">
+            <div key={tab} className="p-4 sm:p-0 animate-fade-in">
             {tab === "personal" && (
               <div className="space-y-6">
                 <div>
