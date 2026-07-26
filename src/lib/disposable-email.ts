@@ -82,7 +82,7 @@ const DISPOSABLE_DOMAINS = new Set<string>([
   "nincsmail.hu", "nnh.com", "no-spam.ws", "noblepioneer.com", "nomail.pw",
   "nomail.xl.cx", "nomail2me.com", "nomorespamemails.com", "nospam.wins.com.br",
   "nospam4.us", "nospamfor.us", "nospammail.net", "notmailinator.com",
-  "nowmymail.com", "nurfuerspam.de", "nus.edu.sg", "objectmail.com",
+  "nowmymail.com", "nurfuerspam.de", "objectmail.com",
   "obobbo.com", "odaymail.com", "onewaymail.com", "onlatedotcom.info",
   "online.ms", "oopi.org", "ordinaryamerican.net", "otherinbox.com",
   "ovpn.to", "owlpic.com", "pancakemail.com", "pcusers.otherinbox.com",
