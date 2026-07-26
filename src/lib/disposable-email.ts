@@ -138,8 +138,8 @@ const DISPOSABLE_DOMAINS = new Set<string>([
   "whyspam.me", "willselfdestruct.com", "winemaven.info", "wronghead.com",
   "wuzup.net", "wuzupmail.net", "www.e4ward.com", "www.mailinator.com",
   "wwwnew.eu", "x.ip6.li", "xagloo.com", "xemaps.com", "xents.com",
-  "xmaily.com", "xoxy.net", "yapped.net", "yeah.net", "yep.it", "yogamaven.com",
-  "yopmail.com", "yopmail.fr", "yopmail.net", "yourdomain.com", "ypmail.webarnak.fr.eu.org",
+  "xmaily.com", "xoxy.net", "yapped.net", "yep.it", "yogamaven.com",
+  "yopmail.com", "yopmail.fr", "yopmail.net", "ypmail.webarnak.fr.eu.org",
   "yuurok.com", "z1p.biz", "za.com", "zehnminuten.de", "zehnminutenmail.de",
   "zippymail.info", "zoemail.net", "zomg.info",
 ]);
