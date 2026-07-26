@@ -118,9 +118,6 @@ const SidebarProvider = React.forwardRef<
           ref={ref}
           {...props}
         >
-          ref={ref}
-          {...props}
-        >
           {children}
         </div>
       </TooltipProvider>
