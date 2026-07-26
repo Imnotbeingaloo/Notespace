@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye } from "lucide-react";
+import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye, Paperclip } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotebooks } from "@/context/NotebookContext";
@@ -23,6 +23,7 @@ import { FindReplace } from "@/components/FindReplace";
 import { ImportNotesButton } from "@/components/ImportNotesButton";
 import { ImportActionDialog } from "@/components/ImportActionDialog";
 import { NewNotePrompt } from "@/components/NewNotePrompt";
+import { AttachmentsDialog } from "@/components/AttachmentsDialog";
 
 import { validateFile, buildStoragePath } from "@/lib/file-validation";
 import { toast } from "@/hooks/use-toast";
@@ -357,6 +358,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   useEffect(() => { setLiveContent(activeNote?.content || ""); }, [activeNote?.id]);
   const [tags, setTags] = useState<string[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [attachmentsOpen, setAttachmentsOpen] = useState(false);
   
   const moreRef = useRef<HTMLDivElement>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
@@ -936,6 +938,13 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <ExportButtons />
                         <PreviewButton />
+                        <button
+                          onClick={() => { setMoreOpen(false); setAttachmentsOpen(true); }}
+                          className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                        >
+                          <Paperclip className="h-3.5 w-3.5" />
+                          Attachments{activeNote?.attachments?.length ? ` (${activeNote.attachments.length})` : ""}
+                        </button>
                       </div>
                       {/* Desktop: secondary actions only (primary actions are inline above) */}
                       <div className="hidden lg:flex flex-col gap-1">
@@ -951,6 +960,13 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
 
                         <AIEditPanel onOpen={() => { setMoreOpen(false); openAskAI("edit"); }} />
                         <PreviewButton />
+                        <button
+                          onClick={() => { setMoreOpen(false); setAttachmentsOpen(true); }}
+                          className="magnetic-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                        >
+                          <Paperclip className="h-3.5 w-3.5" />
+                          Attachments{activeNote?.attachments?.length ? ` (${activeNote.attachments.length})` : ""}
+                        </button>
                       </div>
                     </motion.div>
                   )}
@@ -1000,8 +1016,8 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
           />
         </div>
 
-        {/* Attachments management moved into a dev-only dialog launched from the More menu.
-            Inline attachment links inside the note body remain clickable as always. */}
+        {/* Per-note attachments manager (remove / replace / download) */}
+        <AttachmentsDialog open={attachmentsOpen} onOpenChange={setAttachmentsOpen} />
 
         {/* Realtime word / character / read-time counter (+ optional goal ring) */}
         <div className="shrink-0 border-t border-border flex items-center justify-between">
