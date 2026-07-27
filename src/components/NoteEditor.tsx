@@ -1,4 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
+import { createPortal } from "react-dom";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye, Paperclip } from "lucide-react";
 import ReactMarkdown from "react-markdown";

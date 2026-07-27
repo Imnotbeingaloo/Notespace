@@ -621,16 +621,7 @@
   background-image: none !important;
 }
 
-/* Inline elements must not disturb the ruled line-height. */
-.notebook-paper strong,
-.notebook-paper em,
-.notebook-paper mark,
-.notebook-paper code,
-.notebook-paper a {
-  line-height: inherit !important;
-  vertical-align: baseline;
-  font-size: inherit !important;
-}
+
 .notebook-paper mark {
   background-color: hsl(48 96% 76% / 0.55) !important;
   color: inherit !important;
