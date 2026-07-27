@@ -274,6 +274,7 @@ function FlashcardsButton() {
 
 function PreviewButton() {
   const { activeNote } = useNotebooks();
+  const [paperStyle] = usePaperStyle();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -290,7 +291,21 @@ function PreviewButton() {
     };
   }, [open]);
 
+  const html = useMemo(() => {
+    const md = activeNote?.content ?? "";
+    if (!md.trim()) return "<p><em>No content yet</em></p>";
+    try {
+      return marked.parse(md, { async: false }) as string;
+    } catch {
+      return "";
+    }
+  }, [activeNote?.content]);
+
   if (!activeNote) return null;
+
+  // Same class list as HybridEditor's contentEditable so the preview is a
+  // pixel-accurate, read-only mirror of the editor (Google Docs style).
+  const editorClass = `wysiwyg-editor w-full bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-3 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`;
 
   const overlay = (
     <AnimatePresence>
@@ -315,17 +330,20 @@ function PreviewButton() {
             Exit
             <span className="hidden sm:inline ml-1 text-[10px] font-mono uppercase text-muted-foreground/70 border border-border rounded px-1 py-0.5">Esc</span>
           </button>
-          <motion.article
+          <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.22, delay: 0.04 }}
             className="mx-auto max-w-3xl px-5 sm:px-10 py-10 sm:py-16"
           >
-            <div className="prose prose-lg max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground">
-              <h1 className="!mb-6">{activeNote.title}</h1>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{activeNote.content || "*No content yet*"}</ReactMarkdown>
-            </div>
-          </motion.article>
+            <h1 className="text-3xl sm:text-4xl font-serif font-semibold text-foreground mb-8">
+              {activeNote.title}
+            </h1>
+            <div
+              className={editorClass}
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
@@ -344,6 +362,7 @@ function PreviewButton() {
       {typeof document !== "undefined" && createPortal(overlay, document.body)}
     </>
   );
+
 }
 
 
