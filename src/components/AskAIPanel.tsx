@@ -116,11 +116,28 @@ function usePrefersReducedMotion() {
 
 /** Plays the word vignette once, then cross-fades to the quill+halo in the
  *  same slot so they never overlap. Remounts via `emptyKey`. */
+const VIGNETTE_THROTTLE_KEY = "askai:vignette-last";
+const VIGNETTE_THROTTLE_MS = 12 * 60 * 60 * 1000; // 12 hours
+
+function shouldPlayVignette() {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = window.localStorage.getItem(VIGNETTE_THROTTLE_KEY);
+    const last = raw ? parseInt(raw, 10) : 0;
+    return !last || Date.now() - last > VIGNETTE_THROTTLE_MS;
+  } catch { return true; }
+}
+
 function VignetteToQuill({ emptyKey, reducedMotion }: { emptyKey: number; reducedMotion: boolean }) {
-  const [phase, setPhase] = useState<"vignette" | "quill">(reducedMotion ? "quill" : "vignette");
+  const [phase, setPhase] = useState<"vignette" | "quill">(() =>
+    reducedMotion || !shouldPlayVignette() ? "quill" : "vignette"
+  );
   useEffect(() => {
-    setPhase(reducedMotion ? "quill" : "vignette");
-    if (reducedMotion) return;
+    const canPlay = !reducedMotion && shouldPlayVignette();
+    setPhase(canPlay ? "vignette" : "quill");
+    if (!canPlay) return;
+    // Mark as played immediately so repeated opens within 12h skip the animation.
+    try { window.localStorage.setItem(VIGNETTE_THROTTLE_KEY, String(Date.now())); } catch {}
     // All three words must fully play first; the quill replaces the finished
     // vignette afterward in the same slot, never on top of it.
     const t = setTimeout(() => setPhase("quill"), 2800);
