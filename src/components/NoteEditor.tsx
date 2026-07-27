@@ -1,4 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
+import { createPortal } from "react-dom";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye, Paperclip } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -279,7 +281,6 @@ function PreviewButton() {
       if (e.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", onKey);
-    // Lock body scroll while fullscreen preview is up.
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -289,6 +290,45 @@ function PreviewButton() {
   }, [open]);
 
   if (!activeNote) return null;
+
+  const overlay = (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed inset-0 z-[9998] bg-background overflow-y-auto"
+          style={{ height: "100dvh", width: "100vw" }}
+          role="dialog"
+          aria-label="Note preview"
+        >
+          <button
+            onClick={() => setOpen(false)}
+            className="fixed top-3 right-3 z-[9999] inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            title="Exit preview (Esc)"
+            aria-label="Exit preview"
+          >
+            <XIcon className="h-3.5 w-3.5" />
+            Exit
+            <span className="hidden sm:inline ml-1 text-[10px] font-mono uppercase text-muted-foreground/70 border border-border rounded px-1 py-0.5">Esc</span>
+          </button>
+          <motion.article
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.22, delay: 0.04 }}
+            className="mx-auto max-w-3xl px-5 sm:px-10 py-10 sm:py-16"
+          >
+            <div className="prose prose-lg max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground">
+              <h1 className="!mb-6">{activeNote.title}</h1>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{activeNote.content || "*No content yet*"}</ReactMarkdown>
+            </div>
+          </motion.article>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <>
@@ -300,43 +340,11 @@ function PreviewButton() {
         <Eye className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Preview</span>
       </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[100] bg-background overflow-y-auto"
-            role="dialog"
-            aria-label="Note preview"
-          >
-            <button
-              onClick={() => setOpen(false)}
-              className="fixed top-4 right-4 z-[110] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card/95 backdrop-blur text-sm font-medium text-foreground hover:bg-muted transition-colors shadow-sm"
-              title="Exit preview (Esc)"
-            >
-              <XIcon className="h-4 w-4" />
-              Exit preview
-              <span className="ml-1 text-[10px] font-mono uppercase text-muted-foreground border border-border rounded px-1 py-0.5">Esc</span>
-            </button>
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: 0.05 }}
-              className="mx-auto max-w-3xl px-6 sm:px-10 py-16 sm:py-24"
-            >
-              <div className="prose prose-lg max-w-none text-foreground prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground">
-                <h1>{activeNote.title}</h1>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{activeNote.content || "*No content yet*"}</ReactMarkdown>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {typeof document !== "undefined" && createPortal(overlay, document.body)}
     </>
   );
 }
+
 
 
 export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindReplaceChange }: { focusMode?: boolean; findReplaceOpen?: boolean; onFindReplaceChange?: (open: boolean) => void }) {
