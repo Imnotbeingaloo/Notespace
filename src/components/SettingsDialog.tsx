@@ -146,7 +146,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
 
         {/* Mobile horizontal pill tabs */}
-        <div className="sm:hidden shrink-0 px-4 pb-3 overflow-x-auto scrollbar-thin">
+        <div className="sm:hidden shrink-0 px-4 pb-3 overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-2 min-w-max">
             {TABS.map(({ id, label, Icon }) => (
               <button
@@ -167,7 +167,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
         <div className="flex flex-row sm:min-h-[480px] min-w-0 w-full flex-1 min-h-0 sm:flex-none">
           {/* Desktop side tabs */}
-          <aside className="hidden sm:block sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3 min-w-0 overflow-y-auto">
+          <aside className="hidden sm:block sm:w-52 shrink-0 bg-muted/30 border-r border-border p-3 min-w-0 overflow-y-auto scrollbar-none">
             <h2 className="px-2 py-2 text-xs uppercase tracking-wider font-mono text-muted-foreground">Settings</h2>
             <nav className="flex flex-col gap-1">
               {TABS.map(({ id, label, Icon }) => (
@@ -188,7 +188,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </aside>
 
           {/* Content */}
-          <section className="flex-1 min-w-0 overflow-y-auto sm:max-h-none sm:p-8">
+          <section className="flex-1 min-w-0 overflow-y-auto scrollbar-none sm:max-h-none sm:p-8">
             <div key={tab} className="px-5 pb-8 sm:p-0 animate-fade-in">
             {tab === "personal" && (
               <div className="space-y-6">
@@ -435,7 +435,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   <h3 className="font-serif text-lg font-bold text-foreground">Appearance</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">Choose how Notespace looks to you.</p>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="flex flex-col gap-2">
                   {([
                     { id: "light", label: "Light", Icon: Sun },
                     { id: "dark", label: "Dark", Icon: Moon },
@@ -444,14 +444,14 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     <button
                       key={id}
                       onClick={() => { setTheme(id); try { localStorage.setItem("app-theme", id); } catch {} }}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-colors text-left ${
                         theme === id
                           ? "border-primary bg-primary/5 text-foreground"
                           : "border-border text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground"
                       }`}
                     >
-                      <Icon className="h-5 w-5" />
-                      <span className="text-xs font-medium">{label}</span>
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <span className="text-sm font-medium">{label}</span>
                     </button>
                   ))}
                 </div>
