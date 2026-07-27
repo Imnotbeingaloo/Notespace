@@ -435,7 +435,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   <h3 className="font-serif text-lg font-bold text-foreground">Appearance</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">Choose how Notespace looks to you.</p>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="flex flex-col gap-2">
                   {([
                     { id: "light", label: "Light", Icon: Sun },
                     { id: "dark", label: "Dark", Icon: Moon },
@@ -444,14 +444,14 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     <button
                       key={id}
                       onClick={() => { setTheme(id); try { localStorage.setItem("app-theme", id); } catch {} }}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-colors text-left ${
                         theme === id
                           ? "border-primary bg-primary/5 text-foreground"
                           : "border-border text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground"
                       }`}
                     >
-                      <Icon className="h-5 w-5" />
-                      <span className="text-xs font-medium">{label}</span>
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <span className="text-sm font-medium">{label}</span>
                     </button>
                   ))}
                 </div>
