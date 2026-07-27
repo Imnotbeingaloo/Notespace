@@ -485,80 +485,51 @@
   display: inline !important;
 }
 
-/* Classic ruled-notebook paper style (opt-in via Settings → Preferences) */
+/* Classic ruled-notebook paper style (opt-in via Settings → Preferences).
+   The container draws only the red margin line; ruled lines are drawn *per
+   block element* using the `1lh` unit so a taller line-height (e.g. an
+   enlarged heading) automatically stretches its own ruled cell instead of
+   spilling across the fixed grid. */
 .notebook-paper {
   --paper-bg: transparent;
   --paper-rule: hsl(210 75% 55% / 0.32);
   --paper-margin: hsl(0 70% 55% / 0.55);
   background-color: var(--paper-bg);
   background-image:
-    linear-gradient(to right,
+    repeating-linear-gradient(to right,
       transparent 0,
       transparent 3.25rem,
       var(--paper-margin) 3.25rem,
       var(--paper-margin) calc(3.25rem + 1.5px),
-      transparent calc(3.25rem + 1.5px)),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent calc(1.75rem - 1px),
-      var(--paper-rule) calc(1.75rem - 1px),
-      var(--paper-rule) 1.75rem);
-  background-repeat: no-repeat, repeat;
-  background-size: 100% 100%, 100% 1.75rem;
-  background-position: 0 0, 0 0;
-  /* `scroll` (default) sizes the background to the element's padding box so the
-     ruled lines fill the full height even when the editor is empty. `local`
-     collapsed the background to the content height (one line when empty). */
-  background-attachment: scroll, scroll;
-  padding-left: 4rem !important;
-  padding-top: 0 !important;
-  padding-right: 0 !important;
-  margin: 0 !important;
-  line-height: 1.75rem !important;
-  border-radius: 0;
-  min-height: 100%;
-  height: 100%;
-  width: 100%;
+      transparent calc(3.25rem + 1.5px));
+  background-attachment: local;
+  padding-left: 3.75rem !important;
+  padding-right: 1.5rem !important;
 }
 .dark .notebook-paper {
   --paper-bg: transparent;
   --paper-rule: hsl(210 90% 70% / 0.32);
   --paper-margin: hsl(0 85% 65% / 0.55);
 }
-
-/* On mobile, drop the red margin line entirely and shrink left/right padding
-   so the typing area is comfortable and text never touches the screen edge. */
 @media (max-width: 640px) {
   .notebook-paper {
     background-image:
-      linear-gradient(to right,
+      repeating-linear-gradient(to right,
         transparent 0,
         transparent 1.75rem,
         var(--paper-margin) 1.75rem,
         var(--paper-margin) calc(1.75rem + 1px),
-        transparent calc(1.75rem + 1px)),
-      repeating-linear-gradient(
-        to bottom,
-        transparent 0,
-        transparent calc(1.75rem - 1px),
-        var(--paper-rule) calc(1.75rem - 1px),
-        var(--paper-rule) 1.75rem);
-    background-repeat: no-repeat, repeat;
-    background-size: 100% 100%, 100% 1.75rem;
+        transparent calc(1.75rem + 1px));
     padding-left: 2.25rem !important;
     padding-right: 0.75rem !important;
   }
 }
+
 .notebook-paper,
 .notebook-paper p:not([style*="font-size"]),
 .notebook-paper li:not([style*="font-size"]),
 .notebook-paper blockquote:not([style*="font-size"]),
 .notebook-paper div:not([style*="font-size"]) {
-  /* Lock font-size so 1.75rem line-height (28px) equals a 1.75 ratio at 16px,
-     matching the ruled grid exactly. 17px would drift ~2px per line.
-     Elements with an inline font-size (from the heading size picker) opt out,
-     and their descendants inherit that size naturally. */
   font-size: 16px !important;
 }
 .notebook-paper p,
@@ -569,20 +540,18 @@
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
-  background: transparent !important;
   min-height: 1.75rem;
 }
-/* Headings snap to a 2-row cell on the ruled grid so bold/large text still
-   sits cleanly on a line and the following paragraph starts on a rule.
-   The `:not([style*="font-size"])` guard lets the heading size picker
-   override these defaults on a per-heading basis. */
+/* Headings keep a minimum line-height that snaps to the ruled grid, but any
+   inline font-size from the heading size picker is allowed to widen the
+   effective line box — the per-block ruling below tracks `1lh` so the ruled
+   cell stretches to match. */
 .notebook-paper h1:not([style*="font-size"]) {
   font-size: 1.5rem !important;
   line-height: 3.5rem !important;
 }
 .notebook-paper h1 {
   margin: 0 0 1.75rem 0 !important;
-  background: transparent !important;
 }
 .notebook-paper h2:not([style*="font-size"]) {
   font-size: 1.25rem !important;
@@ -590,7 +559,6 @@
 }
 .notebook-paper h2 {
   margin: 0 0 1.75rem 0 !important;
-  background: transparent !important;
 }
 .notebook-paper h3:not([style*="font-size"]),
 .notebook-paper h4,
@@ -604,8 +572,55 @@
 .notebook-paper h5,
 .notebook-paper h6 {
   margin: 0 0 1.75rem 0 !important;
-  background: transparent !important;
 }
+/* Headings with an inline font-size get an auto line-height that scales with
+   the text; ruling below picks it up via `1lh`. */
+.notebook-paper h1[style*="font-size"],
+.notebook-paper h2[style*="font-size"],
+.notebook-paper h3[style*="font-size"],
+.notebook-paper h4[style*="font-size"],
+.notebook-paper h5[style*="font-size"],
+.notebook-paper h6[style*="font-size"],
+.notebook-paper p[style*="font-size"],
+.notebook-paper li[style*="font-size"],
+.notebook-paper blockquote[style*="font-size"],
+.notebook-paper div[style*="font-size"] {
+  line-height: 1.35 !important;
+}
+
+/* Per-block ruled underline. `1lh` = the element's own computed line height,
+   so headings/enlarged text stretch their ruled cell automatically. */
+.notebook-paper p,
+.notebook-paper li,
+.notebook-paper blockquote,
+.notebook-paper h1,
+.notebook-paper h2,
+.notebook-paper h3,
+.notebook-paper h4,
+.notebook-paper h5,
+.notebook-paper h6,
+.notebook-paper div:not(.wysiwyg-editor) {
+  background-image: linear-gradient(to bottom,
+    transparent calc(1lh - 1px),
+    var(--paper-rule) calc(1lh - 1px),
+    var(--paper-rule) 1lh,
+    transparent 1lh) !important;
+  background-repeat: repeat-y !important;
+  background-size: 100% 1lh !important;
+  background-position: 0 0 !important;
+}
+/* Inline elements must not disturb the ruled line-height. */
+.notebook-paper strong,
+.notebook-paper em,
+.notebook-paper mark,
+.notebook-paper code,
+.notebook-paper a {
+  line-height: inherit !important;
+  vertical-align: baseline;
+  font-size: inherit !important;
+  background-image: none !important;
+}
+
 /* Inline elements must not disturb the ruled line-height. */
 .notebook-paper strong,
 .notebook-paper em,
