@@ -486,10 +486,8 @@
 }
 
 /* Classic ruled-notebook paper style (opt-in via Settings → Preferences).
-   The container draws only the red margin line; ruled lines are drawn *per
-   block element* using the `1lh` unit so a taller line-height (e.g. an
-   enlarged heading) automatically stretches its own ruled cell instead of
-   spilling across the fixed grid. */
+   Ruled horizontal lines + a single red margin line are drawn on the
+   container as a repeating gradient, matching the pre-refactor look. */
 .notebook-paper {
   --paper-bg: transparent;
   --paper-rule: hsl(210 75% 55% / 0.32);
@@ -501,9 +499,15 @@
       transparent 3.25rem,
       var(--paper-margin) 3.25rem,
       var(--paper-margin) calc(3.25rem + 1.5px),
-      transparent calc(3.25rem + 1.5px));
-  background-repeat: no-repeat;
-  background-attachment: local;
+      transparent calc(3.25rem + 1.5px)),
+    repeating-linear-gradient(to bottom,
+      transparent 0,
+      transparent calc(1.75rem - 1px),
+      var(--paper-rule) calc(1.75rem - 1px),
+      var(--paper-rule) 1.75rem);
+  background-repeat: no-repeat, repeat;
+  background-attachment: local, local;
+  background-position: 0 0, 0 0.35rem;
   padding-left: 3.75rem !important;
   padding-right: 1.5rem !important;
 }
@@ -520,8 +524,13 @@
         transparent 1.75rem,
         var(--paper-margin) 1.75rem,
         var(--paper-margin) calc(1.75rem + 1px),
-        transparent calc(1.75rem + 1px));
-    background-repeat: no-repeat;
+        transparent calc(1.75rem + 1px)),
+      repeating-linear-gradient(to bottom,
+        transparent 0,
+        transparent calc(1.75rem - 1px),
+        var(--paper-rule) calc(1.75rem - 1px),
+        var(--paper-rule) 1.75rem);
+    background-repeat: no-repeat, repeat;
     padding-left: 2.25rem !important;
     padding-right: 0.75rem !important;
   }
@@ -545,10 +554,8 @@
   padding-bottom: 0 !important;
   min-height: 1.75rem;
 }
-/* Headings keep a minimum line-height that snaps to the ruled grid, but any
-   inline font-size from the heading size picker is allowed to widen the
-   effective line box — the per-block ruling below tracks `1lh` so the ruled
-   cell stretches to match. */
+/* Headings snap to the ruled grid: their line-height is a multiple of 1.75rem
+   so the container's ruled lines always meet the baseline. */
 .notebook-paper h1:not([style*="font-size"]) {
   font-size: 1.5rem !important;
   line-height: 3.5rem !important;
@@ -576,8 +583,8 @@
 .notebook-paper h6 {
   margin: 0 0 1.75rem 0 !important;
 }
-/* Headings with an inline font-size get an auto line-height that scales with
-   the text; ruling below picks it up via `1lh`. */
+/* Inline font-size (heading size picker) snaps its line-height up to the next
+   1.75rem multiple so the ruled grid stays aligned. */
 .notebook-paper h1[style*="font-size"],
 .notebook-paper h2[style*="font-size"],
 .notebook-paper h3[style*="font-size"],
@@ -588,30 +595,9 @@
 .notebook-paper li[style*="font-size"],
 .notebook-paper blockquote[style*="font-size"],
 .notebook-paper div[style*="font-size"] {
-  line-height: 1.35 !important;
+  line-height: 1.75rem !important;
 }
 
-/* Per-block ruled underline. `1lh` = the element's own computed line height,
-   so headings/enlarged text stretch their ruled cell automatically. */
-.notebook-paper p,
-.notebook-paper li,
-.notebook-paper blockquote,
-.notebook-paper h1,
-.notebook-paper h2,
-.notebook-paper h3,
-.notebook-paper h4,
-.notebook-paper h5,
-.notebook-paper h6,
-.notebook-paper div:not(.wysiwyg-editor) {
-  background-image: linear-gradient(to bottom,
-    transparent calc(1lh - 1px),
-    var(--paper-rule) calc(1lh - 1px),
-    var(--paper-rule) 1lh,
-    transparent 1lh) !important;
-  background-repeat: repeat-y !important;
-  background-size: 100% 1lh !important;
-  background-position: 0 0 !important;
-}
 /* Inline elements must not disturb the ruled line-height. */
 .notebook-paper strong,
 .notebook-paper em,
