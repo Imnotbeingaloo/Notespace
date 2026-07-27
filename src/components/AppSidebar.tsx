@@ -42,6 +42,14 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
   const [tempNotesEnabled] = useTempNotesEnabled();
   const [notebookArrows] = useNotebookArrows();
   const isMobile = useIsMobile();
+  const [isTablet, setIsTablet] = useState(() =>
+    typeof window === "undefined" ? false : window.innerWidth >= 768 && window.innerWidth < 1024
+  );
+  useEffect(() => {
+    const onResize = () => setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
   const showNotebookArrows = notebookArrows || isMobile;
   const navigate = useNavigate();
   const {
