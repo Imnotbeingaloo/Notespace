@@ -129,7 +129,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl w-screen h-[100dvh] max-w-none sm:w-[95vw] sm:h-auto sm:rounded-lg rounded-none p-0 overflow-hidden gap-0 border-0 sm:border translate-x-0 translate-y-0 left-0 top-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom sm:data-[state=closed]:slide-out-to-bottom-0 data-[state=open]:slide-in-from-bottom sm:data-[state=open]:slide-in-from-bottom-0 sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95">
+      <DialogContent className="sm:max-w-3xl w-screen h-[100dvh] max-w-none sm:w-[95vw] sm:h-auto sm:rounded-lg rounded-none p-0 overflow-hidden gap-0 border-0 sm:border translate-x-0 translate-y-0 left-0 top-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom sm:data-[state=closed]:slide-out-to-bottom-0 data-[state=open]:slide-in-from-bottom sm:data-[state=open]:slide-in-from-bottom-0 sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95 [&>button.absolute]:hidden sm:[&>button.absolute]:inline-flex">
         {/* Mobile header with X close */}
         <div className="sm:hidden flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
           <h2 className="font-serif text-2xl font-bold text-foreground">Settings</h2>
@@ -141,6 +141,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             <X className="h-5 w-5" />
           </button>
         </div>
+
 
         {/* Mobile horizontal pill tabs */}
         <div className="sm:hidden shrink-0 px-4 pb-3 overflow-x-auto scrollbar-thin">
