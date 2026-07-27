@@ -1,10 +1,11 @@
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useCallback, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Clock, Upload, MoreHorizontal, Layers, Cloud, Check, Eye, Paperclip } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { marked } from "marked";
+import { usePaperStyle } from "@/hooks/use-paper-style";
+
 import { useNotebooks } from "@/context/NotebookContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
