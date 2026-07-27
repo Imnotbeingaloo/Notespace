@@ -324,7 +324,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
 
   const trashCount = trashedNotebooks.length + trashedNotes.length;
 
-  const expandedWidth = isMobile ? 280 : isTablet ? 200 : 280;
+  const expandedWidth = isMobile ? 280 : isTablet ? 180 : 280;
 
   return (
     <motion.aside
