@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { User as UserIcon, SlidersHorizontal, Palette, Database, Loader2, Sun, Moon, Monitor, Download, Trash2, Check, Lock, BookOpen, Clock, Target, ChevronRight, ChevronLeft, Paperclip, X } from "lucide-react";
 import { GlobalAttachmentsDialog } from "@/components/GlobalAttachmentsDialog";
 import { useAuth } from "@/context/AuthContext";
