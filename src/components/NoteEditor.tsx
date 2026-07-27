@@ -303,9 +303,13 @@ function PreviewButton() {
 
   if (!activeNote) return null;
 
-  // Same class list as HybridEditor's contentEditable so the preview is a
-  // pixel-accurate, read-only mirror of the editor (Google Docs style).
-  const editorClass = `wysiwyg-editor w-full bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-3 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`;
+  // Mirror the focus-mode editor 1:1: same wrapper padding, same title bar,
+  // same content class list (incl. notebook-paper). The only differences are
+  // no toolbar / no meta row and the content div is not contentEditable.
+  const contentClass = `wysiwyg-editor w-full flex-1 h-auto bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-3 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`;
+  const wrapperClass = paperStyle
+    ? "w-full min-h-full relative flex flex-col box-border"
+    : "w-full min-h-full px-3 sm:px-8 py-4 sm:py-6 relative flex flex-col box-border";
 
   const overlay = (
     <AnimatePresence>
@@ -315,7 +319,7 @@ function PreviewButton() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-[9998] bg-background overflow-y-auto"
+          className="fixed inset-0 z-[9998] bg-background flex flex-col"
           style={{ height: "100dvh", width: "100vw" }}
           role="dialog"
           aria-label="Note preview"
@@ -330,20 +334,23 @@ function PreviewButton() {
             Exit
             <span className="hidden sm:inline ml-1 text-[10px] font-mono uppercase text-muted-foreground/70 border border-border rounded px-1 py-0.5">Esc</span>
           </button>
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.22, delay: 0.04 }}
-            className="mx-auto max-w-3xl px-5 sm:px-10 py-10 sm:py-16"
-          >
-            <h1 className="text-3xl sm:text-4xl font-serif font-semibold text-foreground mb-8">
+
+          {/* Title bar — matches focus mode exactly */}
+          <div className="shrink-0 px-3 sm:px-8 pt-3 sm:pt-4 pb-1 sm:pb-2">
+            <div className="w-full text-xl sm:text-3xl font-sans font-bold text-foreground select-text">
               {activeNote.title}
-            </h1>
-            <div
-              className={editorClass}
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
-          </motion.div>
+            </div>
+          </div>
+
+          {/* Content area — same scroll container as the editor */}
+          <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none">
+            <div className={wrapperClass}>
+              <div
+                className={contentClass}
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
