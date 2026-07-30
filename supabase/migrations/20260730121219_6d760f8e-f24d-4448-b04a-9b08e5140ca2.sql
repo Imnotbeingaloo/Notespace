@@ -1,0 +1,1 @@
+UPDATE public.notes SET content = replace(replace(content, 'caret probeX', ''), 'caret probe', '') WHERE id = '1cff416e-89d1-49b7-ac93-03c06549a976';
