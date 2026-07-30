@@ -176,10 +176,11 @@ export default function FeaturesPage() {
                               </Link>
                             )}
                           </div>
-                        </motion.li>
+                        </li>
                       ))}
                     </ul>
-                  </motion.div>
+                  </div>
+
                 </div>
               </div>
             );
