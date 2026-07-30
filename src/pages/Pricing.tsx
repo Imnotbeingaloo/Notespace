@@ -110,9 +110,9 @@ const faqs = [
 ];
 
 const guarantees = [
-  { title: "30-day refund", body: "Email us within 30 days of any charge and we refund it in full." },
-  { title: "Cancel in one click", body: "No retention flow, no phone call, no end-of-term lock-in." },
-  { title: "Your data leaves with you", body: "Markdown and PDF export on every plan, including Free." },
+  "30-day refund, no questions",
+  "Cancel in one click",
+  "Export everything, any plan",
 ];
 
 
