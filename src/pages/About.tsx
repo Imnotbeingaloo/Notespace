@@ -447,7 +447,7 @@ export default function AboutPage() {
                 />
                 <div className="relative z-10 flex items-start gap-4">
                   <div className="w-10 h-10 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <v.icon className="h-4.5 w-4.5 h-[18px] w-[18px] text-primary" />
+                    <v.icon className="h-[18px] w-[18px] text-primary" />
                   </div>
                   <div className="min-w-0">
                     <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted-foreground">
