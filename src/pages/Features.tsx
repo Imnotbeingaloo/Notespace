@@ -133,13 +133,11 @@ export default function FeaturesPage() {
                   </motion.div>
 
                   {/* Right column - feature list (vertical, no plain card grid) */}
-                  <motion.div
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.15, margin: "-60px" }}
-                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.18, delayChildren: 0.1 } } }}
-                    className="md:col-span-7 relative"
-                  >
+                  {/* Right column - feature list. Rendered statically: the old
+                      scroll-triggered stagger caused a visible flash/blink when
+                      scrolling past the cards quickly. */}
+                  <div className="md:col-span-7 relative">
+
                     <ul className="relative space-y-5">
                       {/* Connector line - sits behind icons, capped to the icon column width */}
                       <div
@@ -148,15 +146,12 @@ export default function FeaturesPage() {
                         style={{ zIndex: 0 }}
                       />
                       {group.items.map((item, iIdx) => (
-                        <motion.li
+                        <li
                           key={item.name}
-                          variants={{
-                            hidden: { opacity: 0, y: 20 },
-                            show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
-                          }}
-                          className="group relative flex gap-4 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all duration-500 p-5 hover:shadow-lg hover:shadow-primary/5"
+                          className="group relative flex gap-4 rounded-2xl border border-border bg-card hover:border-primary/30 transition-colors duration-300 p-5 hover:shadow-lg hover:shadow-primary/5"
                           style={{ zIndex: 1 }}
                         >
+
                           <div className="relative shrink-0">
                             <div
                               className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10 bg-primary text-primary-foreground"
@@ -181,10 +176,11 @@ export default function FeaturesPage() {
                               </Link>
                             )}
                           </div>
-                        </motion.li>
+                        </li>
                       ))}
                     </ul>
-                  </motion.div>
+                  </div>
+
                 </div>
               </div>
             );

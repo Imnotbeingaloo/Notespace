@@ -647,13 +647,18 @@ const AuthPage = () => {
   }
 
   if (authLoading || (hintGrace && !user)) {
+    // If the splash is already armed (user came from the site), skip the spinner
+    // entirely — otherwise they see a loader here AND the splash on /home.
+    let splashArmed = false;
+    try { splashArmed = sessionStorage.getItem("playSplash") === "1"; } catch { /* ignore */ }
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <NoindexHead title="Sign in - Notespace" />
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        {!splashArmed && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
       </div>
     );
   }
+
 
   return (
     <div className="min-h-dvh grid lg:grid-cols-[42fr_58fr] bg-[#fdf7ef] dark:bg-background relative overflow-hidden">
