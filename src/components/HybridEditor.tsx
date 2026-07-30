@@ -149,6 +149,9 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
 
     const handleBlur = useCallback(() => {
       if (!commaHighlightOn || !editorRef.current) return;
+      // Losing focus because the whole window/tab went away is not a real blur —
+      // rewriting the DOM here would invalidate the saved caret range.
+      if (document.visibilityState === "hidden" || !document.hasFocus()) return;
       try { wrapCommas(editorRef.current); } catch { /* ignore */ }
     }, [commaHighlightOn]);
 
@@ -225,6 +228,51 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       document.addEventListener("selectionchange", handleSelectionChange);
       return () => document.removeEventListener("selectionchange", handleSelectionChange);
     }, [handleSelectionChange]);
+
+    // Switching browser tabs makes the browser drop the contenteditable
+    // selection, so coming back would drop the caret at the start of the line.
+    // Remember where the caret was when the tab is hidden and put it back when
+    // the tab (and the editor) regain focus.
+    useEffect(() => {
+      const el = editorRef.current;
+      if (!el) return;
+      let wasFocused = false;
+
+      const onHidden = () => {
+        wasFocused = document.activeElement === el;
+        const sel = window.getSelection();
+        if (wasFocused && sel && sel.rangeCount > 0 && el.contains(sel.anchorNode)) {
+          savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+        }
+      };
+
+      const restore = () => {
+        if (!wasFocused) return;
+        const range = savedRangeRef.current;
+        if (!range || !el.contains(range.startContainer)) return;
+        requestAnimationFrame(() => {
+          el.focus({ preventScroll: true });
+          const sel = window.getSelection();
+          if (!sel) return;
+          sel.removeAllRanges();
+          sel.addRange(range);
+        });
+      };
+
+      const onVisibility = () => {
+        if (document.visibilityState === "hidden") onHidden();
+        else restore();
+      };
+
+      document.addEventListener("visibilitychange", onVisibility);
+      window.addEventListener("blur", onHidden);
+      window.addEventListener("focus", restore);
+      return () => {
+        document.removeEventListener("visibilitychange", onVisibility);
+        window.removeEventListener("blur", onHidden);
+        window.removeEventListener("focus", restore);
+      };
+    }, []);
 
     const restoreSelection = useCallback(() => {
       const el = editorRef.current;

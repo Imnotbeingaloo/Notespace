@@ -2,9 +2,9 @@
    delays font fetch until CSS is parsed (causes 2-3s font swap delay). */
 
 
-/* Self-hosted Merriweather (latin). `swap` (not `optional`) so the real font
-   always applies once loaded — with `optional` a slow load (e.g. right after an
-   OAuth redirect) locked the page to the fallback until a manual reload. */
+/* Self-hosted Merriweather (latin) — `swap` so the real font always applies on
+   the current page load. `optional` used to leave the wordmark/headings stuck on
+   the fallback after a client-side navigation or OAuth redirect until a reload. */
 @font-face {
   font-family: 'Merriweather';
   font-style: normal;
