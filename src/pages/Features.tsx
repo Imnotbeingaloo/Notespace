@@ -132,12 +132,16 @@ export default function FeaturesPage() {
                     </p>
                   </motion.div>
 
-                  {/* Right column - feature list (vertical, no plain card grid) */}
-                  {/* Right column - feature list. Rendered statically: the old
-                      scroll-triggered stagger caused a visible flash/blink when
-                      scrolling past the cards quickly. */}
-                  <div className="md:col-span-7 relative">
-
+                  {/* Right column - feature list. Scroll reveal runs once with
+                      `amount: 0.15` + a generous margin so fast scrolling can't
+                      re-trigger it (the old blink). */}
+                  <motion.div
+                    className="md:col-span-7 relative"
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.15, margin: "0px 0px -80px 0px" }}
+                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } } }}
+                  >
                     <ul className="relative space-y-5">
                       {/* Connector line - sits behind icons, capped to the icon column width */}
                       <div
@@ -145,16 +149,21 @@ export default function FeaturesPage() {
                         className="absolute left-[27px] top-6 bottom-6 w-[2px] rounded-full bg-border/70 hidden sm:block"
                         style={{ zIndex: 0 }}
                       />
-                      {group.items.map((item, iIdx) => (
-                        <li
+                      {group.items.map((item) => (
+                        <motion.li
                           key={item.name}
-                          className="group relative flex gap-4 rounded-2xl border border-border bg-card hover:border-primary/30 transition-colors duration-300 p-5 hover:shadow-lg hover:shadow-primary/5"
+                          variants={{
+                            hidden: { opacity: 0, y: 22 },
+                            show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                          }}
+                          whileHover={{ y: -6, scale: 1.015 }}
+                          transition={{ type: "spring", stiffness: 320, damping: 24 }}
+                          className="group relative flex gap-4 rounded-2xl border border-border bg-card hover:border-primary/30 p-5 shadow-[0_2px_8px_-6px_hsl(var(--foreground)/0.25)] hover:shadow-[0_22px_45px_-22px_hsl(var(--primary)/0.45)] transition-[box-shadow,border-color] duration-300"
                           style={{ zIndex: 1 }}
                         >
-
                           <div className="relative shrink-0">
                             <div
-                              className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10 bg-primary text-primary-foreground"
+                              className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10 bg-primary text-primary-foreground transition-transform duration-300 group-hover:scale-105"
                             >
                               <item.Icon className="h-5 w-5" />
                             </div>
@@ -176,10 +185,11 @@ export default function FeaturesPage() {
                               </Link>
                             )}
                           </div>
-                        </li>
+                        </motion.li>
                       ))}
                     </ul>
-                  </div>
+                  </motion.div>
+
 
                 </div>
               </div>
