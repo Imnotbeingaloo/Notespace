@@ -246,7 +246,7 @@ export default function PricingPage() {
                 )}
                 <h2 className="font-serif text-xl font-bold text-foreground">{tier.name}</h2>
                 <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{tier.audience}</p>
-                <div className="mt-4 flex items-baseline gap-1">
+                <div className="mt-4 flex items-baseline gap-2">
                   <motion.span
                     key={shown}
                     initial={{ opacity: 0, y: 6 }}
@@ -257,11 +257,29 @@ export default function PricingPage() {
                     {shown}
                   </motion.span>
                   {tier.period && <span className="text-sm text-muted-foreground">{tier.period}</span>}
+                  {billing === "annual" && tier.period && (
+                    <span className="text-sm text-muted-foreground/70 line-through">{tier.price}</span>
+                  )}
                 </div>
-                {billing === "annual" && tier.period && (
-                  <p className="mt-1 text-[11px] font-mono uppercase tracking-wider text-accent">Billed yearly</p>
+                {tier.period && (
+                  <p className="mt-1 text-[11px] font-mono uppercase tracking-wider text-accent h-4">
+                    {billing === "annual"
+                      ? `Billed yearly · save $${(Number(tier.price.slice(1)) - Number(tier.annual.slice(1))) * 12}/yr`
+                      : "Billed monthly"}
+                  </p>
                 )}
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{tier.description}</p>
+                {/* Limits at a glance */}
+                <div className="mt-5 flex flex-wrap gap-1.5">
+                  {tier.specs.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-full border border-border bg-background/60 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
                 <ul className="mt-6 space-y-3 flex-1">
                   {tier.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-foreground">
