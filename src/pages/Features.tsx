@@ -133,13 +133,11 @@ export default function FeaturesPage() {
                   </motion.div>
 
                   {/* Right column - feature list (vertical, no plain card grid) */}
-                  <motion.div
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.15, margin: "-60px" }}
-                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.18, delayChildren: 0.1 } } }}
-                    className="md:col-span-7 relative"
-                  >
+                  {/* Right column - feature list. Rendered statically: the old
+                      scroll-triggered stagger caused a visible flash/blink when
+                      scrolling past the cards quickly. */}
+                  <div className="md:col-span-7 relative">
+
                     <ul className="relative space-y-5">
                       {/* Connector line - sits behind icons, capped to the icon column width */}
                       <div
