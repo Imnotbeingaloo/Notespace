@@ -104,7 +104,17 @@ const faqs = [
   { q: "Is there a student discount?", a: "Yes - students who sign up with a .edu address receive 50% off Pro automatically. No application required." },
   { q: "What happens to my notes if I downgrade?", a: "Your notes remain yours. You retain access to everything you've written; you simply cannot create notebooks beyond the free limit until you upgrade." },
   { q: "How does the free trial work?", a: "Fourteen days of Pro access with no credit card required. When the trial ends, you may subscribe or revert to the Free plan - your work is preserved either way." },
+  { q: "Are my notes used to train AI models?", a: "No. Your notes are never used for model training and are never sold. The AI only sees the specific passage you point it at, and only when you ask it to." },
+  { q: "Can I get a refund?", a: "Yes. If Pro isn't right for you, email us within 30 days of a charge and we'll refund it in full - no questionnaire, no retention call." },
+  { q: "Can I export everything and leave?", a: "Always. One click exports any note to Markdown or PDF, and your whole archive is portable. No proprietary format holds your work hostage." },
 ];
+
+const guarantees = [
+  { title: "30-day refund", body: "Email us within 30 days of any charge and we refund it in full." },
+  { title: "Cancel in one click", body: "No retention flow, no phone call, no end-of-term lock-in." },
+  { title: "Your data leaves with you", body: "Markdown and PDF export on every plan, including Free." },
+];
+
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
