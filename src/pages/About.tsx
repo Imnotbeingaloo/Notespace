@@ -149,11 +149,10 @@ function PhilosophySection() {
           {/* Old Way Card */}
           <motion.div
             animate={{
-              opacity: blurry ? 0.3 : 1,
-              scale: blurry ? 0.92 : 1,
-              filter: blurry ? "grayscale(0.8) blur(1px)" : "grayscale(0) blur(0px)",
+              opacity: blurry ? 0.75 : 1,
+              scale: blurry ? 0.985 : 1,
             }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
             <motion.div
@@ -161,7 +160,13 @@ function PhilosophySection() {
               transition={{ duration: 0.6 }}
               className="pointer-events-none absolute inset-0 bg-destructive"
             />
-            <div className="relative z-10">
+            {/* Blur/grayscale the contents only, so the card outline stays crisp. */}
+            <motion.div
+              animate={{ filter: blurry ? "grayscale(0.85) blur(1.5px)" : "grayscale(0) blur(0px)" }}
+              transition={{ duration: 0.4 }}
+              className="relative z-10"
+            >
+
               <div className="flex items-center gap-3 mb-5">
                 <motion.span
                   animate={{ scale: phase === "old" ? 1 : 0.8, opacity: phase === "old" ? 1 : 0.5 }}
