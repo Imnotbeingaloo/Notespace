@@ -2,28 +2,28 @@
    delays font fetch until CSS is parsed (causes 2-3s font swap delay). */
 
 
-/* Self-hosted Merriweather (latin) — `optional` avoids the visible font swap
-   flash: if the file isn't ready within ~100ms the fallback is used for this
-   page load, and the real font applies on the next navigation (already cached). */
+/* Self-hosted Merriweather (latin) — `swap` so the real font always applies on
+   the current page load. `optional` used to leave the wordmark/headings stuck on
+   the fallback after a client-side navigation or OAuth redirect until a reload. */
 @font-face {
   font-family: 'Merriweather';
   font-style: normal;
   font-weight: 300;
-  font-display: optional;
+  font-display: swap;
   src: url('/fonts/merriweather-v33-latin-300.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Merriweather';
   font-style: normal;
   font-weight: 400;
-  font-display: optional;
+  font-display: swap;
   src: url('/fonts/merriweather-v33-latin-regular.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Merriweather';
   font-style: normal;
   font-weight: 700;
-  font-display: optional;
+  font-display: swap;
   src: url('/fonts/merriweather-v33-latin-700.woff2') format('woff2');
 }
 @font-face {
