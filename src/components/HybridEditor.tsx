@@ -149,6 +149,9 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
 
     const handleBlur = useCallback(() => {
       if (!commaHighlightOn || !editorRef.current) return;
+      // Losing focus because the whole window/tab went away is not a real blur —
+      // rewriting the DOM here would invalidate the saved caret range.
+      if (document.visibilityState === "hidden" || !document.hasFocus()) return;
       try { wrapCommas(editorRef.current); } catch { /* ignore */ }
     }, [commaHighlightOn]);
 
