@@ -431,15 +431,6 @@ export default function AboutPage() {
                 whileHover={{ y: -6, rotate: 0, transition: { duration: 0.25 } }}
                 className="group relative rounded-[0.6rem] border border-border bg-card px-7 pt-9 pb-7 shadow-[0_8px_24px_-16px_hsl(var(--foreground)/0.4)] hover:shadow-[0_22px_48px_-20px_hsl(var(--foreground)/0.35)] transition-shadow duration-300"
               >
-                {/* ruled index-card lines */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-7 bottom-7 top-[5.5rem] opacity-[0.5]"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(to bottom, transparent 0px, transparent 25px, hsl(var(--border)) 25px, hsl(var(--border)) 26px)",
-                  }}
-                />
                 {/* tape */}
                 <span
                   aria-hidden
@@ -454,9 +445,19 @@ export default function AboutPage() {
                       No. {String(i + 1).padStart(2, "0")}
                     </span>
                     <h3 className="font-serif text-lg font-bold text-foreground mt-1 mb-2 leading-tight">{v.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-[26px]">{v.description}</p>
+                    {/* ruled lines sit exactly on the description baseline grid */}
+                    <p
+                      className="text-sm text-muted-foreground leading-[26px]"
+                      style={{
+                        backgroundImage:
+                          "repeating-linear-gradient(to bottom, transparent 0px, transparent 25px, hsl(var(--border)) 25px, hsl(var(--border)) 26px)",
+                      }}
+                    >
+                      {v.description}
+                    </p>
                   </div>
                 </div>
+
               </motion.article>
             );
           })}
