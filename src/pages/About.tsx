@@ -149,10 +149,10 @@ function PhilosophySection() {
           {/* Old Way Card */}
           <motion.div
             animate={{
-              opacity: blurry ? 0.75 : 1,
-              scale: blurry ? 0.985 : 1,
+              opacity: phase === "new" ? 0.75 : 1,
+              scale: phase === "new" ? 0.985 : 1,
             }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
             <motion.div
@@ -160,12 +160,14 @@ function PhilosophySection() {
               transition={{ duration: 0.6 }}
               className="pointer-events-none absolute inset-0 bg-destructive"
             />
-            {/* Blur/grayscale the contents only, so the card outline stays crisp. */}
+            {/* Blur/grayscale the contents only, so the card outline stays crisp.
+                Single de-emphasis pass: only ever fires once the "new" phase begins. */}
             <motion.div
-              animate={{ filter: blurry ? "grayscale(0.85) blur(1.5px)" : "grayscale(0) blur(0px)" }}
-              transition={{ duration: 0.4 }}
+              animate={{ filter: phase === "new" ? "grayscale(0.85) blur(1.5px)" : "grayscale(0) blur(0px)" }}
+              transition={{ duration: 0.5 }}
               className="relative z-10"
             >
+
 
               <div className="flex items-center gap-3 mb-5">
                 <motion.span
