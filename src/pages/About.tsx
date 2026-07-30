@@ -200,7 +200,8 @@ function PhilosophySection() {
                   </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
+
           </motion.div>
 
           {/* Arrow */}
