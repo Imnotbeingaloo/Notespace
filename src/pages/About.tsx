@@ -340,9 +340,9 @@ export default function AboutPage() {
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0.15, margin: "-40px 0px -40px 0px" }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
+                className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 will-change-transform [backface-visibility:hidden]"
               >
                 <div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.06),transparent_70%)]" />
                 <div className="relative z-10">
@@ -381,9 +381,9 @@ export default function AboutPage() {
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0.15, margin: "-40px 0px -40px 0px" }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-accent/30 transition-all duration-300 hover:-translate-y-1"
+                className="group relative rounded-[2rem] border border-border bg-card p-8 hover:border-accent/30 transition-all duration-300 hover:-translate-y-1 will-change-transform [backface-visibility:hidden]"
               >
                 <div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--accent)/0.06),transparent_70%)]" />
                 <div className="relative z-10">

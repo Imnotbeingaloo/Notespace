@@ -29,6 +29,7 @@ const tiers = [
       "File attachments (50 MB)",
       "Offline write-queue & auto-sync",
     ],
+    specs: ["3 notebooks", "5 AI/day", "50 MB files"],
     cta: "Get Started",
     highlighted: false,
   },
@@ -51,6 +52,7 @@ const tiers = [
       "Voice transcription (coming soon)",
       "Priority support",
     ],
+    specs: ["Unlimited notebooks", "Unlimited AI", "10 GB files"],
     cta: "Start 14-Day Free Trial",
     highlighted: true,
   },
@@ -70,6 +72,7 @@ const tiers = [
       "SSO & advanced security (on request)",
       "Dedicated account manager",
     ],
+    specs: ["Everything in Pro", "Shared workspace", "SSO on request"],
     cta: "Contact Sales",
     highlighted: false,
   },
@@ -110,9 +113,9 @@ const faqs = [
 ];
 
 const guarantees = [
-  { title: "30-day refund", body: "Email us within 30 days of any charge and we refund it in full." },
-  { title: "Cancel in one click", body: "No retention flow, no phone call, no end-of-term lock-in." },
-  { title: "Your data leaves with you", body: "Markdown and PDF export on every plan, including Free." },
+  "30-day refund, no questions",
+  "Cancel in one click",
+  "Export everything, any plan",
 ];
 
 
@@ -243,7 +246,7 @@ export default function PricingPage() {
                 )}
                 <h2 className="font-serif text-xl font-bold text-foreground">{tier.name}</h2>
                 <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{tier.audience}</p>
-                <div className="mt-4 flex items-baseline gap-1">
+                <div className="mt-4 flex items-baseline gap-2">
                   <motion.span
                     key={shown}
                     initial={{ opacity: 0, y: 6 }}
@@ -254,11 +257,29 @@ export default function PricingPage() {
                     {shown}
                   </motion.span>
                   {tier.period && <span className="text-sm text-muted-foreground">{tier.period}</span>}
+                  {billing === "annual" && tier.period && (
+                    <span className="text-sm text-muted-foreground/70 line-through">{tier.price}</span>
+                  )}
                 </div>
-                {billing === "annual" && tier.period && (
-                  <p className="mt-1 text-[11px] font-mono uppercase tracking-wider text-accent">Billed yearly</p>
+                {tier.period && (
+                  <p className="mt-1 text-[11px] font-mono uppercase tracking-wider text-accent h-4">
+                    {billing === "annual"
+                      ? `Billed yearly · save $${(Number(tier.price.slice(1)) - Number(tier.annual.slice(1))) * 12}/yr`
+                      : "Billed monthly"}
+                  </p>
                 )}
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{tier.description}</p>
+                {/* Limits at a glance */}
+                <div className="mt-5 flex flex-wrap gap-1.5">
+                  {tier.specs.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-full border border-border bg-background/60 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
                 <ul className="mt-6 space-y-3 flex-1">
                   {tier.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-foreground">
@@ -285,24 +306,16 @@ export default function PricingPage() {
           })}
         </motion.div>
 
-        {/* Guarantees */}
-        <div className="grid gap-4 sm:grid-cols-3 max-w-5xl mx-auto mt-12">
-          {guarantees.map((g, i) => (
-            <motion.div
-              key={g.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ delay: i * 0.07, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-2xl border border-border bg-card/60 px-5 py-4"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Check className="h-3.5 w-3.5 text-primary" />
-                <span className="font-serif text-sm font-bold text-foreground">{g.title}</span>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">{g.body}</p>
-            </motion.div>
-          ))}
+        {/* Reassurance strip - single hairline row, no cards */}
+        <div className="max-w-5xl mx-auto mt-14 border-t border-border/70 pt-5">
+          <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            {guarantees.map((g) => (
+              <li key={g} className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                <Check className="h-3 w-3 text-primary" />
+                {g}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
