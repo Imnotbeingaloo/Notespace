@@ -14,6 +14,8 @@ const tiers = [
   {
     name: "Free",
     price: "$0",
+    annual: "$0",
+    audience: "For the person testing whether this replaces their current notebook.",
     description: "A complete starting point with room to capture, organize, and search your work.",
     features: [
       "Up to 3 notebooks",
@@ -33,7 +35,9 @@ const tiers = [
   {
     name: "Pro",
     price: "$19",
+    annual: "$15",
     period: "/month",
+    audience: "For students and writers in their notes every single day.",
     description: "For daily users who require unlimited AI access and advanced workflow tools.",
     features: [
       "Unlimited notebooks",
@@ -53,7 +57,9 @@ const tiers = [
   {
     name: "Team",
     price: "$29",
+    annual: "$24",
     period: "/user/month",
+    audience: "For study groups, labs, and small teams sharing one source of truth.",
     description: "Shared workspaces for study groups, labs, and teams collaborating on long-form work.",
     features: [
       "Everything in Pro",
@@ -68,6 +74,7 @@ const tiers = [
     highlighted: false,
   },
 ];
+
 
 const comparisons: { feature: string; free: boolean | "soon"; pro: boolean | "soon"; team: boolean | "soon" }[] = [
   { feature: "AI-powered explanations", free: true, pro: true, team: true },
