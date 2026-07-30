@@ -70,7 +70,6 @@ function RevealCard({ emoji, label, title, titleHighlight, description, delay = 
 
 function PhilosophySection() {
   const [phase, setPhase] = useState<"old" | "transition" | "new">("old");
-  const [blurry, setBlurry] = useState(false);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -80,12 +79,12 @@ function PhilosophySection() {
 
     const cycle = () => {
       setPhase("old");
-      setBlurry(false);
       setProgress(0);
-      const t1 = setTimeout(() => { setPhase("transition"); setBlurry(true); }, OLD_END);
+      const t1 = setTimeout(() => setPhase("transition"), OLD_END);
       const t2 = setTimeout(() => setPhase("new"), TRANS_END);
       return [t1, t2];
     };
+
 
     let timers = cycle();
     const interval = setInterval(() => {
@@ -149,10 +148,10 @@ function PhilosophySection() {
           {/* Old Way Card */}
           <motion.div
             animate={{
-              opacity: blurry ? 0.75 : 1,
-              scale: blurry ? 0.985 : 1,
+              opacity: phase === "new" ? 0.75 : 1,
+              scale: phase === "new" ? 0.985 : 1,
             }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 w-full rounded-[2rem] border border-border bg-card p-7 md:p-8 relative overflow-hidden"
           >
             <motion.div
@@ -160,12 +159,14 @@ function PhilosophySection() {
               transition={{ duration: 0.6 }}
               className="pointer-events-none absolute inset-0 bg-destructive"
             />
-            {/* Blur/grayscale the contents only, so the card outline stays crisp. */}
+            {/* Blur/grayscale the contents only, so the card outline stays crisp.
+                Single de-emphasis pass: only ever fires once the "new" phase begins. */}
             <motion.div
-              animate={{ filter: blurry ? "grayscale(0.85) blur(1.5px)" : "grayscale(0) blur(0px)" }}
-              transition={{ duration: 0.4 }}
+              animate={{ filter: phase === "new" ? "grayscale(0.85) blur(1.5px)" : "grayscale(0) blur(0px)" }}
+              transition={{ duration: 0.5 }}
               className="relative z-10"
             >
+
 
               <div className="flex items-center gap-3 mb-5">
                 <motion.span
@@ -406,52 +407,121 @@ export default function AboutPage() {
 
       <AnimatedDivider />
 
-      {/* Values */}
-      <section className="container mx-auto px-6 py-28 max-w-3xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our principles</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">Four guiding values that shape how we build.</p>
-        </motion.div>
-        <div className="relative mt-12">
-          <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
-          <div className="space-y-10">
-            {values.map((v, i) => (
-              <motion.div key={v.title} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }} className="relative pl-12">
-                <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 + 0.2, type: "spring", stiffness: 200 }} className="absolute left-1.5 top-1 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                  <v.icon className="h-3.5 w-3.5 text-primary" />
-                </motion.div>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-2">{v.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{v.description}</p>
-              </motion.div>
-            ))}
+      {/* Values - pinned index cards */}
+      <section className="container mx-auto px-6 py-28 max-w-5xl">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="h-px w-8 bg-accent" />
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">House rules</span>
           </div>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Our principles</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">Four index cards we keep pinned above the desk.</p>
+        </motion.div>
+
+        <div className="grid gap-7 sm:grid-cols-2 mt-14">
+          {values.map((v, i) => {
+            const tilt = [-1.2, 0.9, 0.6, -0.8][i % 4];
+            return (
+              <motion.article
+                key={v.title}
+                initial={{ opacity: 0, y: 26, rotate: tilt * 2.4 }}
+                whileInView={{ opacity: 1, y: 0, rotate: tilt }}
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ delay: i * 0.08, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -6, rotate: 0, transition: { duration: 0.25 } }}
+                className="group relative rounded-[0.6rem] border border-border bg-card px-7 pt-9 pb-7 shadow-[0_8px_24px_-16px_hsl(var(--foreground)/0.4)] hover:shadow-[0_22px_48px_-20px_hsl(var(--foreground)/0.35)] transition-shadow duration-300"
+              >
+                {/* tape */}
+                <span
+                  aria-hidden
+                  className="absolute -top-3 left-1/2 h-6 w-24 -translate-x-1/2 rotate-[-2deg] rounded-[2px] bg-accent/25 border border-accent/30 backdrop-blur-[1px]"
+                />
+                <div className="relative z-10 flex items-start gap-4">
+                  <div className="w-10 h-10 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <v.icon className="h-[18px] w-[18px] text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted-foreground">
+                      No. {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="font-serif text-lg font-bold text-foreground mt-1 mb-2 leading-tight">{v.title}</h3>
+                    {/* ruled lines sit exactly on the description baseline grid */}
+                    <p
+                      className="text-sm text-muted-foreground leading-[26px]"
+                      style={{
+                        backgroundImage:
+                          "repeating-linear-gradient(to bottom, transparent 0px, transparent 25px, hsl(var(--border)) 25px, hsl(var(--border)) 26px)",
+                      }}
+                    >
+                      {v.description}
+                    </p>
+                  </div>
+                </div>
+
+              </motion.article>
+            );
+          })}
         </div>
       </section>
 
       <AnimatedDivider />
 
-      {/* Timeline */}
+      {/* Timeline - a ruled page from the logbook */}
       <section className="bg-foreground/[0.03] py-28">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-6">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">Our journey</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">A brief account of how we arrived here.</p>
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-4">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <span className="h-px w-8 bg-accent" />
+              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">Logbook</span>
+            </div>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">Our journey</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">Four entries, written as they happened.</p>
           </motion.div>
-          <div className="relative mt-12">
-            <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} className="absolute left-4 top-0 bottom-0 w-px bg-border origin-top" />
-            <div className="space-y-10">
-              {timeline.map((item, i) => (
-                <motion.div key={item.title} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.5 }} className="relative pl-12">
-                  <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.12 + 0.2, type: "spring", stiffness: 200 }} className="absolute left-2.5 top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-background" />
-                  <span className="text-xs font-mono text-primary/70 font-semibold">{item.year}</span>
-                  <h3 className="font-serif text-lg font-bold text-foreground mt-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mt-1">{item.description}</p>
-                </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="relative mt-12 rounded-[1.25rem] border border-border bg-card overflow-hidden shadow-[0_18px_50px_-30px_hsl(var(--foreground)/0.45)]"
+          >
+            {/* red margin rule */}
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 left-[4.5rem] sm:left-[7.5rem] w-px bg-destructive/35" />
+            {/* punch holes */}
+            <div aria-hidden className="pointer-events-none absolute left-6 sm:left-9 inset-y-0 hidden sm:flex flex-col justify-around py-14">
+              {[0, 1, 2].map((h) => (
+                <span key={h} className="block w-3 h-3 rounded-full border border-border bg-background" />
               ))}
             </div>
-          </div>
+
+            <ul className="relative">
+              {timeline.map((item, i) => (
+                <motion.li
+                  key={item.title}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="group grid grid-cols-[4.5rem_1fr] sm:grid-cols-[7.5rem_1fr] border-b border-border/60 last:border-b-0 hover:bg-primary/[0.035] transition-colors duration-300"
+                >
+                  <div className="py-7 pl-4 sm:pl-14 pr-3 text-right sm:text-left">
+                    <span className="font-mono text-[11px] font-semibold tracking-wider text-primary/80">{item.year}</span>
+                  </div>
+                  <div className="py-7 pl-5 pr-6 sm:pr-10">
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-mono text-[10px] text-muted-foreground/70">{String(i + 1).padStart(2, "0")}</span>
+                      <h3 className="font-serif text-lg font-bold text-foreground leading-tight">{item.title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-1.5">{item.description}</p>
+                  </div>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
       </section>
+
+
 
       <AnimatedDivider />
 

@@ -14,6 +14,8 @@ const tiers = [
   {
     name: "Free",
     price: "$0",
+    annual: "$0",
+    audience: "For the person testing whether this replaces their current notebook.",
     description: "A complete starting point with room to capture, organize, and search your work.",
     features: [
       "Up to 3 notebooks",
@@ -33,7 +35,9 @@ const tiers = [
   {
     name: "Pro",
     price: "$19",
+    annual: "$15",
     period: "/month",
+    audience: "For students and writers in their notes every single day.",
     description: "For daily users who require unlimited AI access and advanced workflow tools.",
     features: [
       "Unlimited notebooks",
@@ -53,7 +57,9 @@ const tiers = [
   {
     name: "Team",
     price: "$29",
+    annual: "$24",
     period: "/user/month",
+    audience: "For study groups, labs, and small teams sharing one source of truth.",
     description: "Shared workspaces for study groups, labs, and teams collaborating on long-form work.",
     features: [
       "Everything in Pro",
@@ -68,6 +74,7 @@ const tiers = [
     highlighted: false,
   },
 ];
+
 
 const comparisons: { feature: string; free: boolean | "soon"; pro: boolean | "soon"; team: boolean | "soon" }[] = [
   { feature: "AI-powered explanations", free: true, pro: true, team: true },
@@ -97,13 +104,25 @@ const faqs = [
   { q: "Is there a student discount?", a: "Yes - students who sign up with a .edu address receive 50% off Pro automatically. No application required." },
   { q: "What happens to my notes if I downgrade?", a: "Your notes remain yours. You retain access to everything you've written; you simply cannot create notebooks beyond the free limit until you upgrade." },
   { q: "How does the free trial work?", a: "Fourteen days of Pro access with no credit card required. When the trial ends, you may subscribe or revert to the Free plan - your work is preserved either way." },
+  { q: "Are my notes used to train AI models?", a: "No. Your notes are never used for model training and are never sold. The AI only sees the specific passage you point it at, and only when you ask it to." },
+  { q: "Can I get a refund?", a: "Yes. If Pro isn't right for you, email us within 30 days of a charge and we'll refund it in full - no questionnaire, no retention call." },
+  { q: "Can I export everything and leave?", a: "Always. One click exports any note to Markdown or PDF, and your whole archive is portable. No proprietary format holds your work hostage." },
 ];
+
+const guarantees = [
+  { title: "30-day refund", body: "Email us within 30 days of any charge and we refund it in full." },
+  { title: "Cancel in one click", body: "No retention flow, no phone call, no end-of-term lock-in." },
+  { title: "Your data leaves with you", body: "Markdown and PDF export on every plan, including Free." },
+];
+
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
 
 export default function PricingPage() {
   const { user } = useAuth();
+  const [billing, setBilling] = React.useState<"monthly" | "annual">("monthly");
+
 
   return (
     <>
@@ -168,51 +187,125 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section className="container mx-auto px-6 pb-28">
-        <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-8 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-14">
-          {tiers.map((tier) => (
-            <motion.div
-              key={tier.name}
-              variants={fadeUp}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className={`rounded-[2rem] border p-8 text-left flex flex-col transition-shadow duration-300 ${
-                tier.highlighted
-                  ? "border-primary bg-primary/5 shadow-xl shadow-primary/10 ring-1 ring-primary/20"
-                  : "border-border bg-card hover:shadow-lg hover:shadow-primary/5"
-              }`}
-            >
-              {tier.highlighted && (
-                <div className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold text-primary-foreground mb-4 w-fit">
-                  <Zap className="h-3 w-3" /> Most Popular
-                </div>
-              )}
-              <h2 className="font-serif text-xl font-bold text-foreground">{tier.name}</h2>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-foreground">{tier.price}</span>
-                {tier.period && <span className="text-sm text-muted-foreground">{tier.period}</span>}
-              </div>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{tier.description}</p>
-              <ul className="mt-6 space-y-3 flex-1">
-                {tier.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to={user ? "/app" : "/auth"}
-                className={`magnetic-btn mt-8 inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold transition-all ${
+        {/* Billing toggle */}
+        <div className="flex flex-col items-center gap-3 mt-12">
+          <div className="inline-flex items-center rounded-full border border-border bg-card p-1">
+            {(["monthly", "annual"] as const).map((cycle) => (
+              <button
+                key={cycle}
+                type="button"
+                onClick={() => setBilling(cycle)}
+                aria-pressed={billing === cycle}
+                className="relative rounded-full px-5 py-2 text-xs font-semibold capitalize transition-colors"
+              >
+                {billing === cycle && (
+                  <motion.span
+                    layoutId="billing-pill"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    className="absolute inset-0 rounded-full bg-primary"
+                  />
+                )}
+                <span className={`relative z-10 ${billing === cycle ? "text-primary-foreground" : "text-muted-foreground"}`}>
+                  {cycle}
+                </span>
+              </button>
+            ))}
+          </div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
+            Annual billing saves ~20%
+          </p>
+        </div>
+
+        <motion.div variants={stagger} initial="hidden" animate="show" className="grid gap-8 grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto mt-12 items-start">
+          {tiers.map((tier) => {
+            const shown = billing === "annual" ? tier.annual : tier.price;
+            return (
+              <motion.div
+                key={tier.name}
+                variants={fadeUp}
+                whileHover={{ y: -6, transition: { type: "spring", stiffness: 320, damping: 24 } }}
+                className={`relative rounded-[2rem] border p-8 text-left flex flex-col transition-shadow duration-300 ${
                   tier.highlighted
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                    : "border border-border text-foreground hover:bg-muted"
+                    ? "border-primary bg-primary/5 shadow-xl shadow-primary/10 ring-1 ring-primary/20 md:-mt-4 md:pb-10"
+                    : "border-border bg-card hover:shadow-lg hover:shadow-primary/5"
                 }`}
               >
-                {tier.cta}
-              </Link>
+                {tier.highlighted && (
+                  <span
+                    aria-hidden
+                    className="absolute -top-3 left-1/2 h-6 w-28 -translate-x-1/2 rotate-[-2deg] rounded-[2px] bg-accent/25 border border-accent/30"
+                  />
+                )}
+                {tier.highlighted && (
+                  <div className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold text-primary-foreground mb-4 w-fit">
+                    <Zap className="h-3 w-3" /> Most Popular
+                  </div>
+                )}
+                <h2 className="font-serif text-xl font-bold text-foreground">{tier.name}</h2>
+                <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{tier.audience}</p>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <motion.span
+                    key={shown}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="text-4xl font-bold text-foreground"
+                  >
+                    {shown}
+                  </motion.span>
+                  {tier.period && <span className="text-sm text-muted-foreground">{tier.period}</span>}
+                </div>
+                {billing === "annual" && tier.period && (
+                  <p className="mt-1 text-[11px] font-mono uppercase tracking-wider text-accent">Billed yearly</p>
+                )}
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{tier.description}</p>
+                <ul className="mt-6 space-y-3 flex-1">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-foreground">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to={user ? "/app" : "/auth"}
+                  className={`magnetic-btn mt-8 inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold transition-all ${
+                    tier.highlighted
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                      : "border border-border text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {tier.cta}
+                </Link>
+                {tier.highlighted && (
+                  <p className="mt-3 text-center text-[11px] text-muted-foreground">No card required to start.</p>
+                )}
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        {/* Guarantees */}
+        <div className="grid gap-4 sm:grid-cols-3 max-w-5xl mx-auto mt-12">
+          {guarantees.map((g, i) => (
+            <motion.div
+              key={g.title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ delay: i * 0.07, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="rounded-2xl border border-border bg-card/60 px-5 py-4"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <Check className="h-3.5 w-3.5 text-primary" />
+                <span className="font-serif text-sm font-bold text-foreground">{g.title}</span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">{g.body}</p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </section>
+
 
       <AnimatedDivider />
 
