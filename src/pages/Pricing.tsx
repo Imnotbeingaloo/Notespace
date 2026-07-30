@@ -285,24 +285,16 @@ export default function PricingPage() {
           })}
         </motion.div>
 
-        {/* Guarantees */}
-        <div className="grid gap-4 sm:grid-cols-3 max-w-5xl mx-auto mt-12">
-          {guarantees.map((g, i) => (
-            <motion.div
-              key={g.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ delay: i * 0.07, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-2xl border border-border bg-card/60 px-5 py-4"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Check className="h-3.5 w-3.5 text-primary" />
-                <span className="font-serif text-sm font-bold text-foreground">{g.title}</span>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">{g.body}</p>
-            </motion.div>
-          ))}
+        {/* Reassurance strip - single hairline row, no cards */}
+        <div className="max-w-5xl mx-auto mt-14 border-t border-border/70 pt-5">
+          <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            {guarantees.map((g) => (
+              <li key={g} className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                <Check className="h-3 w-3 text-primary" />
+                {g}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
