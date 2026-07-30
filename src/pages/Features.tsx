@@ -146,15 +146,12 @@ export default function FeaturesPage() {
                         style={{ zIndex: 0 }}
                       />
                       {group.items.map((item, iIdx) => (
-                        <motion.li
+                        <li
                           key={item.name}
-                          variants={{
-                            hidden: { opacity: 0, y: 20 },
-                            show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
-                          }}
-                          className="group relative flex gap-4 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all duration-500 p-5 hover:shadow-lg hover:shadow-primary/5"
+                          className="group relative flex gap-4 rounded-2xl border border-border bg-card hover:border-primary/30 transition-colors duration-300 p-5 hover:shadow-lg hover:shadow-primary/5"
                           style={{ zIndex: 1 }}
                         >
+
                           <div className="relative shrink-0">
                             <div
                               className="w-12 h-12 rounded-xl flex items-center justify-center ring-4 ring-background shadow-md shadow-primary/10 bg-primary text-primary-foreground"
