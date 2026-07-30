@@ -276,7 +276,8 @@ function PhilosophySection() {
                   </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
+
           </motion.div>
         </div>
       </div>
