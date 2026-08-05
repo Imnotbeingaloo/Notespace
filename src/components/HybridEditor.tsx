@@ -655,13 +655,16 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       }
     }, [measureImg]);
 
+    const spellRangeRef = useRef<Range | null>(null);
+
     const handleDoubleClick = useCallback(() => {
       const sel = window.getSelection();
       const wrap = wrapperRef.current;
       if (!sel || sel.isCollapsed || sel.rangeCount === 0 || !wrap) return;
       const word = sel.toString().trim();
       if (!isCheckableWord(word)) return;
-      const rect = sel.getRangeAt(0).getBoundingClientRect();
+      const range = sel.getRangeAt(0).cloneRange();
+      const rect = range.getBoundingClientRect();
       const wrapRect = wrap.getBoundingClientRect();
       const top = rect.bottom - wrapRect.top + 8;
       const left = Math.max(0, rect.left - wrapRect.left);
@@ -670,13 +673,25 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         // Bail out if the user moved on while the dictionary was loading.
         const live = window.getSelection();
         if (!live || live.toString().trim() !== word) return;
+        spellRangeRef.current = range;
         setSpell({ top, left, word, suggestions });
       });
     }, []);
 
     const applySuggestion = useCallback((replacement: string) => {
-      editorRef.current?.focus();
+      const el = editorRef.current;
+      const range = spellRangeRef.current;
+      if (!el) return;
+      el.focus();
+      // Re-select the misspelled word explicitly — focusing the editor can
+      // collapse the caret, which would otherwise insert instead of replace.
+      if (range && el.contains(range.startContainer)) {
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
       document.execCommand("insertText", false, replacement);
+      spellRangeRef.current = null;
       setSpell(null);
       emitChange();
     }, [emitChange]);
