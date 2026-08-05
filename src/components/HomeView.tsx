@@ -18,6 +18,8 @@ import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
 import { WelcomeBackDialog } from "@/components/WelcomeBackDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
+import { HeroNotebookStack } from "@/components/HeroNotebookStack";
+
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
@@ -286,7 +288,8 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             backgroundSize: "24px 24px",
           }}
         />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-[1.65rem] sm:py-[2.2rem]">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-[1.65rem] sm:py-[2.2rem] flex items-center justify-between gap-8">
+          <div className="min-w-0 flex-1">
           <p className="text-[11px] uppercase tracking-[0.25em] text-primary/80 font-mono mb-2">
             ◆ Your Library
           </p>
@@ -298,6 +301,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             {totalNotes === 1 ? "note" : "notes"}. Pick one up where you left off.
           </p>
 
+
           {/* Quick actions row - separated from the notebook grid */}
           <div className="flex flex-wrap items-center gap-2 mt-6">
             {(onCreateNotebookDirect || onCreateNoteDirect || onCreateNotebook) && (
@@ -305,14 +309,15 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                 <DropdownMenuTrigger asChild>
                   <button
                     data-testid="home-create"
-                    className="inline-flex w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
+                    className="inline-flex w-auto items-center justify-center gap-2.5 px-[1.35rem] py-[0.8rem] rounded-xl bg-primary text-primary-foreground text-[0.95rem] font-medium shadow-sm hover:opacity-90 transition-all duration-150 active:scale-[0.97]"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-[1.15rem] w-[1.15rem]" />
                     Create
-                    <ChevronDown className="h-3.5 w-3.5 opacity-80" />
+                    <ChevronDown className="h-4 w-4 opacity-80" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)]">
+
                   <DropdownMenuItem
                     onSelect={() => (onCreateNoteDirect ?? onCreateNotebook)?.()}
                     className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary"
@@ -411,7 +416,13 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
               ))}
             </div>
           </div>
+          </div>
+
+          <div className="hidden lg:block flex-shrink-0">
+            <HeroNotebookStack />
+          </div>
         </div>
+
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-10">

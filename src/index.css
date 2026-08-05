@@ -68,12 +68,18 @@
     --muted: 40 15% 92%;
     --muted-foreground: 220 14% 30%;
 
-    /* Accent bench - teal stays primary. Antique brass is the warm accent
-       (replaces the old orange/yellow), claret is its editorial companion. */
-    --accent: 32 62% 38%;
+    /* Accent bench - teal stays primary. Ink indigo is the accent (replaces
+       antique brass), claret/oxblood is its editorial companion. Sage and
+       ochre are the supporting functional tones. */
+    --accent: 226 55% 32%;
     --accent-foreground: 0 0% 100%;
     --accent-2: 352 48% 38%;
     --accent-2-foreground: 0 0% 100%;
+    --sage: 150 18% 38%;
+    --sage-foreground: 0 0% 100%;
+    --ochre: 38 70% 46%;
+    --ochre-foreground: 0 0% 100%;
+
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -120,10 +126,15 @@
     --muted: 220 15% 16%;
     --muted-foreground: 220 12% 70%;
 
-    --accent: 38 78% 68%;
+    --accent: 226 62% 74%;
     --accent-foreground: 220 20% 10%;
     --accent-2: 352 62% 68%;
     --accent-2-foreground: 220 20% 10%;
+    --sage: 150 28% 60%;
+    --sage-foreground: 220 20% 10%;
+    --ochre: 38 72% 62%;
+    --ochre-foreground: 220 20% 10%;
+
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
