@@ -422,6 +422,13 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             </div>
           </div>
           </div>
+
+          {/* Signature moment: 3D open notebook */}
+          <div className="hidden lg:block relative shrink-0 w-[300px] xl:w-[360px] h-[240px] xl:h-[280px] -my-2">
+            <Suspense fallback={null}>
+              <HeroNotebook3D className="absolute inset-0" />
+            </Suspense>
+          </div>
         </div>
 
       </div>
