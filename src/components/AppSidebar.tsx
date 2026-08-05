@@ -1053,12 +1053,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         <div
                           key={plan.id}
                           className={`flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors ${
-                            today ? "bg-primary/10 border border-primary/20" : "hover:bg-muted"
+                            today ? "bg-ochre/10 border border-ochre/25" : "hover:bg-muted"
                           }`}
                         >
                           <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)} ${today ? "animate-pulse" : ""}`} />
                           <div className="flex-1 min-w-0">
-                            {today && <span className="text-[9px] font-bold uppercase text-primary">📚 Study time</span>}
+                            {today && <span className="text-[9px] font-bold uppercase text-ochre">📚 Study time</span>}
                             <span className="text-foreground truncate block font-medium">{plan.title}</span>
                             <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                               <span>{getDayLabel(plan.scheduled_date)}</span>
