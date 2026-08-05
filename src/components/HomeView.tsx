@@ -18,6 +18,8 @@ import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
 import { WelcomeBackDialog } from "@/components/WelcomeBackDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
+import { HeroNotebookStack } from "@/components/HeroNotebookStack";
+
 
 interface HomeViewProps {
   onOpenNotebook: (notebookId: string) => void;
