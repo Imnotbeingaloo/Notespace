@@ -1,100 +1,77 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * Hero paper field — the whole hero band reads as a sheet of notebook paper:
- * full-width ruled lines that sweep in, a margin rule, punch holes down the
- * left edge and a couple of quiet marginalia marks on the right. It covers the
- * entire section instead of sitting in one corner as a separate object.
+ * Decorative 3D-ish stack of notebooks for the dashboard hero.
+ * Pure CSS/SVG - no images, no network cost. Hidden on small screens.
  */
 export function HeroNotebookStack() {
   const reduce = useReducedMotion();
 
-  // ruled lines on a 28px rhythm — matches the editor grid
-  const rules = Array.from({ length: 9 }, (_, i) => i);
-
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 select-none overflow-hidden">
-      {/* ruled lines across the full width */}
-      <div className="absolute inset-0">
-        {rules.map((i) => (
-          <motion.span
-            key={i}
-            className="absolute left-0 right-0 h-px origin-left bg-foreground/[0.09]"
-            style={{ top: `${(i + 1) * 28}px` }}
-            initial={reduce ? false : { scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
-            transition={{ duration: 0.9, delay: 0.05 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-          />
-        ))}
-      </div>
+    <div
+      aria-hidden
+      className="relative hidden lg:block h-[238px] w-[375px] shrink-0 select-none"
+      style={{ perspective: "1375px" }}
+    >
+      {/* soft grounding shadow */}
+      <div className="absolute bottom-4 left-1/2 h-8 w-[62%] -translate-x-1/2 rounded-[50%] bg-foreground/20 blur-xl" />
 
-      {/* margin rule */}
-      <motion.span
-        className="absolute top-0 bottom-0 left-16 sm:left-24 w-px bg-accent-2/30 origin-top"
-        initial={reduce ? false : { scaleY: 0 }}
-        animate={{ scaleY: 1 }}
-        transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-      />
-
-      {/* punch holes down the left edge */}
-      <div className="absolute left-5 sm:left-8 inset-y-0 hidden sm:flex flex-col justify-evenly py-4">
-        {[0, 1, 2].map((i) => (
-          <motion.span
-            key={i}
-            className="block h-3 w-3 rounded-full border border-foreground/10 bg-foreground/[0.05]"
-            initial={reduce ? false : { scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.35 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-          />
-        ))}
-      </div>
-
-      {/* marginalia: highlighter sweep sitting exactly on a rule */}
-      <motion.span
-        className="absolute right-[8%] top-[84px] hidden lg:block h-[16px] -translate-y-[13px] -rotate-[0.8deg] rounded-[2px] bg-ochre/20"
-        initial={reduce ? false : { width: 0 }}
-        animate={{ width: 150 }}
-        transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      />
-
-      {/* sage tick in the right margin */}
-      <svg
-        aria-hidden
-        className="absolute right-[5%] top-[112px] hidden lg:block h-5 w-6"
-        viewBox="0 0 24 20"
-        fill="none"
+      <motion.div
+        className="absolute inset-0"
+        style={{ transformStyle: "preserve-3d" }}
+        initial={reduce ? false : { opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
-        <motion.path
-          d="M3 11l6 6L21 3"
-          stroke="hsl(var(--sage))"
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          initial={reduce ? false : { pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 0.7, delay: 1, ease: [0.16, 1, 0.3, 1] }}
+        {/* back book - ochre */}
+        <div
+          className="absolute left-[22px] top-[58px] h-[140px] w-[210px] rounded-md border border-ochre/45 bg-ochre/25 shadow-[0_12px_30px_-16px_hsl(var(--foreground)/0.5)]"
+          style={{ transform: "rotateX(52deg) rotateZ(-24deg) translateZ(-32px)" }}
         />
-      </svg>
+        {/* middle book - sage */}
+        <div
+          className="absolute left-[58px] top-[45px] h-[140px] w-[210px] rounded-md border border-sage/50 bg-sage/30 shadow-[0_15px_32px_-16px_hsl(var(--foreground)/0.5)]"
+          style={{ transform: "rotateX(52deg) rotateZ(-20deg) translateZ(-15px)" }}
+        />
 
-      {/* page-marker tabs bleeding off the right edge */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-2">
-        {[
-          { c: "bg-accent", w: "w-10" },
-          { c: "bg-sage", w: "w-6" },
-          { c: "bg-ochre", w: "w-14" },
-        ].map((t, i) => (
-          <motion.span
-            key={i}
-            className={`block h-[6px] rounded-l-full ${t.c} ${t.w} opacity-60`}
-            initial={reduce ? false : { x: 30, opacity: 0 }}
-            animate={{ x: 0, opacity: 0.6 }}
-            transition={{ duration: 0.6, delay: 0.5 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-          />
-        ))}
-      </div>
+        {/* front book - primary cover, open with ruled page */}
+        <motion.div
+          className="absolute left-[88px] top-[28px] h-[148px] w-[220px] rounded-md border border-primary/45 bg-primary/20 backdrop-blur-[1px] shadow-[0_22px_42px_-18px_hsl(var(--foreground)/0.55)]"
+          style={{ transform: "rotateX(50deg) rotateZ(-16deg)" }}
+          animate={reduce ? undefined : { y: [0, -5, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          {/* spine */}
+          <div className="absolute inset-y-0 left-0 w-[9px] rounded-l-md bg-accent/70" />
+          {/* ruled lines */}
+          <div className="absolute inset-y-4 left-[26px] right-5 flex flex-col justify-between">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <span
+                key={i}
+                className="block h-px w-full bg-foreground/25"
+                style={{ width: `${100 - i * 9}%` }}
+              />
+            ))}
+          </div>
+          {/* red margin */}
+          <div className="absolute inset-y-3 left-[19px] w-px bg-accent-2/70" />
+        </motion.div>
 
-      {/* soften the paper under the headline copy */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
+        {/* tape strip */}
+        <div className="absolute left-[65px] top-[20px] h-[20px] w-[68px] rotate-[-28deg] bg-ochre/45 shadow-sm" />
+
+        {/* floating ink dot accents */}
+        <motion.span
+          className="absolute right-[32px] top-[22px] h-2.5 w-2.5 rounded-full bg-accent"
+          animate={reduce ? undefined : { y: [0, -7, 0], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.span
+          className="absolute right-[68px] top-[68px] h-2 w-2 rounded-full bg-sage"
+          animate={reduce ? undefined : { y: [0, -5, 0], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+        />
+      </motion.div>
     </div>
   );
 }
