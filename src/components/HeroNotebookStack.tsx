@@ -94,7 +94,7 @@ export function HeroNotebookStack() {
       </div>
 
       {/* soften the paper under the headline copy */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent lg:to-background/0" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
     </div>
   );
 }
