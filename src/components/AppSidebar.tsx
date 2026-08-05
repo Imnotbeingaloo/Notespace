@@ -931,8 +931,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                           key={tag}
                           className={`inline-flex items-center gap-0.5 pl-2 pr-1 py-0.5 rounded-full text-[11px] font-medium border transition-all duration-150 ${
                             activeFilterTag === tag
-                              ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                              : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                              ? "bg-sage text-sage-foreground border-sage shadow-sm"
+                              : "bg-sage/10 text-sage border-sage/25 hover:bg-sage/20"
                           }`}
                         >
                           <button
