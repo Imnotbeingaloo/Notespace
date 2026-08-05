@@ -197,12 +197,12 @@ export function HeroNotebook3D({ className = "" }: { className?: string }) {
       <Canvas
         dpr={[1, 1.75]}
         gl={{ antialias: true, alpha: true }}
-        camera={{ position: [0, 0.2, 5.4], fov: 34 }}
+        camera={{ position: [0, 0.2, 5.0], fov: 34 }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.85} />
+          <ambientLight intensity={0.95} color="#fff6e8" />
           <directionalLight position={[3, 4, 5]} intensity={1.15} />
-          <directionalLight position={[-4, -1, 2]} intensity={0.35} color="#c9d4ff" />
+          <directionalLight position={[-4, -1, 2]} intensity={0.3} color="#e6ecff" />
           <Notebook reduce={reduce} />
         </Suspense>
       </Canvas>
