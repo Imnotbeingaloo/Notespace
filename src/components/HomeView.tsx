@@ -418,6 +418,8 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             </div>
           </div>
           </div>
+
+          <HeroNotebookStack notebooks={notebooks.length} notes={totalNotes} />
         </div>
 
       </div>
