@@ -18,7 +18,10 @@ import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
 import { WelcomeBackDialog } from "@/components/WelcomeBackDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
-import { HeroNotebookStack } from "@/components/HeroNotebookStack";
+import { lazy, Suspense } from "react";
+const HeroNotebook3D = lazy(() =>
+  import("@/components/HeroNotebook3D").then((m) => ({ default: m.HeroNotebook3D }))
+);
 
 
 interface HomeViewProps {
@@ -288,7 +291,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             backgroundSize: "24px 24px",
           }}
         />
-        <HeroNotebookStack />
+        
         <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-[1.65rem] sm:py-[2.2rem] flex items-center justify-between gap-8">
 
           <div className="min-w-0 flex-1">
@@ -418,6 +421,13 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
               ))}
             </div>
           </div>
+          </div>
+
+          {/* Signature moment: 3D open notebook */}
+          <div className="hidden lg:block relative shrink-0 w-[300px] xl:w-[360px] h-[240px] xl:h-[280px] -my-2">
+            <Suspense fallback={null}>
+              <HeroNotebook3D className="absolute inset-0" />
+            </Suspense>
           </div>
         </div>
 
