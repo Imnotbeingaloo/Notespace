@@ -17,9 +17,9 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
   const rules = Array.from({ length: 10 }, (_, i) => i);
 
   // fold runs from 54% along the top edge down to the bottom-right corner
-  const TOP_SHEET = "polygon(0% 0%, 54% 0%, 100% 100%, 0% 100%)";
-  const FLAP_CLOSED = "polygon(54% 0%, 100% 100%, 54% 0%)";
-  const FLAP_OPEN = "polygon(54% 0%, 100% 100%, 27% 54%)";
+  const TOP_SHEET = "polygon(0% 0%, 68% 0%, 100% 78%, 100% 100%, 0% 100%)";
+  const FLAP_CLOSED = "polygon(68% 0%, 100% 78%, 68% 0%)";
+  const FLAP_OPEN = "polygon(68% 0%, 100% 78%, 62% 62%)";
 
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 select-none overflow-hidden">
@@ -37,7 +37,7 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
 
         {/* ledger readout sitting on the underleaf */}
         <motion.div
-          className="absolute right-5 bottom-4 hidden sm:block text-right"
+          className="absolute right-8 bottom-5 hidden text-right lg:block"
           initial={reduce ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
@@ -112,7 +112,7 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
 
         {/* marginalia */}
         <motion.span
-          className="absolute right-[46%] top-[84px] hidden h-[16px] -translate-y-[13px] -rotate-[0.8deg] rounded-[2px] bg-ochre/25 lg:block"
+          className="absolute right-[40%] top-[84px] hidden h-[16px] -translate-y-[13px] -rotate-[0.8deg] rounded-[2px] bg-ochre/25 lg:block"
           initial={reduce ? false : { width: 0 }}
           animate={{ width: 130 }}
           transition={{ duration: 0.9, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
@@ -149,8 +149,8 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
       />
       {/* crease shadow along the fold */}
       <motion.span
-        className="absolute left-[54%] top-0 h-[200%] w-10 origin-top-left bg-gradient-to-r from-foreground/[0.12] to-transparent"
-        style={{ transform: "rotate(24deg)" }}
+        className="absolute left-[68%] top-0 h-[240%] w-8 origin-top-left bg-gradient-to-r from-foreground/[0.10] to-transparent"
+        style={{ transform: "rotate(21deg)" }}
         initial={reduce ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.9, delay: 0.5 }}
