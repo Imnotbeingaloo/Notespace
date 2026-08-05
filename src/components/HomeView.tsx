@@ -417,10 +417,6 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             </div>
           </div>
           </div>
-
-          <div className="hidden lg:block flex-shrink-0">
-            <HeroNotebookStack />
-          </div>
         </div>
 
       </div>
