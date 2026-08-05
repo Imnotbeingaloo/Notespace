@@ -2,7 +2,11 @@ import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle, useSta
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import TurndownService from "turndown";
+import { AnimatePresence } from "framer-motion";
 import { FloatingToolbar } from "@/components/FloatingToolbar";
+import { ImageEditToolbar, type ImageAlign } from "@/components/ImageEditToolbar";
+import { SpellSuggest } from "@/components/SpellSuggest";
+import { getSuggestions, isCheckableWord } from "@/lib/spellcheck";
 import { usePaperStyle } from "@/hooks/use-paper-style";
 import { toast } from "@/components/ui/sonner";
 import { dismissToast } from "@/lib/toast-queue";
@@ -26,6 +30,8 @@ interface HybridEditorProps {
   content: string;
   onChange: (content: string) => void;
   placeholder?: string;
+  /** Upload + insert image files pasted or dropped straight into the body. */
+  onImageFiles?: (files: File[]) => void;
 }
 
 // Configure marked
@@ -102,6 +108,17 @@ function createTurndown() {
     },
   });
 
+  // Images carry sizing / float-alignment as inline styles. Markdown's
+  // `![alt](src)` syntax cannot express either, so emit raw HTML instead —
+  // otherwise every resize or align is thrown away on the next save.
+  td.addRule("preserve-image", {
+    filter: "img",
+    replacement: (_content, node) => {
+      const el = node as HTMLImageElement;
+      return el.outerHTML;
+    },
+  });
+
   return td;
 }
 
@@ -112,7 +129,7 @@ function markdownToHtml(md: string): string {
   // Convert the blank-line sentinel back into real empty paragraphs the browser will render.
   const normalized = md.replace(/&#8203;\u200B/g, "\u200B");
   const raw = marked.parse(normalized, { async: false }) as string;
-  const cleaned = DOMPurify.sanitize(raw, { ADD_ATTR: ["target"] });
+  const cleaned = DOMPurify.sanitize(raw, { ADD_ATTR: ["target", "loading", "style", "width", "height"] });
   // Replace paragraphs that contain only zero-width chars (one or many) with
   // explicit <br> blank lines so consecutive Enters survive a round trip.
   return cleaned
@@ -130,14 +147,18 @@ function htmlToMarkdown(html: string): string {
 }
 
 export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
-  ({ content, onChange, placeholder }, ref) => {
+  ({ content, onChange, placeholder, onImageFiles }, ref) => {
     const editorRef = useRef<HTMLDivElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const lastMdRef = useRef(content);
     const isTypingRef = useRef(false);
     const savedRangeRef = useRef<Range | null>(null);
     const [selectionRect, setSelectionRect] = useState<DOMRect | null>(null);
     const [paperStyle] = usePaperStyle();
     const [commaHighlightOn] = useCommaHighlight();
+    const [selectedImg, setSelectedImg] = useState<HTMLImageElement | null>(null);
+    const [imgBox, setImgBox] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+    const [spell, setSpell] = useState<{ top: number; left: number; word: string; suggestions: string[] } | null>(null);
 
     // Wrap/unwrap commas on focus transitions. Keeps the caret out of the
     // mutation and preserves undo history because the wrap is stripped
@@ -411,10 +432,19 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
     }, [emitChange]);
 
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
-      const items = e.clipboardData.items;
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.startsWith("image/")) return; // let the browser handle image paste
+      const items = Array.from(e.clipboardData.items);
+      // Pasted screenshots / copied images: upload them and insert into the body.
+      // (contentEditable would otherwise inline a huge base64 blob, or drop it.)
+      const imageFiles = items
+        .filter((it) => it.kind === "file" && it.type.startsWith("image/"))
+        .map((it) => it.getAsFile())
+        .filter((f): f is File => !!f);
+      if (imageFiles.length > 0 && onImageFiles) {
+        e.preventDefault();
+        onImageFiles(imageFiles);
+        return;
       }
+
       // Prefer HTML so structure (lists, headings, bold, links, tables) is preserved.
       const html = e.clipboardData.getData("text/html");
       const text = e.clipboardData.getData("text/plain");
@@ -498,11 +528,171 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
 
       document.execCommand("insertText", false, text);
       emitChange();
-    }, [emitChange, onChange, setHtmlFromMd]);
+    }, [emitChange, onChange, setHtmlFromMd, onImageFiles]);
 
     const handleToolbarAction = useCallback((command: string, value?: string) => {
       editorRef.current?.focus();
       document.execCommand(command, false, value);
+      emitChange();
+    }, [emitChange]);
+
+    /* ---------------------- Image selection / resize / align ---------------------- */
+
+    const measureImg = useCallback((img: HTMLImageElement | null) => {
+      const wrap = wrapperRef.current;
+      if (!img || !wrap) { setImgBox(null); return; }
+      const w = wrap.getBoundingClientRect();
+      const r = img.getBoundingClientRect();
+      setImgBox({ top: r.top - w.top, left: r.left - w.left, width: r.width, height: r.height });
+    }, []);
+
+    useEffect(() => {
+      if (!selectedImg) return;
+      const update = () => measureImg(selectedImg);
+      update();
+      window.addEventListener("resize", update);
+      window.addEventListener("scroll", update, true);
+      return () => {
+        window.removeEventListener("resize", update);
+        window.removeEventListener("scroll", update, true);
+      };
+    }, [selectedImg, measureImg]);
+
+    const currentAlign: ImageAlign = (() => {
+      if (!selectedImg) return "center";
+      const f = selectedImg.style.float;
+      if (f === "left") return "left";
+      if (f === "right") return "right";
+      return "center";
+    })();
+
+    const currentWidthPct = (() => {
+      if (!selectedImg) return 100;
+      const w = selectedImg.style.width;
+      if (w.endsWith("%")) return parseFloat(w);
+      const parent = selectedImg.parentElement?.getBoundingClientRect().width || 1;
+      return Math.round((selectedImg.getBoundingClientRect().width / parent) * 100);
+    })();
+
+    const applyAlign = useCallback((align: ImageAlign) => {
+      const img = selectedImg;
+      if (!img) return;
+      img.style.maxWidth = "100%";
+      if (align === "center") {
+        img.style.float = "none";
+        img.style.display = "block";
+        img.style.margin = "0.75rem auto";
+      } else {
+        img.style.float = align;
+        img.style.display = "inline";
+        img.style.margin = align === "left" ? "0.35rem 1rem 0.5rem 0" : "0.35rem 0 0.5rem 1rem";
+      }
+      measureImg(img);
+      emitChange();
+    }, [selectedImg, emitChange, measureImg]);
+
+    const applyWidth = useCallback((pct: number) => {
+      const img = selectedImg;
+      if (!img) return;
+      const clamped = Math.max(10, Math.min(100, Math.round(pct)));
+      img.style.width = `${clamped}%`;
+      img.style.height = "auto";
+      img.style.maxHeight = "none";
+      img.style.maxWidth = "100%";
+      measureImg(img);
+      emitChange();
+    }, [selectedImg, emitChange, measureImg]);
+
+    const removeImage = useCallback(() => {
+      const img = selectedImg;
+      if (!img) return;
+      img.remove();
+      setSelectedImg(null);
+      setImgBox(null);
+      emitChange();
+    }, [selectedImg, emitChange]);
+
+    // Corner drag → freeform width, expressed as a % of the containing block so
+    // it stays responsive on smaller screens.
+    const startResize = useCallback((e: React.PointerEvent) => {
+      const img = selectedImg;
+      if (!img) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const parentWidth = img.parentElement?.getBoundingClientRect().width || img.getBoundingClientRect().width;
+      const startX = e.clientX;
+      const startWidth = img.getBoundingClientRect().width;
+      const onMove = (ev: PointerEvent) => {
+        const next = ((startWidth + (ev.clientX - startX)) / parentWidth) * 100;
+        const clamped = Math.max(10, Math.min(100, next));
+        img.style.width = `${clamped.toFixed(1)}%`;
+        img.style.height = "auto";
+        img.style.maxHeight = "none";
+        img.style.maxWidth = "100%";
+        measureImg(img);
+      };
+      const onUp = () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        emitChange();
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    }, [selectedImg, emitChange, measureImg]);
+
+    /* ------------------------------- Spellcheck ------------------------------- */
+
+    const handleEditorClick = useCallback((e: React.MouseEvent) => {
+      const target = e.target as HTMLElement;
+      setSpell(null);
+      if (target?.tagName === "IMG") {
+        const img = target as HTMLImageElement;
+        setSelectedImg(img);
+        measureImg(img);
+      } else {
+        setSelectedImg(null);
+        setImgBox(null);
+      }
+    }, [measureImg]);
+
+    const spellRangeRef = useRef<Range | null>(null);
+
+    const handleDoubleClick = useCallback(() => {
+      const sel = window.getSelection();
+      const wrap = wrapperRef.current;
+      if (!sel || sel.isCollapsed || sel.rangeCount === 0 || !wrap) return;
+      const word = sel.toString().trim();
+      if (!isCheckableWord(word)) return;
+      const range = sel.getRangeAt(0).cloneRange();
+      const rect = range.getBoundingClientRect();
+      const wrapRect = wrap.getBoundingClientRect();
+      const top = rect.bottom - wrapRect.top + 8;
+      const left = Math.max(0, rect.left - wrapRect.left);
+      getSuggestions(word).then((suggestions) => {
+        if (suggestions.length === 0) return;
+        // Bail out if the user moved on while the dictionary was loading.
+        const live = window.getSelection();
+        if (!live || live.toString().trim() !== word) return;
+        spellRangeRef.current = range;
+        setSpell({ top, left, word, suggestions });
+      });
+    }, []);
+
+    const applySuggestion = useCallback((replacement: string) => {
+      const el = editorRef.current;
+      const range = spellRangeRef.current;
+      if (!el) return;
+      el.focus();
+      // Re-select the misspelled word explicitly — focusing the editor can
+      // collapse the caret, which would otherwise insert instead of replace.
+      if (range && el.contains(range.startContainer)) {
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+      document.execCommand("insertText", false, replacement);
+      spellRangeRef.current = null;
+      setSpell(null);
       emitChange();
     }, [emitChange]);
 
@@ -513,21 +703,78 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       ? "w-full min-h-full relative flex flex-col box-border"
       : "w-full min-h-full px-3 sm:px-8 py-4 sm:py-6 relative flex flex-col box-border";
     return (
-      <div className={wrapperClass} data-testid="hybrid-editor-wrapper">
+      <div ref={wrapperRef} className={wrapperClass} data-testid="hybrid-editor-wrapper">
         <FloatingToolbar
-          selectionRect={selectionRect}
+          selectionRect={spell || selectedImg ? null : selectionRect}
           onAction={handleToolbarAction}
           containerRef={editorRef}
         />
+
+        <AnimatePresence>
+          {spell && (
+            <SpellSuggest
+              key="spell"
+              top={spell.top}
+              left={spell.left}
+              word={spell.word}
+              suggestions={spell.suggestions}
+              onPick={applySuggestion}
+            />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {selectedImg && imgBox && (
+            <ImageEditToolbar
+              key="img-toolbar"
+              top={Math.max(0, imgBox.top - 42)}
+              left={imgBox.left}
+              align={currentAlign}
+              widthPct={currentWidthPct}
+              onAlign={applyAlign}
+              onWidth={applyWidth}
+              onRemove={removeImage}
+            />
+          )}
+        </AnimatePresence>
+
+        {selectedImg && imgBox && (
+          <>
+            <div
+              aria-hidden
+              className="absolute pointer-events-none rounded-2xl ring-2 ring-primary/70"
+              style={{ top: imgBox.top, left: imgBox.left, width: imgBox.width, height: imgBox.height }}
+            />
+            <div
+              role="slider"
+              aria-label="Resize image"
+              aria-valuenow={Math.round(currentWidthPct)}
+              aria-valuemin={10}
+              aria-valuemax={100}
+              tabIndex={0}
+              onPointerDown={startResize}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowRight") { e.preventDefault(); applyWidth(currentWidthPct + 5); }
+                if (e.key === "ArrowLeft") { e.preventDefault(); applyWidth(currentWidthPct - 5); }
+              }}
+              className="absolute z-50 h-3.5 w-3.5 rounded-full border-2 border-background bg-primary cursor-nwse-resize shadow"
+              style={{ top: imgBox.top + imgBox.height - 7, left: imgBox.left + imgBox.width - 7 }}
+            />
+          </>
+        )}
+
         <div
           ref={editorRef}
           contentEditable
+          spellCheck
           suppressContentEditableWarning
           onInput={emitChange}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onClick={handleEditorClick}
+          onDoubleClick={handleDoubleClick}
           data-placeholder={placeholder}
           data-testid="hybrid-editor-content"
           className={`wysiwyg-editor w-full flex-1 h-auto bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-3 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}
@@ -536,6 +783,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
     );
   }
 );
+
 
 
 HybridEditor.displayName = "HybridEditor";
