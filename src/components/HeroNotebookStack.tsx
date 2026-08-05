@@ -6,106 +6,78 @@ interface HeroNotebookStackProps {
 }
 
 /**
- * Tilted index-card stack for the dashboard hero.
- * Cards recede into depth; the front card carries real stats.
- * Pure CSS/SVG - no images. Hidden on small screens.
+ * Flat "today card" accent for the dashboard hero.
+ * No 3D, no floating object — a real index card taped onto the page.
  */
 export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNotebookStackProps) {
   const reduce = useReducedMotion();
   const now = new Date();
   const day = now.toLocaleDateString(undefined, { day: "numeric" });
-  const month = now.toLocaleDateString(undefined, { month: "short" });
+  const month = now.toLocaleDateString(undefined, { month: "long" });
   const weekday = now.toLocaleDateString(undefined, { weekday: "long" });
 
   return (
-    <div
-      aria-hidden
-      className="relative hidden lg:block h-[250px] w-[400px] shrink-0 select-none"
-      style={{ perspective: "1200px" }}
-    >
-      <div className="absolute bottom-6 left-1/2 h-8 w-[60%] -translate-x-1/2 rounded-[50%] bg-foreground/20 blur-xl" />
+    <div aria-hidden className="relative hidden lg:block w-[300px] shrink-0 select-none mr-4">
+      {/* back sheet peeking out */}
+      <div className="absolute -right-2.5 top-3 h-full w-full rotate-[1.6deg] rounded-md border border-border/70 bg-card/70" />
 
       <motion.div
-        className="absolute inset-0 -translate-x-6"
-        style={{ transformStyle: "preserve-3d" }}
-        initial={reduce ? false : { opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="relative overflow-hidden rounded-md border border-border bg-card shadow-[0_18px_40px_-28px_hsl(var(--foreground)/0.5)]"
+        initial={reduce ? false : { opacity: 0, y: 10, rotate: -1.4 }}
+        animate={{ opacity: 1, y: 0, rotate: -0.8 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* back cards receding */}
-        {[
-          { x: 4, y: 10, rot: -13, z: -70, tone: "bg-ochre/30 border-ochre/45" },
-          { x: 22, y: 22, rot: -10, z: -46, tone: "bg-sage/30 border-sage/45" },
-          { x: 40, y: 34, rot: -7.5, z: -24, tone: "bg-card border-border" },
-        ].map((c, i) => (
-          <div
-            key={i}
-            className={`absolute h-[150px] w-[248px] rounded-lg border shadow-[0_16px_34px_-20px_hsl(var(--foreground)/0.55)] ${c.tone}`}
-            style={{
-              left: c.x,
-              top: c.y,
-              transform: `rotateY(11deg) rotateZ(${c.rot}deg) translateZ(${c.z}px)`,
-            }}
-          />
-        ))}
+        {/* ruled paper */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-60"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(to bottom, transparent 0 27px, hsl(var(--foreground)/0.09) 27px 28px)",
+          }}
+        />
+        {/* margin rule */}
+        <div className="pointer-events-none absolute inset-y-0 left-10 w-px bg-accent-2/50" />
 
-        {/* front card - real stats */}
-        <motion.div
-          className="absolute left-[58px] top-[46px] h-[156px] w-[256px] overflow-hidden rounded-lg border border-border bg-card shadow-[0_26px_48px_-22px_hsl(var(--foreground)/0.6)]"
-          style={{ transform: "rotateY(11deg) rotateZ(-5deg)" }}
-          animate={reduce ? undefined : { y: [0, -5, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {/* ruled paper */}
-          <div
-            className="absolute inset-0 opacity-[0.5]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(to bottom, transparent 0 27px, hsl(var(--foreground)/0.10) 27px 28px)",
-            }}
-          />
-          {/* red margin */}
-          <div className="absolute inset-y-0 left-[34px] w-px bg-accent-2/60" />
-          {/* punch holes */}
-          <div className="absolute left-[12px] top-6 flex flex-col gap-8">
-            {[0, 1, 2].map((i) => (
-              <span key={i} className="block h-2.5 w-2.5 rounded-full bg-foreground/12 ring-1 ring-foreground/10" />
-            ))}
+        <div className="relative py-6 pl-14 pr-6">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">{weekday}</p>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="font-serif text-[44px] leading-none text-foreground">{day}</span>
+            <span className="font-serif text-lg italic text-accent">{month}</span>
           </div>
 
-          <div className="relative pl-[48px] pr-4 pt-4">
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-3xl leading-none text-foreground">{day}</span>
-              <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{month}</span>
+          <div className="mt-6 h-px w-full bg-border" />
+
+          <dl className="mt-4 space-y-2.5">
+            <div className="flex items-baseline justify-between gap-4">
+              <dt className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                Notebooks
+              </dt>
+              <dd className="font-mono text-sm text-foreground">
+                {String(notebookCount).padStart(2, "0")}
+              </dd>
             </div>
-            <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-accent">{weekday}</p>
-
-            <div className="mt-4 space-y-1.5">
-              <p className="text-[13px] text-foreground">
-                <span className="font-medium">{notebookCount}</span>{" "}
-                <span className="text-muted-foreground">
-                  {notebookCount === 1 ? "notebook" : "notebooks"}
-                </span>
-              </p>
-              <p className="text-[13px] text-foreground">
-                <span className="font-medium">{noteCount}</span>{" "}
-                <span className="text-muted-foreground">{noteCount === 1 ? "note" : "notes"}</span>
-              </p>
+            <div className="flex items-baseline justify-between gap-4">
+              <dt className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                Notes
+              </dt>
+              <dd className="font-mono text-sm text-foreground">
+                {String(noteCount).padStart(2, "0")}
+              </dd>
             </div>
-          </div>
+          </dl>
+        </div>
 
-          {/* page tabs on the right edge */}
-          <div className="absolute right-0 top-7 flex flex-col gap-2">
-            <span className="block h-5 w-3 rounded-l-sm bg-accent/70" />
-            <span className="block h-5 w-4 rounded-l-sm bg-ochre/70" />
-            <span className="block h-5 w-2.5 rounded-l-sm bg-sage/70" />
-          </div>
-        </motion.div>
-
-        {/* tape holding the stack */}
-        <div className="absolute left-[38px] top-[34px] h-[22px] w-[74px] rotate-[-26deg] bg-ochre/50 shadow-sm" />
-        <div className="absolute right-[42px] bottom-[26px] h-[20px] w-[62px] rotate-[8deg] bg-ochre/40 shadow-sm" />
+        {/* page markers on the right edge */}
+        <div className="absolute right-0 top-8 flex flex-col gap-1.5">
+          <span className="block h-6 w-1.5 rounded-l-sm bg-accent/70" />
+          <span className="block h-6 w-1.5 rounded-l-sm bg-ochre/70" />
+          <span className="block h-6 w-1.5 rounded-l-sm bg-sage/70" />
+        </div>
       </motion.div>
+
+      {/* tape holding it to the page */}
+      <div className="absolute -top-2.5 left-8 h-5 w-20 -rotate-[7deg] bg-ochre/50 shadow-sm" />
+      <div className="absolute -bottom-2 right-10 h-4 w-16 rotate-[5deg] bg-ochre/40 shadow-sm" />
     </div>
   );
 }
