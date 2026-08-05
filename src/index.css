@@ -622,10 +622,13 @@
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
-/* An enlarged span sets its own line-height (a multiple of the 1.75rem rule
-   grid), so the ruled row grows with the text instead of clipping it. */
-.notebook-paper span[style*="font-size"] {
-  line-height: inherit;
+/* An enlarged span carries its own inline line-height (a multiple of the
+   1.75rem rule grid) set by the size picker, so the ruled row grows with the
+   text instead of clipping it. Blocks must not force it back down. */
+.notebook-paper p span[style*="font-size"],
+.notebook-paper li span[style*="font-size"],
+.notebook-paper div span[style*="font-size"] {
+  vertical-align: baseline;
 }
 
 .notebook-paper blockquote {
