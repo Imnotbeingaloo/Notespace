@@ -35,7 +35,7 @@ export function HeroNotebookStack() {
 
       <svg
         viewBox="0 0 720 200"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid slice"
         className="absolute inset-0 h-full w-full"
         fill="none"
       >
