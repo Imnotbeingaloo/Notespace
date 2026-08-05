@@ -1030,7 +1030,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <CalendarDays className="h-3.5 w-3.5" />
             <span className="flex-1 text-left text-xs font-semibold uppercase tracking-wider">Study Schedule</span>
             {upcomingPlans.length > 0 && (
-              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">{upcomingPlans.length}</span>
+              <span className="text-[10px] bg-ochre/15 text-ochre px-1.5 py-0.5 rounded-full font-medium">{upcomingPlans.length}</span>
             )}
             <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${scheduleOpen ? "rotate-90" : ""}`} />
           </button>
