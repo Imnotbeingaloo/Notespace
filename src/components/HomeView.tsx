@@ -279,16 +279,7 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
 
       {/* Hero */}
       <div className="relative border-b border-border overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-primary/[0.04] pointer-events-none" />
-        <div
-          className="absolute inset-0 opacity-[0.025] pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-        <HeroNotebookStack />
+        <HeroNotebookStack notebookCount={notebooks.length} noteCount={totalNotes} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-[1.65rem] sm:py-[2.2rem] flex items-center justify-between gap-8">
 
           <div className="min-w-0 flex-1">
