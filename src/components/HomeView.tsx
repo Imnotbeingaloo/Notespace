@@ -419,6 +419,9 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             </div>
           </div>
           </div>
+
+          <HeroNotebookStack />
+
         </div>
 
       </div>
