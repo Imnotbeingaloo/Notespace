@@ -416,10 +416,12 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
                   {label}
                 </button>
               ))}
-            </div>
           </div>
           </div>
+
+          <HeroNotebookStack />
         </div>
+
 
       </div>
 
