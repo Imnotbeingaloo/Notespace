@@ -614,9 +614,20 @@
 .notebook-paper mark {
   background-color: hsl(48 96% 76% / 0.55) !important;
   color: inherit !important;
-  padding: 0 0.2em !important;
+  /* Fill the ruled row so the highlight sits *on* the line instead of
+     floating above it, and clone the box across wrapped lines. */
+  padding: 0.28em 0.2em !important;
+  margin: -0.28em 0 !important;
   border-radius: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
+/* An enlarged span sets its own line-height (a multiple of the 1.75rem rule
+   grid), so the ruled row grows with the text instead of clipping it. */
+.notebook-paper span[style*="font-size"] {
+  line-height: inherit;
+}
+
 .notebook-paper blockquote {
   border-left: 3px solid hsl(var(--primary) / 0.5) !important;
   padding-left: 0.75rem !important;
