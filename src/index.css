@@ -126,10 +126,15 @@
     --muted: 220 15% 16%;
     --muted-foreground: 220 12% 70%;
 
-    --accent: 38 78% 68%;
+    --accent: 226 62% 74%;
     --accent-foreground: 220 20% 10%;
     --accent-2: 352 62% 68%;
     --accent-2-foreground: 220 20% 10%;
+    --sage: 150 28% 60%;
+    --sage-foreground: 220 20% 10%;
+    --ochre: 38 72% 62%;
+    --ochre-foreground: 220 20% 10%;
+
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
