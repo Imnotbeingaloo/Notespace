@@ -1,90 +1,97 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * Decorative 3D stack of notebooks for the dashboard hero.
- * Pure CSS/SVG - no images. Hidden below lg.
+ * Hero margin mark — a flat, in-page ink flourish for the dashboard hero.
+ * No floating card, no 3D object: it reads as ink laid directly on the
+ * hero paper. Pure SVG/CSS.
  */
 export function HeroNotebookStack() {
   const reduce = useReducedMotion();
-
-  const shell =
-    "absolute h-[100px] w-[146px] rounded-[9px] bg-card border border-border/70 overflow-hidden";
+  const draw = (delay: number) => ({
+    initial: reduce ? false : { pathLength: 0, opacity: 0 },
+    animate: { pathLength: 1, opacity: 1 },
+    transition: { duration: 1.4, delay, ease: [0.16, 1, 0.3, 1] as const },
+  });
 
   return (
-    <div
-      aria-hidden
-      className="relative h-[166px] w-[248px] select-none"
-      style={{ perspective: "1200px" }}
-    >
-      <div className="absolute bottom-2 left-1/2 h-5 w-[56%] -translate-x-1/2 rounded-[50%] bg-foreground/15 blur-2xl" />
+    <div aria-hidden className="relative h-[104px] w-[300px] select-none">
+      {/* highlighter sweep, sits under the ink */}
+      <motion.span
+        className="absolute left-[6px] top-[30px] h-[15px] rounded-[2px] bg-ochre/25"
+        initial={reduce ? false : { width: 0 }}
+        animate={{ width: 118 }}
+        transition={{ duration: 0.9, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+      />
 
-      <motion.div
-        className="absolute inset-0"
-        style={{ transformStyle: "preserve-3d" }}
-        initial={reduce ? false : { opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      <svg
+        viewBox="0 0 300 104"
+        className="absolute inset-0 h-full w-full overflow-visible"
+        fill="none"
       >
-        {/* back - ochre */}
-        <div
-          className={`${shell} left-[16px] top-[50px] shadow-[0_14px_26px_-18px_hsl(var(--foreground)/0.6)]`}
-          style={{ transform: "rotate(-9deg)" }}
-        >
-          <div className="absolute inset-y-0 left-0 w-[8px] bg-ochre" />
-          <div className="absolute inset-y-0 left-[8px] w-px bg-border" />
-        </div>
+        {/* handwriting strokes */}
+        <motion.path
+          d="M6 40c14-13 22 4 34-2s10-14 22-9 14 12 26 6 12-12 24-8"
+          stroke="hsl(var(--accent))"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          {...draw(0.15)}
+        />
+        <motion.path
+          d="M6 62c26-6 44 5 68 0s38-9 60-3"
+          stroke="hsl(var(--foreground) / 0.35)"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          {...draw(0.45)}
+        />
+        <motion.path
+          d="M6 80c18-4 30 3 46 1s26-6 40-3"
+          stroke="hsl(var(--foreground) / 0.18)"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          {...draw(0.7)}
+        />
+        {/* sage checkmark */}
+        <motion.path
+          d="M160 74l7 8 14-18"
+          stroke="hsl(var(--sage))"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          {...draw(1.15)}
+        />
+        {/* indigo underline flourish */}
+        <motion.path
+          d="M150 26c22-9 46-9 72 1"
+          stroke="hsl(var(--accent))"
+          strokeWidth="2"
+          strokeLinecap="round"
+          {...draw(1.35)}
+        />
+      </svg>
 
-        {/* middle - sage */}
-        <div
-          className={`${shell} left-[40px] top-[33px] shadow-[0_16px_28px_-18px_hsl(var(--foreground)/0.6)]`}
-          style={{ transform: "rotate(-4.5deg)" }}
-        >
-          <div className="absolute inset-y-0 left-0 w-[8px] bg-sage" />
-          <div className="absolute inset-y-0 left-[8px] w-px bg-border" />
-        </div>
-
-        {/* front - open ruled page */}
-        <motion.div
-          className={`${shell} left-[64px] top-[16px] shadow-[0_22px_36px_-18px_hsl(var(--foreground)/0.65)]`}
-          style={{ transform: "rotate(1.5deg)" }}
-          animate={reduce ? undefined : { y: [0, -6, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <div className="absolute inset-y-0 left-0 w-[8px] bg-primary" />
-          <div className="absolute inset-y-0 left-[18px] w-px bg-accent-2/60" />
-          <div className="absolute inset-y-4 left-[26px] right-4 flex flex-col justify-between">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <span
-                key={i}
-                className="block h-[2px] rounded-full bg-foreground/15"
-                style={{ width: `${100 - i * 12}%` }}
-              />
-            ))}
-          </div>
-          {/* ink accent line, drawn in */}
+      {/* page-marker tabs on the right edge */}
+      <div className="absolute right-0 top-[10px] flex flex-col gap-2">
+        {[
+          { c: "bg-accent", w: "w-9" },
+          { c: "bg-sage", w: "w-7" },
+          { c: "bg-ochre", w: "w-11" },
+        ].map((t, i) => (
           <motion.span
-            className="absolute left-[26px] top-[17px] h-[2px] rounded-full bg-accent"
-            initial={{ width: 0 }}
-            animate={{ width: 52 }}
-            transition={{ duration: 1.1, delay: 0.5, ease: "easeOut" }}
+            key={i}
+            className={`block h-[7px] rounded-l-full ${t.c} ${t.w} opacity-80`}
+            initial={reduce ? false : { x: 26, opacity: 0 }}
+            animate={{ x: 0, opacity: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.3 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
           />
-        </motion.div>
+        ))}
+      </div>
 
-        {/* tape over the front cover corner */}
-        <div className="absolute left-[52px] top-[9px] h-[14px] w-[46px] rotate-[-24deg] bg-ochre/50 border-x border-ochre/30" />
-
-        {/* floating accents */}
-        <motion.span
-          className="absolute right-[6px] top-[6px] h-1.5 w-1.5 rounded-full bg-accent"
-          animate={reduce ? undefined : { y: [0, -8, 0], opacity: [0.55, 1, 0.55] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.span
-          className="absolute left-[2px] top-[34px] h-1 w-1 rounded-full bg-sage"
-          animate={reduce ? undefined : { y: [0, -6, 0], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-        />
-      </motion.div>
+      {/* ink dot that breathes, like a resting nib */}
+      <motion.span
+        className="absolute right-[62px] bottom-[10px] h-2 w-2 rounded-full bg-accent-2"
+        animate={reduce ? undefined : { scale: [1, 1.25, 1], opacity: [0.6, 1, 0.6] }}
+        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+      />
     </div>
   );
 }
