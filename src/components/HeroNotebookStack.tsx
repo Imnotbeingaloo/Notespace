@@ -20,13 +20,13 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
   return (
     <div
       aria-hidden
-      className="relative hidden lg:block h-[250px] w-[390px] shrink-0 select-none"
+      className="relative hidden lg:block h-[250px] w-[400px] shrink-0 select-none"
       style={{ perspective: "1200px" }}
     >
       <div className="absolute bottom-6 left-1/2 h-8 w-[60%] -translate-x-1/2 rounded-[50%] bg-foreground/20 blur-xl" />
 
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 -translate-x-6"
         style={{ transformStyle: "preserve-3d" }}
         initial={reduce ? false : { opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,7 +44,7 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
             style={{
               left: c.x,
               top: c.y,
-              transform: `rotateY(16deg) rotateZ(${c.rot}deg) translateZ(${c.z}px)`,
+              transform: `rotateY(11deg) rotateZ(${c.rot}deg) translateZ(${c.z}px)`,
             }}
           />
         ))}
@@ -52,7 +52,7 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
         {/* front card - real stats */}
         <motion.div
           className="absolute left-[58px] top-[46px] h-[156px] w-[256px] overflow-hidden rounded-lg border border-border bg-card shadow-[0_26px_48px_-22px_hsl(var(--foreground)/0.6)]"
-          style={{ transform: "rotateY(16deg) rotateZ(-5deg)" }}
+          style={{ transform: "rotateY(11deg) rotateZ(-5deg)" }}
           animate={reduce ? undefined : { y: [0, -5, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         >
