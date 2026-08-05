@@ -17,9 +17,9 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
   const weekday = now.toLocaleDateString(undefined, { weekday: "long" });
 
   return (
-    <div aria-hidden className="relative hidden lg:block w-[300px] shrink-0 select-none">
+    <div aria-hidden className="relative hidden lg:block w-[300px] shrink-0 select-none mr-4">
       {/* back sheet peeking out */}
-      <div className="absolute -right-2 top-3 h-full w-full rotate-[1.6deg] rounded-md border border-border/70 bg-card/70" />
+      <div className="absolute -right-2.5 top-3 h-full w-full rotate-[1.6deg] rounded-md border border-border/70 bg-card/70" />
 
       <motion.div
         className="relative overflow-hidden rounded-md border border-border bg-card shadow-[0_18px_40px_-28px_hsl(var(--foreground)/0.5)]"
