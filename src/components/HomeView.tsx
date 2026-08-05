@@ -288,7 +288,9 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
             backgroundSize: "24px 24px",
           }}
         />
+        <HeroNotebookStack />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-[1.65rem] sm:py-[2.2rem] flex items-center justify-between gap-8">
+
           <div className="min-w-0 flex-1">
           <p className="text-[11px] uppercase tracking-[0.25em] text-primary/80 font-mono mb-2">
             ◆ Your Library
@@ -416,10 +418,6 @@ export function HomeView({ onOpenNotebook, onOpenNote, onCreateNotebook, onCreat
               ))}
             </div>
           </div>
-          </div>
-
-          <div className="hidden lg:block flex-shrink-0">
-            <HeroNotebookStack />
           </div>
         </div>
 

@@ -774,7 +774,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                             }}
                             className={`group/nn magnetic-btn flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab text-[13px] transition-colors ${
                               activeNoteId === note.id
-                                ? "bg-primary/10 text-foreground font-medium"
+                                ? "bg-accent/10 text-foreground font-medium border-l-2 border-accent"
                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
                             }`}
                           >
@@ -931,8 +931,8 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                           key={tag}
                           className={`inline-flex items-center gap-0.5 pl-2 pr-1 py-0.5 rounded-full text-[11px] font-medium border transition-all duration-150 ${
                             activeFilterTag === tag
-                              ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                              : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                              ? "bg-sage text-sage-foreground border-sage shadow-sm"
+                              : "bg-sage/10 text-sage border-sage/25 hover:bg-sage/20"
                           }`}
                         >
                           <button
@@ -1030,7 +1030,7 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
             <CalendarDays className="h-3.5 w-3.5" />
             <span className="flex-1 text-left text-xs font-semibold uppercase tracking-wider">Study Schedule</span>
             {upcomingPlans.length > 0 && (
-              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">{upcomingPlans.length}</span>
+              <span className="text-[10px] bg-ochre/15 text-ochre px-1.5 py-0.5 rounded-full font-medium">{upcomingPlans.length}</span>
             )}
             <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${scheduleOpen ? "rotate-90" : ""}`} />
           </button>
@@ -1053,12 +1053,12 @@ export function AppSidebar({ collapsed, onToggle, onSelectNote, onOpenPlanner, o
                         <div
                           key={plan.id}
                           className={`flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors ${
-                            today ? "bg-primary/10 border border-primary/20" : "hover:bg-muted"
+                            today ? "bg-ochre/10 border border-ochre/25" : "hover:bg-muted"
                           }`}
                         >
                           <span className={`w-2 h-2 rounded-full shrink-0 ${getDayColor(plan.scheduled_date)} ${today ? "animate-pulse" : ""}`} />
                           <div className="flex-1 min-w-0">
-                            {today && <span className="text-[9px] font-bold uppercase text-primary">📚 Study time</span>}
+                            {today && <span className="text-[9px] font-bold uppercase text-ochre">📚 Study time</span>}
                             <span className="text-foreground truncate block font-medium">{plan.title}</span>
                             <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                               <span>{getDayLabel(plan.scheduled_date)}</span>
