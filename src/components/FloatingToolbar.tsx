@@ -41,14 +41,31 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
       setPosition(null);
       return;
     }
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const toolbarWidth = 360;
-    const toolbarHeight = 40;
-    let left = selectionRect.left + selectionRect.width / 2 - containerRect.left - toolbarWidth / 2;
-    let top = selectionRect.top - containerRect.top - toolbarHeight - 8;
-    left = Math.max(0, Math.min(left, containerRect.width - toolbarWidth));
-    if (top < 0) top = selectionRect.bottom - containerRect.top + 8;
-    setPosition({ top, left });
+    // Small grace period so the toolbar doesn't flash in the moment a word is
+    // double-clicked or while a drag-selection is still in progress.
+    const timer = window.setTimeout(() => {
+      if (!containerRef.current) return;
+      const containerRect = containerRef.current.getBoundingClientRect();
+      // The toolbar is absolutely positioned inside the editor's *wrapper*, so
+      // offsets must be measured from that box — using the editor box shifted
+      // the toolbar up by the wrapper padding and clipped the current line.
+      const originEl = (containerRef.current.offsetParent as HTMLElement | null) ?? containerRef.current;
+      const originRect = originEl.getBoundingClientRect();
+      const toolbarWidth = 360;
+      const toolbarHeight = 40;
+      let left = selectionRect.left + selectionRect.width / 2 - originRect.left - toolbarWidth / 2;
+      left = Math.max(0, Math.min(left, Math.max(0, originRect.width - toolbarWidth)));
+      // Default: sit BELOW the selection so it never covers the line being read
+      // or written. Flip above only when there is no room underneath.
+      let top = selectionRect.bottom - originRect.top + 10;
+      const roomBelow = containerRect.bottom - selectionRect.bottom;
+      if (roomBelow < toolbarHeight + 16) {
+        const above = selectionRect.top - originRect.top - toolbarHeight - 10;
+        if (above > 0) top = above;
+      }
+      setPosition({ top, left });
+    }, 450);
+    return () => window.clearTimeout(timer);
   }, [selectionRect, containerRef]);
 
   const wrapWithHighlight = (color: string) => {

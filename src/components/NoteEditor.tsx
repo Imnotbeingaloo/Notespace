@@ -661,6 +661,42 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
     [pendingDocDrop, handleCreateNoteFromImport, handleMergeAt, handleReplaceFromImport]
   );
 
+  /**
+   * Upload image files (pasted or dropped) and insert them into the body.
+   * Shared by the paste handler in the editor and the drop zone below so both
+   * paths behave identically.
+   */
+  const uploadAndInsertImages = useCallback(
+    async (files: File[]) => {
+      if (!user || !activeNote || !activeNotebookId) return;
+      const images = files.filter((f) => f.type.startsWith("image/") && validateFile(f));
+      if (images.length === 0) return;
+      const newAttachments = [...(activeNote.attachments || [])];
+      let inserted = 0;
+      for (const file of images) {
+        try {
+          const path = buildStoragePath(user.id, activeNote.id, file.name);
+          const { error } = await supabase.storage.from("note-attachments").upload(path, file);
+          if (error) throw error;
+          const { data: signed } = await supabase.storage
+            .from("note-attachments")
+            .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+          const fileUrl = signed?.signedUrl || "";
+          newAttachments.push({ name: file.name, url: fileUrl, path, type: file.type, size: file.size });
+          hybridEditorRef.current?.insertAtCursor(`![${file.name}](${fileUrl})`);
+          inserted++;
+        } catch (err: any) {
+          toast({ title: "Image upload failed", description: err?.message || "Try again.", variant: "destructive" });
+        }
+      }
+      if (inserted > 0) {
+        await updateNote(activeNotebookId, activeNote.id, { attachments: newAttachments });
+        toast({ title: inserted > 1 ? "Images added" : "Image added", description: "Inserted into this note." });
+      }
+    },
+    [user, activeNote, activeNotebookId, updateNote]
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
@@ -1048,6 +1084,7 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
             content={activeNote.content || ""}
             onChange={(content) => { setLiveContent(content); debouncedUpdate("content", content); }}
             placeholder={focusMode ? "Just write..." : "Start writing..."}
+            onImageFiles={uploadAndInsertImages}
           />
         </div>
 
