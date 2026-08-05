@@ -614,9 +614,23 @@
 .notebook-paper mark {
   background-color: hsl(48 96% 76% / 0.55) !important;
   color: inherit !important;
-  padding: 0 0.2em !important;
+  /* Fill the ruled row so the highlight sits *on* the line instead of
+     floating above it, and clone the box across wrapped lines. */
+  padding: 0.28em 0.2em !important;
+  margin: -0.28em 0 !important;
   border-radius: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
+/* An enlarged span carries its own inline line-height (a multiple of the
+   1.75rem rule grid) set by the size picker, so the ruled row grows with the
+   text instead of clipping it. Blocks must not force it back down. */
+.notebook-paper p span[style*="font-size"],
+.notebook-paper li span[style*="font-size"],
+.notebook-paper div span[style*="font-size"] {
+  vertical-align: baseline;
+}
+
 .notebook-paper blockquote {
   border-left: 3px solid hsl(var(--primary) / 0.5) !important;
   padding-left: 0.75rem !important;
@@ -827,18 +841,19 @@
    and the main thread is busy — previously the logo just sat there frozen.
 --------------------------------------------------------------------------- */
 @keyframes splash-logo-in {
-  0%   { transform: scale(0.3) rotate(-15deg); opacity: 0; }
-  70%  { transform: scale(1.06) rotate(2deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  0%   { transform: translateX(-56px) scale(0.6) rotate(-15deg); opacity: 0; }
+  60%  { transform: translateX(6px) scale(1.06) rotate(3deg); opacity: 1; }
+  100% { transform: translateX(0) scale(1) rotate(0deg); opacity: 1; }
 }
 @keyframes splash-glow-in {
   0%   { transform: scale(0.2); opacity: 0; }
   100% { transform: scale(1); opacity: 0.15; }
 }
 @keyframes splash-word-in {
-  0%   { transform: translateY(12px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  0%   { transform: translateX(-22px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
 }
+
 @keyframes splash-dot {
   0%, 100% { transform: scale(0.8); opacity: 0.3; }
   50%      { transform: scale(1.15); opacity: 1; }

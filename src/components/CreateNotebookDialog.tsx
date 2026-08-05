@@ -136,7 +136,7 @@ export function CreateNotebookDialog({
             exit={{ opacity: 0, scale: 0.97, y: 6 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             style={{ willChange: "transform, opacity" }}
-            className="relative w-full max-w-lg rounded-2xl border border-border bg-card shadow-2xl shadow-primary/10 overflow-hidden"
+            className="relative w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl shadow-primary/10 overflow-hidden"
           >
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -199,22 +199,33 @@ export function CreateNotebookDialog({
                     </button>
                   </div>
 
+                  <div className="mt-5 flex items-center gap-3">
+                    <span className="h-px flex-1 bg-border" />
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
+                      or start from
+                    </span>
+                    <span className="h-px flex-1 bg-border" />
+                  </div>
+
                   <Link
                     to="/templates"
                     onClick={() => onOpenChange(false)}
-                    className="mt-5 flex items-center justify-between gap-3 p-3 rounded-xl border border-dashed border-border hover:border-primary/50 hover:bg-primary/[0.04] transition-all group"
+                    className="mt-3 flex items-center justify-between gap-3 p-3.5 rounded-xl border border-primary/35 bg-primary/[0.06] hover:bg-primary/[0.12] hover:border-primary/60 transition-all group"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
-                        <LayoutTemplate className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <div className="h-9 w-9 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
+                        <LayoutTemplate className="h-4 w-4 text-primary" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-sm font-medium text-foreground">Choose from a template</div>
-                        <div className="text-[11px] text-muted-foreground truncate">Study plans, journals, meeting notes…</div>
+                        <div className="text-sm font-semibold text-foreground">Template library</div>
+                        <div className="text-[11px] text-muted-foreground truncate">
+                          Ready-made study plans, journals, meeting notes
+                        </div>
                       </div>
                     </div>
-                    <span className="text-xs text-muted-foreground group-hover:text-primary transition-colors shrink-0">Browse →</span>
+                    <span className="text-xs font-medium text-primary shrink-0">Browse →</span>
                   </Link>
+
                 </motion.div>
               ) : (
                 <motion.div
