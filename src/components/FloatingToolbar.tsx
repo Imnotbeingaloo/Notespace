@@ -64,7 +64,7 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
         if (above > 0) top = above;
       }
       setPosition({ top, left });
-    }, 450);
+    }, 200);
     return () => window.clearTimeout(timer);
   }, [selectionRect, containerRef]);
 
