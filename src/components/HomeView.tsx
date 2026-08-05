@@ -18,7 +18,10 @@ import { useProfile } from "@/hooks/use-profile";
 import { NamePromptDialog } from "@/components/NamePromptDialog";
 import { WelcomeBackDialog } from "@/components/WelcomeBackDialog";
 import { useTempNotesEnabled } from "@/hooks/use-temp-notes-enabled";
-import { HeroNotebookStack } from "@/components/HeroNotebookStack";
+import { lazy, Suspense } from "react";
+const HeroNotebook3D = lazy(() =>
+  import("@/components/HeroNotebook3D").then((m) => ({ default: m.HeroNotebook3D }))
+);
 
 
 interface HomeViewProps {
