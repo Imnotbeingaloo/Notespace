@@ -91,8 +91,8 @@ export function HeroNotebookStack() {
 
           {/* tape holding the stack down */}
           <motion.span
-            className="absolute left-[96px] top-[-8px] h-[26px] w-[44px] -rotate-[24deg] rounded-[2px] bg-ochre/45 border border-ochre/30"
-            style={{ transform: "translateZ(34px) rotate(-24deg)" }}
+            className="absolute left-[112px] top-[-6px] h-[30px] w-[42px] rounded-[2px] bg-ochre/45 border border-ochre/30"
+            style={{ transform: "translateZ(34px) rotate(-18deg)" }}
             initial={reduce ? false : { opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.45, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
