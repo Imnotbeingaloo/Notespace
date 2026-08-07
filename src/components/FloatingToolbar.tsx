@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Bold, Italic, Underline, Strikethrough, Code, Link2, Highlighter,
-  AlignLeft, AlignCenter, AlignRight, AlignJustify, Rows3,
+  AlignLeft, AlignCenter, AlignRight, AlignJustify, Rows3, Sparkles,
 } from "lucide-react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { sanitizeUrl } from "@/lib/url-sanitize";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
