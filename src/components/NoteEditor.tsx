@@ -18,7 +18,7 @@ import { NoteTags } from "@/components/NoteTags";
 import { FlashcardDeck } from "@/components/FlashcardDeck";
 
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
-import { HybridEditor, HybridEditorHandle, noteBodyToHtml } from "@/components/HybridEditor";
+import { HybridEditor, HybridEditorHandle, noteBodyToHtml, looksLikeHtml } from "@/components/HybridEditor";
 import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { WordCount } from "@/components/WordCount";
 import { WordCountGoal } from "@/components/WordCountGoal";
@@ -602,9 +602,14 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
       const original = (activeNote.content ?? "").trim();
       const incoming = (newContent ?? "").trim();
       if (!incoming) return;
-      // Merge: preserve the user's original content and append the AI edit below it
+      // Merge: preserve the user's original content and append the AI edit below it.
+      // Notes are stored as rich HTML, so the separator/heading must be HTML too —
+      // markdown markers would render as literal "---" / "## AI Edit" text.
+      const asHtml = looksLikeHtml(original) || looksLikeHtml(incoming);
       const merged = original
-        ? `${original}\n\n---\n\n## AI Edit\n\n${incoming}`
+        ? asHtml
+          ? `${noteBodyToHtml(original)}<hr><h2>AI Edit</h2>${noteBodyToHtml(incoming)}`
+          : `${original}\n\n---\n\n## AI Edit\n\n${incoming}`
         : incoming;
       if (contentRef.current) contentRef.current.value = merged;
       hybridEditorRef.current?.setContent(merged);

@@ -855,8 +855,10 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           onBlur={handleBlur}
           onClick={handleEditorClick}
           onDoubleClick={handleDoubleClick}
-          // Highlighting a misspelled word by dragging should offer corrections too.
-          onMouseUp={() => window.setTimeout(handleDoubleClick, 0)}
+          // Only double-click asks for spelling suggestions. Firing on every
+          // mouse-up hid the formatting toolbar whenever a user drag-selected a
+          // single word (names, jargon) they only wanted to format.
+
 
           data-placeholder={placeholder}
           data-testid="hybrid-editor-content"

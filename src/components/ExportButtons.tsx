@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Download, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import DOMPurify from "dompurify";
+import TurndownService from "turndown";
 import { useNotebooks } from "@/context/NotebookContext";
 import { toolPill } from "@/lib/tool-colors";
+import { looksLikeHtml } from "@/components/HybridEditor";
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -40,11 +42,11 @@ export function ExportButtons() {
   };
 
   const exportMarkdown = () => {
-    downloadBlob(new Blob([`# ${title}\n\n${content}`], { type: "text/markdown" }), `${title}.md`);
+    downloadBlob(new Blob([`# ${title}\n\n${toMarkdown(content)}`], { type: "text/markdown" }), `${title}.md`);
   };
 
   const exportTxt = () => {
-    downloadBlob(new Blob([`${title}\n${"=".repeat(title.length)}\n\n${content}`], { type: "text/plain" }), `${title}.txt`);
+    downloadBlob(new Blob([`${title}\n${"=".repeat(title.length)}\n\n${toPlainText(content)}`], { type: "text/plain" }), `${title}.txt`);
   };
 
   const exportHtml = () => {
@@ -62,14 +64,14 @@ export function ExportButtons() {
   };
 
   const exportRtf = () => {
-    const plainContent = content.replace(/[#*`_~\[\]]/g, "");
+    const plainContent = toPlainText(content).replace(/[#*`_~\[\]]/g, "");
     const rtfContent = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Calibri;}}\n\\f0\\fs24 ${title}\\par\\par\n${plainContent.replace(/\n/g, "\\par\n")}\\par\n}`;
     downloadBlob(new Blob([rtfContent], { type: "application/rtf" }), `${title}.rtf`);
   };
 
   const exportOdt = () => {
     const safeTitle = escapeHtml(title);
-    const safeContent = escapeHtml(content);
+    const safeContent = escapeHtml(toPlainText(content));
     const odtXml = `<?xml version="1.0" encoding="UTF-8"?><office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" office:mimetype="application/vnd.oasis.opendocument.text" office:version="1.2"><office:body><office:text><text:p>${safeTitle}</text:p><text:p>${safeContent.replace(/\n/g, "</text:p><text:p>")}</text:p></office:text></office:body></office:document>`;
     downloadBlob(new Blob([odtXml], { type: "application/vnd.oasis.opendocument.text" }), `${title}.odt`);
   };
@@ -139,7 +141,12 @@ export function ExportButtons() {
   );
 }
 
+/**
+ * Notes are stored as rich HTML (older notes are still markdown), so every
+ * exporter has to branch on the stored format instead of assuming markdown.
+ */
 function contentToHtml(_title: string, content: string): string {
+  if (looksLikeHtml(content)) return sanitizeHtml(content);
   const escaped = escapeHtml(content);
   const html = escaped
     .replace(/^### (.*$)/gim, "<h3>$1</h3>")
@@ -151,4 +158,26 @@ function contentToHtml(_title: string, content: string): string {
     .replace(/^- (.*$)/gim, "<li>$1</li>")
     .replace(/\n/g, "<br>");
   return sanitizeHtml(html);
+}
+
+/** HTML → markdown for .md exports; markdown notes pass through untouched. */
+function toMarkdown(content: string): string {
+  if (!looksLikeHtml(content)) return content;
+  try {
+    const turndown = new TurndownService({ headingStyle: "atx", codeBlockStyle: "fenced" });
+    return turndown.turndown(sanitizeHtml(content));
+  } catch {
+    return toPlainText(content);
+  }
+}
+
+/** HTML → readable plain text for .txt/.rtf/.odt exports. */
+function toPlainText(content: string): string {
+  if (!looksLikeHtml(content)) return content;
+  const doc = new DOMParser().parseFromString(sanitizeHtml(content), "text/html");
+  doc.querySelectorAll("br").forEach((br) => br.replaceWith(doc.createTextNode("\n")));
+  doc.querySelectorAll("p,div,h1,h2,h3,h4,h5,h6,li,tr,blockquote,pre").forEach((el) => {
+    el.appendChild(doc.createTextNode("\n"));
+  });
+  return (doc.body.textContent || "").replace(/\n{3,}/g, "\n\n").trim();
 }
