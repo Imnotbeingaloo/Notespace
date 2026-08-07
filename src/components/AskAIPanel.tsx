@@ -152,7 +152,9 @@ function VignetteToQuill({ emptyKey, reducedMotion }: { emptyKey: number; reduce
 
   return (
     <div className="relative mb-2 h-[44px] w-[180px] flex items-center justify-center" aria-hidden>
-      <AnimatePresence mode="wait" initial={false}>
+      {/* No mode="wait": both slots are absolutely positioned, so cross-fading
+          them keeps the badge occupied instead of flashing an empty gap. */}
+      <AnimatePresence initial={false}>
         {phase === "vignette" ? (
           <motion.div
             key={`v-${emptyKey}`}
