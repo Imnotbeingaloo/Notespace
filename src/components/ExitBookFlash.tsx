@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /**
- * "Leaving the app" splash - mirrors the entry SplashScreen sequence
- * (logo pop → title fade-in → animated dots) so the hand-off feels symmetrical.
+ * "Leaving the app" splash — mirrors the entry SplashScreen sequence exactly
+ * (logo pop → wordmark fade-up → pulsing dots) so the hand-off feels
+ * symmetrical. Nothing slides in from an edge.
  * Timer is stabilised via a ref so the landing page's typewriter re-renders
  * cannot reset the completion countdown.
  */
@@ -42,27 +43,40 @@ export function ExitBookFlash({ onDone }: { onDone: () => void }) {
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none overflow-hidden"
           style={{ backgroundColor: `hsl(var(${isDarkExit ? "--exit-splash-dark" : "--exit-splash-light"}))` }}
         >
-          <div className="absolute h-80 w-80 rounded-full bg-primary blur-3xl splash-glow" />
-
-          <img
-            src="/logo.png"
-            alt="Notespace"
-            className="relative z-10 h-[3rem] w-[3rem] object-contain splash-logo"
+          <motion.div
+            className="absolute h-80 w-80 rounded-full bg-primary blur-3xl"
+            initial={{ scale: 0.2, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.15 }}
+            transition={{ duration: 1.4, ease: "easeOut" }}
           />
 
-          <span
-            className="relative z-10 mt-5 font-serif text-2xl font-bold splash-word"
+          <motion.img
+            src="/logo.png"
+            alt="Notespace"
+            className="relative z-10 h-[3rem] w-[3rem] object-contain"
+            initial={{ scale: 0.3, opacity: 0, rotate: -15 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          />
+
+          <motion.span
+            className="relative z-10 mt-5 font-serif text-2xl font-bold"
             style={{ color: isDarkExit ? "#ffffff" : "#000000" }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.22, ease: "easeOut" }}
           >
             Notespace
-          </span>
+          </motion.span>
 
           <div className="relative z-10 mt-6 flex gap-1.5">
             {[0, 1, 2].map((i) => (
-              <div
+              <motion.div
                 key={i}
-                className="h-1.5 w-1.5 rounded-full bg-primary splash-dot"
-                style={{ animationDelay: `${i * 0.2}s` }}
+                className="h-1.5 w-1.5 rounded-full bg-primary"
+                initial={{ opacity: 0.3, scale: 0.8 }}
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.15, 0.8] }}
+                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
               />
             ))}
           </div>
