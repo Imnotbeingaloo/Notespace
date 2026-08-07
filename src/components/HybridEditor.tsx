@@ -508,7 +508,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         document.execCommand("redo");
         emitChange();
       }
-    }, [emitChange]);
+    }, [emitChange, resetFormattingOnNewLine]);
 
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
       const items = Array.from(e.clipboardData.items);
@@ -614,7 +614,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       editorRef.current?.focus();
       document.execCommand(command, false, value);
       emitChange();
-    }, [emitChange]);
+    }, [emitChange, resetFormattingOnNewLine]);
 
     /* ---------------------- Image selection / resize / align ---------------------- */
 
@@ -774,7 +774,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       spellRangeRef.current = null;
       setSpell(null);
       emitChange();
-    }, [emitChange]);
+    }, [emitChange, resetFormattingOnNewLine]);
 
     // Auto-resizing pane: `min-h-full` lets the editor fill the visible area
     // when empty but grow with content. The ancestor scroll container only
