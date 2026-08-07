@@ -379,8 +379,10 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       },
       getValue: () => {
         if (!editorRef.current) return "";
-        return htmlToMarkdown(editorRef.current.innerHTML);
+        const html = editorRef.current.innerHTML;
+        return html === "<br>" || html.trim() === "" ? "" : html;
       },
+
       getEditorElement: () => editorRef.current,
       setContent: (md: string) => {
         lastMdRef.current = md;
