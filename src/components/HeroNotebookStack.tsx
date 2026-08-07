@@ -1,30 +1,40 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 interface HeroNotebookStackProps {
+  /** Kept for API compatibility with the hero — intentionally unused. */
   notebookCount?: number;
   noteCount?: number;
 }
 
+/** Ink strokes standing in for handwriting. Lengths are hand-picked so the
+ *  ragged right edge reads like a real paragraph rather than a placeholder. */
+const STROKES = [
+  { y: 22, w: 178 },
+  { y: 50, w: 202 },
+  { y: 78, w: 146 },
+  { y: 106, w: 194 },
+  { y: 134, w: 88 },
+];
+
 /**
- * Flat "today card" accent for the dashboard hero.
- * No 3D, no floating object — a real index card taped onto the page.
+ * Purely decorative hero accent: a scrap of ruled paper, taped down, with a
+ * few lines of "handwriting" that ink themselves in on load and a small nib
+ * flourish underneath. No data, no date — it exists to make the page feel
+ * like a desk rather than a dashboard.
  */
-export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNotebookStackProps) {
+export function HeroNotebookStack(_props: HeroNotebookStackProps) {
   const reduce = useReducedMotion();
-  const now = new Date();
-  const day = now.toLocaleDateString(undefined, { day: "numeric" });
-  const month = now.toLocaleDateString(undefined, { month: "long" });
-  const weekday = now.toLocaleDateString(undefined, { weekday: "long" });
 
   return (
     <div aria-hidden className="relative hidden lg:block w-[300px] shrink-0 select-none mr-4">
-      {/* back sheet peeking out */}
-      <div className="absolute -right-2.5 top-3 h-full w-full rotate-[1.6deg] rounded-md border border-border/70 bg-card/70" />
+      {/* scraps stacked underneath */}
+      <div className="absolute -right-3 top-4 h-full w-full rotate-[2.2deg] rounded-sm border border-border/60 bg-card/60" />
+      <div className="absolute -left-2 top-2 h-full w-full -rotate-[1.6deg] rounded-sm border border-border/50 bg-card/40" />
 
       <motion.div
-        className="relative overflow-hidden rounded-md border border-border bg-card shadow-[0_18px_40px_-28px_hsl(var(--foreground)/0.5)]"
-        initial={reduce ? false : { opacity: 0, y: 10, rotate: -1.4 }}
-        animate={{ opacity: 1, y: 0, rotate: -0.8 }}
+        className="relative overflow-hidden rounded-sm border border-border bg-card shadow-[0_18px_40px_-28px_hsl(var(--foreground)/0.5)]"
+        initial={reduce ? false : { opacity: 0, y: 12, rotate: -1.8 }}
+        animate={{ opacity: 1, y: 0, rotate: -0.9 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
         {/* ruled paper */}
@@ -38,37 +48,38 @@ export function HeroNotebookStack({ notebookCount = 0, noteCount = 0 }: HeroNote
         {/* margin rule */}
         <div className="pointer-events-none absolute inset-y-0 left-10 w-px bg-accent-2/50" />
 
-        <div className="relative py-6 pl-14 pr-6">
-          <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">{weekday}</p>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-serif text-[44px] leading-none text-foreground">{day}</span>
-            <span className="font-serif text-lg italic text-accent">{month}</span>
-          </div>
-
-          <div className="mt-6 h-px w-full bg-border" />
-
-          <dl className="mt-4 space-y-2.5">
-            <div className="flex items-baseline justify-between gap-4">
-              <dt className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                Notebooks
-              </dt>
-              <dd className="font-mono text-sm text-foreground">
-                {String(notebookCount).padStart(2, "0")}
-              </dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-4">
-              <dt className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                Notes
-              </dt>
-              <dd className="font-mono text-sm text-foreground">
-                {String(noteCount).padStart(2, "0")}
-              </dd>
-            </div>
-          </dl>
+        <div className="relative px-6 pb-7 pl-14 pt-7">
+          <svg
+            viewBox="0 0 210 176"
+            className="w-full overflow-visible"
+            fill="none"
+            strokeLinecap="round"
+          >
+            {STROKES.map((s, i) => (
+              <motion.path
+                key={s.y}
+                d={`M2 ${s.y} H${s.w}`}
+                stroke="hsl(var(--foreground) / 0.34)"
+                strokeWidth={i === 0 ? 5 : 3.5}
+                initial={reduce ? false : { pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.5, delay: 0.25 + i * 0.11, ease: "easeOut" }}
+              />
+            ))}
+            {/* nib flourish signing off the page */}
+            <motion.path
+              d="M2 166 C 34 150, 58 178, 90 160 S 140 146, 168 164"
+              stroke="hsl(var(--accent))"
+              strokeWidth={3}
+              initial={reduce ? false : { pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.9, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
+            />
+          </svg>
         </div>
 
         {/* page markers on the right edge */}
-        <div className="absolute right-0 top-8 flex flex-col gap-1.5">
+        <div className="absolute right-0 top-10 flex flex-col gap-1.5">
           <span className="block h-6 w-1.5 rounded-l-sm bg-accent/70" />
           <span className="block h-6 w-1.5 rounded-l-sm bg-ochre/70" />
           <span className="block h-6 w-1.5 rounded-l-sm bg-sage/70" />
