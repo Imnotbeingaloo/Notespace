@@ -42,11 +42,11 @@ export function ExportButtons() {
   };
 
   const exportMarkdown = () => {
-    downloadBlob(new Blob([`# ${title}\n\n${content}`], { type: "text/markdown" }), `${title}.md`);
+    downloadBlob(new Blob([`# ${title}\n\n${toMarkdown(content)}`], { type: "text/markdown" }), `${title}.md`);
   };
 
   const exportTxt = () => {
-    downloadBlob(new Blob([`${title}\n${"=".repeat(title.length)}\n\n${content}`], { type: "text/plain" }), `${title}.txt`);
+    downloadBlob(new Blob([`${title}\n${"=".repeat(title.length)}\n\n${toPlainText(content)}`], { type: "text/plain" }), `${title}.txt`);
   };
 
   const exportHtml = () => {
