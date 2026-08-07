@@ -292,14 +292,16 @@ function PreviewButton() {
   }, [open]);
 
   const html = useMemo(() => {
-    const md = activeNote?.content ?? "";
-    if (!md.trim()) return "<p><em>No content yet</em></p>";
+    const body = activeNote?.content ?? "";
+    if (!body.trim()) return "<p><em>No content yet</em></p>";
     try {
-      return marked.parse(md, { async: false }) as string;
+      // Notes are stored as rich HTML now; older notes are still markdown.
+      return noteBodyToHtml(body);
     } catch {
       return "";
     }
   }, [activeNote?.content]);
+
 
   if (!activeNote) return null;
 
