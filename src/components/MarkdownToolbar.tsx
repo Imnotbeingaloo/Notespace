@@ -124,7 +124,9 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
 
   const handleImageUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !user || !activeNote || !activeNotebookId) {
+    // NOTE: standalone notes have no notebook id, so it must not be required here.
+    if (!file || !user || !activeNote) {
+
       if (imageInputRef.current) imageInputRef.current.value = "";
       return;
     }
