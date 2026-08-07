@@ -7,6 +7,7 @@ import {
 import { ListStylePicker } from "@/components/ListStylePicker";
 import { AlignmentPicker } from "@/components/AlignmentPicker";
 import { HeadingSizePicker } from "@/components/HeadingSizePicker";
+import { FontFamilyPicker } from "@/components/FontFamilyPicker";
 import { ChevronDown as ChevronDownIcon } from "lucide-react";
 import { TableInsert } from "@/components/TableInsert";
 import { TableEditToolbar } from "@/components/TableEditToolbar";
@@ -21,6 +22,7 @@ import { toast } from "@/hooks/use-toast";
 import { LinkInsertDialog } from "@/components/LinkInsertDialog";
 import { sanitizeUrl, escapeHtmlAttr } from "@/lib/url-sanitize";
 import { useLastHighlightColor } from "@/hooks/use-last-highlight-color";
+import { buildSizedSpan } from "@/lib/editor-sizing";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
@@ -232,8 +234,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     const range = sel.getRangeAt(0);
     const container = document.createElement("div");
     container.appendChild(range.cloneContents());
-    const html = `<span style="font-size:${px}px;line-height:1.25">${container.innerHTML}</span>`;
-    document.execCommand("insertHTML", false, html);
+    document.execCommand("insertHTML", false, buildSizedSpan(px, container.innerHTML));
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
@@ -242,9 +243,9 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     { icon: Italic, label: "Italic", action: () => exec("italic") },
     { icon: Strikethrough, label: "Strikethrough", action: () => exec("strikeThrough") },
     { icon: Highlighter, label: "Highlight", action: () => {} },
-    { icon: Heading1, label: "Heading 1", action: () => applyInlineSize(26) },
-    { icon: Heading2, label: "Heading 2", action: () => applyInlineSize(21) },
-    { icon: Heading3, label: "Heading 3", action: () => applyInlineSize(18) },
+    { icon: Heading1, label: "Heading 1", action: () => applyInlineSize(34) },
+    { icon: Heading2, label: "Heading 2", action: () => applyInlineSize(27) },
+    { icon: Heading3, label: "Heading 3", action: () => applyInlineSize(22) },
     { icon: Quote, label: "Blockquote", action: () => exec("formatBlock", "<blockquote>") },
     { icon: Code, label: "Inline Code", action: () => wrapWithTag("code") },
     { icon: Link2, label: "Link", action: insertLink },
@@ -375,6 +376,13 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
                 <TooltipContent side="bottom">{a.label}</TooltipContent>
               </Tooltip>
             )}
+            {/* Size + font live right next to the heading buttons they modify. */}
+            {i === 6 && (
+              <>
+                <HeadingSizePicker editorRef={editorRef} />
+                <FontFamilyPicker editorRef={editorRef} />
+              </>
+            )}
             {separatorAfter.has(i) &&
           <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
           }
@@ -383,8 +391,6 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         {/* List styles dropdown */}
         <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         <ListStylePicker editorRef={editorRef} />
-        {/* Heading size (per-heading, in px) */}
-        <HeadingSizePicker editorRef={editorRef} />
         {/* Alignment dropdown */}
         <AlignmentPicker editorRef={editorRef} />
         {/* Table insertion & editing */}

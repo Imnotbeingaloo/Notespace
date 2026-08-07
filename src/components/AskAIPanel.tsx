@@ -57,16 +57,22 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
 
   return (
     <div className="relative mx-auto flex flex-col items-center" style={{ width: 180 }}>
-      <div className="relative h-[44px] flex items-end justify-center overflow-hidden">
-        <AnimatePresence mode="wait" initial={true}>
+      {/* All three words are stacked and cross-faded by index. AnimatePresence
+          with mode="wait" used to leave the slot visibly empty between words —
+          the exit had to finish before the next word could enter. */}
+      <div className="relative h-[44px] w-full">
+        {words.map((w, idx) => (
           <motion.span
-            key={words[i]}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-
-            className="text-foreground/85 italic leading-none"
+            key={w}
+            aria-hidden={idx !== i}
+            initial={false}
+            animate={
+              idx === i
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: idx < i ? -10 : 10 }
+            }
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 flex items-end justify-center text-foreground/85 italic leading-none"
             style={{
               fontFamily: 'Merriweather, Georgia, "Times New Roman", serif',
               fontSize: 32,
@@ -74,9 +80,9 @@ function IdleVignette({ reducedMotion }: { reducedMotion: boolean }) {
               fontWeight: 400,
             }}
           >
-            {words[i]}
+            {w}
           </motion.span>
-        </AnimatePresence>
+        ))}
       </div>
       <svg width="120" height="10" viewBox="0 0 120 10" className="mt-1.5 overflow-visible" aria-hidden>
         <defs>
@@ -146,7 +152,9 @@ function VignetteToQuill({ emptyKey, reducedMotion }: { emptyKey: number; reduce
 
   return (
     <div className="relative mb-2 h-[44px] w-[180px] flex items-center justify-center" aria-hidden>
-      <AnimatePresence mode="wait" initial={false}>
+      {/* No mode="wait": both slots are absolutely positioned, so cross-fading
+          them keeps the badge occupied instead of flashing an empty gap. */}
+      <AnimatePresence initial={false}>
         {phase === "vignette" ? (
           <motion.div
             key={`v-${emptyKey}`}

@@ -595,21 +595,34 @@
   margin: 0 0 1.75rem 0 !important;
 }
 /* Inline font-size (heading size picker) snaps its line-height up to the next
-   1.75rem multiple so the ruled grid stays aligned. */
-.notebook-paper h1[style*="font-size"],
-.notebook-paper h2[style*="font-size"],
-.notebook-paper h3[style*="font-size"],
-.notebook-paper h4[style*="font-size"],
-.notebook-paper h5[style*="font-size"],
-.notebook-paper h6[style*="font-size"],
-.notebook-paper p[style*="font-size"],
-.notebook-paper li[style*="font-size"],
-.notebook-paper blockquote[style*="font-size"],
-.notebook-paper div[style*="font-size"] {
+   1.75rem multiple so the ruled grid stays aligned. When the author already
+   carries an explicit snapped line-height we must NOT clamp it back to a single
+   rule — that is what made enlarged headings spill over the ruled lines. */
+.notebook-paper h1[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper h2[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper h3[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper h4[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper h5[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper h6[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper p[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper li[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper blockquote[style*="font-size"]:not([style*="line-height"]),
+.notebook-paper div[style*="font-size"]:not([style*="line-height"]) {
   line-height: 1.75rem !important;
 }
 
-/* Inline elements must not disturb the ruled line-height. */
+/* --- Classic <-> Modern conversion for sized runs -------------------------
+   Sized text is stored once (with the classic grid metrics baked in) and each
+   mode reinterprets it. Modern drops the ruled-grid padding and box model and
+   goes back to natural leading, so toggling the paper style converts the note
+   both ways without ever rewriting what is saved. */
+.wysiwyg-editor:not(.notebook-paper) span[data-nssize] {
+  display: inline !important;
+  padding-top: 0 !important;
+  line-height: 1.3 !important;
+}
+
+
 .notebook-paper strong,
 .notebook-paper em,
 .notebook-paper mark,
