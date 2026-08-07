@@ -375,6 +375,13 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
                 <TooltipContent side="bottom">{a.label}</TooltipContent>
               </Tooltip>
             )}
+            {/* Size + font live right next to the heading buttons they modify. */}
+            {i === 6 && (
+              <>
+                <HeadingSizePicker editorRef={editorRef} />
+                <FontFamilyPicker editorRef={editorRef} />
+              </>
+            )}
             {separatorAfter.has(i) &&
           <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
           }
@@ -383,8 +390,6 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
         {/* List styles dropdown */}
         <div className="w-px h-5 bg-border mx-1 flex-shrink-0" />
         <ListStylePicker editorRef={editorRef} />
-        {/* Heading size (per-heading, in px) */}
-        <HeadingSizePicker editorRef={editorRef} />
         {/* Alignment dropdown */}
         <AlignmentPicker editorRef={editorRef} />
         {/* Table insertion & editing */}
