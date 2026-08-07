@@ -610,10 +610,6 @@
 .notebook-paper div[style*="font-size"]:not([style*="line-height"]) {
   line-height: 1.75rem !important;
 }
-/* A sized span must keep the snapped line-height it was given. */
-.notebook-paper span[style*="line-height"] {
-  line-height: inherit;
-}
 
 /* Inline elements must not disturb the ruled line-height. */
 .notebook-paper strong,
