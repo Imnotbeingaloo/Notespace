@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-
 interface SplashScreenProps {
   onComplete: () => void;
   fast?: boolean;
 }
 
+/**
+ * Entry splash (website → app).
+ *
+ * This is the ORIGINAL sequence and it must stay this way: the logo POPS in
+ * place (scale up from 0.3 with a small rotational unwind), the wordmark fades
+ * up under it, then three dots pulse. Nothing slides in from any edge.
+ * `ExitBookFlash` runs the exact same sequence so app → website is symmetrical.
+ */
 export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
   const [isDark] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -42,29 +49,42 @@ export function SplashScreen({ onComplete, fast = false }: SplashScreenProps) {
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
           style={{ backgroundColor: isDark ? "#000000" : "#ffffff" }}
         >
-          <div className="absolute w-80 h-80 rounded-full bg-primary blur-3xl splash-glow" />
+          <motion.div
+            className="absolute w-80 h-80 rounded-full bg-primary blur-3xl"
+            initial={{ scale: 0.2, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.15 }}
+            transition={{ duration: fast ? 0.6 : 1.4, ease: "easeOut" }}
+          />
 
-          <img
+          <motion.img
             src="/logo.png"
             alt="Notespace"
-            className={`relative z-10 h-[3rem] w-[3rem] object-contain ${fast ? "splash-logo-fast" : "splash-logo"}`}
+            className="relative z-10 h-[3rem] w-[3rem] object-contain"
+            initial={{ scale: 0.3, opacity: 0, rotate: fast ? 0 : -15 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            transition={{ duration: fast ? 0.32 : 0.7, ease: [0.16, 1, 0.3, 1] }}
           />
 
           {!fast && (
             <>
-              <span
-                className="font-serif text-2xl font-bold mt-5 relative z-10 splash-word"
+              <motion.span
+                className="font-serif text-2xl font-bold mt-5 relative z-10"
                 style={{ color: isDark ? "#ffffff" : "#000000" }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.22, ease: "easeOut" }}
               >
                 Notespace
-              </span>
+              </motion.span>
 
               <div className="flex gap-1.5 mt-6 relative z-10">
                 {[0, 1, 2].map((i) => (
-                  <div
+                  <motion.div
                     key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-primary splash-dot"
-                    style={{ animationDelay: `${i * 0.2}s` }}
+                    className="w-1.5 h-1.5 rounded-full bg-primary"
+                    initial={{ opacity: 0.3, scale: 0.8 }}
+                    animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.15, 0.8] }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
                   />
                 ))}
               </div>
