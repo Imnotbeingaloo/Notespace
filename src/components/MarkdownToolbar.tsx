@@ -233,12 +233,7 @@ export function MarkdownToolbar({ editorRef, onFindReplace, children }: Markdown
     const range = sel.getRangeAt(0);
     const container = document.createElement("div");
     container.appendChild(range.cloneContents());
-    // Snap the line-height up to the next multiple of the ruled grid (28px) so
-    // the classic notebook's lines stretch with the text instead of crossing it.
-    const RULE = 28;
-    const rows = Math.max(1, Math.ceil((px * 1.25) / RULE));
-    const html = `<span style="font-size:${px}px;line-height:${rows * RULE}px">${container.innerHTML}</span>`;
-    document.execCommand("insertHTML", false, html);
+    document.execCommand("insertHTML", false, buildSizedSpan(px, container.innerHTML));
     editorRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
   }, [editorRef]);
 
