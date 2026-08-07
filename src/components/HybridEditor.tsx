@@ -219,11 +219,10 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       }
     }, [commaHighlightOn]);
 
-    // Set HTML content from markdown
+    // Set HTML content from the stored note body (rich HTML, or legacy markdown)
     const setHtmlFromMd = useCallback((md: string) => {
       if (!editorRef.current) return;
-      const html = markdownToHtml(md);
-      editorRef.current.innerHTML = html || "";
+      editorRef.current.innerHTML = noteBodyToHtml(md) || "";
     }, []);
 
     // On mount or when content changes externally (e.g., note switch, AI edit)
@@ -243,12 +242,16 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
 
     const emitChange = useCallback(() => {
       if (!editorRef.current) return;
+      // Persist the editor's own HTML. Markdown cannot represent underline,
+      // alignment, font family/size, colour or highlights, so serialising
+      // through it was throwing that formatting away on every keystroke.
       const html = editorRef.current.innerHTML;
-      const md = htmlToMarkdown(html);
-      lastMdRef.current = md;
+      const value = html === "<br>" || html.trim() === "" ? "" : html;
+      lastMdRef.current = value;
       isTypingRef.current = true;
-      onChange(md);
+      onChange(value);
     }, [onChange]);
+
 
     // Track selection for floating toolbar AND remember the last caret position
     // inside the editor so we can restore it after the user clicks attach/upload buttons.
