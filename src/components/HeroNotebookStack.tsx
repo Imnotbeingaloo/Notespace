@@ -6,89 +6,93 @@ interface HeroNotebookStackProps {
   noteCount?: number;
 }
 
-/** Ink strokes standing in for handwriting. Lengths are hand-picked so the
- *  ragged right edge reads like a real paragraph rather than a placeholder. */
-const STROKES = [
-  { y: 22, w: 178 },
-  { y: 50, w: 202 },
-  { y: 78, w: 146 },
-  { y: 106, w: 194 },
-  { y: 134, w: 88 },
-];
+const RULES =
+  "repeating-linear-gradient(to bottom, transparent 0 21px, hsl(var(--foreground)/0.09) 21px 22px)";
+
+/** One half of the spread: cover edge, a few page edges for thickness, then
+ *  the ruled leaf on top. `side` decides which way everything tucks. */
+function Leaf({ side }: { side: "left" | "right" }) {
+  const isLeft = side === "left";
+  return (
+    <div className={`relative h-full flex-1 ${isLeft ? "origin-right" : "origin-left"}`}>
+      {/* cover board — only a sliver at the outer edge and foot */}
+      <div
+        className={`absolute inset-y-[-5px] ${
+          isLeft ? "left-[-5px] right-0 rounded-l-[8px]" : "left-0 right-[-5px] rounded-r-[8px]"
+        }`}
+        style={{ backgroundColor: "hsl(var(--foreground) / 0.16)" }}
+      />
+      {/* page edges stacked under the top leaf */}
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          className={`absolute inset-0 bg-card ${
+            isLeft ? "rounded-l-[4px]" : "rounded-r-[4px]"
+          }`}
+          style={{
+            transform: `translate(${(isLeft ? -1 : 1) * (3 - i)}px, ${3 - i}px)`,
+            opacity: 0.5,
+            boxShadow: "0 1px 0 0 hsl(var(--foreground)/0.10)",
+          }}
+        />
+      ))}
+      {/* the leaf itself */}
+      <div
+        className={`absolute inset-0 overflow-hidden bg-card ${
+          isLeft ? "rounded-l-[4px]" : "rounded-r-[4px]"
+        }`}
+      >
+        <div className="absolute inset-0 opacity-80" style={{ backgroundImage: RULES }} />
+        {/* curvature toward the gutter */}
+        <div
+          className={`absolute inset-y-0 w-14 ${
+            isLeft ? "right-0 bg-gradient-to-l" : "left-0 bg-gradient-to-r"
+          } from-foreground/14 via-foreground/4 to-transparent`}
+        />
+      </div>
+    </div>
+  );
+}
 
 /**
- * Purely decorative hero accent: a scrap of ruled paper, taped down, with a
- * few lines of "handwriting" that ink themselves in on load and a small nib
- * flourish underneath. No data, no date — it exists to make the page feel
- * like a desk rather than a dashboard.
+ * Decorative hero accent: an open book lying flat on the desk — two ruled
+ * leaves, visible page thickness, a soft spine shadow and a ribbon marker.
+ * Deliberately carries no data; it echoes the Notespace mark and gives the
+ * hero copy something to sit against.
  */
 export function HeroNotebookStack(_props: HeroNotebookStackProps) {
   const reduce = useReducedMotion();
 
   return (
-    <div aria-hidden className="relative hidden lg:block w-[300px] shrink-0 select-none mr-4">
-      {/* scraps stacked underneath */}
-      <div className="absolute -right-3 top-4 h-full w-full rotate-[2.2deg] rounded-sm border border-border/60 bg-card/60" />
-      <div className="absolute -left-2 top-2 h-full w-full -rotate-[1.6deg] rounded-sm border border-border/50 bg-card/40" />
-
+    <div aria-hidden className="relative hidden lg:block w-[320px] shrink-0 select-none mr-5">
       <motion.div
-        className="relative overflow-hidden rounded-sm border border-border bg-card shadow-[0_18px_40px_-28px_hsl(var(--foreground)/0.5)]"
-        initial={reduce ? false : { opacity: 0, y: 12, rotate: -1.8 }}
-        animate={{ opacity: 1, y: 0, rotate: -0.9 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="relative h-[188px] drop-shadow-[0_24px_34px_hsl(var(--foreground)/0.16)]"
+        initial={reduce ? false : { opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* ruled paper */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-60"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(to bottom, transparent 0 27px, hsl(var(--foreground)/0.09) 27px 28px)",
-          }}
-        />
-        {/* margin rule */}
-        <div className="pointer-events-none absolute inset-y-0 left-10 w-px bg-accent-2/50" />
-
-        <div className="relative px-6 pb-7 pl-14 pt-7">
-          <svg
-            viewBox="0 0 210 176"
-            className="w-full overflow-visible"
-            fill="none"
-            strokeLinecap="round"
-          >
-            {STROKES.map((s, i) => (
-              <motion.path
-                key={s.y}
-                d={`M2 ${s.y} H${s.w}`}
-                stroke="hsl(var(--foreground) / 0.34)"
-                strokeWidth={i === 0 ? 5 : 3.5}
-                initial={reduce ? false : { pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.5, delay: 0.25 + i * 0.11, ease: "easeOut" }}
-              />
-            ))}
-            {/* nib flourish signing off the page */}
-            <motion.path
-              d="M2 166 C 34 150, 58 178, 90 160 S 140 146, 168 164"
-              stroke="hsl(var(--accent))"
-              strokeWidth={3}
-              initial={reduce ? false : { pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.9, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
-            />
-          </svg>
+        <div className="flex h-full">
+          <Leaf side="left" />
+          <Leaf side="right" />
         </div>
 
-        {/* page markers on the right edge */}
-        <div className="absolute right-0 top-10 flex flex-col gap-1.5">
-          <span className="block h-6 w-1.5 rounded-l-sm bg-accent/70" />
-          <span className="block h-6 w-1.5 rounded-l-sm bg-ochre/70" />
-          <span className="block h-6 w-1.5 rounded-l-sm bg-sage/70" />
-        </div>
+        {/* spine: paper dipping into the gutter */}
+        <div className="pointer-events-none absolute inset-y-[-4px] left-1/2 w-16 -translate-x-1/2 bg-[linear-gradient(to_right,transparent,hsl(var(--foreground)/0.16)_46%,hsl(var(--foreground)/0.22)_50%,hsl(var(--foreground)/0.16)_54%,transparent)]" />
+
+        {/* ribbon marker slipping out of the gutter */}
+        <motion.div
+          className="absolute left-[calc(50%+14px)] top-[-6px] w-[9px] overflow-hidden"
+          initial={reduce ? false : { height: 0 }}
+          animate={{ height: 150 }}
+          transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="h-[138px] w-full" style={{ backgroundColor: "hsl(var(--ochre, 35 68% 48%))" }} />
+          <div
+            className="h-3 w-full"
+            style={{ backgroundColor: "hsl(var(--ochre, 35 68% 48%))", clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 55%, 0 100%)" }}
+          />
+        </motion.div>
       </motion.div>
-
-      {/* tape holding it to the page */}
-      <div className="absolute -top-2.5 left-8 h-5 w-20 -rotate-[7deg] bg-ochre/50 shadow-sm" />
-      <div className="absolute -bottom-2 right-10 h-4 w-16 rotate-[5deg] bg-ochre/40 shadow-sm" />
     </div>
   );
 }
