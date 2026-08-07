@@ -535,9 +535,9 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           .then((formatted) => {
             const el = editorRef.current;
             if (!el) return;
-            const currentMd = htmlToMarkdown(el.innerHTML);
-            if (currentMd.includes(sentinel)) {
-              const replaced = currentMd.replace(sentinel, formatted);
+            const currentHtml = el.innerHTML;
+            if (currentHtml.includes(sentinel)) {
+              const replaced = currentHtml.replace(sentinel, markdownToHtml(formatted));
               lastMdRef.current = replaced;
               isTypingRef.current = false;
               setHtmlFromMd(replaced);
@@ -550,11 +550,12 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
             // Leave the raw text in place, just strip the sentinel.
             const el = editorRef.current;
             if (el) {
-              const currentMd = htmlToMarkdown(el.innerHTML).replace(sentinel, "");
-              lastMdRef.current = currentMd;
-              setHtmlFromMd(currentMd);
-              onChange(currentMd);
+              const currentHtml = el.innerHTML.replace(sentinel, "");
+              lastMdRef.current = currentHtml;
+              setHtmlFromMd(currentHtml);
+              onChange(currentHtml);
             }
+
             dismissToast(toastId);
             toast.error("Couldn't auto-format", { description: err?.message });
           });
