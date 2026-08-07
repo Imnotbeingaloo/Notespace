@@ -170,9 +170,54 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
           onMouseDown={(e) => e.preventDefault()}
         >
           <ToolButton icon={Bold} label="Bold" onClick={() => handleSimple("bold")} />
-          <ToolButton icon={Italic} label="Italic" onClick={() => handleSimple("italic")} />
+
+          {/* Italic + font family picker */}
+          <div className="flex items-center">
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); handleSimple("italic"); }}
+              title="Italic"
+              aria-label="Italic"
+              className="p-1.5 rounded-l-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-150"
+            >
+              <Italic className="h-3.5 w-3.5" />
+            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  title="Font family"
+                  aria-label="Font family"
+                  className="px-1 py-1.5 rounded-r-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-150 text-[9px] leading-none"
+                >
+                  ▾
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-1" align="center" sideOffset={6} onOpenAutoFocus={(e) => e.preventDefault()}>
+                {FONT_FAMILIES.map((f) => (
+                  <button
+                    key={f.name}
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      wrapWithStyle((span) => { span.style.fontFamily = f.stack; });
+                    }}
+                    className="w-full text-left px-2 py-1.5 text-sm rounded-md text-foreground hover:bg-muted transition-colors"
+                    style={{ fontFamily: f.stack }}
+                  >
+                    {f.name}
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
+          </div>
+
           <ToolButton icon={Underline} label="Underline" onClick={() => handleSimple("underline")} />
           <ToolButton icon={Strikethrough} label="Strikethrough" onClick={() => handleSimple("strikeThrough")} />
+          <Divider />
+          <ToolButton icon={Sparkles} label="Ask AI about this" onClick={askAIAboutSelection} />
+
           <Divider />
 
           {/* Highlight swatch: one-click applies last color; caret opens palette */}
