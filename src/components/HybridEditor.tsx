@@ -440,9 +440,53 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       },
     }));
 
+    /**
+     * A heading / enlarged / styled line must not bleed onto the next line.
+     * After Enter creates a fresh empty block we downgrade it back to a plain
+     * paragraph and clear any inherited inline styling and character marks.
+     */
+    const resetFormattingOnNewLine = useCallback(() => {
+      const el = editorRef.current;
+      const sel = window.getSelection();
+      if (!el || !sel || sel.rangeCount === 0) return;
+      let node: Node | null = sel.anchorNode;
+      let block: HTMLElement | null = null;
+      while (node && node !== el) {
+        if (node.nodeType === 1) {
+          const tag = (node as HTMLElement).tagName;
+          if (/^(P|DIV|H[1-6]|LI|BLOCKQUOTE)$/.test(tag)) { block = node as HTMLElement; break; }
+        }
+        node = node.parentNode;
+      }
+      if (!block || block.textContent?.trim()) return;
+      // Headings continue as body text, styled wrappers are dropped entirely.
+      if (/^H[1-6]$/.test(block.tagName)) {
+        const p = document.createElement("p");
+        p.innerHTML = "<br>";
+        block.replaceWith(p);
+        block = p;
+      } else {
+        block.removeAttribute("style");
+        if (block.querySelector("span,font,strong,em,u,mark,b,i")) block.innerHTML = "<br>";
+      }
+      const range = document.createRange();
+      range.setStart(block, 0);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      for (const cmd of ["bold", "italic", "underline", "strikeThrough"]) {
+        if (document.queryCommandState(cmd)) document.execCommand(cmd);
+      }
+    }, []);
+
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
+      if (e.key === "Enter" && !e.shiftKey && !mod) {
+        requestAnimationFrame(() => { resetFormattingOnNewLine(); emitChange(); });
+        return;
+      }
       if (!mod) return;
+
       if (e.key === "b" || e.key === "B") {
         e.preventDefault();
         document.execCommand("bold");
