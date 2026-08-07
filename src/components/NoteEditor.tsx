@@ -405,6 +405,15 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const [askAIMode, setAskAIMode] = useState<"chat" | "edit">("chat");
   const openAskAI = useCallback((mode: "chat" | "edit") => { setAskAIMode(mode); setAskAIOpen(true); }, []);
 
+  // The selection toolbar's "Ask AI" button opens the same panel.
+  useEffect(() => {
+    const onAsk = () => openAskAI("chat");
+    window.addEventListener("notespace:ask-ai", onAsk as EventListener);
+    return () => window.removeEventListener("notespace:ask-ai", onAsk as EventListener);
+  }, [openAskAI]);
+
+
+
   // Ctrl+F for find and replace
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
