@@ -22,6 +22,7 @@ import { toast } from "@/hooks/use-toast";
 import { LinkInsertDialog } from "@/components/LinkInsertDialog";
 import { sanitizeUrl, escapeHtmlAttr } from "@/lib/url-sanitize";
 import { useLastHighlightColor } from "@/hooks/use-last-highlight-color";
+import { buildSizedSpan } from "@/lib/editor-sizing";
 
 interface MarkdownToolbarProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
