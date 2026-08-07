@@ -21,7 +21,7 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
         >
           <img
             alt="Notespace"
-            class="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+            class="h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
             src="/logo.png"
           />
           <span
@@ -261,15 +261,16 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
       >
         <div
           animate="[object Object]"
-          class="relative h-[212px] rounded-[6px] bg-card overflow-hidden border border-foreground/10 shadow-[0_10px_24px_-16px_hsl(var(--foreground)/0.35)]"
+          class="relative h-[212px]"
           initial="[object Object]"
           transition="[object Object]"
         >
           <div
             class="absolute inset-0"
+            style="mask-image: linear-gradient(to right, transparent, black 12%, black 78%, transparent), linear-gradient(to bottom, transparent, black 14%, black 86%, transparent); mask-composite: intersect;"
           />
           <div
-            class="absolute inset-y-0 left-[46px] w-px bg-ochre/35"
+            class="absolute inset-y-6 left-[46px] w-px bg-ochre/30"
           />
           <div
             animate="[object Object]"
@@ -513,7 +514,7 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
         >
           <img
             alt="Notespace"
-            class="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+            class="h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
             src="/logo.png"
           />
           <span
@@ -753,15 +754,16 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
       >
         <div
           animate="[object Object]"
-          class="relative h-[212px] rounded-[6px] bg-card overflow-hidden border border-foreground/10 shadow-[0_10px_24px_-16px_hsl(var(--foreground)/0.35)]"
+          class="relative h-[212px]"
           initial="[object Object]"
           transition="[object Object]"
         >
           <div
             class="absolute inset-0"
+            style="mask-image: linear-gradient(to right, transparent, black 12%, black 78%, transparent), linear-gradient(to bottom, transparent, black 14%, black 86%, transparent); mask-composite: intersect;"
           />
           <div
-            class="absolute inset-y-0 left-[46px] w-px bg-ochre/35"
+            class="absolute inset-y-6 left-[46px] w-px bg-ochre/30"
           />
           <div
             animate="[object Object]"
@@ -1005,7 +1007,7 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
         >
           <img
             alt="Notespace"
-            class="h-[1.4rem] w-[1.4rem] sm:h-[1.6rem] sm:w-[1.6rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+            class="h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem] object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
             src="/logo.png"
           />
           <span
@@ -1245,15 +1247,16 @@ exports[`Visual regression - HomeView markup snapshots > HomeView matches snapsh
       >
         <div
           animate="[object Object]"
-          class="relative h-[212px] rounded-[6px] bg-card overflow-hidden border border-foreground/10 shadow-[0_10px_24px_-16px_hsl(var(--foreground)/0.35)]"
+          class="relative h-[212px]"
           initial="[object Object]"
           transition="[object Object]"
         >
           <div
             class="absolute inset-0"
+            style="mask-image: linear-gradient(to right, transparent, black 12%, black 78%, transparent), linear-gradient(to bottom, transparent, black 14%, black 86%, transparent); mask-composite: intersect;"
           />
           <div
-            class="absolute inset-y-0 left-[46px] w-px bg-ochre/35"
+            class="absolute inset-y-6 left-[46px] w-px bg-ochre/30"
           />
           <div
             animate="[object Object]"
