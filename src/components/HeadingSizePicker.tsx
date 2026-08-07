@@ -52,16 +52,9 @@ export function HeadingSizePicker({ editorRef }: HeadingSizePickerProps) {
     sel.removeAllRanges();
     sel.addRange(saved);
 
-    // Snap the line-height up to the next multiple of the ruled grid (28px =
-    // 1.75rem) so enlarged text stretches the notebook line instead of
-    // overflowing it, and following lines stay on a rule.
-    const RULE = 28;
-    const rows = Math.max(1, Math.ceil((px * 1.25) / RULE));
     const container = document.createElement("div");
     container.appendChild(saved.cloneContents());
-    const html = `<span style="font-size:${px}px;line-height:${rows * RULE}px">${container.innerHTML}</span>`;
-
-    document.execCommand("insertHTML", false, html);
+    document.execCommand("insertHTML", false, buildSizedSpan(px, container.innerHTML));
 
     editor.dispatchEvent(new Event("input", { bubbles: true }));
     savedRangeRef.current = null;
