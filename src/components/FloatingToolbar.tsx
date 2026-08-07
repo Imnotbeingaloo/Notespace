@@ -31,6 +31,19 @@ const SPACING_TIERS: { tier: SpacingTier; label: string }[] = [
   { tier: "relaxed", label: "Relaxed" },
 ];
 
+// Faces already loaded by the app plus dependable system stacks, so switching
+// font never causes a flash of unstyled text.
+const FONT_FAMILIES: { name: string; stack: string }[] = [
+  { name: "Body (Inter)", stack: "Inter, system-ui, sans-serif" },
+  { name: "Serif (Merriweather)", stack: "Merriweather, Georgia, serif" },
+  { name: "Mono (JetBrains)", stack: "'JetBrains Mono', ui-monospace, monospace" },
+  { name: "Georgia", stack: "Georgia, 'Times New Roman', serif" },
+  { name: "Palatino", stack: "'Palatino Linotype', Palatino, Georgia, serif" },
+  { name: "Courier", stack: "'Courier New', Courier, monospace" },
+  { name: "Trebuchet", stack: "'Trebuchet MS', Verdana, sans-serif" },
+];
+
+
 export function FloatingToolbar({ selectionRect, onAction, containerRef }: FloatingToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
