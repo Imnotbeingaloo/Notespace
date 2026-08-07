@@ -15,20 +15,24 @@ function Leaf({ side }: { side: "left" | "right" }) {
   const isLeft = side === "left";
   return (
     <div className={`relative h-full flex-1 ${isLeft ? "origin-right" : "origin-left"}`}>
-      {/* cover board, just a sliver showing past the paper */}
+      {/* cover board — only a sliver at the outer edge and foot */}
       <div
-        className={`absolute inset-y-[-6px] bg-accent/70 ${
-          isLeft ? "left-[-7px] right-0 rounded-l-[7px]" : "left-0 right-[-7px] rounded-r-[7px]"
+        className={`absolute inset-y-[-5px] bg-accent/25 ${
+          isLeft ? "left-[-5px] right-0 rounded-l-[8px]" : "left-0 right-[-5px] rounded-r-[8px]"
         }`}
       />
       {/* page edges stacked under the top leaf */}
-      {[4, 2.5, 1].map((o, i) => (
+      {[0, 1, 2].map((i) => (
         <div
-          key={o}
-          className={`absolute inset-y-[-${i}px] bg-card ${
-            isLeft ? "left-[-4px] right-0 rounded-l-[4px]" : "left-0 right-[-4px] rounded-r-[4px]"
+          key={i}
+          className={`absolute inset-0 bg-card ${
+            isLeft ? "rounded-l-[4px]" : "rounded-r-[4px]"
           }`}
-          style={{ transform: `translate(${isLeft ? o : -o}px, ${o / 2}px)`, opacity: 0.55 + i * 0.15 }}
+          style={{
+            transform: `translate(${(isLeft ? -1 : 1) * (3 - i)}px, ${3 - i}px)`,
+            opacity: 0.5,
+            boxShadow: "0 1px 0 0 hsl(var(--foreground)/0.10)",
+          }}
         />
       ))}
       {/* the leaf itself */}
