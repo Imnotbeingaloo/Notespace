@@ -501,6 +501,10 @@
    container as a repeating gradient, matching the pre-refactor look. */
 .notebook-paper {
   --paper-bg: transparent;
+  /* Solid colour used to mask the ruled grid behind tall text, so an enlarged
+     word occupies one tall ruled band instead of being sliced by the rules
+     that would otherwise run through the middle of it. */
+  --paper-fill: hsl(var(--background));
   --paper-rule: hsl(210 75% 55% / 0.32);
   --paper-margin: hsl(0 70% 55% / 0.55);
   background-color: var(--paper-bg);
@@ -518,7 +522,10 @@
       var(--paper-rule) 1.75rem);
   background-repeat: no-repeat, repeat;
   background-attachment: local, local;
-  background-position: 0 0, 0 0.35rem;
+  /* No vertical offset: each rule must land at the bottom edge of its own
+     28px line box, just under the descenders — not 5px into the next line
+     where it cuts through the tops of the letters. */
+  background-position: 0 0, 0 0;
   padding-left: 3.75rem !important;
   padding-right: 1.5rem !important;
 }
