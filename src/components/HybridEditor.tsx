@@ -394,7 +394,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         if (!el) return;
         el.focus();
         document.execCommand("selectAll");
-        const html = markdownToHtml(md) || "<p><br></p>";
+        const html = noteBodyToHtml(md) || "<p><br></p>";
         // execCommand keeps the change in the browser's native undo history,
         // so Ctrl+Z restores the previous note body.
         document.execCommand("insertHTML", false, html);
@@ -407,7 +407,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         if (position === "cursor") {
           // Reuse the existing cursor-insert path so saved selection is honored.
           restoreSelection();
-          const html = markdownToHtml(md) + "<p><br></p>";
+          const html = noteBodyToHtml(md) + "<p><br></p>";
           document.execCommand("insertHTML", false, html);
         } else {
           const sel = window.getSelection();
@@ -422,8 +422,8 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           sel?.removeAllRanges();
           sel?.addRange(range);
           const html = position === "top"
-            ? markdownToHtml(md) + "<p><br></p>"
-            : "<p><br></p>" + markdownToHtml(md);
+            ? noteBodyToHtml(md) + "<p><br></p>"
+            : "<p><br></p>" + noteBodyToHtml(md);
           document.execCommand("insertHTML", false, html);
         }
         const sel = window.getSelection();
