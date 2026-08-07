@@ -65,15 +65,28 @@ export function HeroNotebookStack(_props: HeroNotebookStackProps) {
   return (
     <div aria-hidden className="relative hidden lg:block w-[340px] shrink-0 select-none mr-4">
       <motion.div
-        className="relative h-[212px] rounded-[6px] bg-card overflow-hidden border border-foreground/10 shadow-[0_10px_24px_-16px_hsl(var(--foreground)/0.35)]"
+        className="relative h-[212px]"
         initial={reduce ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* ruled lines */}
-        <div className="absolute inset-0" style={{ backgroundImage: RULES, backgroundPosition: "0 12px" }} />
+        {/* ruled lines, fading out at both ends so there is no edge/frame */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: RULES,
+            backgroundPosition: "0 12px",
+            maskImage:
+              "linear-gradient(to right, transparent, black 12%, black 78%, transparent), linear-gradient(to bottom, transparent, black 14%, black 86%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent, black 12%, black 78%, transparent), linear-gradient(to bottom, transparent, black 14%, black 86%, transparent)",
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+          }}
+        />
         {/* margin rule */}
-        <div className="absolute inset-y-0 left-[46px] w-px bg-ochre/35" />
+        <div className="absolute inset-y-6 left-[46px] w-px bg-ochre/30" />
+
 
         {/* body text */}
         <TextLine w={216} top={30} delay={0.15} />
