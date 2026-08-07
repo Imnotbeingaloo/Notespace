@@ -6,83 +6,92 @@ interface HeroNotebookStackProps {
   noteCount?: number;
 }
 
+const RULES =
+  "repeating-linear-gradient(to bottom, transparent 0 21px, hsl(var(--foreground)/0.09) 21px 22px)";
+
+/** One half of the spread: cover edge, a few page edges for thickness, then
+ *  the ruled leaf on top. `side` decides which way everything tucks. */
+function Leaf({ side }: { side: "left" | "right" }) {
+  const isLeft = side === "left";
+  return (
+    <div className={`relative h-full flex-1 ${isLeft ? "origin-right" : "origin-left"}`}>
+      {/* cover board — only a sliver at the outer edge and foot */}
+      <div
+        className={`absolute inset-y-[-5px] ${
+          isLeft ? "left-[-5px] right-0 rounded-l-[8px]" : "left-0 right-[-5px] rounded-r-[8px]"
+        }`}
+        style={{ backgroundColor: "hsl(var(--foreground) / 0.16)" }}
+      />
+      {/* page edges stacked under the top leaf */}
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          className={`absolute inset-0 bg-card ${
+            isLeft ? "rounded-l-[4px]" : "rounded-r-[4px]"
+          }`}
+          style={{
+            transform: `translate(${(isLeft ? -1 : 1) * (3 - i)}px, ${3 - i}px)`,
+            opacity: 0.5,
+            boxShadow: "0 1px 0 0 hsl(var(--foreground)/0.10)",
+          }}
+        />
+      ))}
+      {/* the leaf itself */}
+      <div
+        className={`absolute inset-0 overflow-hidden bg-card ${
+          isLeft ? "rounded-l-[4px]" : "rounded-r-[4px]"
+        }`}
+      >
+        <div className="absolute inset-0 opacity-80" style={{ backgroundImage: RULES }} />
+        {/* curvature toward the gutter */}
+        <div
+          className={`absolute inset-y-0 w-14 ${
+            isLeft ? "right-0 bg-gradient-to-l" : "left-0 bg-gradient-to-r"
+          } from-foreground/14 via-foreground/4 to-transparent`}
+        />
+      </div>
+    </div>
+  );
+}
+
 /**
- * Decorative hero accent: a single closed notebook standing slightly open,
- * with its page block fanning out and an ochre ribbon slipping past the foot.
- * A soft offset sage panel sits behind it for depth. No glow, no data —
- * it just gives the hero copy something quiet to sit against.
+ * Decorative hero accent: an open book lying flat on the desk — two ruled
+ * leaves, visible page thickness, a soft spine shadow and a ribbon marker.
+ * Deliberately carries no data; it echoes the Notespace mark and gives the
+ * hero copy something to sit against.
  */
 export function HeroNotebookStack(_props: HeroNotebookStackProps) {
   const reduce = useReducedMotion();
 
   return (
-    <div aria-hidden className="relative hidden lg:block w-[300px] shrink-0 select-none mr-4">
+    <div aria-hidden className="relative hidden lg:block w-[320px] shrink-0 select-none mr-5">
       <motion.div
-        className="relative mx-auto h-[196px] w-[184px]"
-        initial={reduce ? false : { opacity: 0, y: 12 }}
+        className="relative h-[188px] drop-shadow-[0_24px_34px_hsl(var(--foreground)/0.16)]"
+        initial={reduce ? false : { opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* offset panel behind — the one quiet nod to layered paper */}
-        <div
-          className="absolute left-[26px] top-[16px] h-[168px] w-[132px] rounded-[6px] rotate-[-5deg]"
-          style={{ backgroundColor: "hsl(var(--sage, 96 16% 62%) / 0.28)" }}
-        />
-
-        {/* the notebook, tilted just off square */}
-        <div className="absolute left-[14px] top-[6px] h-[176px] w-[140px] rotate-[3deg]">
-          {/* page block fanning out on the right */}
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="absolute inset-y-[5px] left-[7px] right-0 rounded-r-[3px] bg-card"
-              style={{
-                transform: `translateX(${5 + i * 2.5}px) rotate(${i * 0.5}deg)`,
-                boxShadow: "0 0 0 1px hsl(var(--foreground) / 0.07)",
-                opacity: 1 - i * 0.12,
-              }}
-            />
-          ))}
-
-          {/* cover */}
-          <div
-            className="absolute inset-0 rounded-[4px] rounded-l-[7px]"
-            style={{
-              backgroundColor: "hsl(var(--primary))",
-              boxShadow: "0 14px 24px -14px hsl(var(--foreground) / 0.4)",
-            }}
-          >
-            {/* spine crease */}
-            <div className="absolute inset-y-0 left-[11px] w-px bg-background/20" />
-            <div className="absolute inset-y-0 left-0 w-[11px] rounded-l-[7px] bg-foreground/10" />
-          </div>
-
-          {/* ribbon slipping past the foot */}
-          <motion.div
-            className="absolute bottom-[-26px] left-[94px] w-[8px] overflow-hidden"
-            initial={reduce ? false : { height: 0 }}
-            animate={{ height: 46 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div
-              className="h-[34px] w-full"
-              style={{ backgroundColor: "hsl(var(--ochre, 35 68% 48%))" }}
-            />
-            <div
-              className="h-3 w-full"
-              style={{
-                backgroundColor: "hsl(var(--ochre, 35 68% 48%))",
-                clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 55%, 0 100%)",
-              }}
-            />
-          </motion.div>
+        <div className="flex h-full">
+          <Leaf side="left" />
+          <Leaf side="right" />
         </div>
 
-        {/* contact shadow on the desk */}
-        <div
-          className="absolute bottom-[6px] left-[22px] h-[10px] w-[142px] rounded-full blur-[7px]"
-          style={{ backgroundColor: "hsl(var(--foreground) / 0.16)" }}
-        />
+        {/* spine: paper dipping into the gutter */}
+        <div className="pointer-events-none absolute inset-y-[-4px] left-1/2 w-16 -translate-x-1/2 bg-[linear-gradient(to_right,transparent,hsl(var(--foreground)/0.16)_46%,hsl(var(--foreground)/0.22)_50%,hsl(var(--foreground)/0.16)_54%,transparent)]" />
+
+        {/* ribbon marker slipping out of the gutter */}
+        <motion.div
+          className="absolute left-[calc(50%+14px)] top-[-6px] w-[9px] overflow-hidden"
+          initial={reduce ? false : { height: 0 }}
+          animate={{ height: 150 }}
+          transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="h-[138px] w-full" style={{ backgroundColor: "hsl(var(--ochre, 35 68% 48%))" }} />
+          <div
+            className="h-3 w-full"
+            style={{ backgroundColor: "hsl(var(--ochre, 35 68% 48%))", clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 55%, 0 100%)" }}
+          />
+        </motion.div>
       </motion.div>
     </div>
   );
