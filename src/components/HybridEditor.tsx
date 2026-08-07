@@ -146,6 +146,36 @@ function htmlToMarkdown(html: string): string {
   }
 }
 
+// Attributes/tags the editor must be allowed to persist. Anything the user can
+// produce with the toolbar (alignment, font family, font size, colours,
+// highlights, underline, image sizing) has to survive sanitisation, otherwise
+// the formatting silently disappears on the next load.
+const EDITOR_SANITIZE_CONFIG = {
+  ADD_ATTR: ["target", "loading", "style", "width", "height", "align", "colspan", "rowspan", "data-align"],
+  ADD_TAGS: ["mark", "u", "sub", "sup"],
+};
+
+export function sanitizeEditorHtml(html: string): string {
+  return DOMPurify.sanitize(html, EDITOR_SANITIZE_CONFIG);
+}
+
+/**
+ * The editor stores rich HTML, not markdown — markdown cannot express
+ * underline, alignment, font family, font size, text colour or highlights, so
+ * round-tripping through it was silently discarding formatting on every save.
+ * Older notes are still markdown, so detect and upgrade them on load.
+ */
+export function looksLikeHtml(value: string): boolean {
+  return /<(p|div|h[1-6]|ul|ol|li|table|blockquote|pre|img|span|strong|em|u|mark|br)\b[^>]*>/i.test(value);
+}
+
+/** Normalise any stored note body (markdown or HTML) into editor HTML. */
+export function noteBodyToHtml(value: string): string {
+  if (!value) return "";
+  return looksLikeHtml(value) ? sanitizeEditorHtml(value) : markdownToHtml(value);
+}
+
+
 export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
   ({ content, onChange, placeholder, onImageFiles }, ref) => {
     const editorRef = useRef<HTMLDivElement>(null);
