@@ -17,9 +17,10 @@ function Leaf({ side }: { side: "left" | "right" }) {
     <div className={`relative h-full flex-1 ${isLeft ? "origin-right" : "origin-left"}`}>
       {/* cover board — only a sliver at the outer edge and foot */}
       <div
-        className={`absolute inset-y-[-5px] bg-accent/25 ${
+        className={`absolute inset-y-[-5px] ${
           isLeft ? "left-[-5px] right-0 rounded-l-[8px]" : "left-0 right-[-5px] rounded-r-[8px]"
         }`}
+        style={{ backgroundColor: "hsl(var(--foreground) / 0.16)" }}
       />
       {/* page edges stacked under the top leaf */}
       {[0, 1, 2].map((i) => (
@@ -85,10 +86,10 @@ export function HeroNotebookStack(_props: HeroNotebookStackProps) {
           animate={{ height: 150 }}
           transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="h-[138px] w-full bg-ochre" />
+          <div className="h-[138px] w-full" style={{ backgroundColor: "hsl(var(--ochre, 35 68% 48%))" }} />
           <div
-            className="h-3 w-full bg-ochre"
-            style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 55%, 0 100%)" }}
+            className="h-3 w-full"
+            style={{ backgroundColor: "hsl(var(--ochre, 35 68% 48%))", clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 55%, 0 100%)" }}
           />
         </motion.div>
       </motion.div>
