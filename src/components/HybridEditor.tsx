@@ -855,6 +855,9 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           onBlur={handleBlur}
           onClick={handleEditorClick}
           onDoubleClick={handleDoubleClick}
+          // Highlighting a misspelled word by dragging should offer corrections too.
+          onMouseUp={() => window.setTimeout(handleDoubleClick, 0)}
+
           data-placeholder={placeholder}
           data-testid="hybrid-editor-content"
           className={`wysiwyg-editor w-full flex-1 h-auto bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-3 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}
