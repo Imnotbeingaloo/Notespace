@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Download, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import DOMPurify from "dompurify";
+import TurndownService from "turndown";
 import { useNotebooks } from "@/context/NotebookContext";
 import { toolPill } from "@/lib/tool-colors";
+import { looksLikeHtml } from "@/components/HybridEditor";
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
