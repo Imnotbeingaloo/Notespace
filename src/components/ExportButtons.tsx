@@ -64,14 +64,14 @@ export function ExportButtons() {
   };
 
   const exportRtf = () => {
-    const plainContent = content.replace(/[#*`_~\[\]]/g, "");
+    const plainContent = toPlainText(content).replace(/[#*`_~\[\]]/g, "");
     const rtfContent = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Calibri;}}\n\\f0\\fs24 ${title}\\par\\par\n${plainContent.replace(/\n/g, "\\par\n")}\\par\n}`;
     downloadBlob(new Blob([rtfContent], { type: "application/rtf" }), `${title}.rtf`);
   };
 
   const exportOdt = () => {
     const safeTitle = escapeHtml(title);
-    const safeContent = escapeHtml(content);
+    const safeContent = escapeHtml(toPlainText(content));
     const odtXml = `<?xml version="1.0" encoding="UTF-8"?><office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" office:mimetype="application/vnd.oasis.opendocument.text" office:version="1.2"><office:body><office:text><text:p>${safeTitle}</text:p><text:p>${safeContent.replace(/\n/g, "</text:p><text:p>")}</text:p></office:text></office:body></office:document>`;
     downloadBlob(new Blob([odtXml], { type: "application/vnd.oasis.opendocument.text" }), `${title}.odt`);
   };
