@@ -141,7 +141,12 @@ export function ExportButtons() {
   );
 }
 
+/**
+ * Notes are stored as rich HTML (older notes are still markdown), so every
+ * exporter has to branch on the stored format instead of assuming markdown.
+ */
 function contentToHtml(_title: string, content: string): string {
+  if (looksLikeHtml(content)) return sanitizeHtml(content);
   const escaped = escapeHtml(content);
   const html = escaped
     .replace(/^### (.*$)/gim, "<h3>$1</h3>")
@@ -153,4 +158,26 @@ function contentToHtml(_title: string, content: string): string {
     .replace(/^- (.*$)/gim, "<li>$1</li>")
     .replace(/\n/g, "<br>");
   return sanitizeHtml(html);
+}
+
+/** HTML → markdown for .md exports; markdown notes pass through untouched. */
+function toMarkdown(content: string): string {
+  if (!looksLikeHtml(content)) return content;
+  try {
+    const turndown = new TurndownService({ headingStyle: "atx", codeBlockStyle: "fenced" });
+    return turndown.turndown(sanitizeHtml(content));
+  } catch {
+    return toPlainText(content);
+  }
+}
+
+/** HTML → readable plain text for .txt/.rtf/.odt exports. */
+function toPlainText(content: string): string {
+  if (!looksLikeHtml(content)) return content;
+  const doc = new DOMParser().parseFromString(sanitizeHtml(content), "text/html");
+  doc.querySelectorAll("br").forEach((br) => br.replaceWith(doc.createTextNode("\n")));
+  doc.querySelectorAll("p,div,h1,h2,h3,h4,h5,h6,li,tr,blockquote,pre").forEach((el) => {
+    el.appendChild(doc.createTextNode("\n"));
+  });
+  return (doc.body.textContent || "").replace(/\n{3,}/g, "\n\n").trim();
 }
