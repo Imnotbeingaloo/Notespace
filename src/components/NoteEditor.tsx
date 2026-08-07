@@ -18,7 +18,7 @@ import { NoteTags } from "@/components/NoteTags";
 import { FlashcardDeck } from "@/components/FlashcardDeck";
 
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
-import { HybridEditor, HybridEditorHandle, noteBodyToHtml } from "@/components/HybridEditor";
+import { HybridEditor, HybridEditorHandle, noteBodyToHtml, looksLikeHtml } from "@/components/HybridEditor";
 import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { WordCount } from "@/components/WordCount";
 import { WordCountGoal } from "@/components/WordCountGoal";
