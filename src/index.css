@@ -611,7 +611,18 @@
   line-height: 1.75rem !important;
 }
 
-/* Inline elements must not disturb the ruled line-height. */
+/* --- Classic <-> Modern conversion for sized runs -------------------------
+   Sized text is stored once (with the classic grid metrics baked in) and each
+   mode reinterprets it. Modern drops the ruled-grid padding and box model and
+   goes back to natural leading, so toggling the paper style converts the note
+   both ways without ever rewriting what is saved. */
+.wysiwyg-editor:not(.notebook-paper) span[data-nssize] {
+  display: inline !important;
+  padding-top: 0 !important;
+  line-height: 1.3 !important;
+}
+
+
 .notebook-paper strong,
 .notebook-paper em,
 .notebook-paper mark,
