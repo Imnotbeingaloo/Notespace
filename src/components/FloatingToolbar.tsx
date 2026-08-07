@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Bold, Italic, Underline, Strikethrough, Code, Link2, Highlighter,
-  AlignLeft, AlignCenter, AlignRight, AlignJustify, Rows3,
+  AlignLeft, AlignCenter, AlignRight, AlignJustify, Rows3, Sparkles,
 } from "lucide-react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { sanitizeUrl } from "@/lib/url-sanitize";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -30,6 +31,19 @@ const SPACING_TIERS: { tier: SpacingTier; label: string }[] = [
   { tier: "relaxed", label: "Relaxed" },
 ];
 
+// Faces already loaded by the app plus dependable system stacks, so switching
+// font never causes a flash of unstyled text.
+const FONT_FAMILIES: { name: string; stack: string }[] = [
+  { name: "Body (Inter)", stack: "Inter, system-ui, sans-serif" },
+  { name: "Serif (Merriweather)", stack: "Merriweather, Georgia, serif" },
+  { name: "Mono (JetBrains)", stack: "'JetBrains Mono', ui-monospace, monospace" },
+  { name: "Georgia", stack: "Georgia, 'Times New Roman', serif" },
+  { name: "Palatino", stack: "'Palatino Linotype', Palatino, Georgia, serif" },
+  { name: "Courier", stack: "'Courier New', Courier, monospace" },
+  { name: "Trebuchet", stack: "'Trebuchet MS', Verdana, sans-serif" },
+];
+
+
 export function FloatingToolbar({ selectionRect, onAction, containerRef }: FloatingToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
@@ -41,9 +55,9 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
       setPosition(null);
       return;
     }
-    // Small grace period so the toolbar doesn't flash in the moment a word is
-    // double-clicked or while a drag-selection is still in progress.
-    const timer = window.setTimeout(() => {
+    // Position on the next frame so the toolbar appears as soon as the
+    // selection settles — a timed delay made it feel broken.
+    const frame = requestAnimationFrame(() => {
       if (!containerRef.current) return;
       const containerRect = containerRef.current.getBoundingClientRect();
       // The toolbar is absolutely positioned inside the editor's *wrapper*, so
@@ -51,7 +65,7 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
       // the toolbar up by the wrapper padding and clipped the current line.
       const originEl = (containerRef.current.offsetParent as HTMLElement | null) ?? containerRef.current;
       const originRect = originEl.getBoundingClientRect();
-      const toolbarWidth = 360;
+      const toolbarWidth = 400;
       const toolbarHeight = 40;
       let left = selectionRect.left + selectionRect.width / 2 - originRect.left - toolbarWidth / 2;
       left = Math.max(0, Math.min(left, Math.max(0, originRect.width - toolbarWidth)));
@@ -64,9 +78,34 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
         if (above > 0) top = above;
       }
       setPosition({ top, left });
-    }, 200);
-    return () => window.clearTimeout(timer);
+    });
+    return () => cancelAnimationFrame(frame);
   }, [selectionRect, containerRef]);
+
+  /** Wrap the current selection in a span carrying one inline style. */
+  const wrapWithStyle = (apply: (span: HTMLSpanElement) => void) => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    const span = document.createElement("span");
+    apply(span);
+    try {
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      const after = document.createRange();
+      after.setStartAfter(span);
+      after.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(after);
+    } catch { /* ignore */ }
+    containerRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
+  const askAIAboutSelection = () => {
+    const text = window.getSelection()?.toString().trim() || "";
+    window.dispatchEvent(new CustomEvent("notespace:ask-ai", { detail: { text } }));
+  };
+
 
   const wrapWithHighlight = (color: string) => {
     const sel = window.getSelection();
@@ -145,9 +184,54 @@ export function FloatingToolbar({ selectionRect, onAction, containerRef }: Float
           onMouseDown={(e) => e.preventDefault()}
         >
           <ToolButton icon={Bold} label="Bold" onClick={() => handleSimple("bold")} />
-          <ToolButton icon={Italic} label="Italic" onClick={() => handleSimple("italic")} />
+
+          {/* Italic + font family picker */}
+          <div className="flex items-center">
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); handleSimple("italic"); }}
+              title="Italic"
+              aria-label="Italic"
+              className="p-1.5 rounded-l-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-150"
+            >
+              <Italic className="h-3.5 w-3.5" />
+            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  title="Font family"
+                  aria-label="Font family"
+                  className="px-1 py-1.5 rounded-r-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-150 text-[9px] leading-none"
+                >
+                  ▾
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-1" align="center" sideOffset={6} onOpenAutoFocus={(e) => e.preventDefault()}>
+                {FONT_FAMILIES.map((f) => (
+                  <button
+                    key={f.name}
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      wrapWithStyle((span) => { span.style.fontFamily = f.stack; });
+                    }}
+                    className="w-full text-left px-2 py-1.5 text-sm rounded-md text-foreground hover:bg-muted transition-colors"
+                    style={{ fontFamily: f.stack }}
+                  >
+                    {f.name}
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
+          </div>
+
           <ToolButton icon={Underline} label="Underline" onClick={() => handleSimple("underline")} />
           <ToolButton icon={Strikethrough} label="Strikethrough" onClick={() => handleSimple("strikeThrough")} />
+          <Divider />
+          <ToolButton icon={Sparkles} label="Ask AI about this" onClick={askAIAboutSelection} />
+
           <Divider />
 
           {/* Highlight swatch: one-click applies last color; caret opens palette */}

@@ -146,6 +146,36 @@ function htmlToMarkdown(html: string): string {
   }
 }
 
+// Attributes/tags the editor must be allowed to persist. Anything the user can
+// produce with the toolbar (alignment, font family, font size, colours,
+// highlights, underline, image sizing) has to survive sanitisation, otherwise
+// the formatting silently disappears on the next load.
+const EDITOR_SANITIZE_CONFIG = {
+  ADD_ATTR: ["target", "loading", "style", "width", "height", "align", "colspan", "rowspan", "data-align"],
+  ADD_TAGS: ["mark", "u", "sub", "sup"],
+};
+
+export function sanitizeEditorHtml(html: string): string {
+  return DOMPurify.sanitize(html, EDITOR_SANITIZE_CONFIG);
+}
+
+/**
+ * The editor stores rich HTML, not markdown — markdown cannot express
+ * underline, alignment, font family, font size, text colour or highlights, so
+ * round-tripping through it was silently discarding formatting on every save.
+ * Older notes are still markdown, so detect and upgrade them on load.
+ */
+export function looksLikeHtml(value: string): boolean {
+  return /<(p|div|h[1-6]|ul|ol|li|table|blockquote|pre|img|span|strong|em|u|mark|br)\b[^>]*>/i.test(value);
+}
+
+/** Normalise any stored note body (markdown or HTML) into editor HTML. */
+export function noteBodyToHtml(value: string): string {
+  if (!value) return "";
+  return looksLikeHtml(value) ? sanitizeEditorHtml(value) : markdownToHtml(value);
+}
+
+
 export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
   ({ content, onChange, placeholder, onImageFiles }, ref) => {
     const editorRef = useRef<HTMLDivElement>(null);
@@ -189,11 +219,10 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       }
     }, [commaHighlightOn]);
 
-    // Set HTML content from markdown
+    // Set HTML content from the stored note body (rich HTML, or legacy markdown)
     const setHtmlFromMd = useCallback((md: string) => {
       if (!editorRef.current) return;
-      const html = markdownToHtml(md);
-      editorRef.current.innerHTML = html || "";
+      editorRef.current.innerHTML = noteBodyToHtml(md) || "";
     }, []);
 
     // On mount or when content changes externally (e.g., note switch, AI edit)
@@ -213,12 +242,16 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
 
     const emitChange = useCallback(() => {
       if (!editorRef.current) return;
+      // Persist the editor's own HTML. Markdown cannot represent underline,
+      // alignment, font family/size, colour or highlights, so serialising
+      // through it was throwing that formatting away on every keystroke.
       const html = editorRef.current.innerHTML;
-      const md = htmlToMarkdown(html);
-      lastMdRef.current = md;
+      const value = html === "<br>" || html.trim() === "" ? "" : html;
+      lastMdRef.current = value;
       isTypingRef.current = true;
-      onChange(md);
+      onChange(value);
     }, [onChange]);
+
 
     // Track selection for floating toolbar AND remember the last caret position
     // inside the editor so we can restore it after the user clicks attach/upload buttons.
@@ -346,8 +379,10 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       },
       getValue: () => {
         if (!editorRef.current) return "";
-        return htmlToMarkdown(editorRef.current.innerHTML);
+        const html = editorRef.current.innerHTML;
+        return html === "<br>" || html.trim() === "" ? "" : html;
       },
+
       getEditorElement: () => editorRef.current,
       setContent: (md: string) => {
         lastMdRef.current = md;
@@ -359,7 +394,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         if (!el) return;
         el.focus();
         document.execCommand("selectAll");
-        const html = markdownToHtml(md) || "<p><br></p>";
+        const html = noteBodyToHtml(md) || "<p><br></p>";
         // execCommand keeps the change in the browser's native undo history,
         // so Ctrl+Z restores the previous note body.
         document.execCommand("insertHTML", false, html);
@@ -372,7 +407,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         if (position === "cursor") {
           // Reuse the existing cursor-insert path so saved selection is honored.
           restoreSelection();
-          const html = markdownToHtml(md) + "<p><br></p>";
+          const html = noteBodyToHtml(md) + "<p><br></p>";
           document.execCommand("insertHTML", false, html);
         } else {
           const sel = window.getSelection();
@@ -387,8 +422,8 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           sel?.removeAllRanges();
           sel?.addRange(range);
           const html = position === "top"
-            ? markdownToHtml(md) + "<p><br></p>"
-            : "<p><br></p>" + markdownToHtml(md);
+            ? noteBodyToHtml(md) + "<p><br></p>"
+            : "<p><br></p>" + noteBodyToHtml(md);
           document.execCommand("insertHTML", false, html);
         }
         const sel = window.getSelection();
@@ -405,9 +440,53 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       },
     }));
 
+    /**
+     * A heading / enlarged / styled line must not bleed onto the next line.
+     * After Enter creates a fresh empty block we downgrade it back to a plain
+     * paragraph and clear any inherited inline styling and character marks.
+     */
+    const resetFormattingOnNewLine = useCallback(() => {
+      const el = editorRef.current;
+      const sel = window.getSelection();
+      if (!el || !sel || sel.rangeCount === 0) return;
+      let node: Node | null = sel.anchorNode;
+      let block: HTMLElement | null = null;
+      while (node && node !== el) {
+        if (node.nodeType === 1) {
+          const tag = (node as HTMLElement).tagName;
+          if (/^(P|DIV|H[1-6]|LI|BLOCKQUOTE)$/.test(tag)) { block = node as HTMLElement; break; }
+        }
+        node = node.parentNode;
+      }
+      if (!block || block.textContent?.trim()) return;
+      // Headings continue as body text, styled wrappers are dropped entirely.
+      if (/^H[1-6]$/.test(block.tagName)) {
+        const p = document.createElement("p");
+        p.innerHTML = "<br>";
+        block.replaceWith(p);
+        block = p;
+      } else {
+        block.removeAttribute("style");
+        if (block.querySelector("span,font,strong,em,u,mark,b,i")) block.innerHTML = "<br>";
+      }
+      const range = document.createRange();
+      range.setStart(block, 0);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      for (const cmd of ["bold", "italic", "underline", "strikeThrough"]) {
+        if (document.queryCommandState(cmd)) document.execCommand(cmd);
+      }
+    }, []);
+
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
+      if (e.key === "Enter" && !e.shiftKey && !mod) {
+        requestAnimationFrame(() => { resetFormattingOnNewLine(); emitChange(); });
+        return;
+      }
       if (!mod) return;
+
       if (e.key === "b" || e.key === "B") {
         e.preventDefault();
         document.execCommand("bold");
@@ -429,7 +508,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
         document.execCommand("redo");
         emitChange();
       }
-    }, [emitChange]);
+    }, [emitChange, resetFormattingOnNewLine]);
 
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
       const items = Array.from(e.clipboardData.items);
@@ -500,9 +579,9 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           .then((formatted) => {
             const el = editorRef.current;
             if (!el) return;
-            const currentMd = htmlToMarkdown(el.innerHTML);
-            if (currentMd.includes(sentinel)) {
-              const replaced = currentMd.replace(sentinel, formatted);
+            const currentHtml = el.innerHTML;
+            if (currentHtml.includes(sentinel)) {
+              const replaced = currentHtml.replace(sentinel, markdownToHtml(formatted));
               lastMdRef.current = replaced;
               isTypingRef.current = false;
               setHtmlFromMd(replaced);
@@ -515,11 +594,12 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
             // Leave the raw text in place, just strip the sentinel.
             const el = editorRef.current;
             if (el) {
-              const currentMd = htmlToMarkdown(el.innerHTML).replace(sentinel, "");
-              lastMdRef.current = currentMd;
-              setHtmlFromMd(currentMd);
-              onChange(currentMd);
+              const currentHtml = el.innerHTML.replace(sentinel, "");
+              lastMdRef.current = currentHtml;
+              setHtmlFromMd(currentHtml);
+              onChange(currentHtml);
             }
+
             dismissToast(toastId);
             toast.error("Couldn't auto-format", { description: err?.message });
           });
@@ -534,7 +614,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       editorRef.current?.focus();
       document.execCommand(command, false, value);
       emitChange();
-    }, [emitChange]);
+    }, [emitChange, resetFormattingOnNewLine]);
 
     /* ---------------------- Image selection / resize / align ---------------------- */
 
@@ -694,7 +774,7 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
       spellRangeRef.current = null;
       setSpell(null);
       emitChange();
-    }, [emitChange]);
+    }, [emitChange, resetFormattingOnNewLine]);
 
     // Auto-resizing pane: `min-h-full` lets the editor fill the visible area
     // when empty but grow with content. The ancestor scroll container only
@@ -775,6 +855,9 @@ export const HybridEditor = forwardRef<HybridEditorHandle, HybridEditorProps>(
           onBlur={handleBlur}
           onClick={handleEditorClick}
           onDoubleClick={handleDoubleClick}
+          // Highlighting a misspelled word by dragging should offer corrections too.
+          onMouseUp={() => window.setTimeout(handleDoubleClick, 0)}
+
           data-placeholder={placeholder}
           data-testid="hybrid-editor-content"
           className={`wysiwyg-editor w-full flex-1 h-auto bg-transparent border-none outline-none text-foreground leading-relaxed text-base sm:text-[17px] prose prose-base max-w-none prose-headings:font-sans prose-headings:text-foreground prose-p:text-foreground prose-p:my-3 prose-li:text-foreground prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-a:text-primary prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-hr:border-border${paperStyle ? " notebook-paper" : ""}`}

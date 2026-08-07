@@ -1,3 +1,4 @@
+import { looksLikeHtml, sanitizeEditorHtml } from "@/components/HybridEditor";
 import { useState, useEffect } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -108,8 +109,13 @@ export default function SharedNote() {
       >
         <h1 className="font-serif text-3xl font-bold text-foreground mb-8">{note?.title}</h1>
         <div className="prose prose-sm dark:prose-invert max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{note?.content || ""}</ReactMarkdown>
+          {looksLikeHtml(note?.content || "") ? (
+            <div dangerouslySetInnerHTML={{ __html: sanitizeEditorHtml(note?.content || "") }} />
+          ) : (
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{note?.content || ""}</ReactMarkdown>
+          )}
         </div>
+
       </motion.article>
       </main>
     </>

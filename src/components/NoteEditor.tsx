@@ -18,7 +18,7 @@ import { NoteTags } from "@/components/NoteTags";
 import { FlashcardDeck } from "@/components/FlashcardDeck";
 
 import { MarkdownToolbar } from "@/components/MarkdownToolbar";
-import { HybridEditor, HybridEditorHandle } from "@/components/HybridEditor";
+import { HybridEditor, HybridEditorHandle, noteBodyToHtml } from "@/components/HybridEditor";
 import { SymbolsPicker } from "@/components/SymbolsPicker";
 import { WordCount } from "@/components/WordCount";
 import { WordCountGoal } from "@/components/WordCountGoal";
@@ -292,14 +292,16 @@ function PreviewButton() {
   }, [open]);
 
   const html = useMemo(() => {
-    const md = activeNote?.content ?? "";
-    if (!md.trim()) return "<p><em>No content yet</em></p>";
+    const body = activeNote?.content ?? "";
+    if (!body.trim()) return "<p><em>No content yet</em></p>";
     try {
-      return marked.parse(md, { async: false }) as string;
+      // Notes are stored as rich HTML now; older notes are still markdown.
+      return noteBodyToHtml(body);
     } catch {
       return "";
     }
   }, [activeNote?.content]);
+
 
   if (!activeNote) return null;
 
@@ -402,6 +404,15 @@ export function NoteEditor({ focusMode = false, findReplaceOpen = false, onFindR
   const [askAIOpen, setAskAIOpen] = useState(false);
   const [askAIMode, setAskAIMode] = useState<"chat" | "edit">("chat");
   const openAskAI = useCallback((mode: "chat" | "edit") => { setAskAIMode(mode); setAskAIOpen(true); }, []);
+
+  // The selection toolbar's "Ask AI" button opens the same panel.
+  useEffect(() => {
+    const onAsk = () => openAskAI("chat");
+    window.addEventListener("notespace:ask-ai", onAsk as EventListener);
+    return () => window.removeEventListener("notespace:ask-ai", onAsk as EventListener);
+  }, [openAskAI]);
+
+
 
   // Ctrl+F for find and replace
   useEffect(() => {

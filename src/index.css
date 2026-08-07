@@ -428,19 +428,19 @@
    and the typography plugin isn't registered, so set sizes explicitly so the
    H1/H2/H3 toolbar buttons produce visible size changes). */
 .wysiwyg-editor h1 {
-  font-size: 2rem;
+  font-size: 1.625rem;
   font-weight: 700;
   line-height: 1.2;
   margin: 1rem 0 0.5rem;
 }
 .wysiwyg-editor h2 {
-  font-size: 1.5rem;
+  font-size: 1.3125rem;
   font-weight: 700;
   line-height: 1.25;
   margin: 0.9rem 0 0.45rem;
 }
 .wysiwyg-editor h3 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 1.3;
   margin: 0.8rem 0 0.4rem;
