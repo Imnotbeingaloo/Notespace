@@ -3,6 +3,7 @@ import { Type, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import { buildSizedSpan } from "@/lib/editor-sizing";
 
 interface HeadingSizePickerProps {
   editorRef: React.RefObject<HTMLDivElement | null>;
